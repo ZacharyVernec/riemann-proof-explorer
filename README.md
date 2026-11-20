@@ -14,6 +14,7 @@ All contributions are located in the `analysis/` folder:
 
 - [Inventory of `PublishedTheorems`](analysis/published_theorems/PUBLISHED_THEOREMS_INVENTORY.md) — Complete audit of all six `PublishedTheorems` directories (1,070 Lean files), comparing formalized statements against the peer-reviewed literature and cataloging untraceable scaffolding, helpers, and misnomers.
 - [Canonical Import-Graph Index](analysis/build_index.py) — Python 3.11 stdlib indexer generating `analysis/data/graph.sqlite` and [meta.json](analysis/data/meta.json) across all 175,187 Lean files (17.37M lines, 753,261 internal edges, 1.06M declarations).
+- [Directory-Level Dependency Graph](analysis/dependency_graph/README.md) ([interactive explorer](analysis/dependency_graph/dependency_explorer.html), [top-level SVG](analysis/dependency_graph/top_level_graph.svg), [depth-2 SVG](analysis/dependency_graph/depth2_major_graph.svg)) — Aggregates 753,261 file-level imports across Depth 1–3 directories with upstream/downstream tracing and SCC analysis.
 
 ## Contributing
 

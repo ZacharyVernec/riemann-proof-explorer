@@ -1,0 +1,74 @@
+%%{init: {'theme': 'base', 'themeVariables': {'fontFamily': 'Inter, system-ui, sans-serif'}}}%%
+flowchart TD
+  %% Directed edge A --> B means A imports B (A depends on B)
+  %% Heavy (>=1000): bold ==> | Medium (50..999): --> | Light (<50): -.->
+
+  subgraph LEGEND["Legend: Edge A → B means A imports B (depends on B)"]
+    direction LR
+    L_src["Importer"] ==>|"≥ 1,000 imports"| L_dst["Imported"]
+    L_src2["Importer"] -->|"50–999 imports"| L_dst2["Imported"]
+    L_src3["Importer"] -.->|"< 50 / weaker reverse"| L_dst3["Imported"]
+  end
+
+  _root_["(root)<br/>2 files · 28 lines<br/>min dist 0 · max height 202"]
+  Supplements["Supplements<br/>3 files · 22 lines<br/>min dist 1 · max height 201"]
+  Development["Development<br/>141,928 files · 12,232,663 lines<br/>min dist 2 · max height 198"]
+  CompanionTheory["CompanionTheory<br/>2,027 files · 194,218 lines<br/>min dist 5 · max height 114"]
+  PositivityTheory["PositivityTheory<br/>449 files · 55,130 lines<br/>min dist 6 · max height 111"]
+  Formalism["Formalism<br/>18,254 files · 3,200,748 lines<br/>min dist 4 · max height 93"]
+  ReciprocityTheory["ReciprocityTheory<br/>3,845 files · 563,016 lines<br/>min dist 6 · max height 76"]
+  GroundTheory["GroundTheory<br/>8,507 files · 1,119,138 lines<br/>min dist 5 · max height 68"]
+  Lemmata["Lemmata<br/>167 files · 9,232 lines<br/>min dist 8 · max height 17"]
+  BuildAid["BuildAid<br/>5 files · 20 lines<br/>min dist 8 · max height 0"]
+
+  Development ==>|"41,857"| Formalism
+  Development ==>|"38,051"| ReciprocityTheory
+  Development ==>|"7,532"| GroundTheory
+  Development ==>|"1,874"| CompanionTheory
+  CompanionTheory ==>|"1,437 (rev of 1,874)"| Development
+  GroundTheory ==>|"1,161"| ReciprocityTheory
+  Development ==>|"1,057"| PositivityTheory
+  CompanionTheory -->|"762"| Formalism
+  Lemmata -->|"634"| Formalism
+  PositivityTheory -->|"632 (rev of 1,057)"| Development
+  Formalism -->|"348"| ReciprocityTheory
+  ReciprocityTheory -->|"266 (rev of 348)"| Formalism
+  Formalism -->|"236 (rev of 41,857)"| Development
+  CompanionTheory -->|"154"| ReciprocityTheory
+  Formalism -->|"118 (rev of 634)"| Lemmata
+  PositivityTheory -->|"111"| GroundTheory
+  CompanionTheory -->|"65"| GroundTheory
+  GroundTheory -->|"57 (rev of 7,532)"| Development
+  ReciprocityTheory -->|"50"| Lemmata
+  Development -.->|"35"| BuildAid
+  ReciprocityTheory -.->|"17 (rev of 38,051)"| Development
+  GroundTheory -.->|"10"| Formalism
+  PositivityTheory -.->|"8"| Formalism
+  Lemmata -.->|"7 (rev of 50)"| ReciprocityTheory
+  Supplements -->|"6"| Development
+  CompanionTheory -.->|"3"| BuildAid
+  GroundTheory -.->|"2 (rev of 65)"| CompanionTheory
+  PositivityTheory -.->|"2"| ReciprocityTheory
+  _root_ -->|"1"| Supplements
+  Formalism -.->|"1 (rev of 762)"| CompanionTheory
+  Formalism -.->|"1 (rev of 10)"| GroundTheory
+  ReciprocityTheory -.->|"1 (rev of 154)"| CompanionTheory
+  Supplements -->|"1"| Formalism
+
+  style _root_ fill:#334155,stroke:#94a3b8,stroke-width:2px,color:#ffffff
+  style Supplements fill:#3730a3,stroke:#818cf8,stroke-width:2px,color:#ffffff
+  style Development fill:#1d4ed8,stroke:#60a5fa,stroke-width:2px,color:#ffffff
+  style CompanionTheory fill:#047857,stroke:#34d399,stroke-width:2px,color:#ffffff
+  style PositivityTheory fill:#86198f,stroke:#e879f9,stroke-width:2px,color:#ffffff
+  style Formalism fill:#c2410c,stroke:#fb923c,stroke-width:2px,color:#ffffff
+  style ReciprocityTheory fill:#0f766e,stroke:#2dd4bf,stroke-width:2px,color:#ffffff
+  style GroundTheory fill:#a16207,stroke:#facc15,stroke-width:2px,color:#ffffff
+  style Lemmata fill:#6b21a8,stroke:#c084fc,stroke-width:2px,color:#ffffff
+  style BuildAid fill:#4b5563,stroke:#9ca3af,stroke-width:2px,color:#ffffff
+  style LEGEND fill:#0f172a,stroke:#475569,color:#e2e8f0
+  style L_src fill:#1e293b,stroke:#64748b,color:#f8fafc
+  style L_dst fill:#1e293b,stroke:#64748b,color:#f8fafc
+  style L_src2 fill:#1e293b,stroke:#64748b,color:#f8fafc
+  style L_dst2 fill:#1e293b,stroke:#64748b,color:#f8fafc
+  style L_src3 fill:#1e293b,stroke:#64748b,color:#f8fafc
+  style L_dst3 fill:#1e293b,stroke:#64748b,color:#f8fafc
