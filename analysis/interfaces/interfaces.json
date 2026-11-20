@@ -734574,7 +734574,7 @@
         "Formalism/SharpRestriction": 2,
         "Development/AutomorphicArithmetic": 1
       },
-      "plain_english_summary": "The single most imported interface file in the entire repository (2,379 external imports from Development and Formalism). Packages PEL-type Shimura toroidal boundary uniformisation (PELUnif, UniformisationConclusion, Model.N3), torsion identification with Mumford quotients compatible with O_E-action and Weil pairings (PELUnif.TorsionIso), formal-arc period data (TateIsoQ, ArcIn, Model.HasArcData, Model.N4), and the global toroidal compactification theorem PartI.",
+      "plain_english_summary": "Core geometric interface contract across Development and Formalism. Packages PEL-type Shimura toroidal boundary uniformisation (PELUnif, UniformisationConclusion, Model.N3), torsion identification with Mumford quotients compatible with O_E-action and Weil pairings (PELUnif.TorsionIso), formal-arc period data (TateIsoQ, ArcIn, Model.HasArcData, Model.N4), and the global toroidal compactification theorem PartI.",
       "key_exports": [
         {
           "kind": "structure",
@@ -734752,7 +734752,7 @@
       "importing_d2_dirs": {
         "Development/AbelianVarietyTheory": 2283
       },
-      "plain_english_summary": "Second-highest external fan-in file in the codebase (2,283 external imports from Development). States UnifUniqSt (wrapped in Laws6): uniqueness of Mumford semiabelian uniformisations U, U' sharing the same polarized semiabelian scheme G and compatible rigidified line bundle isomorphism wL, giving a canonical isomorphism of degeneration data compatible with theta sections, thick-level coordinates, and O-actions.",
+      "plain_english_summary": "States UnifUniqSt (wrapped in Laws6): uniqueness of Mumford semiabelian uniformisations U, U' sharing the same polarized semiabelian scheme G and compatible rigidified line bundle isomorphism wL, giving a canonical isomorphism of degeneration data compatible with theta sections, thick-level coordinates, and O-actions.",
       "key_exports": [
         {
           "kind": "def",
@@ -734811,7 +734811,7 @@
         "Formalism/LocalToGlobal": 4,
         "Development/AutomorphicArithmetic": 1
       },
-      "plain_english_summary": "Third-highest external fan-in file (1,429 external imports). Defines congruence-level automorphisms (Sim, Moduli.LevAut), finite etale level-compatibility across dividing levels (ToroidalLevelCompatibility), prime-to-level Hecke kernel subgroups (SAB.HeckeKer) and prime-to-level Hecke correspondences on toroidal compactifications (ToroidalHeckeCompatibility), bundled into N1.",
+      "plain_english_summary": "Defines congruence-level automorphisms (Sim, Moduli.LevAut), finite etale level-compatibility across dividing levels (ToroidalLevelCompatibility), prime-to-level Hecke kernel subgroups (SAB.HeckeKer) and prime-to-level Hecke correspondences on toroidal compactifications (ToroidalHeckeCompatibility), bundled into N1.",
       "key_exports": [
         {
           "kind": "structure",
@@ -734933,7 +734933,7 @@
       "importing_d2_dirs": {
         "Development/AbelianVarietyTheory": 1337
       },
-      "plain_english_summary": "Fourth-highest external fan-in file (1,337 external imports). States four foundational theorems/laws for polarized abelian schemes (Laws2): local existence of base-change-compatible global section bases of L^n (SecBaseChangeAnySt), base-change and residue lifting for twisted bundles L^(q-1) otimes t_c^* L (SecTwistSt), Weil-pairing character duality for N-torsion over algebraically closed fields (CharPairSt), and density of the smooth locus (SmoothDenseSt).",
+      "plain_english_summary": "States four foundational theorems/laws for polarized abelian schemes (Laws2): local existence of base-change-compatible global section bases of L^n (SecBaseChangeAnySt), base-change and residue lifting for twisted bundles L^(q-1) otimes t_c^* L (SecTwistSt), Weil-pairing character duality for N-torsion over algebraically closed fields (CharPairSt), and density of the smooth locus (SmoothDenseSt).",
       "key_exports": [
         {
           "kind": "def",
@@ -735038,7 +735038,7 @@
         "Development/WeilBound": 4,
         "Formalism/LocalToGlobal": 2
       },
-      "plain_english_summary": "Fifth-highest external fan-in file (1,203 external imports). Formulates complex-analytic uniformisation of unitary Shimura varieties: polarized CM-type period maps (IsTypeFn, IsPeriod), holomorphic period families (IsHolPeriods), tangent-space identification via dual numbers (IsDerivAt0), Riemann theta frames (IsThetaFrame), and the global complex uniformisation bundle FamilyUnif / N1c.",
+      "plain_english_summary": "Formulates complex-analytic uniformisation of unitary Shimura varieties: polarized CM-type period maps (IsTypeFn, IsPeriod), holomorphic period families (IsHolPeriods), tangent-space identification via dual numbers (IsDerivAt0), Riemann theta frames (IsThetaFrame), and the global complex uniformisation bundle FamilyUnif / N1c.",
       "key_exports": [
         {
           "kind": "def",
@@ -735137,7 +735137,7 @@
         "Development/AutomorphicSpectrum": 1,
         "ReciprocityTheory/ReductiveGroups": 1
       },
-      "plain_english_summary": "Proves ThExprUniqSt (the highest-fan-in Formalism file, imported 871 times externally) from ChartIndepSt2: two formal differential operators nab_1, nab_2 acting on global sections of powers of the polarization line bundle L^k over a framed Shimura point y produce the exact same value on harmonic polynomials P when evaluated via local formal charts.",
+      "plain_english_summary": "Proves ThExprUniqSt from ChartIndepSt2: two formal differential operators nab_1, nab_2 acting on global sections of powers of the polarization line bundle L^k over a framed Shimura point y produce the exact same value on harmonic polynomials P when evaluated via local formal charts.",
       "key_exports": [
         {
           "kind": "def",
@@ -736773,7 +736773,7 @@
       "file_url": "file:///home/ubuntu/riemann_proof/lean/src/CompanionTheory/EightfoldTheory/VariationTheory/AutomorphicForms/Newform.lean",
       "top_dir": "CompanionTheory",
       "depth2_dir": "CompanionTheory/EightfoldTheory",
-      "role": "1-Line Re-Export Facade",
+      "role": "Re-Export Facade",
       "lines": 1,
       "bytes": 87,
       "n_theorems": 0,
@@ -736793,7 +736793,7 @@
       "importing_d2_dirs": {
         "Development/AbelianVarietyTheory": 248
       },
-      "plain_english_summary": "A 1-line pure import facade ('import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.Newform') with zero local declarations, acting as a cross-directory alias imported 248 times by Development modules (exemplifying the thin 9-file EightfoldTheory re-export layer).",
+      "plain_english_summary": "Pure import facade ('import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.Newform') acting as a cross-directory alias for the classical newform interface.",
       "key_exports": [],
       "all_declarations": []
     },
@@ -740193,7 +740193,7 @@
         "Development/AutomorphicSpectrum": 15,
         "Development/AbelianVarietyTheory": 10
       },
-      "plain_english_summary": "One of five 4-line Lean metaprogramming files (D1-D5) that add namespace prefixes ('CompanionTheory', 'CrystallineSemistableComparison', 'GlobalTheory', 'PositivityTheory', 'UpperTheory') to Lean.LibrarySuggestions.nameDenyListExt to guide automated premise selection during builds. Exports no mathematical theorems or definitions.",
+      "plain_english_summary": "Registers namespace prefixes ('CompanionTheory', 'CrystallineSemistableComparison', 'GlobalTheory', 'PositivityTheory', 'UpperTheory') in Lean.LibrarySuggestions.nameDenyListExt to guide automated premise selection during builds. Exports no mathematical theorems or definitions.",
       "key_exports": [],
       "all_declarations": []
     },
@@ -741763,7 +741763,7 @@
       "importing_top_dirs": {},
       "d2_ext_fan_in": 0,
       "importing_d2_dirs": {},
-      "plain_english_summary": "Defines the four standalone target propositions imported by Main.lean: explicit zero-line statements for the Riemann zeta function and for arbitrary or primitive Dirichlet L-functions, plus half-plane nonvanishing for Re(s) > 1/2. Kept minimal (16 lines depending only on Mathlib) so external auditors can read the exact theorems proved without navigating the deep proof tree.",
+      "plain_english_summary": "Defines the four standalone target propositions imported by Main.lean: explicit zero-line statements for the Riemann zeta function and for arbitrary or primitive Dirichlet L-functions, plus half-plane nonvanishing for Re(s) > 1/2. Formulated directly over Mathlib so readers can inspect the exact theorems proved without navigating the deep proof tree.",
       "key_exports": [
         {
           "kind": "def",
@@ -741907,7 +741907,7 @@
       "importing_top_dirs": {},
       "d2_ext_fan_in": 0,
       "importing_d2_dirs": {},
-      "plain_english_summary": "The top-level proof driver of the entire 175,187-file codebase. Imports Statements.lean and Supplements/Kernels/MainTheoremsAll.lean, and exports the five headline theorems: the classical Riemann Hypothesis (in Mathlib's canonical formulation and an explicit zero-line formulation), nonvanishing of all Dirichlet L-functions in the half-plane Re(s) > 1/2 (away from the pole at s = 1 for the trivial character), and the Generalized Riemann Hypothesis placing all nontrivial zeros of arbitrary and primitive Dirichlet L-functions on the critical line Re(s) = 1/2.",
+      "plain_english_summary": "The top-level proof driver of the formalization. Imports Statements.lean and Supplements/Kernels/MainTheoremsAll.lean, and exports the five headline theorems: the classical Riemann Hypothesis (in Mathlib's canonical formulation and an explicit zero-line formulation), nonvanishing of all Dirichlet L-functions in the half-plane Re(s) > 1/2 (away from the pole at s = 1 for the trivial character), and the Generalized Riemann Hypothesis placing all nontrivial zeros of arbitrary and primitive Dirichlet L-functions on the critical line Re(s) = 1/2.",
       "key_exports": [
         {
           "kind": "theorem",

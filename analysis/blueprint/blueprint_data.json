@@ -101,7 +101,7 @@
       "stage": 0,
       "stage_label": "Final Theorems",
       "title": "Standalone Target Specifications",
-      "plain_english": "Defines the four standalone target mathematical propositions using only standard Mathlib primitives so auditors can verify exact theorem statements without traversing the 175,187-file proof graph.",
+      "plain_english": "Defines the four standalone target mathematical propositions using only standard Mathlib primitives so auditors can verify exact theorem statements without traversing the full proof graph.",
       "math_statement": "RiemannZetaZerosOnLine, DirichletLNonvanishingRightOfHalf, DirichletLZerosOnLine, PrimitiveDirichletLZerosOnLine",
       "lean_symbol": "RiemannZetaZerosOnLine",
       "lean_file": "Statements.lean",
@@ -109,7 +109,7 @@
       "depends_on": [],
       "theory_group": "apex",
       "dom_subtree_size": null,
-      "notes": "16-line pure specification leaf depending only on Mathlib (dist=1, height=0)."
+      "notes": "pure specification leaf depending only on Mathlib (dist=1, height=0)."
     },
     {
       "id": "main_theorems_all",
@@ -127,7 +127,7 @@
       ],
       "theory_group": "apex",
       "dom_subtree_size": 175185,
-      "notes": "2-line pure import barrel (dist=1, height=201) dominating 175,185 of 175,187 modules."
+      "notes": "pure import barrel (dist=1, height=201) dominating all downstream proof modules."
     },
     {
       "id": "main_theorems_critical",
@@ -144,7 +144,7 @@
       ],
       "theory_group": "analytic",
       "dom_subtree_size": 4482,
-      "notes": "4-line assembly barrel (dist=2, height=200) importing MainTheorems, ClassNumberThree, LenEqZeroIff, and OnePoint."
+      "notes": "assembly barrel (dist=2, height=200) importing MainTheorems, ClassNumberThree, LenEqZeroIff, and OnePoint."
     },
     {
       "id": "main_theorems_bridge",
@@ -163,7 +163,7 @@
       ],
       "theory_group": "analytic",
       "dom_subtree_size": 4479,
-      "notes": "Top bottleneck in Supplements/Kernels (16 lines, dist=3, height=199)."
+      "notes": "Top bottleneck in Supplements/Kernels (dist=3, height=199)."
     },
     {
       "id": "crit_line",
@@ -196,7 +196,7 @@
       "depends_on": [],
       "theory_group": "analytic",
       "dom_subtree_size": null,
-      "notes": "62-line leaf theorem proved directly from Mathlib's riemannZeta_one_sub."
+      "notes": "leaf theorem proved directly from Mathlib's riemannZeta_one_sub."
     },
     {
       "id": "claim_strip",
@@ -228,7 +228,7 @@
       "depends_on": [],
       "theory_group": "analytic",
       "dom_subtree_size": null,
-      "notes": "10-line Mathlib leaf file defining Claim.HalfPlane, Claim.Strip, and Claim.Zeta."
+      "notes": "Mathlib leaf file defining Claim.HalfPlane, Claim.Strip, and Claim.Zeta."
     },
     {
       "id": "main_conclusion",
@@ -249,7 +249,7 @@
       ],
       "theory_group": "galois_theta",
       "dom_subtree_size": 4474,
-      "notes": "14-line apex inside Development (dist=4, height=198). Discharges OpenLiteratureStatements via ⟨row_src, rec_t_exists, row_src⟩ and OpenImageCondition via ⟨row_src⟩."
+      "notes": "apex inside Development (dist=4, height=198). Discharges OpenLiteratureStatements via ⟨row_src, rec_t_exists, row_src⟩ and OpenImageCondition via ⟨row_src⟩."
     },
     {
       "id": "rh_of_every_char",
@@ -267,7 +267,7 @@
       ],
       "theory_group": "galois_theta",
       "dom_subtree_size": 10065,
-      "notes": "Rank 7 dominator (10,065 files; out_degree=208, dist=5, height=167)."
+      "notes": "Rank 7 dominator (out_degree=208, dist=5, height=167)."
     },
     {
       "id": "every_character_def",
@@ -285,7 +285,7 @@
       ],
       "theory_group": "analytic",
       "dom_subtree_size": null,
-      "notes": "18-line bridge connecting ShapeOf, ShapeWin, SupplyChi, and Imprimitive to ZeroFreeAll."
+      "notes": "bridge connecting ShapeOf, ShapeWin, SupplyChi, and Imprimitive to ZeroFreeAll."
     },
     {
       "id": "every_character_of_lit_vwin",
@@ -310,7 +310,7 @@
       ],
       "theory_group": "galois_theta",
       "dom_subtree_size": 4472,
-      "notes": "814-line synthesis hub (dist=5, height=171, out_degree=201). All but 3 fields of OpenLiteratureStatements are unconditionally proved theorems imported from PositivityTheory/CompanionTheory/GroundTheory/Development; the 3 fields are discharged in MainConclusion."
+      "notes": "synthesis hub (dist=5, height=171, out_degree=201). All but 3 fields of OpenLiteratureStatements are unconditionally proved theorems imported from PositivityTheory/CompanionTheory/GroundTheory/Development; the 3 fields are discharged in MainConclusion."
     },
     {
       "id": "row_src",
@@ -333,7 +333,7 @@
       ],
       "theory_group": "galois_theta",
       "dom_subtree_size": 13055,
-      "notes": "Rank 3 overall dominator (13,055 files; dist=3, height=197) via GaloisRepresentationsOfThetaLift and WeightOneGeometricRealization."
+      "notes": "Rank 3 overall dominator (dist=3, height=197) via GaloisRepresentationsOfThetaLift and WeightOneGeometricRealization."
     },
     {
       "id": "vwin_of_row",
@@ -350,7 +350,7 @@
       ],
       "theory_group": "modularity_selmer",
       "dom_subtree_size": null,
-      "notes": "5-line bridge calling automorphic_window_of_inputs with OpenImageCondition.mk h and baseChangeN."
+      "notes": "bridge calling automorphic_window_of_inputs with OpenImageCondition.mk h and baseChangeN."
     },
     {
       "id": "top_main_zj",
@@ -372,7 +372,7 @@
       ],
       "theory_group": "modularity_selmer",
       "dom_subtree_size": 8050,
-      "notes": "Rank 8 dominator (8,050 files; dist=3, height=170). Discharges every field of LiteratureRankNHypothesis except the RowT argument supplied by RowSrc."
+      "notes": "Rank 8 dominator (dist=3, height=170). Discharges every field of LiteratureRankNHypothesis except the RowT argument supplied by RowSrc."
     },
     {
       "id": "window_bound_lit",
@@ -395,7 +395,7 @@
       ],
       "theory_group": "modularity_selmer",
       "dom_subtree_size": 7920,
-      "notes": "Rank 9 dominator (7,920 files; dist=4, height=148) linking PublishedHypothesesFromPatching and HVCore."
+      "notes": "Rank 9 dominator (dist=4, height=148) linking PublishedHypothesesFromPatching and HVCore."
     },
     {
       "id": "top_covol_slim2_use",
@@ -415,7 +415,7 @@
       ],
       "theory_group": "arakelov",
       "dom_subtree_size": 6076,
-      "notes": "Rank 10 dominator (6,076 files; dist=7, height=141) connecting TopCovolSlim2 and DeepStR."
+      "notes": "Rank 10 dominator (dist=7, height=141) connecting TopCovolSlim2 and DeepStR."
     },
     {
       "id": "covolume_of_slim",
@@ -436,7 +436,7 @@
       ],
       "theory_group": "arakelov",
       "dom_subtree_size": 5695,
-      "notes": "Rank 11 dominator (5,695 files; dist=6, height=157) wrapping CovolumeOfHeightPrintsStatement and CovolumeOfHeightHyp (4,896 files)."
+      "notes": "Rank 11 dominator (dist=6, height=157) wrapping CovolumeOfHeightPrintsStatement and CovolumeOfHeightHyp ."
     },
     {
       "id": "small_class_cor_gk",
@@ -455,7 +455,7 @@
       ],
       "theory_group": "modularity_selmer",
       "dom_subtree_size": null,
-      "notes": "Top-level Selmer realization (29 lines, dist=2, height=198) proved alongside bound (L27)."
+      "notes": "Top-level Selmer realization (dist=2, height=198) proved alongside bound (L27)."
     },
     {
       "id": "top_des_win",
@@ -473,7 +473,7 @@
       ],
       "theory_group": "analytic",
       "dom_subtree_size": null,
-      "notes": "Feeds ShapeWin and EveryCharacter; operates over the FamP parameter family (ParConsts.lean, carrying 89.94% of all Main-to-leaf DAG paths)."
+      "notes": "Feeds ShapeWin and EveryCharacter; operates over the FamP parameter family (ParConsts.lean)."
     },
     {
       "id": "top_win_landau",
@@ -511,7 +511,7 @@
       ],
       "theory_group": "galois_theta",
       "dom_subtree_size": 10430,
-      "notes": "Rank 6 dominator (10,430 files; dist=6, height=194), immediate child of WeightOneGeometricRealization (10,802 files)."
+      "notes": "Rank 6 dominator (dist=6, height=194), immediate child of WeightOneGeometricRealization ."
     },
     {
       "id": "lefschetz_correspondence",
@@ -530,7 +530,7 @@
       ],
       "theory_group": "galois_theta",
       "dom_subtree_size": 351,
-      "notes": "358-line complete proof decomposing Z into integral clopen components and reducing via Hodge restriction isomorphisms."
+      "notes": "complete proof decomposing Z into integral clopen components and reducing via Hodge restriction isomorphisms."
     },
     {
       "id": "t_lift_k",
@@ -609,7 +609,7 @@
       ],
       "theory_group": "modularity_selmer",
       "dom_subtree_size": 2047,
-      "notes": "Rank 24 dominator (2,047 files; dist=6, height=121) feeding KatoTwo in WindowBoundOfLiteratureLevel."
+      "notes": "Rank 24 dominator (dist=6, height=121) feeding KatoTwo in WindowBoundOfLiteratureLevel."
     },
     {
       "id": "good_tower_volume",
@@ -629,7 +629,7 @@
       ],
       "theory_group": "arakelov",
       "dom_subtree_size": 3746,
-      "notes": "Rank 19 dominator (3,746 files; dist=11, height=129) wrapping FinalTheoremOfInputsRight (3,741 files) and GoodTowerVolumeTheorem (2,934 files)."
+      "notes": "Rank 19 dominator (dist=11, height=129) wrapping FinalTheoremOfInputsRight and GoodTowerVolumeTheorem ."
     },
     {
       "id": "moriwaki_big",
@@ -685,7 +685,7 @@
       ],
       "theory_group": "local_langlands",
       "dom_subtree_size": null,
-      "notes": "72-line CompanionTheory assembly proving PI.DSInfCharCap.DSInfCharCap (46 external importers from Development)."
+      "notes": "CompanionTheory assembly proving PI.DSInfCharCap.DSInfCharCap ."
     },
     {
       "id": "final_b_flath",
@@ -722,7 +722,7 @@
       ],
       "theory_group": "algebraic_geometry",
       "dom_subtree_size": null,
-      "notes": "#1 most-imported interface file in the entire repository (2,379 external importers, 2,390 total; dist=6, height=9)."
+      "notes": "#1 most-imported interface file in the entire repository ."
     },
     {
       "id": "unif_uniq_st",
@@ -740,7 +740,7 @@
       ],
       "theory_group": "algebraic_geometry",
       "dom_subtree_size": null,
-      "notes": "#2 most-imported external interface file (2,283 external importers from Development/AbelianVarietyTheory)."
+      "notes": "#2 most-imported external interface file ."
     },
     {
       "id": "global_sections_laws",
@@ -757,7 +757,7 @@
       ],
       "theory_group": "algebraic_geometry",
       "dom_subtree_size": null,
-      "notes": "213-line contract (713 importers). Its realization connects to TheoremOfCubeAbelianSchemeOverArbitraryBase (h=97 on the 202-edge critical spine)."
+      "notes": "contract . Its realization connects to TheoremOfCubeAbelianSchemeOverArbitraryBase (h=97 on the 202-edge critical spine)."
     },
     {
       "id": "split_torus_aff",
@@ -787,7 +787,7 @@
       "depends_on": [],
       "theory_group": "algebraic_geometry",
       "dom_subtree_size": null,
-      "notes": "Core inductive engine (goal_of) for Development/EtaleCohomology (1,398 files)."
+      "notes": "Core inductive engine (goal_of) for Development/EtaleCohomology ."
     },
     {
       "id": "resolution_char_zero",
@@ -805,7 +805,7 @@
       ],
       "theory_group": "algebraic_geometry",
       "dom_subtree_size": null,
-      "notes": "Bridges Development/ResolutionOfSingularities (499 files) into Arakelov height and Moriwaki bigness pipelines."
+      "notes": "Bridges Development/ResolutionOfSingularities into Arakelov height and Moriwaki bigness pipelines."
     },
     {
       "id": "poitou_tate_gs",
@@ -820,7 +820,7 @@
       "depends_on": [],
       "theory_group": "modularity_selmer",
       "dom_subtree_size": null,
-      "notes": "Complete proof in GroundTheory/ProfiniteCohomology (450 files) of poitouTate_duality_gs, poitouTate_sha_gs, and poitouTate_nineTerm_gs."
+      "notes": "Complete proof in GroundTheory/ProfiniteCohomology of poitouTate_duality_gs, poitouTate_sha_gs, and poitouTate_nineTerm_gs."
     },
     {
       "id": "multiplicity_one",
@@ -835,7 +835,7 @@
       "depends_on": [],
       "theory_group": "local_langlands",
       "dom_subtree_size": null,
-      "notes": "106-line proof in GroundTheory/AutomorphicForms (128 importers)."
+      "notes": "proof in GroundTheory/AutomorphicForms ."
     },
     {
       "id": "kernels_lattice",
@@ -850,7 +850,7 @@
       "depends_on": [],
       "theory_group": "arakelov",
       "dom_subtree_size": null,
-      "notes": "123-line core interface in GroundTheory/HeightsAndTheta (182 importers)."
+      "notes": "core interface in GroundTheory/HeightsAndTheta ."
     },
     {
       "id": "pi_vec_ex",
@@ -868,7 +868,7 @@
       ],
       "theory_group": "local_langlands",
       "dom_subtree_size": null,
-      "notes": "80-line proof in Development/DiscreteGroups (215 files), top interface file of DiscreteGroups."
+      "notes": "proof in Development/DiscreteGroups , top interface file of DiscreteGroups."
     },
     {
       "id": "loc_coh_bk",
@@ -883,7 +883,7 @@
       "depends_on": [],
       "theory_group": "formalism",
       "dom_subtree_size": null,
-      "notes": "Highest cross-top-directory boundary bridge (649 external importers from Development)."
+      "notes": "Highest cross-top-directory boundary bridge ."
     },
     {
       "id": "rho_det_d7",
@@ -898,7 +898,7 @@
       "depends_on": [],
       "theory_group": "formalism",
       "dom_subtree_size": null,
-      "notes": "Central Formalism data contract (921 importers; 780 external from Development)."
+      "notes": "Central Formalism data contract ."
     }
   ]
 }

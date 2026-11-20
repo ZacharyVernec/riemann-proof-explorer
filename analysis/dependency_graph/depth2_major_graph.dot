@@ -1,6 +1,6 @@
 digraph Depth2MajorArchitecture {
   graph [
-    label="Riemann Proof Lean 4 — Major Depth-2 Sub-Theory Architecture (47 Projected Nodes, 115 Key Edges)\nEdge A -> B means A imports B | Showing edges >= 150 imports + entry chain & strongest link per node\nColors: Blue=Development | Emerald=Companion | Magenta=Positivity | Orange=Formalism | Teal=Reciprocity | Gold=Ground | Purple=Lemmata | Slate=Root/BuildAid"
+    label="Riemann Proof — Major Depth-2 Sub-Theory Architecture\nEdge A -> B means A depends on B\nColors: Blue=Development | Emerald=Companion | Magenta=Positivity | Orange=Formalism | Teal=Reciprocity | Gold=Ground | Purple=Lemmata | Slate=Root/BuildAid"
     labelloc=t
     fontsize=15
     fontname="Helvetica"
@@ -15,53 +15,53 @@ digraph Depth2MajorArchitecture {
   node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=10, penwidth=1.8, margin="0.14,0.08"];
   edge [fontname="Helvetica", fontsize=8];
 
-  _root_ [label="(root)\n2 files | H=202", fillcolor="#334155", color="#94a3b8", fontcolor="#ffffff"];
-  Supplements_Kernels [label="Supplements/Kernels\n3 files | H=201", fillcolor="#3730a3", color="#818cf8", fontcolor="#ffffff"];
-  Development_AutomorphicArithmetic [label="Development/AutomorphicArithmetic\n18,431 files | H=198", fillcolor="#1d4ed8", color="#60a5fa", fontcolor="#ffffff"];
-  Development_AbelianVarietyTheory [label="Development/AbelianVarietyTheory\n99,187 files | H=189", fillcolor="#1d4ed8", color="#60a5fa", fontcolor="#ffffff"];
-  Development_WeilBound [label="Development/WeilBound\n7,051 files | H=143", fillcolor="#1d4ed8", color="#60a5fa", fontcolor="#ffffff"];
-  Development_AutomorphicSpectrum [label="Development/AutomorphicSpectrum\n15,147 files | H=130", fillcolor="#1d4ed8", color="#60a5fa", fontcolor="#ffffff"];
-  Development_DiscreteGroups [label="Development/DiscreteGroups\n215 files | H=125", fillcolor="#1d4ed8", color="#60a5fa", fontcolor="#ffffff"];
-  CompanionTheory_SpectralGeometry [label="CompanionTheory/SpectralGeometry\n1,254 files | H=114", fillcolor="#047857", color="#34d399", fontcolor="#ffffff"];
-  PositivityTheory_AutomorphicForms [label="PositivityTheory/AutomorphicForms\n445 files | H=111", fillcolor="#86198f", color="#e879f9", fontcolor="#ffffff"];
-  CompanionTheory_EightfoldTheory [label="CompanionTheory/EightfoldTheory\n9 files | H=103", fillcolor="#047857", color="#34d399", fontcolor="#ffffff"];
-  CompanionTheory_AutomorphicTheory [label="CompanionTheory/AutomorphicTheory\n457 files | H=102", fillcolor="#047857", color="#34d399", fontcolor="#ffffff"];
-  CompanionTheory_RealGroups [label="CompanionTheory/RealGroups\n155 files | H=98", fillcolor="#047857", color="#34d399", fontcolor="#ffffff"];
-  Development_EtaleCohomology [label="Development/EtaleCohomology\n1,398 files | H=95", fillcolor="#1d4ed8", color="#60a5fa", fontcolor="#ffffff"];
-  Formalism_SharpRestriction [label="Formalism/SharpRestriction\n3,093 files | H=93", fillcolor="#c2410c", color="#fb923c", fontcolor="#ffffff"];
-  Formalism_HermitianCurvature [label="Formalism/HermitianCurvature\n1,922 files | H=92", fillcolor="#c2410c", color="#fb923c", fontcolor="#ffffff"];
-  Formalism_GammaFactorNonvanishing [label="Formalism/GammaFactorNonvanishing\n2 files | H=90", fillcolor="#c2410c", color="#fb923c", fontcolor="#ffffff"];
-  CompanionTheory_HarishChandraModules [label="CompanionTheory/HarishChandraModules\n130 files | H=89", fillcolor="#047857", color="#34d399", fontcolor="#ffffff"];
-  Formalism_LocalToGlobal [label="Formalism/LocalToGlobal\n5,501 files | H=87", fillcolor="#c2410c", color="#fb923c", fontcolor="#ffffff"];
-  Formalism_PeriodIntegrals [label="Formalism/PeriodIntegrals\n4,350 files | H=83", fillcolor="#c2410c", color="#fb923c", fontcolor="#ffffff"];
-  ReciprocityTheory_ReductiveGroups [label="ReciprocityTheory/ReductiveGroups\n2,799 files | H=76", fillcolor="#0f766e", color="#2dd4bf", fontcolor="#ffffff"];
-  GroundTheory_HeightsAndTheta [label="GroundTheory/HeightsAndTheta\n6,410 files | H=68", fillcolor="#a16207", color="#facc15", fontcolor="#ffffff"];
-  GroundTheory_ProfiniteCohomology [label="GroundTheory/ProfiniteCohomology\n450 files | H=68", fillcolor="#a16207", color="#facc15", fontcolor="#ffffff"];
-  GroundTheory_GlobalFields [label="GroundTheory/GlobalFields\n384 files | H=54", fillcolor="#a16207", color="#facc15", fontcolor="#ffffff"];
-  Formalism_LocalRingCardinality [label="Formalism/LocalRingCardinality\n173 files | H=52", fillcolor="#c2410c", color="#fb923c", fontcolor="#ffffff"];
-  GroundTheory_AutomorphicForms [label="GroundTheory/AutomorphicForms\n542 files | H=52", fillcolor="#a16207", color="#facc15", fontcolor="#ffffff"];
-  Formalism__other_99_ [label="Formalism/(other 99)\n3,067 files | H=51", fillcolor="#c2410c", color="#fb923c", fontcolor="#ffffff"];
-  CompanionTheory_ThickeningEstimates [label="CompanionTheory/ThickeningEstimates\n22 files | H=48", fillcolor="#047857", color="#34d399", fontcolor="#ffffff"];
-  Development_ResolutionOfSingularities [label="Development/ResolutionOfSingularities\n499 files | H=36", fillcolor="#1d4ed8", color="#60a5fa", fontcolor="#ffffff"];
-  GroundTheory_PAdicHodge [label="GroundTheory/PAdicHodge\n226 files | H=35", fillcolor="#a16207", color="#facc15", fontcolor="#ffffff"];
-  ReciprocityTheory_ClassFieldTheory [label="ReciprocityTheory/ClassFieldTheory\n91 files | H=33", fillcolor="#0f766e", color="#2dd4bf", fontcolor="#ffffff"];
-  GroundTheory_ArithmeticGeometry [label="GroundTheory/ArithmeticGeometry\n218 files | H=28", fillcolor="#a16207", color="#facc15", fontcolor="#ffffff"];
-  ReciprocityTheory_AnalyticForms [label="ReciprocityTheory/AnalyticForms\n192 files | H=26", fillcolor="#0f766e", color="#2dd4bf", fontcolor="#ffffff"];
-  GroundTheory_LocalFields [label="GroundTheory/LocalFields\n159 files | H=26", fillcolor="#a16207", color="#facc15", fontcolor="#ffffff"];
-  ReciprocityTheory_L2DbarEstimates [label="ReciprocityTheory/L2DbarEstimates\n227 files | H=22", fillcolor="#0f766e", color="#2dd4bf", fontcolor="#ffffff"];
-  GroundTheory__minor_5_ [label="GroundTheory/(minor 5)\n118 files | H=22", fillcolor="#a16207", color="#facc15", fontcolor="#ffffff"];
-  PositivityTheory__other_2_ [label="PositivityTheory/(other 2)\n4 files | H=21", fillcolor="#86198f", color="#e879f9", fontcolor="#ffffff"];
-  ReciprocityTheory_SemistableReduction [label="ReciprocityTheory/SemistableReduction\n119 files | H=17", fillcolor="#0f766e", color="#2dd4bf", fontcolor="#ffffff"];
-  Lemmata__ [label="Lemmata/*\n167 files | H=17", fillcolor="#6b21a8", color="#c084fc", fontcolor="#ffffff"];
-  ReciprocityTheory_DualLattices [label="ReciprocityTheory/DualLattices\n183 files | H=15", fillcolor="#0f766e", color="#2dd4bf", fontcolor="#ffffff"];
-  Formalism_PairingDivisors [label="Formalism/PairingDivisors\n7 files | H=12", fillcolor="#c2410c", color="#fb923c", fontcolor="#ffffff"];
-  ReciprocityTheory_GroupCohomology [label="ReciprocityTheory/GroupCohomology\n56 files | H=12", fillcolor="#0f766e", color="#2dd4bf", fontcolor="#ffffff"];
-  Formalism_SatakeDualWeyl [label="Formalism/SatakeDualWeyl\n85 files | H=10", fillcolor="#c2410c", color="#fb923c", fontcolor="#ffffff"];
-  ReciprocityTheory_Chebotarev [label="ReciprocityTheory/Chebotarev\n47 files | H=10", fillcolor="#0f766e", color="#2dd4bf", fontcolor="#ffffff"];
-  ReciprocityTheory__minor_15_ [label="ReciprocityTheory/(minor 15)\n92 files | H=9", fillcolor="#0f766e", color="#2dd4bf", fontcolor="#ffffff"];
-  Formalism_RealPlaceAnalysis [label="Formalism/RealPlaceAnalysis\n54 files | H=7", fillcolor="#c2410c", color="#fb923c", fontcolor="#ffffff"];
-  ReciprocityTheory_GeometryOfNumbers [label="ReciprocityTheory/GeometryOfNumbers\n39 files | H=7", fillcolor="#0f766e", color="#2dd4bf", fontcolor="#ffffff"];
-  BuildAid [label="BuildAid\n5 files | H=0", fillcolor="#4b5563", color="#9ca3af", fontcolor="#ffffff"];
+  _root_ [label="(root)\nH=202", fillcolor="#334155", color="#94a3b8", fontcolor="#ffffff"];
+  Supplements_Kernels [label="Supplements/Kernels\nH=201", fillcolor="#3730a3", color="#818cf8", fontcolor="#ffffff"];
+  Development_AutomorphicArithmetic [label="Development/AutomorphicArithmetic\nH=198", fillcolor="#1d4ed8", color="#60a5fa", fontcolor="#ffffff"];
+  Development_AbelianVarietyTheory [label="Development/AbelianVarietyTheory\nH=189", fillcolor="#1d4ed8", color="#60a5fa", fontcolor="#ffffff"];
+  Development_WeilBound [label="Development/WeilBound\nH=143", fillcolor="#1d4ed8", color="#60a5fa", fontcolor="#ffffff"];
+  Development_AutomorphicSpectrum [label="Development/AutomorphicSpectrum\nH=130", fillcolor="#1d4ed8", color="#60a5fa", fontcolor="#ffffff"];
+  Development_DiscreteGroups [label="Development/DiscreteGroups\nH=125", fillcolor="#1d4ed8", color="#60a5fa", fontcolor="#ffffff"];
+  CompanionTheory_SpectralGeometry [label="CompanionTheory/SpectralGeometry\nH=114", fillcolor="#047857", color="#34d399", fontcolor="#ffffff"];
+  PositivityTheory_AutomorphicForms [label="PositivityTheory/AutomorphicForms\nH=111", fillcolor="#86198f", color="#e879f9", fontcolor="#ffffff"];
+  CompanionTheory_EightfoldTheory [label="CompanionTheory/EightfoldTheory\nH=103", fillcolor="#047857", color="#34d399", fontcolor="#ffffff"];
+  CompanionTheory_AutomorphicTheory [label="CompanionTheory/AutomorphicTheory\nH=102", fillcolor="#047857", color="#34d399", fontcolor="#ffffff"];
+  CompanionTheory_RealGroups [label="CompanionTheory/RealGroups\nH=98", fillcolor="#047857", color="#34d399", fontcolor="#ffffff"];
+  Development_EtaleCohomology [label="Development/EtaleCohomology\nH=95", fillcolor="#1d4ed8", color="#60a5fa", fontcolor="#ffffff"];
+  Formalism_SharpRestriction [label="Formalism/SharpRestriction\nH=93", fillcolor="#c2410c", color="#fb923c", fontcolor="#ffffff"];
+  Formalism_HermitianCurvature [label="Formalism/HermitianCurvature\nH=92", fillcolor="#c2410c", color="#fb923c", fontcolor="#ffffff"];
+  Formalism_GammaFactorNonvanishing [label="Formalism/GammaFactorNonvanishing\nH=90", fillcolor="#c2410c", color="#fb923c", fontcolor="#ffffff"];
+  CompanionTheory_HarishChandraModules [label="CompanionTheory/HarishChandraModules\nH=89", fillcolor="#047857", color="#34d399", fontcolor="#ffffff"];
+  Formalism_LocalToGlobal [label="Formalism/LocalToGlobal\nH=87", fillcolor="#c2410c", color="#fb923c", fontcolor="#ffffff"];
+  Formalism_PeriodIntegrals [label="Formalism/PeriodIntegrals\nH=83", fillcolor="#c2410c", color="#fb923c", fontcolor="#ffffff"];
+  ReciprocityTheory_ReductiveGroups [label="ReciprocityTheory/ReductiveGroups\nH=76", fillcolor="#0f766e", color="#2dd4bf", fontcolor="#ffffff"];
+  GroundTheory_HeightsAndTheta [label="GroundTheory/HeightsAndTheta\nH=68", fillcolor="#a16207", color="#facc15", fontcolor="#ffffff"];
+  GroundTheory_ProfiniteCohomology [label="GroundTheory/ProfiniteCohomology\nH=68", fillcolor="#a16207", color="#facc15", fontcolor="#ffffff"];
+  GroundTheory_GlobalFields [label="GroundTheory/GlobalFields\nH=54", fillcolor="#a16207", color="#facc15", fontcolor="#ffffff"];
+  Formalism_LocalRingCardinality [label="Formalism/LocalRingCardinality\nH=52", fillcolor="#c2410c", color="#fb923c", fontcolor="#ffffff"];
+  GroundTheory_AutomorphicForms [label="GroundTheory/AutomorphicForms\nH=52", fillcolor="#a16207", color="#facc15", fontcolor="#ffffff"];
+  Formalism__other_99_ [label="Formalism/(other 99)\nH=51", fillcolor="#c2410c", color="#fb923c", fontcolor="#ffffff"];
+  CompanionTheory_ThickeningEstimates [label="CompanionTheory/ThickeningEstimates\nH=48", fillcolor="#047857", color="#34d399", fontcolor="#ffffff"];
+  Development_ResolutionOfSingularities [label="Development/ResolutionOfSingularities\nH=36", fillcolor="#1d4ed8", color="#60a5fa", fontcolor="#ffffff"];
+  GroundTheory_PAdicHodge [label="GroundTheory/PAdicHodge\nH=35", fillcolor="#a16207", color="#facc15", fontcolor="#ffffff"];
+  ReciprocityTheory_ClassFieldTheory [label="ReciprocityTheory/ClassFieldTheory\nH=33", fillcolor="#0f766e", color="#2dd4bf", fontcolor="#ffffff"];
+  GroundTheory_ArithmeticGeometry [label="GroundTheory/ArithmeticGeometry\nH=28", fillcolor="#a16207", color="#facc15", fontcolor="#ffffff"];
+  ReciprocityTheory_AnalyticForms [label="ReciprocityTheory/AnalyticForms\nH=26", fillcolor="#0f766e", color="#2dd4bf", fontcolor="#ffffff"];
+  GroundTheory_LocalFields [label="GroundTheory/LocalFields\nH=26", fillcolor="#a16207", color="#facc15", fontcolor="#ffffff"];
+  ReciprocityTheory_L2DbarEstimates [label="ReciprocityTheory/L2DbarEstimates\nH=22", fillcolor="#0f766e", color="#2dd4bf", fontcolor="#ffffff"];
+  GroundTheory__minor_5_ [label="GroundTheory/(minor 5)\nH=22", fillcolor="#a16207", color="#facc15", fontcolor="#ffffff"];
+  PositivityTheory__other_2_ [label="PositivityTheory/(other 2)\nH=21", fillcolor="#86198f", color="#e879f9", fontcolor="#ffffff"];
+  ReciprocityTheory_SemistableReduction [label="ReciprocityTheory/SemistableReduction\nH=17", fillcolor="#0f766e", color="#2dd4bf", fontcolor="#ffffff"];
+  Lemmata__ [label="Lemmata/*\nH=17", fillcolor="#6b21a8", color="#c084fc", fontcolor="#ffffff"];
+  ReciprocityTheory_DualLattices [label="ReciprocityTheory/DualLattices\nH=15", fillcolor="#0f766e", color="#2dd4bf", fontcolor="#ffffff"];
+  Formalism_PairingDivisors [label="Formalism/PairingDivisors\nH=12", fillcolor="#c2410c", color="#fb923c", fontcolor="#ffffff"];
+  ReciprocityTheory_GroupCohomology [label="ReciprocityTheory/GroupCohomology\nH=12", fillcolor="#0f766e", color="#2dd4bf", fontcolor="#ffffff"];
+  Formalism_SatakeDualWeyl [label="Formalism/SatakeDualWeyl\nH=10", fillcolor="#c2410c", color="#fb923c", fontcolor="#ffffff"];
+  ReciprocityTheory_Chebotarev [label="ReciprocityTheory/Chebotarev\nH=10", fillcolor="#0f766e", color="#2dd4bf", fontcolor="#ffffff"];
+  ReciprocityTheory__minor_15_ [label="ReciprocityTheory/(minor 15)\nH=9", fillcolor="#0f766e", color="#2dd4bf", fontcolor="#ffffff"];
+  Formalism_RealPlaceAnalysis [label="Formalism/RealPlaceAnalysis\nH=7", fillcolor="#c2410c", color="#fb923c", fontcolor="#ffffff"];
+  ReciprocityTheory_GeometryOfNumbers [label="ReciprocityTheory/GeometryOfNumbers\nH=7", fillcolor="#0f766e", color="#2dd4bf", fontcolor="#ffffff"];
+  BuildAid [label="BuildAid\nH=0", fillcolor="#4b5563", color="#9ca3af", fontcolor="#ffffff"];
 
   Development_AbelianVarietyTheory -> ReciprocityTheory_ReductiveGroups [label=" 28,406 ", penwidth=5.48, color="#38bdf8", style=solid, fontcolor="#bae6fd", constraint=true];
   Development_AbelianVarietyTheory -> Formalism_LocalToGlobal [label=" 20,139 ", penwidth=5.32, color="#38bdf8", style=solid, fontcolor="#bae6fd", constraint=true];

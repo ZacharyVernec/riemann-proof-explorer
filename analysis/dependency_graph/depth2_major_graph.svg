@@ -9,22 +9,22 @@
 <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(28.8 1521.8)">
 <title>Depth2MajorArchitecture</title>
 <polygon fill="#0f172a" stroke="transparent" points="-28.8,28.8 -28.8,-1521.8 4053.31,-1521.8 4053.31,28.8 -28.8,28.8"/>
-<text text-anchor="middle" x="2012.26" y="-1477" font-family="Helvetica,sans-Serif" font-size="15.00" fill="#f8fafc">Riemann Proof Lean 4 — Major Depth&#45;2 Sub&#45;Theory Architecture (47 Projected Nodes, 115 Key Edges)</text>
-<text text-anchor="middle" x="2012.26" y="-1460" font-family="Helvetica,sans-Serif" font-size="15.00" fill="#f8fafc">Edge A &#45;&gt; B means A imports B | Showing edges &gt;= 150 imports + entry chain &amp; strongest link per node</text>
+<text text-anchor="middle" x="2012.26" y="-1477" font-family="Helvetica,sans-Serif" font-size="15.00" fill="#f8fafc">Riemann Proof — Major Depth&#45;2 Sub&#45;Theory Architecture</text>
+<text text-anchor="middle" x="2012.26" y="-1460" font-family="Helvetica,sans-Serif" font-size="15.00" fill="#f8fafc">Edge A &#45;&gt; B means A depends on B</text>
 <text text-anchor="middle" x="2012.26" y="-1443" font-family="Helvetica,sans-Serif" font-size="15.00" fill="#f8fafc">Colors: Blue=Development | Emerald=Companion | Magenta=Positivity | Orange=Formalism | Teal=Reciprocity | Gold=Ground | Purple=Lemmata | Slate=Root/BuildAid</text>
 <!-- _root_ -->
 <g id="node1" class="node">
 <title>_root_</title>
-<path fill="#334155" stroke="#94a3b8" stroke-width="1.8" d="M1475.01,-1434C1475.01,-1434 1406.01,-1434 1406.01,-1434 1400.01,-1434 1394.01,-1428 1394.01,-1422 1394.01,-1422 1394.01,-1410 1394.01,-1410 1394.01,-1404 1400.01,-1398 1406.01,-1398 1406.01,-1398 1475.01,-1398 1475.01,-1398 1481.01,-1398 1487.01,-1404 1487.01,-1410 1487.01,-1410 1487.01,-1422 1487.01,-1422 1487.01,-1428 1481.01,-1434 1475.01,-1434"/>
+<path fill="#334155" stroke="#94a3b8" stroke-width="1.8" d="M1455.51,-1434C1455.51,-1434 1425.51,-1434 1425.51,-1434 1419.51,-1434 1413.51,-1428 1413.51,-1422 1413.51,-1422 1413.51,-1410 1413.51,-1410 1413.51,-1404 1419.51,-1398 1425.51,-1398 1425.51,-1398 1455.51,-1398 1455.51,-1398 1461.51,-1398 1467.51,-1404 1467.51,-1410 1467.51,-1410 1467.51,-1422 1467.51,-1422 1467.51,-1428 1461.51,-1434 1455.51,-1434"/>
 <text text-anchor="middle" x="1440.51" y="-1419" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">(root)</text>
-<text text-anchor="middle" x="1440.51" y="-1408" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">2 files | H=202</text>
+<text text-anchor="middle" x="1440.51" y="-1408" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=202</text>
 </g>
 <!-- Supplements_Kernels -->
 <g id="node2" class="node">
 <title>Supplements_Kernels</title>
 <path fill="#3730a3" stroke="#818cf8" stroke-width="1.8" d="M1490.01,-1331C1490.01,-1331 1391.01,-1331 1391.01,-1331 1385.01,-1331 1379.01,-1325 1379.01,-1319 1379.01,-1319 1379.01,-1307 1379.01,-1307 1379.01,-1301 1385.01,-1295 1391.01,-1295 1391.01,-1295 1490.01,-1295 1490.01,-1295 1496.01,-1295 1502.01,-1301 1502.01,-1307 1502.01,-1307 1502.01,-1319 1502.01,-1319 1502.01,-1325 1496.01,-1331 1490.01,-1331"/>
 <text text-anchor="middle" x="1440.51" y="-1316" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">Supplements/Kernels</text>
-<text text-anchor="middle" x="1440.51" y="-1305" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">3 files | H=201</text>
+<text text-anchor="middle" x="1440.51" y="-1305" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=201</text>
 </g>
 <!-- _root_&#45;&gt;Supplements_Kernels -->
 <g id="edge109" class="edge">
@@ -38,7 +38,7 @@
 <title>Development_AutomorphicArithmetic</title>
 <path fill="#1d4ed8" stroke="#60a5fa" stroke-width="1.8" d="M1530.01,-1125C1530.01,-1125 1351.01,-1125 1351.01,-1125 1345.01,-1125 1339.01,-1119 1339.01,-1113 1339.01,-1113 1339.01,-1101 1339.01,-1101 1339.01,-1095 1345.01,-1089 1351.01,-1089 1351.01,-1089 1530.01,-1089 1530.01,-1089 1536.01,-1089 1542.01,-1095 1542.01,-1101 1542.01,-1101 1542.01,-1113 1542.01,-1113 1542.01,-1119 1536.01,-1125 1530.01,-1125"/>
 <text text-anchor="middle" x="1440.51" y="-1110" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">Development/AutomorphicArithmetic</text>
-<text text-anchor="middle" x="1440.51" y="-1099" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">18,431 files | H=198</text>
+<text text-anchor="middle" x="1440.51" y="-1099" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=198</text>
 </g>
 <!-- Supplements_Kernels&#45;&gt;Development_AutomorphicArithmetic -->
 <g id="edge101" class="edge">
@@ -52,7 +52,7 @@
 <title>Formalism_GammaFactorNonvanishing</title>
 <path fill="#c2410c" stroke="#fb923c" stroke-width="1.8" d="M1652.51,-1228C1652.51,-1228 1466.51,-1228 1466.51,-1228 1460.51,-1228 1454.51,-1222 1454.51,-1216 1454.51,-1216 1454.51,-1204 1454.51,-1204 1454.51,-1198 1460.51,-1192 1466.51,-1192 1466.51,-1192 1652.51,-1192 1652.51,-1192 1658.51,-1192 1664.51,-1198 1664.51,-1204 1664.51,-1204 1664.51,-1216 1664.51,-1216 1664.51,-1222 1658.51,-1228 1652.51,-1228"/>
 <text text-anchor="middle" x="1559.51" y="-1213" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">Formalism/GammaFactorNonvanishing</text>
-<text text-anchor="middle" x="1559.51" y="-1202" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">2 files | H=90</text>
+<text text-anchor="middle" x="1559.51" y="-1202" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=90</text>
 </g>
 <!-- Supplements_Kernels&#45;&gt;Formalism_GammaFactorNonvanishing -->
 <g id="edge115" class="edge">
@@ -66,7 +66,7 @@
 <title>Development_AbelianVarietyTheory</title>
 <path fill="#1d4ed8" stroke="#60a5fa" stroke-width="1.8" d="M1646.01,-632C1646.01,-632 1475.01,-632 1475.01,-632 1469.01,-632 1463.01,-626 1463.01,-620 1463.01,-620 1463.01,-608 1463.01,-608 1463.01,-602 1469.01,-596 1475.01,-596 1475.01,-596 1646.01,-596 1646.01,-596 1652.01,-596 1658.01,-602 1658.01,-608 1658.01,-608 1658.01,-620 1658.01,-620 1658.01,-626 1652.01,-632 1646.01,-632"/>
 <text text-anchor="middle" x="1560.51" y="-617" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">Development/AbelianVarietyTheory</text>
-<text text-anchor="middle" x="1560.51" y="-606" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">99,187 files | H=189</text>
+<text text-anchor="middle" x="1560.51" y="-606" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=189</text>
 </g>
 <!-- Development_AutomorphicArithmetic&#45;&gt;Development_AbelianVarietyTheory -->
 <g id="edge3" class="edge">
@@ -80,7 +80,7 @@
 <title>Development_WeilBound</title>
 <path fill="#1d4ed8" stroke="#60a5fa" stroke-width="1.8" d="M3034.01,-1022C3034.01,-1022 2917.01,-1022 2917.01,-1022 2911.01,-1022 2905.01,-1016 2905.01,-1010 2905.01,-1010 2905.01,-998 2905.01,-998 2905.01,-992 2911.01,-986 2917.01,-986 2917.01,-986 3034.01,-986 3034.01,-986 3040.01,-986 3046.01,-992 3046.01,-998 3046.01,-998 3046.01,-1010 3046.01,-1010 3046.01,-1016 3040.01,-1022 3034.01,-1022"/>
 <text text-anchor="middle" x="2975.51" y="-1007" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">Development/WeilBound</text>
-<text text-anchor="middle" x="2975.51" y="-996" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">7,051 files | H=143</text>
+<text text-anchor="middle" x="2975.51" y="-996" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=143</text>
 </g>
 <!-- Development_AutomorphicArithmetic&#45;&gt;Development_WeilBound -->
 <g id="edge13" class="edge">
@@ -92,23 +92,23 @@
 <!-- Development_AutomorphicSpectrum -->
 <g id="node6" class="node">
 <title>Development_AutomorphicSpectrum</title>
-<path fill="#1d4ed8" stroke="#60a5fa" stroke-width="1.8" d="M2674.51,-892C2674.51,-892 2500.51,-892 2500.51,-892 2494.51,-892 2488.51,-886 2488.51,-880 2488.51,-880 2488.51,-868 2488.51,-868 2488.51,-862 2494.51,-856 2500.51,-856 2500.51,-856 2674.51,-856 2674.51,-856 2680.51,-856 2686.51,-862 2686.51,-868 2686.51,-868 2686.51,-880 2686.51,-880 2686.51,-886 2680.51,-892 2674.51,-892"/>
-<text text-anchor="middle" x="2587.51" y="-877" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">Development/AutomorphicSpectrum</text>
-<text text-anchor="middle" x="2587.51" y="-866" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">15,147 files | H=130</text>
+<path fill="#1d4ed8" stroke="#60a5fa" stroke-width="1.8" d="M2664.51,-892C2664.51,-892 2490.51,-892 2490.51,-892 2484.51,-892 2478.51,-886 2478.51,-880 2478.51,-880 2478.51,-868 2478.51,-868 2478.51,-862 2484.51,-856 2490.51,-856 2490.51,-856 2664.51,-856 2664.51,-856 2670.51,-856 2676.51,-862 2676.51,-868 2676.51,-868 2676.51,-880 2676.51,-880 2676.51,-886 2670.51,-892 2664.51,-892"/>
+<text text-anchor="middle" x="2577.51" y="-877" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">Development/AutomorphicSpectrum</text>
+<text text-anchor="middle" x="2577.51" y="-866" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=130</text>
 </g>
 <!-- Development_AutomorphicArithmetic&#45;&gt;Development_AutomorphicSpectrum -->
 <g id="edge39" class="edge">
 <title>Development_AutomorphicArithmetic&#45;&gt;Development_AutomorphicSpectrum</title>
-<path fill="none" stroke="#94a3b8" stroke-width="3.56" d="M1525.32,-1088.92C1734.47,-1046.8 2273.78,-938.18 2492.88,-894.06"/>
-<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.56" points="2493.64,-897.48 2502.75,-892.07 2492.26,-890.61 2493.64,-897.48"/>
-<text text-anchor="middle" x="2043.01" y="-1002.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#cbd5e1"> 422 </text>
+<path fill="none" stroke="#94a3b8" stroke-width="3.56" d="M1524.58,-1088.92C1731.8,-1046.82 2265.99,-938.29 2483.38,-894.12"/>
+<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.56" points="2484.39,-897.49 2493.49,-892.07 2482.99,-890.63 2484.39,-897.49"/>
+<text text-anchor="middle" x="2038.01" y="-1002.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#cbd5e1"> 422 </text>
 </g>
 <!-- Development_DiscreteGroups -->
 <g id="node7" class="node">
 <title>Development_DiscreteGroups</title>
 <path fill="#1d4ed8" stroke="#60a5fa" stroke-width="1.8" d="M1511.01,-957C1511.01,-957 1370.01,-957 1370.01,-957 1364.01,-957 1358.01,-951 1358.01,-945 1358.01,-945 1358.01,-933 1358.01,-933 1358.01,-927 1364.01,-921 1370.01,-921 1370.01,-921 1511.01,-921 1511.01,-921 1517.01,-921 1523.01,-927 1523.01,-933 1523.01,-933 1523.01,-945 1523.01,-945 1523.01,-951 1517.01,-957 1511.01,-957"/>
 <text text-anchor="middle" x="1440.51" y="-942" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">Development/DiscreteGroups</text>
-<text text-anchor="middle" x="1440.51" y="-931" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">215 files | H=125</text>
+<text text-anchor="middle" x="1440.51" y="-931" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=125</text>
 </g>
 <!-- Development_AutomorphicArithmetic&#45;&gt;Development_DiscreteGroups -->
 <g id="edge52" class="edge">
@@ -121,7 +121,7 @@
 <title>PositivityTheory_AutomorphicForms</title>
 <path fill="#86198f" stroke="#e879f9" stroke-width="1.8" d="M1735.01,-762C1735.01,-762 1564.01,-762 1564.01,-762 1558.01,-762 1552.01,-756 1552.01,-750 1552.01,-750 1552.01,-738 1552.01,-738 1552.01,-732 1558.01,-726 1564.01,-726 1564.01,-726 1735.01,-726 1735.01,-726 1741.01,-726 1747.01,-732 1747.01,-738 1747.01,-738 1747.01,-750 1747.01,-750 1747.01,-756 1741.01,-762 1735.01,-762"/>
 <text text-anchor="middle" x="1649.51" y="-747" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">PositivityTheory/AutomorphicForms</text>
-<text text-anchor="middle" x="1649.51" y="-736" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">445 files | H=111</text>
+<text text-anchor="middle" x="1649.51" y="-736" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=111</text>
 </g>
 <!-- Development_AutomorphicArithmetic&#45;&gt;PositivityTheory_AutomorphicForms -->
 <g id="edge60" class="edge">
@@ -134,7 +134,7 @@
 <title>Development_EtaleCohomology</title>
 <path fill="#1d4ed8" stroke="#60a5fa" stroke-width="1.8" d="M1223.51,-827C1223.51,-827 1071.51,-827 1071.51,-827 1065.51,-827 1059.51,-821 1059.51,-815 1059.51,-815 1059.51,-803 1059.51,-803 1059.51,-797 1065.51,-791 1071.51,-791 1071.51,-791 1223.51,-791 1223.51,-791 1229.51,-791 1235.51,-797 1235.51,-803 1235.51,-803 1235.51,-815 1235.51,-815 1235.51,-821 1229.51,-827 1223.51,-827"/>
 <text text-anchor="middle" x="1147.51" y="-812" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">Development/EtaleCohomology</text>
-<text text-anchor="middle" x="1147.51" y="-801" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">1,398 files | H=95</text>
+<text text-anchor="middle" x="1147.51" y="-801" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=95</text>
 </g>
 <!-- Development_AutomorphicArithmetic&#45;&gt;Development_EtaleCohomology -->
 <g id="edge27" class="edge">
@@ -148,7 +148,7 @@
 <title>Formalism_SharpRestriction</title>
 <path fill="#c2410c" stroke="#fb923c" stroke-width="1.8" d="M990.51,-372C990.51,-372 858.51,-372 858.51,-372 852.51,-372 846.51,-366 846.51,-360 846.51,-360 846.51,-348 846.51,-348 846.51,-342 852.51,-336 858.51,-336 858.51,-336 990.51,-336 990.51,-336 996.51,-336 1002.51,-342 1002.51,-348 1002.51,-348 1002.51,-360 1002.51,-360 1002.51,-366 996.51,-372 990.51,-372"/>
 <text text-anchor="middle" x="924.51" y="-357" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">Formalism/SharpRestriction</text>
-<text text-anchor="middle" x="924.51" y="-346" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">3,093 files | H=93</text>
+<text text-anchor="middle" x="924.51" y="-346" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=93</text>
 </g>
 <!-- Development_AutomorphicArithmetic&#45;&gt;Formalism_SharpRestriction -->
 <g id="edge46" class="edge">
@@ -161,7 +161,7 @@
 <title>Formalism_LocalToGlobal</title>
 <path fill="#c2410c" stroke="#fb923c" stroke-width="1.8" d="M1507.01,-502C1507.01,-502 1388.01,-502 1388.01,-502 1382.01,-502 1376.01,-496 1376.01,-490 1376.01,-490 1376.01,-478 1376.01,-478 1376.01,-472 1382.01,-466 1388.01,-466 1388.01,-466 1507.01,-466 1507.01,-466 1513.01,-466 1519.01,-472 1519.01,-478 1519.01,-478 1519.01,-490 1519.01,-490 1519.01,-496 1513.01,-502 1507.01,-502"/>
 <text text-anchor="middle" x="1447.51" y="-487" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">Formalism/LocalToGlobal</text>
-<text text-anchor="middle" x="1447.51" y="-476" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">5,501 files | H=87</text>
+<text text-anchor="middle" x="1447.51" y="-476" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=87</text>
 </g>
 <!-- Development_AutomorphicArithmetic&#45;&gt;Formalism_LocalToGlobal -->
 <g id="edge64" class="edge">
@@ -172,47 +172,47 @@
 <!-- GroundTheory_GlobalFields -->
 <g id="node23" class="node">
 <title>GroundTheory_GlobalFields</title>
-<path fill="#a16207" stroke="#facc15" stroke-width="1.8" d="M3460.01,-372C3460.01,-372 3331.01,-372 3331.01,-372 3325.01,-372 3319.01,-366 3319.01,-360 3319.01,-360 3319.01,-348 3319.01,-348 3319.01,-342 3325.01,-336 3331.01,-336 3331.01,-336 3460.01,-336 3460.01,-336 3466.01,-336 3472.01,-342 3472.01,-348 3472.01,-348 3472.01,-360 3472.01,-360 3472.01,-366 3466.01,-372 3460.01,-372"/>
-<text text-anchor="middle" x="3395.51" y="-357" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">GroundTheory/GlobalFields</text>
-<text text-anchor="middle" x="3395.51" y="-346" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">384 files | H=54</text>
+<path fill="#a16207" stroke="#facc15" stroke-width="1.8" d="M3421.01,-372C3421.01,-372 3292.01,-372 3292.01,-372 3286.01,-372 3280.01,-366 3280.01,-360 3280.01,-360 3280.01,-348 3280.01,-348 3280.01,-342 3286.01,-336 3292.01,-336 3292.01,-336 3421.01,-336 3421.01,-336 3427.01,-336 3433.01,-342 3433.01,-348 3433.01,-348 3433.01,-360 3433.01,-360 3433.01,-366 3427.01,-372 3421.01,-372"/>
+<text text-anchor="middle" x="3356.51" y="-357" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">GroundTheory/GlobalFields</text>
+<text text-anchor="middle" x="3356.51" y="-346" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=54</text>
 </g>
 <!-- Development_AutomorphicArithmetic&#45;&gt;GroundTheory_GlobalFields -->
 <g id="edge50" class="edge">
 <title>Development_AutomorphicArithmetic&#45;&gt;GroundTheory_GlobalFields</title>
-<path fill="none" stroke="#94a3b8" stroke-width="3.32" d="M1542.32,-1105.83C1945.58,-1104.87 3418.95,-1098.74 3624.51,-1060 3694.29,-1046.85 3774.51,-1076.01 3774.51,-1005 3774.51,-1005 3774.51,-1005 3774.51,-548 3774.51,-417.55 3594.01,-375.23 3482.14,-361.53"/>
-<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.32" points="3482.55,-358.06 3472.21,-360.37 3481.73,-365.01 3482.55,-358.06"/>
+<path fill="none" stroke="#94a3b8" stroke-width="3.32" d="M1542.32,-1105.83C1945.58,-1104.87 3418.95,-1098.74 3624.51,-1060 3694.29,-1046.85 3774.51,-1076.01 3774.51,-1005 3774.51,-1005 3774.51,-1005 3774.51,-548 3774.51,-403.39 3565.75,-366.78 3443.3,-357.75"/>
+<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.32" points="3443.4,-354.25 3433.18,-357.05 3442.91,-361.23 3443.4,-354.25"/>
 </g>
 <!-- GroundTheory_AutomorphicForms -->
 <g id="node25" class="node">
 <title>GroundTheory_AutomorphicForms</title>
 <path fill="#a16207" stroke="#facc15" stroke-width="1.8" d="M3416.01,-502C3416.01,-502 3255.01,-502 3255.01,-502 3249.01,-502 3243.01,-496 3243.01,-490 3243.01,-490 3243.01,-478 3243.01,-478 3243.01,-472 3249.01,-466 3255.01,-466 3255.01,-466 3416.01,-466 3416.01,-466 3422.01,-466 3428.01,-472 3428.01,-478 3428.01,-478 3428.01,-490 3428.01,-490 3428.01,-496 3422.01,-502 3416.01,-502"/>
 <text text-anchor="middle" x="3335.51" y="-487" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">GroundTheory/AutomorphicForms</text>
-<text text-anchor="middle" x="3335.51" y="-476" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">542 files | H=52</text>
+<text text-anchor="middle" x="3335.51" y="-476" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=52</text>
 </g>
 <!-- Development_AutomorphicArithmetic&#45;&gt;GroundTheory_AutomorphicForms -->
 <g id="edge33" class="edge">
 <title>Development_AutomorphicArithmetic&#45;&gt;GroundTheory_AutomorphicForms</title>
-<path fill="none" stroke="#94a3b8" stroke-width="3.65" d="M1542.03,-1105.36C1990.71,-1102.37 3778.83,-1088.68 3894.51,-1060 3947.18,-1046.94 4003.51,-1059.26 4003.51,-1005 4003.51,-1005 4003.51,-1005 4003.51,-613 4003.51,-508.63 3484.63,-502.12 3483.51,-502 3468.99,-500.41 3453.68,-498.7 3438.63,-496.99"/>
+<path fill="none" stroke="#94a3b8" stroke-width="3.65" d="M1542.3,-1105.24C1990.11,-1101.77 3767.9,-1086.37 3883.51,-1060 3940.71,-1046.95 4003.51,-1063.67 4003.51,-1005 4003.51,-1005 4003.51,-1005 4003.51,-613 4003.51,-508.63 3484.63,-502.12 3483.51,-502 3468.99,-500.41 3453.68,-498.7 3438.63,-496.99"/>
 <polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.65" points="3438.59,-493.47 3428.26,-495.81 3437.8,-500.42 3438.59,-493.47"/>
 <text text-anchor="middle" x="4014.01" y="-807.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#cbd5e1"> 520 </text>
 </g>
 <!-- Formalism__other_99_ -->
 <g id="node26" class="node">
 <title>Formalism__other_99_</title>
-<path fill="#c2410c" stroke="#fb923c" stroke-width="1.8" d="M1282.01,-36C1282.01,-36 1183.01,-36 1183.01,-36 1177.01,-36 1171.01,-30 1171.01,-24 1171.01,-24 1171.01,-12 1171.01,-12 1171.01,-6 1177.01,0 1183.01,0 1183.01,0 1282.01,0 1282.01,0 1288.01,0 1294.01,-6 1294.01,-12 1294.01,-12 1294.01,-24 1294.01,-24 1294.01,-30 1288.01,-36 1282.01,-36"/>
-<text text-anchor="middle" x="1232.51" y="-21" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">Formalism/(other 99)</text>
-<text text-anchor="middle" x="1232.51" y="-10" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">3,067 files | H=51</text>
+<path fill="#c2410c" stroke="#fb923c" stroke-width="1.8" d="M1294.01,-36C1294.01,-36 1195.01,-36 1195.01,-36 1189.01,-36 1183.01,-30 1183.01,-24 1183.01,-24 1183.01,-12 1183.01,-12 1183.01,-6 1189.01,0 1195.01,0 1195.01,0 1294.01,0 1294.01,0 1300.01,0 1306.01,-6 1306.01,-12 1306.01,-12 1306.01,-24 1306.01,-24 1306.01,-30 1300.01,-36 1294.01,-36"/>
+<text text-anchor="middle" x="1244.51" y="-21" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">Formalism/(other 99)</text>
+<text text-anchor="middle" x="1244.51" y="-10" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=51</text>
 </g>
 <!-- Development_AutomorphicArithmetic&#45;&gt;Formalism__other_99_ -->
 <g id="edge59" class="edge">
 <title>Development_AutomorphicArithmetic&#45;&gt;Formalism__other_99_</title>
-<path fill="none" stroke="#94a3b8" stroke-width="3.25" d="M1542.29,-1106.55C1965.68,-1108.18 3565.51,-1107.55 3565.51,-1005 3565.51,-1005 3565.51,-1005 3565.51,-808 3565.51,-622.47 3719.51,-605.53 3719.51,-420 3719.51,-420 3719.51,-420 3719.51,-120 3719.51,-57.89 1712.81,-25.87 1304.5,-19.99"/>
-<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.25" points="1304.35,-16.49 1294.3,-19.85 1304.25,-23.49 1304.35,-16.49"/>
+<path fill="none" stroke="#94a3b8" stroke-width="3.25" d="M1542.29,-1106.55C1965.68,-1108.18 3565.51,-1107.55 3565.51,-1005 3565.51,-1005 3565.51,-1005 3565.51,-808 3565.51,-622.47 3719.51,-605.53 3719.51,-420 3719.51,-420 3719.51,-420 3719.51,-120 3719.51,-58.21 1723.56,-25.95 1316.48,-20.01"/>
+<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.25" points="1316.36,-16.51 1306.31,-19.86 1316.26,-23.51 1316.36,-16.51"/>
 </g>
 <!-- Development_AbelianVarietyTheory&#45;&gt;Development_AutomorphicArithmetic -->
 <g id="edge24" class="edge">
 <title>Development_AbelianVarietyTheory&#45;&gt;Development_AutomorphicArithmetic</title>
-<path fill="none" stroke="#f59e0b" stroke-width="3.82" stroke-dasharray="5,2" d="M1462.87,-620.39C1156.94,-638.16 231.59,-699.13 135.51,-791 114.34,-811.25 126.96,-826.8 124.51,-856 116.88,-946.83 78.26,-998.48 145.51,-1060 188.81,-1099.61 1022.12,-1105.21 1328.62,-1105.93"/>
+<path fill="none" stroke="#f59e0b" stroke-width="3.82" stroke-dasharray="5,2" d="M1462.93,-620.89C1158.83,-640.09 242.57,-704.64 142.51,-791 119.82,-810.59 128.55,-826.3 124.51,-856 112.24,-946.32 78.26,-998.48 145.51,-1060 188.81,-1099.61 1022.12,-1105.21 1328.62,-1105.93"/>
 <polygon fill="#f59e0b" stroke="#f59e0b" stroke-width="3.82" points="1328.85,-1109.43 1338.86,-1105.95 1328.87,-1102.43 1328.85,-1109.43"/>
 <text text-anchor="middle" x="135.01" y="-872.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#fbbf24"> 744 </text>
 </g>
@@ -221,14 +221,14 @@
 <title>CompanionTheory_EightfoldTheory</title>
 <path fill="#047857" stroke="#34d399" stroke-width="1.8" d="M199.51,-502C199.51,-502 33.51,-502 33.51,-502 27.51,-502 21.51,-496 21.51,-490 21.51,-490 21.51,-478 21.51,-478 21.51,-472 27.51,-466 33.51,-466 33.51,-466 199.51,-466 199.51,-466 205.51,-466 211.51,-472 211.51,-478 211.51,-478 211.51,-490 211.51,-490 211.51,-496 205.51,-502 199.51,-502"/>
 <text text-anchor="middle" x="116.51" y="-487" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">CompanionTheory/EightfoldTheory</text>
-<text text-anchor="middle" x="116.51" y="-476" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">9 files | H=103</text>
+<text text-anchor="middle" x="116.51" y="-476" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=103</text>
 </g>
 <!-- Development_AbelianVarietyTheory&#45;&gt;CompanionTheory_EightfoldTheory -->
 <g id="edge45" class="edge">
 <title>Development_AbelianVarietyTheory&#45;&gt;CompanionTheory_EightfoldTheory</title>
-<path fill="none" stroke="#94a3b8" stroke-width="3.42" d="M1462.89,-611.7C1226.64,-608.13 629.06,-596.39 431.51,-567 341.71,-553.64 240.57,-524.75 177.68,-505.09"/>
-<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.42" points="178.51,-501.68 167.92,-502.02 176.41,-508.36 178.51,-501.68"/>
-<text text-anchor="middle" x="442.01" y="-547.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#cbd5e1"> 315 </text>
+<path fill="none" stroke="#94a3b8" stroke-width="3.42" d="M1462.97,-611.69C1226.94,-608.09 629.9,-596.29 432.51,-567 342.44,-553.63 240.97,-524.75 177.88,-505.09"/>
+<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.42" points="178.68,-501.67 168.09,-502.02 176.58,-508.35 178.68,-501.67"/>
+<text text-anchor="middle" x="443.01" y="-547.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#cbd5e1"> 315 </text>
 </g>
 <!-- Development_AbelianVarietyTheory&#45;&gt;Formalism_SharpRestriction -->
 <g id="edge4" class="edge">
@@ -242,14 +242,14 @@
 <title>Formalism_HermitianCurvature</title>
 <path fill="#c2410c" stroke="#fb923c" stroke-width="1.8" d="M398.51,-502C398.51,-502 250.51,-502 250.51,-502 244.51,-502 238.51,-496 238.51,-490 238.51,-490 238.51,-478 238.51,-478 238.51,-472 244.51,-466 250.51,-466 250.51,-466 398.51,-466 398.51,-466 404.51,-466 410.51,-472 410.51,-478 410.51,-478 410.51,-490 410.51,-490 410.51,-496 404.51,-502 398.51,-502"/>
 <text text-anchor="middle" x="324.51" y="-487" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">Formalism/HermitianCurvature</text>
-<text text-anchor="middle" x="324.51" y="-476" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">1,922 files | H=92</text>
+<text text-anchor="middle" x="324.51" y="-476" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=92</text>
 </g>
 <!-- Development_AbelianVarietyTheory&#45;&gt;Formalism_HermitianCurvature -->
 <g id="edge18" class="edge">
 <title>Development_AbelianVarietyTheory&#45;&gt;Formalism_HermitianCurvature</title>
-<path fill="none" stroke="#94a3b8" stroke-width="3.86" d="M1462.9,-603.35C1432.38,-600.62 1398.57,-597.88 1367.51,-596 1269.97,-590.1 576.31,-609.9 488.51,-567 469.8,-557.86 475.66,-542.82 458.51,-531 443.13,-520.4 425.09,-512.04 407.31,-505.53"/>
-<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.86" points="408.07,-502.09 397.48,-502.1 405.77,-508.7 408.07,-502.09"/>
-<text text-anchor="middle" x="499.01" y="-547.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#cbd5e1"> 814 </text>
+<path fill="none" stroke="#94a3b8" stroke-width="3.86" d="M1462.9,-603.35C1432.38,-600.62 1398.57,-597.88 1367.51,-596 1270.08,-590.1 577.21,-609.85 489.51,-567 470.8,-557.86 476.67,-542.8 459.51,-531 444.02,-520.35 425.84,-511.97 407.93,-505.45"/>
+<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.86" points="408.62,-501.99 398.02,-502.02 406.32,-508.6 408.62,-501.99"/>
+<text text-anchor="middle" x="500.01" y="-547.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#cbd5e1"> 814 </text>
 </g>
 <!-- Development_AbelianVarietyTheory&#45;&gt;Formalism_LocalToGlobal -->
 <g id="edge2" class="edge">
@@ -261,15 +261,15 @@
 <!-- Formalism_PeriodIntegrals -->
 <g id="node19" class="node">
 <title>Formalism_PeriodIntegrals</title>
-<path fill="#c2410c" stroke="#fb923c" stroke-width="1.8" d="M1425.01,-242C1425.01,-242 1300.01,-242 1300.01,-242 1294.01,-242 1288.01,-236 1288.01,-230 1288.01,-230 1288.01,-218 1288.01,-218 1288.01,-212 1294.01,-206 1300.01,-206 1300.01,-206 1425.01,-206 1425.01,-206 1431.01,-206 1437.01,-212 1437.01,-218 1437.01,-218 1437.01,-230 1437.01,-230 1437.01,-236 1431.01,-242 1425.01,-242"/>
-<text text-anchor="middle" x="1362.51" y="-227" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">Formalism/PeriodIntegrals</text>
-<text text-anchor="middle" x="1362.51" y="-216" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">4,350 files | H=83</text>
+<path fill="#c2410c" stroke="#fb923c" stroke-width="1.8" d="M1429.01,-242C1429.01,-242 1304.01,-242 1304.01,-242 1298.01,-242 1292.01,-236 1292.01,-230 1292.01,-230 1292.01,-218 1292.01,-218 1292.01,-212 1298.01,-206 1304.01,-206 1304.01,-206 1429.01,-206 1429.01,-206 1435.01,-206 1441.01,-212 1441.01,-218 1441.01,-218 1441.01,-230 1441.01,-230 1441.01,-236 1435.01,-242 1429.01,-242"/>
+<text text-anchor="middle" x="1366.51" y="-227" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">Formalism/PeriodIntegrals</text>
+<text text-anchor="middle" x="1366.51" y="-216" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=83</text>
 </g>
 <!-- Development_AbelianVarietyTheory&#45;&gt;Formalism_PeriodIntegrals -->
 <g id="edge23" class="edge">
 <title>Development_AbelianVarietyTheory&#45;&gt;Formalism_PeriodIntegrals</title>
-<path fill="none" stroke="#94a3b8" stroke-width="3.82" d="M1559.42,-595.62C1557.18,-567.46 1550.62,-510.52 1532.51,-466 1496.62,-377.78 1423.14,-290.52 1385.64,-249.41"/>
-<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.82" points="1388.2,-247.03 1378.85,-242.05 1383.06,-251.77 1388.2,-247.03"/>
+<path fill="none" stroke="#94a3b8" stroke-width="3.82" d="M1559.37,-595.65C1557.05,-567.52 1550.38,-510.62 1532.51,-466 1497.45,-378.45 1425.96,-291.16 1389.3,-249.78"/>
+<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.82" points="1391.73,-247.24 1382.45,-242.13 1386.51,-251.91 1391.73,-247.24"/>
 <text text-anchor="middle" x="1529.01" y="-417.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#cbd5e1"> 759 </text>
 </g>
 <!-- ReciprocityTheory_ReductiveGroups -->
@@ -277,7 +277,7 @@
 <title>ReciprocityTheory_ReductiveGroups</title>
 <path fill="#0f766e" stroke="#2dd4bf" stroke-width="1.8" d="M2714.01,-372C2714.01,-372 2543.01,-372 2543.01,-372 2537.01,-372 2531.01,-366 2531.01,-360 2531.01,-360 2531.01,-348 2531.01,-348 2531.01,-342 2537.01,-336 2543.01,-336 2543.01,-336 2714.01,-336 2714.01,-336 2720.01,-336 2726.01,-342 2726.01,-348 2726.01,-348 2726.01,-360 2726.01,-360 2726.01,-366 2720.01,-372 2714.01,-372"/>
 <text text-anchor="middle" x="2628.51" y="-357" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">ReciprocityTheory/ReductiveGroups</text>
-<text text-anchor="middle" x="2628.51" y="-346" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">2,799 files | H=76</text>
+<text text-anchor="middle" x="2628.51" y="-346" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=76</text>
 </g>
 <!-- Development_AbelianVarietyTheory&#45;&gt;ReciprocityTheory_ReductiveGroups -->
 <g id="edge1" class="edge">
@@ -289,35 +289,35 @@
 <!-- Development_AbelianVarietyTheory&#45;&gt;GroundTheory_GlobalFields -->
 <g id="edge56" class="edge">
 <title>Development_AbelianVarietyTheory&#45;&gt;GroundTheory_GlobalFields</title>
-<path fill="none" stroke="#94a3b8" stroke-width="3.26" d="M1658.06,-607.58C1820.8,-598.28 2134.84,-579.09 2184.51,-567 2255.9,-549.62 2283.96,-553.35 2336.51,-502 2371.79,-467.53 2341.65,-428.62 2382.51,-401 2401.6,-388.1 3067.03,-365.53 3308.82,-357.74"/>
-<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.26" points="3309.09,-361.23 3318.97,-357.41 3308.87,-354.24 3309.09,-361.23"/>
+<path fill="none" stroke="#94a3b8" stroke-width="3.26" d="M1658.06,-607.58C1820.8,-598.28 2134.84,-579.09 2184.51,-567 2255.9,-549.62 2283.96,-553.35 2336.51,-502 2371.79,-467.53 2341.67,-428.66 2382.51,-401 2400.76,-388.64 3034.03,-365.94 3269.5,-357.91"/>
+<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.26" points="3269.85,-361.4 3279.73,-357.56 3269.62,-354.41 3269.85,-361.4"/>
 </g>
 <!-- Formalism_LocalRingCardinality -->
 <g id="node24" class="node">
 <title>Formalism_LocalRingCardinality</title>
 <path fill="#c2410c" stroke="#fb923c" stroke-width="1.8" d="M1129.51,-242C1129.51,-242 977.51,-242 977.51,-242 971.51,-242 965.51,-236 965.51,-230 965.51,-230 965.51,-218 965.51,-218 965.51,-212 971.51,-206 977.51,-206 977.51,-206 1129.51,-206 1129.51,-206 1135.51,-206 1141.51,-212 1141.51,-218 1141.51,-218 1141.51,-230 1141.51,-230 1141.51,-236 1135.51,-242 1129.51,-242"/>
 <text text-anchor="middle" x="1053.51" y="-227" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">Formalism/LocalRingCardinality</text>
-<text text-anchor="middle" x="1053.51" y="-216" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">173 files | H=52</text>
+<text text-anchor="middle" x="1053.51" y="-216" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=52</text>
 </g>
 <!-- Development_AbelianVarietyTheory&#45;&gt;Formalism_LocalRingCardinality -->
 <g id="edge11" class="edge">
 <title>Development_AbelianVarietyTheory&#45;&gt;Formalism_LocalRingCardinality</title>
-<path fill="none" stroke="#38bdf8" stroke-width="4.48" d="M1462.87,-603.84C1432.35,-601.13 1398.54,-598.28 1367.51,-596 1312.79,-591.98 916.17,-602.71 874.51,-567 795.29,-499.08 781.16,-426.84 832.51,-336 859.3,-288.61 913.77,-260.93 961.93,-245.07"/>
-<polygon fill="#38bdf8" stroke="#38bdf8" stroke-width="4.48" points="963.11,-248.8 971.46,-242.05 960.75,-241.33 963.11,-248.8"/>
+<path fill="none" stroke="#38bdf8" stroke-width="4.48" d="M1462.87,-603.84C1432.35,-601.13 1398.54,-598.28 1367.51,-596 1312.79,-591.98 916.17,-602.71 874.51,-567 795.29,-499.08 781.54,-427.05 832.51,-336 859.06,-288.58 913.37,-260.92 961.51,-245.07"/>
+<polygon fill="#38bdf8" stroke="#38bdf8" stroke-width="4.48" points="962.69,-248.81 971.04,-242.05 960.33,-241.33 962.69,-248.81"/>
 <text text-anchor="middle" x="820.51" y="-417.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#bae6fd"> 3,205 </text>
 </g>
 <!-- Development_AbelianVarietyTheory&#45;&gt;GroundTheory_AutomorphicForms -->
 <g id="edge36" class="edge">
 <title>Development_AbelianVarietyTheory&#45;&gt;GroundTheory_AutomorphicForms</title>
-<path fill="none" stroke="#94a3b8" stroke-width="3.6" d="M1658.15,-607.66C1729.23,-603.93 1827.81,-599.08 1914.51,-596 2053.79,-591.05 3033.13,-600.1 3168.51,-567 3181.61,-563.8 3248.68,-529.88 3293.74,-506.68"/>
+<path fill="none" stroke="#94a3b8" stroke-width="3.6" d="M1658.26,-607.5C1727.32,-603.78 1822.06,-599.01 1905.51,-596 2045.79,-590.93 3032.15,-600.33 3168.51,-567 3181.61,-563.8 3248.68,-529.88 3293.74,-506.68"/>
 <polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.6" points="3295.43,-509.75 3302.71,-502.05 3292.22,-503.53 3295.43,-509.75"/>
 <text text-anchor="middle" x="3255.01" y="-547.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#cbd5e1"> 463 </text>
 </g>
 <!-- Development_AbelianVarietyTheory&#45;&gt;Formalism__other_99_ -->
 <g id="edge12" class="edge">
 <title>Development_AbelianVarietyTheory&#45;&gt;Formalism__other_99_</title>
-<path fill="none" stroke="#38bdf8" stroke-width="4.42" d="M1658.26,-604.17C1787.35,-589.75 1998.51,-555.41 1998.51,-485 1998.51,-485 1998.51,-485 1998.51,-120 1998.51,-50.4 1494.99,-27.27 1304.42,-21"/>
-<polygon fill="#38bdf8" stroke="#38bdf8" stroke-width="4.42" points="1304.34,-17.13 1294.22,-20.68 1304.09,-24.86 1304.34,-17.13"/>
+<path fill="none" stroke="#38bdf8" stroke-width="4.42" d="M1658.26,-604.17C1787.35,-589.75 1998.51,-555.41 1998.51,-485 1998.51,-485 1998.51,-485 1998.51,-120 1998.51,-51.59 1504.63,-27.76 1316.29,-21.15"/>
+<polygon fill="#38bdf8" stroke="#38bdf8" stroke-width="4.42" points="1316.34,-17.29 1306.21,-20.81 1316.08,-25.02 1316.34,-17.29"/>
 <text text-anchor="middle" x="2012.51" y="-287.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#bae6fd"> 2,785 </text>
 </g>
 <!-- CompanionTheory_ThickeningEstimates -->
@@ -325,7 +325,7 @@
 <title>CompanionTheory_ThickeningEstimates</title>
 <path fill="#047857" stroke="#34d399" stroke-width="1.8" d="M2031.51,-762C2031.51,-762 1841.51,-762 1841.51,-762 1835.51,-762 1829.51,-756 1829.51,-750 1829.51,-750 1829.51,-738 1829.51,-738 1829.51,-732 1835.51,-726 1841.51,-726 1841.51,-726 2031.51,-726 2031.51,-726 2037.51,-726 2043.51,-732 2043.51,-738 2043.51,-738 2043.51,-750 2043.51,-750 2043.51,-756 2037.51,-762 2031.51,-762"/>
 <text text-anchor="middle" x="1936.51" y="-747" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">CompanionTheory/ThickeningEstimates</text>
-<text text-anchor="middle" x="1936.51" y="-736" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">22 files | H=48</text>
+<text text-anchor="middle" x="1936.51" y="-736" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=48</text>
 </g>
 <!-- Development_AbelianVarietyTheory&#45;&gt;CompanionTheory_ThickeningEstimates -->
 <g id="edge106" class="edge">
@@ -339,7 +339,7 @@
 <title>ReciprocityTheory_ClassFieldTheory</title>
 <path fill="#0f766e" stroke="#2dd4bf" stroke-width="1.8" d="M676.01,-502C676.01,-502 505.01,-502 505.01,-502 499.01,-502 493.01,-496 493.01,-490 493.01,-490 493.01,-478 493.01,-478 493.01,-472 499.01,-466 505.01,-466 505.01,-466 676.01,-466 676.01,-466 682.01,-466 688.01,-472 688.01,-478 688.01,-478 688.01,-490 688.01,-490 688.01,-496 682.01,-502 676.01,-502"/>
 <text text-anchor="middle" x="590.51" y="-487" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">ReciprocityTheory/ClassFieldTheory</text>
-<text text-anchor="middle" x="590.51" y="-476" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">91 files | H=33</text>
+<text text-anchor="middle" x="590.51" y="-476" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=33</text>
 </g>
 <!-- Development_AbelianVarietyTheory&#45;&gt;ReciprocityTheory_ClassFieldTheory -->
 <g id="edge83" class="edge">
@@ -353,7 +353,7 @@
 <title>ReciprocityTheory_AnalyticForms</title>
 <path fill="#0f766e" stroke="#2dd4bf" stroke-width="1.8" d="M2575.51,-502C2575.51,-502 2417.51,-502 2417.51,-502 2411.51,-502 2405.51,-496 2405.51,-490 2405.51,-490 2405.51,-478 2405.51,-478 2405.51,-472 2411.51,-466 2417.51,-466 2417.51,-466 2575.51,-466 2575.51,-466 2581.51,-466 2587.51,-472 2587.51,-478 2587.51,-478 2587.51,-490 2587.51,-490 2587.51,-496 2581.51,-502 2575.51,-502"/>
 <text text-anchor="middle" x="2496.51" y="-487" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">ReciprocityTheory/AnalyticForms</text>
-<text text-anchor="middle" x="2496.51" y="-476" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">192 files | H=26</text>
+<text text-anchor="middle" x="2496.51" y="-476" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=26</text>
 </g>
 <!-- Development_AbelianVarietyTheory&#45;&gt;ReciprocityTheory_AnalyticForms -->
 <g id="edge14" class="edge">
@@ -367,7 +367,7 @@
 <title>ReciprocityTheory_L2DbarEstimates</title>
 <path fill="#0f766e" stroke="#2dd4bf" stroke-width="1.8" d="M2311.01,-502C2311.01,-502 2140.01,-502 2140.01,-502 2134.01,-502 2128.01,-496 2128.01,-490 2128.01,-490 2128.01,-478 2128.01,-478 2128.01,-472 2134.01,-466 2140.01,-466 2140.01,-466 2311.01,-466 2311.01,-466 2317.01,-466 2323.01,-472 2323.01,-478 2323.01,-478 2323.01,-490 2323.01,-490 2323.01,-496 2317.01,-502 2311.01,-502"/>
 <text text-anchor="middle" x="2225.51" y="-487" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">ReciprocityTheory/L2DbarEstimates</text>
-<text text-anchor="middle" x="2225.51" y="-476" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">227 files | H=22</text>
+<text text-anchor="middle" x="2225.51" y="-476" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=22</text>
 </g>
 <!-- Development_AbelianVarietyTheory&#45;&gt;ReciprocityTheory_L2DbarEstimates -->
 <g id="edge35" class="edge">
@@ -381,21 +381,21 @@
 <title>GroundTheory__minor_5_</title>
 <path fill="#a16207" stroke="#facc15" stroke-width="1.8" d="M2795.51,-502C2795.51,-502 2681.51,-502 2681.51,-502 2675.51,-502 2669.51,-496 2669.51,-490 2669.51,-490 2669.51,-478 2669.51,-478 2669.51,-472 2675.51,-466 2681.51,-466 2681.51,-466 2795.51,-466 2795.51,-466 2801.51,-466 2807.51,-472 2807.51,-478 2807.51,-478 2807.51,-490 2807.51,-490 2807.51,-496 2801.51,-502 2795.51,-502"/>
 <text text-anchor="middle" x="2738.51" y="-487" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">GroundTheory/(minor 5)</text>
-<text text-anchor="middle" x="2738.51" y="-476" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">118 files | H=22</text>
+<text text-anchor="middle" x="2738.51" y="-476" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=22</text>
 </g>
 <!-- Development_AbelianVarietyTheory&#45;&gt;GroundTheory__minor_5_ -->
 <g id="edge87" class="edge">
 <title>Development_AbelianVarietyTheory&#45;&gt;GroundTheory__minor_5_</title>
-<path fill="none" stroke="#64748b" stroke-width="2.46" stroke-dasharray="1,5" d="M1658.38,-608.15C1883.53,-596.97 2420.45,-570.08 2439.51,-567 2462.27,-563.33 2588.43,-527.86 2669.43,-504.79"/>
-<polygon fill="#64748b" stroke="#64748b" stroke-width="2.46" points="2670.42,-508.15 2679.08,-502.04 2668.5,-501.41 2670.42,-508.15"/>
-<text text-anchor="middle" x="2583.51" y="-547.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#94a3b8"> 38 </text>
+<path fill="none" stroke="#64748b" stroke-width="2.46" stroke-dasharray="1,5" d="M1658.39,-608.18C1883.54,-597.06 2420.49,-570.28 2439.51,-567 2494.8,-557.47 2506.45,-546.02 2560.51,-531 2593.12,-521.94 2629.25,-512.49 2660.39,-504.54"/>
+<polygon fill="#64748b" stroke="#64748b" stroke-width="2.46" points="2661.49,-507.87 2670.31,-502.01 2659.76,-501.08 2661.49,-507.87"/>
+<text text-anchor="middle" x="2568.51" y="-547.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#94a3b8"> 38 </text>
 </g>
 <!-- ReciprocityTheory_SemistableReduction -->
 <g id="node37" class="node">
 <title>ReciprocityTheory_SemistableReduction</title>
 <path fill="#0f766e" stroke="#2dd4bf" stroke-width="1.8" d="M695.51,-437C695.51,-437 503.51,-437 503.51,-437 497.51,-437 491.51,-431 491.51,-425 491.51,-425 491.51,-413 491.51,-413 491.51,-407 497.51,-401 503.51,-401 503.51,-401 695.51,-401 695.51,-401 701.51,-401 707.51,-407 707.51,-413 707.51,-413 707.51,-425 707.51,-425 707.51,-431 701.51,-437 695.51,-437"/>
 <text text-anchor="middle" x="599.51" y="-422" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">ReciprocityTheory/SemistableReduction</text>
-<text text-anchor="middle" x="599.51" y="-411" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">119 files | H=17</text>
+<text text-anchor="middle" x="599.51" y="-411" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=17</text>
 </g>
 <!-- Development_AbelianVarietyTheory&#45;&gt;ReciprocityTheory_SemistableReduction -->
 <g id="edge58" class="edge">
@@ -408,7 +408,7 @@
 <title>ReciprocityTheory_DualLattices</title>
 <path fill="#0f766e" stroke="#2dd4bf" stroke-width="1.8" d="M1945.01,-502C1945.01,-502 1796.01,-502 1796.01,-502 1790.01,-502 1784.01,-496 1784.01,-490 1784.01,-490 1784.01,-478 1784.01,-478 1784.01,-472 1790.01,-466 1796.01,-466 1796.01,-466 1945.01,-466 1945.01,-466 1951.01,-466 1957.01,-472 1957.01,-478 1957.01,-478 1957.01,-490 1957.01,-490 1957.01,-496 1951.01,-502 1945.01,-502"/>
 <text text-anchor="middle" x="1870.51" y="-487" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">ReciprocityTheory/DualLattices</text>
-<text text-anchor="middle" x="1870.51" y="-476" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">183 files | H=15</text>
+<text text-anchor="middle" x="1870.51" y="-476" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=15</text>
 </g>
 <!-- Development_AbelianVarietyTheory&#45;&gt;ReciprocityTheory_DualLattices -->
 <g id="edge20" class="edge">
@@ -420,15 +420,15 @@
 <!-- Formalism_PairingDivisors -->
 <g id="node40" class="node">
 <title>Formalism_PairingDivisors</title>
-<path fill="#c2410c" stroke="#fb923c" stroke-width="1.8" d="M1244.51,-307C1244.51,-307 1120.51,-307 1120.51,-307 1114.51,-307 1108.51,-301 1108.51,-295 1108.51,-295 1108.51,-283 1108.51,-283 1108.51,-277 1114.51,-271 1120.51,-271 1120.51,-271 1244.51,-271 1244.51,-271 1250.51,-271 1256.51,-277 1256.51,-283 1256.51,-283 1256.51,-295 1256.51,-295 1256.51,-301 1250.51,-307 1244.51,-307"/>
-<text text-anchor="middle" x="1182.51" y="-292" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">Formalism/PairingDivisors</text>
-<text text-anchor="middle" x="1182.51" y="-281" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">7 files | H=12</text>
+<path fill="#c2410c" stroke="#fb923c" stroke-width="1.8" d="M1240.51,-307C1240.51,-307 1116.51,-307 1116.51,-307 1110.51,-307 1104.51,-301 1104.51,-295 1104.51,-295 1104.51,-283 1104.51,-283 1104.51,-277 1110.51,-271 1116.51,-271 1116.51,-271 1240.51,-271 1240.51,-271 1246.51,-271 1252.51,-277 1252.51,-283 1252.51,-283 1252.51,-295 1252.51,-295 1252.51,-301 1246.51,-307 1240.51,-307"/>
+<text text-anchor="middle" x="1178.51" y="-292" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">Formalism/PairingDivisors</text>
+<text text-anchor="middle" x="1178.51" y="-281" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=12</text>
 </g>
 <!-- Development_AbelianVarietyTheory&#45;&gt;Formalism_PairingDivisors -->
 <g id="edge32" class="edge">
 <title>Development_AbelianVarietyTheory&#45;&gt;Formalism_PairingDivisors</title>
-<path fill="none" stroke="#94a3b8" stroke-width="3.67" d="M1463,-602.23C1299.49,-583.16 984.74,-541.71 953.51,-502 943.62,-489.42 946.44,-480.35 953.51,-466 990.59,-390.74 1077.03,-338.67 1132.46,-311.63"/>
-<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.67" points="1134.24,-314.66 1141.75,-307.19 1131.22,-308.35 1134.24,-314.66"/>
+<path fill="none" stroke="#94a3b8" stroke-width="3.67" d="M1463,-602.23C1299.49,-583.16 984.74,-541.71 953.51,-502 943.62,-489.42 946.5,-480.38 953.51,-466 989.97,-391.2 1075.3,-338.84 1129.77,-311.64"/>
+<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.67" points="1131.45,-314.72 1138.9,-307.18 1128.38,-308.43 1131.45,-314.72"/>
 <text text-anchor="middle" x="964.01" y="-482.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#cbd5e1"> 544 </text>
 </g>
 <!-- Formalism_SatakeDualWeyl -->
@@ -436,7 +436,7 @@
 <title>Formalism_SatakeDualWeyl</title>
 <path fill="#c2410c" stroke="#fb923c" stroke-width="1.8" d="M1745.01,-502C1745.01,-502 1614.01,-502 1614.01,-502 1608.01,-502 1602.01,-496 1602.01,-490 1602.01,-490 1602.01,-478 1602.01,-478 1602.01,-472 1608.01,-466 1614.01,-466 1614.01,-466 1745.01,-466 1745.01,-466 1751.01,-466 1757.01,-472 1757.01,-478 1757.01,-478 1757.01,-490 1757.01,-490 1757.01,-496 1751.01,-502 1745.01,-502"/>
 <text text-anchor="middle" x="1679.51" y="-487" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">Formalism/SatakeDualWeyl</text>
-<text text-anchor="middle" x="1679.51" y="-476" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">85 files | H=10</text>
+<text text-anchor="middle" x="1679.51" y="-476" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=10</text>
 </g>
 <!-- Development_AbelianVarietyTheory&#45;&gt;Formalism_SatakeDualWeyl -->
 <g id="edge28" class="edge">
@@ -450,7 +450,7 @@
 <title>ReciprocityTheory_Chebotarev</title>
 <path fill="#0f766e" stroke="#2dd4bf" stroke-width="1.8" d="M1144.51,-502C1144.51,-502 1000.51,-502 1000.51,-502 994.51,-502 988.51,-496 988.51,-490 988.51,-490 988.51,-478 988.51,-478 988.51,-472 994.51,-466 1000.51,-466 1000.51,-466 1144.51,-466 1144.51,-466 1150.51,-466 1156.51,-472 1156.51,-478 1156.51,-478 1156.51,-490 1156.51,-490 1156.51,-496 1150.51,-502 1144.51,-502"/>
 <text text-anchor="middle" x="1072.51" y="-487" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">ReciprocityTheory/Chebotarev</text>
-<text text-anchor="middle" x="1072.51" y="-476" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">47 files | H=10</text>
+<text text-anchor="middle" x="1072.51" y="-476" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=10</text>
 </g>
 <!-- Development_AbelianVarietyTheory&#45;&gt;ReciprocityTheory_Chebotarev -->
 <g id="edge91" class="edge">
@@ -462,15 +462,15 @@
 <!-- ReciprocityTheory__minor_15_ -->
 <g id="node44" class="node">
 <title>ReciprocityTheory__minor_15_</title>
-<path fill="#0f766e" stroke="#2dd4bf" stroke-width="1.8" d="M664.01,-242C664.01,-242 525.01,-242 525.01,-242 519.01,-242 513.01,-236 513.01,-230 513.01,-230 513.01,-218 513.01,-218 513.01,-212 519.01,-206 525.01,-206 525.01,-206 664.01,-206 664.01,-206 670.01,-206 676.01,-212 676.01,-218 676.01,-218 676.01,-230 676.01,-230 676.01,-236 670.01,-242 664.01,-242"/>
-<text text-anchor="middle" x="594.51" y="-227" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">ReciprocityTheory/(minor 15)</text>
-<text text-anchor="middle" x="594.51" y="-216" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">92 files | H=9</text>
+<path fill="#0f766e" stroke="#2dd4bf" stroke-width="1.8" d="M674.01,-242C674.01,-242 535.01,-242 535.01,-242 529.01,-242 523.01,-236 523.01,-230 523.01,-230 523.01,-218 523.01,-218 523.01,-212 529.01,-206 535.01,-206 535.01,-206 674.01,-206 674.01,-206 680.01,-206 686.01,-212 686.01,-218 686.01,-218 686.01,-230 686.01,-230 686.01,-236 680.01,-242 674.01,-242"/>
+<text text-anchor="middle" x="604.51" y="-227" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">ReciprocityTheory/(minor 15)</text>
+<text text-anchor="middle" x="604.51" y="-216" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=9</text>
 </g>
 <!-- Development_AbelianVarietyTheory&#45;&gt;ReciprocityTheory__minor_15_ -->
 <g id="edge37" class="edge">
 <title>Development_AbelianVarietyTheory&#45;&gt;ReciprocityTheory__minor_15_</title>
-<path fill="none" stroke="#94a3b8" stroke-width="3.6" d="M1462.89,-603.47C1432.37,-600.75 1398.56,-597.98 1367.51,-596 1203.94,-585.58 790.36,-603.23 630.51,-567 559.25,-550.85 536.75,-547.41 479.51,-502 451.38,-479.68 442.74,-471.11 431.51,-437 417.02,-392.97 430.01,-373.31 457.51,-336 484.62,-299.22 526.69,-267.59 557.06,-247.62"/>
-<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.6" points="559.19,-250.41 565.69,-242.05 555.39,-244.53 559.19,-250.41"/>
+<path fill="none" stroke="#94a3b8" stroke-width="3.6" d="M1462.89,-603.47C1432.37,-600.75 1398.56,-597.98 1367.51,-596 1203.94,-585.58 790.36,-603.23 630.51,-567 559.25,-550.85 536.75,-547.41 479.51,-502 451.38,-479.68 442.74,-471.11 431.51,-437 417.02,-392.97 429.38,-372.84 457.51,-336 486.34,-298.25 531.21,-266.94 563.79,-247.3"/>
+<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.6" points="565.8,-250.18 572.63,-242.08 562.24,-244.15 565.8,-250.18"/>
 <text text-anchor="middle" x="442.01" y="-417.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#cbd5e1"> 461 </text>
 </g>
 <!-- Formalism_RealPlaceAnalysis -->
@@ -478,7 +478,7 @@
 <title>Formalism_RealPlaceAnalysis</title>
 <path fill="#c2410c" stroke="#fb923c" stroke-width="1.8" d="M1337.01,-502C1337.01,-502 1196.01,-502 1196.01,-502 1190.01,-502 1184.01,-496 1184.01,-490 1184.01,-490 1184.01,-478 1184.01,-478 1184.01,-472 1190.01,-466 1196.01,-466 1196.01,-466 1337.01,-466 1337.01,-466 1343.01,-466 1349.01,-472 1349.01,-478 1349.01,-478 1349.01,-490 1349.01,-490 1349.01,-496 1343.01,-502 1337.01,-502"/>
 <text text-anchor="middle" x="1266.51" y="-487" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">Formalism/RealPlaceAnalysis</text>
-<text text-anchor="middle" x="1266.51" y="-476" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">54 files | H=7</text>
+<text text-anchor="middle" x="1266.51" y="-476" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=7</text>
 </g>
 <!-- Development_AbelianVarietyTheory&#45;&gt;Formalism_RealPlaceAnalysis -->
 <g id="edge21" class="edge">
@@ -492,69 +492,69 @@
 <title>ReciprocityTheory_GeometryOfNumbers</title>
 <path fill="#0f766e" stroke="#2dd4bf" stroke-width="1.8" d="M3038.51,-502C3038.51,-502 2846.51,-502 2846.51,-502 2840.51,-502 2834.51,-496 2834.51,-490 2834.51,-490 2834.51,-478 2834.51,-478 2834.51,-472 2840.51,-466 2846.51,-466 2846.51,-466 3038.51,-466 3038.51,-466 3044.51,-466 3050.51,-472 3050.51,-478 3050.51,-478 3050.51,-490 3050.51,-490 3050.51,-496 3044.51,-502 3038.51,-502"/>
 <text text-anchor="middle" x="2942.51" y="-487" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">ReciprocityTheory/GeometryOfNumbers</text>
-<text text-anchor="middle" x="2942.51" y="-476" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">39 files | H=7</text>
+<text text-anchor="middle" x="2942.51" y="-476" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=7</text>
 </g>
 <!-- Development_AbelianVarietyTheory&#45;&gt;ReciprocityTheory_GeometryOfNumbers -->
 <g id="edge75" class="edge">
 <title>Development_AbelianVarietyTheory&#45;&gt;ReciprocityTheory_GeometryOfNumbers</title>
-<path fill="none" stroke="#64748b" stroke-width="2.96" stroke-dasharray="1,5" d="M1658.17,-608.16C1729.26,-604.68 1827.84,-599.92 1914.51,-596 2218.03,-582.27 2296.57,-608.76 2597.51,-567 2695.74,-553.37 2806.94,-524.43 2875.9,-504.84"/>
-<polygon fill="#64748b" stroke="#64748b" stroke-width="2.96" points="2877.11,-508.13 2885.77,-502.02 2875.19,-501.4 2877.11,-508.13"/>
-<text text-anchor="middle" x="2779.01" y="-547.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#94a3b8"> 113 </text>
+<path fill="none" stroke="#64748b" stroke-width="2.96" stroke-dasharray="1,5" d="M1658.28,-608.02C1727.35,-604.54 1822.09,-599.85 1905.51,-596 2204.58,-582.19 2281.74,-606.5 2578.51,-567 2682,-553.23 2799.46,-524.29 2872.27,-504.75"/>
+<polygon fill="#64748b" stroke="#64748b" stroke-width="2.96" points="2873.51,-508.04 2882.25,-502.06 2871.68,-501.28 2873.51,-508.04"/>
+<text text-anchor="middle" x="2769.01" y="-547.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#94a3b8"> 113 </text>
 </g>
 <!-- Development_WeilBound&#45;&gt;Development_AbelianVarietyTheory -->
 <g id="edge8" class="edge">
 <title>Development_WeilBound&#45;&gt;Development_AbelianVarietyTheory</title>
-<path fill="none" stroke="#38bdf8" stroke-width="4.7" d="M2904.9,-1001.1C2806.05,-997.43 2621.15,-986.87 2466.51,-957 2170.38,-899.8 2090.49,-888.11 1816.51,-762 1789.63,-749.63 1785.9,-741.19 1760.51,-726 1706.33,-693.6 1642.31,-658.63 1601.57,-636.78"/>
+<path fill="none" stroke="#38bdf8" stroke-width="4.7" d="M2904.62,-1001.15C2805.37,-997.53 2619.74,-987.02 2464.51,-957 2169.23,-899.89 2089.66,-887.87 1816.51,-762 1789.64,-749.62 1785.9,-741.19 1760.51,-726 1706.33,-693.6 1642.31,-658.63 1601.57,-636.78"/>
 <polygon fill="#38bdf8" stroke="#38bdf8" stroke-width="4.7" points="1603.5,-633.15 1592.74,-632.06 1599.62,-640.4 1603.5,-633.15"/>
-<text text-anchor="middle" x="1974.51" y="-807.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#bae6fd"> 5,157 </text>
+<text text-anchor="middle" x="1973.51" y="-807.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#bae6fd"> 5,157 </text>
 </g>
 <!-- Development_WeilBound&#45;&gt;Development_AutomorphicSpectrum -->
 <g id="edge6" class="edge">
 <title>Development_WeilBound&#45;&gt;Development_AutomorphicSpectrum</title>
-<path fill="none" stroke="#38bdf8" stroke-width="4.78" d="M2923.59,-985.87C2852.44,-962.4 2724.87,-920.31 2649.02,-895.29"/>
-<polygon fill="#38bdf8" stroke="#38bdf8" stroke-width="4.78" points="2649.94,-891.19 2639.13,-892.03 2647.32,-899.13 2649.94,-891.19"/>
-<text text-anchor="middle" x="2841.51" y="-937.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#bae6fd"> 6,183 </text>
+<path fill="none" stroke="#38bdf8" stroke-width="4.78" d="M2922.25,-985.87C2849.12,-962.35 2717.87,-920.14 2640.13,-895.14"/>
+<polygon fill="#38bdf8" stroke="#38bdf8" stroke-width="4.78" points="2641.26,-891.11 2630.46,-892.03 2638.7,-899.07 2641.26,-891.11"/>
+<text text-anchor="middle" x="2837.51" y="-937.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#bae6fd"> 6,183 </text>
 </g>
 <!-- CompanionTheory_SpectralGeometry -->
 <g id="node8" class="node">
 <title>CompanionTheory_SpectralGeometry</title>
 <path fill="#047857" stroke="#34d399" stroke-width="1.8" d="M2342.01,-762C2342.01,-762 2165.01,-762 2165.01,-762 2159.01,-762 2153.01,-756 2153.01,-750 2153.01,-750 2153.01,-738 2153.01,-738 2153.01,-732 2159.01,-726 2165.01,-726 2165.01,-726 2342.01,-726 2342.01,-726 2348.01,-726 2354.01,-732 2354.01,-738 2354.01,-738 2354.01,-750 2354.01,-750 2354.01,-756 2348.01,-762 2342.01,-762"/>
 <text text-anchor="middle" x="2253.51" y="-747" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">CompanionTheory/SpectralGeometry</text>
-<text text-anchor="middle" x="2253.51" y="-736" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">1,254 files | H=114</text>
+<text text-anchor="middle" x="2253.51" y="-736" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=114</text>
 </g>
 <!-- Development_WeilBound&#45;&gt;CompanionTheory_SpectralGeometry -->
 <g id="edge71" class="edge">
 <title>Development_WeilBound&#45;&gt;CompanionTheory_SpectralGeometry</title>
-<path fill="none" stroke="#94a3b8" stroke-width="3.12" d="M2904.99,-991.17C2855.44,-982.54 2787.71,-970.1 2728.51,-957 2531.91,-913.49 2445.1,-960.67 2294.51,-827 2278.02,-812.36 2267.37,-789.54 2261.07,-771.69"/>
-<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.12" points="2264.37,-770.52 2257.93,-762.11 2257.71,-772.7 2264.37,-770.52"/>
+<path fill="none" stroke="#94a3b8" stroke-width="3.12" d="M2904.91,-991.49C2854.03,-982.86 2783.81,-970.31 2722.51,-957 2528.65,-914.91 2443.16,-959.49 2295.51,-827 2279.09,-812.27 2268.17,-789.61 2261.59,-771.84"/>
+<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.12" points="2264.78,-770.35 2258.21,-762.04 2258.17,-772.63 2264.78,-770.35"/>
 </g>
 <!-- Development_WeilBound&#45;&gt;ReciprocityTheory_ReductiveGroups -->
 <g id="edge19" class="edge">
 <title>Development_WeilBound&#45;&gt;ReciprocityTheory_ReductiveGroups</title>
-<path fill="none" stroke="#94a3b8" stroke-width="3.85" d="M3046.06,-990.12C3142.19,-970.52 3302.51,-929.64 3302.51,-875 3302.51,-875 3302.51,-875 3294.51,-678 3294.51,-645.84 3123.03,-485.57 3097.51,-466 3048.44,-428.38 3033.41,-419.81 2974.51,-401 2897.07,-376.27 2805.78,-364.82 2736.42,-359.53"/>
-<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.85" points="2736.58,-356.03 2726.35,-358.8 2736.07,-363.02 2736.58,-356.03"/>
+<path fill="none" stroke="#94a3b8" stroke-width="3.85" d="M3046.06,-990.12C3142.19,-970.52 3302.51,-929.64 3302.51,-875 3302.51,-875 3302.51,-875 3294.51,-678 3294.51,-646.29 3128.17,-485.93 3103.51,-466 3058.45,-429.58 3045.43,-419.46 2990.51,-401 2907.92,-373.25 2809.59,-362.04 2736.27,-357.6"/>
+<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.85" points="2736.28,-354.1 2726.1,-357.02 2735.88,-361.09 2736.28,-354.1"/>
 <text text-anchor="middle" x="3313.01" y="-677.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#cbd5e1"> 797 </text>
 </g>
 <!-- GroundTheory_HeightsAndTheta -->
 <g id="node21" class="node">
 <title>GroundTheory_HeightsAndTheta</title>
-<path fill="#a16207" stroke="#facc15" stroke-width="1.8" d="M3104.01,-762C3104.01,-762 2951.01,-762 2951.01,-762 2945.01,-762 2939.01,-756 2939.01,-750 2939.01,-750 2939.01,-738 2939.01,-738 2939.01,-732 2945.01,-726 2951.01,-726 2951.01,-726 3104.01,-726 3104.01,-726 3110.01,-726 3116.01,-732 3116.01,-738 3116.01,-738 3116.01,-750 3116.01,-750 3116.01,-756 3110.01,-762 3104.01,-762"/>
-<text text-anchor="middle" x="3027.51" y="-747" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">GroundTheory/HeightsAndTheta</text>
-<text text-anchor="middle" x="3027.51" y="-736" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">6,410 files | H=68</text>
+<path fill="#a16207" stroke="#facc15" stroke-width="1.8" d="M3084.01,-762C3084.01,-762 2931.01,-762 2931.01,-762 2925.01,-762 2919.01,-756 2919.01,-750 2919.01,-750 2919.01,-738 2919.01,-738 2919.01,-732 2925.01,-726 2931.01,-726 2931.01,-726 3084.01,-726 3084.01,-726 3090.01,-726 3096.01,-732 3096.01,-738 3096.01,-738 3096.01,-750 3096.01,-750 3096.01,-756 3090.01,-762 3084.01,-762"/>
+<text text-anchor="middle" x="3007.51" y="-747" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">GroundTheory/HeightsAndTheta</text>
+<text text-anchor="middle" x="3007.51" y="-736" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=68</text>
 </g>
 <!-- Development_WeilBound&#45;&gt;GroundTheory_HeightsAndTheta -->
 <g id="edge15" class="edge">
 <title>Development_WeilBound&#45;&gt;GroundTheory_HeightsAndTheta</title>
-<path fill="none" stroke="#38bdf8" stroke-width="3.99" d="M3046.04,-987.54C3096.48,-972.41 3160.82,-943.8 3192.51,-892 3226.05,-837.17 3145.02,-791.15 3085.02,-765.89"/>
-<polygon fill="#38bdf8" stroke="#38bdf8" stroke-width="3.99" points="3086.17,-762.58 3075.59,-762.01 3083.51,-769.05 3086.17,-762.58"/>
-<text text-anchor="middle" x="3213.51" y="-872.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#bae6fd"> 1,087 </text>
+<path fill="none" stroke="#38bdf8" stroke-width="3.99" d="M3046.04,-987.54C3096.48,-972.41 3160.82,-943.8 3192.51,-892 3227.91,-834.13 3140.38,-789.69 3073.97,-765.47"/>
+<polygon fill="#38bdf8" stroke="#38bdf8" stroke-width="3.99" points="3074.93,-762.1 3064.34,-762.04 3072.59,-768.69 3074.93,-762.1"/>
+<text text-anchor="middle" x="3214.51" y="-872.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#bae6fd"> 1,087 </text>
 </g>
 <!-- GroundTheory_ProfiniteCohomology -->
 <g id="node22" class="node">
 <title>GroundTheory_ProfiniteCohomology</title>
 <path fill="#a16207" stroke="#facc15" stroke-width="1.8" d="M3645.01,-567C3645.01,-567 3474.01,-567 3474.01,-567 3468.01,-567 3462.01,-561 3462.01,-555 3462.01,-555 3462.01,-543 3462.01,-543 3462.01,-537 3468.01,-531 3474.01,-531 3474.01,-531 3645.01,-531 3645.01,-531 3651.01,-531 3657.01,-537 3657.01,-543 3657.01,-543 3657.01,-555 3657.01,-555 3657.01,-561 3651.01,-567 3645.01,-567"/>
 <text text-anchor="middle" x="3559.51" y="-552" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">GroundTheory/ProfiniteCohomology</text>
-<text text-anchor="middle" x="3559.51" y="-541" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">450 files | H=68</text>
+<text text-anchor="middle" x="3559.51" y="-541" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=68</text>
 </g>
 <!-- Development_WeilBound&#45;&gt;GroundTheory_ProfiniteCohomology -->
 <g id="edge76" class="edge">
@@ -568,7 +568,7 @@
 <title>Development_ResolutionOfSingularities</title>
 <path fill="#1d4ed8" stroke="#60a5fa" stroke-width="1.8" d="M3167.01,-892C3167.01,-892 2978.01,-892 2978.01,-892 2972.01,-892 2966.01,-886 2966.01,-880 2966.01,-880 2966.01,-868 2966.01,-868 2966.01,-862 2972.01,-856 2978.01,-856 2978.01,-856 3167.01,-856 3167.01,-856 3173.01,-856 3179.01,-862 3179.01,-868 3179.01,-868 3179.01,-880 3179.01,-880 3179.01,-886 3173.01,-892 3167.01,-892"/>
 <text text-anchor="middle" x="3072.51" y="-877" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">Development/ResolutionOfSingularities</text>
-<text text-anchor="middle" x="3072.51" y="-866" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">499 files | H=36</text>
+<text text-anchor="middle" x="3072.51" y="-866" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=36</text>
 </g>
 <!-- Development_WeilBound&#45;&gt;Development_ResolutionOfSingularities -->
 <g id="edge86" class="edge">
@@ -582,7 +582,7 @@
 <title>GroundTheory_PAdicHodge</title>
 <path fill="#a16207" stroke="#facc15" stroke-width="1.8" d="M3466.51,-697C3466.51,-697 3340.51,-697 3340.51,-697 3334.51,-697 3328.51,-691 3328.51,-685 3328.51,-685 3328.51,-673 3328.51,-673 3328.51,-667 3334.51,-661 3340.51,-661 3340.51,-661 3466.51,-661 3466.51,-661 3472.51,-661 3478.51,-667 3478.51,-673 3478.51,-673 3478.51,-685 3478.51,-685 3478.51,-691 3472.51,-697 3466.51,-697"/>
 <text text-anchor="middle" x="3403.51" y="-682" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">GroundTheory/PAdicHodge</text>
-<text text-anchor="middle" x="3403.51" y="-671" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">226 files | H=35</text>
+<text text-anchor="middle" x="3403.51" y="-671" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=35</text>
 </g>
 <!-- Development_WeilBound&#45;&gt;GroundTheory_PAdicHodge -->
 <g id="edge81" class="edge">
@@ -594,118 +594,118 @@
 <!-- Development_AutomorphicSpectrum&#45;&gt;Development_AbelianVarietyTheory -->
 <g id="edge5" class="edge">
 <title>Development_AutomorphicSpectrum&#45;&gt;Development_AbelianVarietyTheory</title>
-<path fill="none" stroke="#38bdf8" stroke-width="4.84" d="M2488.25,-862.07C2431.07,-854.62 2358.15,-843.15 2294.51,-827 2210.85,-805.77 2188.67,-800.68 2111.51,-762 2085.73,-749.07 2083.12,-739.28 2057.51,-726 1986.45,-689.13 1967,-681.12 1889.51,-661 1816.92,-642.15 1733.18,-630.58 1668.35,-623.76"/>
+<path fill="none" stroke="#38bdf8" stroke-width="4.84" d="M2478.42,-861.23C2423.95,-853.66 2355.46,-842.35 2295.51,-827 2211.49,-805.49 2189.08,-800.8 2111.51,-762 2085.71,-749.1 2083.12,-739.28 2057.51,-726 1986.45,-689.13 1967,-681.12 1889.51,-661 1816.92,-642.15 1733.18,-630.58 1668.35,-623.76"/>
 <polygon fill="#38bdf8" stroke="#38bdf8" stroke-width="4.84" points="1668.5,-619.52 1658.12,-622.71 1667.63,-627.94 1668.5,-619.52"/>
 <text text-anchor="middle" x="2125.51" y="-742.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#bae6fd"> 7,076 </text>
 </g>
 <!-- Development_AutomorphicSpectrum&#45;&gt;Development_WeilBound -->
 <g id="edge7" class="edge">
 <title>Development_AutomorphicSpectrum&#45;&gt;Development_WeilBound</title>
-<path fill="none" stroke="#f59e0b" stroke-width="4.78" stroke-dasharray="5,2" d="M2488.27,-876.77C2192.61,-882.27 1336.79,-899.97 1316.51,-921 1305.4,-932.52 1305.36,-945.53 1316.51,-957 1344.31,-985.58 2564.97,-999.13 2894.35,-1002.27"/>
+<path fill="none" stroke="#f59e0b" stroke-width="4.78" stroke-dasharray="5,2" d="M2478.27,-876.8C2184.21,-882.35 1336.61,-900.15 1316.51,-921 1305.41,-932.52 1305.36,-945.53 1316.51,-957 1344.31,-985.58 2564.97,-999.13 2894.35,-1002.27"/>
 <polygon fill="#f59e0b" stroke="#f59e0b" stroke-width="4.78" points="2894.72,-1006.46 2904.76,-1002.37 2894.8,-998.09 2894.72,-1006.46"/>
 <text text-anchor="middle" x="1330.51" y="-937.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#fbbf24"> 6,148 </text>
 </g>
 <!-- Development_AutomorphicSpectrum&#45;&gt;CompanionTheory_SpectralGeometry -->
 <g id="edge16" class="edge">
 <title>Development_AutomorphicSpectrum&#45;&gt;CompanionTheory_SpectralGeometry</title>
-<path fill="none" stroke="#94a3b8" stroke-width="3.93" d="M2488.4,-864.23C2445.7,-857.76 2396.14,-846.52 2354.51,-827 2324.36,-812.86 2295.44,-787.81 2276.33,-769.11"/>
-<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.93" points="2278.81,-766.63 2269.26,-762.04 2273.86,-771.58 2278.81,-766.63"/>
+<path fill="none" stroke="#94a3b8" stroke-width="3.93" d="M2478.49,-862.94C2438.59,-856.28 2393,-845.25 2354.51,-827 2324.74,-812.88 2296.09,-788.22 2276.97,-769.62"/>
+<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.93" points="2279.18,-766.89 2269.62,-762.32 2274.25,-771.86 2279.18,-766.89"/>
 <text text-anchor="middle" x="2365.01" y="-807.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#cbd5e1"> 954 </text>
 </g>
 <!-- Development_AutomorphicSpectrum&#45;&gt;PositivityTheory_AutomorphicForms -->
 <g id="edge17" class="edge">
 <title>Development_AutomorphicSpectrum&#45;&gt;PositivityTheory_AutomorphicForms</title>
-<path fill="none" stroke="#94a3b8" stroke-width="3.86" d="M2488.35,-871.53C2278.27,-867.87 1802.03,-856.4 1734.51,-827 1719.86,-820.62 1691.54,-791.61 1671.63,-769.9"/>
+<path fill="none" stroke="#94a3b8" stroke-width="3.86" d="M2478.34,-871.46C2270.12,-867.68 1801.11,-856.02 1734.51,-827 1719.86,-820.62 1691.54,-791.61 1671.63,-769.9"/>
 <polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.86" points="1674.03,-767.33 1664.72,-762.28 1668.85,-772.04 1674.03,-767.33"/>
 <text text-anchor="middle" x="1745.01" y="-807.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#cbd5e1"> 816 </text>
 </g>
 <!-- Development_AutomorphicSpectrum&#45;&gt;Formalism_LocalToGlobal -->
 <g id="edge38" class="edge">
 <title>Development_AutomorphicSpectrum&#45;&gt;Formalism_LocalToGlobal</title>
-<path fill="none" stroke="#94a3b8" stroke-width="3.57" d="M2549.07,-855.84C2534.95,-848.33 2519.5,-838.57 2507.51,-827 2463.98,-784.99 2414.84,-628.02 2363.51,-596 2309.87,-562.54 2143.31,-574.28 2080.51,-567 1882.37,-544.02 1649.91,-512.81 1529.36,-496.31"/>
-<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.57" points="1529.49,-492.8 1519.11,-494.91 1528.54,-499.73 1529.49,-492.8"/>
-<text text-anchor="middle" x="2443.01" y="-677.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#cbd5e1"> 435 </text>
+<path fill="none" stroke="#94a3b8" stroke-width="3.57" d="M2545.88,-855.98C2533.1,-848.19 2518.74,-838.19 2507.51,-827 2463.9,-783.54 2407.14,-627.95 2354.51,-596 2302.17,-564.23 2141.32,-574.16 2080.51,-567 1882.41,-543.69 1649.94,-512.62 1529.37,-496.23"/>
+<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.57" points="1529.5,-492.71 1519.12,-494.83 1528.55,-499.65 1529.5,-492.71"/>
+<text text-anchor="middle" x="2438.01" y="-677.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#cbd5e1"> 435 </text>
 </g>
 <!-- Development_AutomorphicSpectrum&#45;&gt;ReciprocityTheory_ReductiveGroups -->
 <g id="edge9" class="edge">
 <title>Development_AutomorphicSpectrum&#45;&gt;ReciprocityTheory_ReductiveGroups</title>
-<path fill="none" stroke="#38bdf8" stroke-width="4.62" d="M2598.62,-855.78C2611.6,-834.65 2632.43,-797.28 2641.51,-762 2677.33,-622.89 2648.1,-448.21 2634.52,-382.06"/>
-<polygon fill="#38bdf8" stroke="#38bdf8" stroke-width="4.62" points="2638.42,-380.99 2632.41,-372.04 2630.51,-382.66 2638.42,-380.99"/>
-<text text-anchor="middle" x="2672.51" y="-612.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#bae6fd"> 4,336 </text>
+<path fill="none" stroke="#38bdf8" stroke-width="4.62" d="M2586.64,-855.93C2597.46,-834.65 2614.86,-796.82 2621.51,-762 2648.4,-621.29 2637.09,-448.22 2631.22,-382.27"/>
+<polygon fill="#38bdf8" stroke="#38bdf8" stroke-width="4.62" points="2635.24,-381.86 2630.3,-372.28 2627.19,-382.6 2635.24,-381.86"/>
+<text text-anchor="middle" x="2651.51" y="-612.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#bae6fd"> 4,336 </text>
 </g>
 <!-- Development_AutomorphicSpectrum&#45;&gt;GroundTheory_HeightsAndTheta -->
 <g id="edge10" class="edge">
 <title>Development_AutomorphicSpectrum&#45;&gt;GroundTheory_HeightsAndTheta</title>
-<path fill="none" stroke="#38bdf8" stroke-width="4.5" d="M2686.52,-863.98C2726.08,-857.48 2771.05,-846.28 2808.51,-827 2829.49,-816.21 2826.79,-802.26 2847.51,-791 2863.25,-782.45 2899.21,-772.66 2934.88,-764.32"/>
-<polygon fill="#38bdf8" stroke="#38bdf8" stroke-width="4.5" points="2936.06,-768.08 2944.92,-762 2934.29,-760.41 2936.06,-768.08"/>
+<path fill="none" stroke="#38bdf8" stroke-width="4.5" d="M2676.71,-858.13C2712.4,-851.01 2752.48,-840.91 2787.51,-827 2816.41,-815.52 2818.99,-803.4 2847.51,-791 2871.5,-780.57 2898.52,-771.77 2923.43,-764.74"/>
+<polygon fill="#38bdf8" stroke="#38bdf8" stroke-width="4.5" points="2924.63,-768.49 2933.23,-762.04 2922.54,-760.9 2924.63,-768.49"/>
 <text text-anchor="middle" x="2861.51" y="-807.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#bae6fd"> 3,325 </text>
 </g>
 <!-- Development_AutomorphicSpectrum&#45;&gt;GroundTheory_GlobalFields -->
 <g id="edge61" class="edge">
 <title>Development_AutomorphicSpectrum&#45;&gt;GroundTheory_GlobalFields</title>
-<path fill="none" stroke="#94a3b8" stroke-width="3.22" d="M2686.65,-871.03C2775.03,-867.26 2907.25,-856.61 3018.51,-827 3087.94,-808.53 3107,-802.25 3166.51,-762 3219.62,-726.08 3223.08,-705.21 3269.51,-661 3307.21,-625.11 3420.65,-549.69 3441.51,-502 3459.48,-460.92 3434.18,-410.6 3414.58,-380.76"/>
-<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.22" points="3417.26,-378.48 3408.74,-372.19 3411.48,-382.42 3417.26,-378.48"/>
+<path fill="none" stroke="#94a3b8" stroke-width="3.22" d="M2676.79,-869.81C2761.55,-865.23 2886.1,-854.09 2991.51,-827 3064.66,-808.2 3084.49,-802.06 3148.51,-762 3166.96,-750.46 3432.59,-521.85 3441.51,-502 3461.9,-456.64 3418.51,-407.23 3386.54,-378.8"/>
+<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.22" points="3388.56,-375.92 3378.7,-372.04 3383.99,-381.22 3388.56,-375.92"/>
 </g>
 <!-- Development_AutomorphicSpectrum&#45;&gt;GroundTheory_AutomorphicForms -->
 <g id="edge41" class="edge">
 <title>Development_AutomorphicSpectrum&#45;&gt;GroundTheory_AutomorphicForms</title>
-<path fill="none" stroke="#94a3b8" stroke-width="3.54" d="M2686.76,-862.91C2823.53,-847.31 3060.86,-813.64 3129.51,-762 3197.98,-710.49 3169.12,-658.69 3227.51,-596 3242.97,-579.4 3252.89,-582.44 3269.51,-567 3287.87,-549.95 3305.49,-527.64 3317.9,-510.6"/>
+<path fill="none" stroke="#94a3b8" stroke-width="3.54" d="M2676.73,-861.78C2810.78,-845.05 3040.88,-810.28 3109.51,-762 3183.55,-709.92 3163.07,-659.57 3227.51,-596 3243.66,-580.07 3252.89,-582.44 3269.51,-567 3287.87,-549.95 3305.49,-527.64 3317.9,-510.6"/>
 <polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.54" points="3320.92,-512.39 3323.9,-502.22 3315.23,-508.32 3320.92,-512.39"/>
-<text text-anchor="middle" x="3199.01" y="-677.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#cbd5e1"> 403 </text>
+<text text-anchor="middle" x="3192.01" y="-677.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#cbd5e1"> 403 </text>
 </g>
 <!-- Development_AutomorphicSpectrum&#45;&gt;ReciprocityTheory_AnalyticForms -->
 <g id="edge31" class="edge">
 <title>Development_AutomorphicSpectrum&#45;&gt;ReciprocityTheory_AnalyticForms</title>
-<path fill="none" stroke="#94a3b8" stroke-width="3.71" d="M2576.88,-855.65C2564.39,-834.38 2544.03,-796.88 2533.51,-762 2506.77,-673.28 2499.33,-562.77 2497.28,-512.36"/>
-<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.71" points="2500.78,-512.13 2496.91,-502.26 2493.78,-512.38 2500.78,-512.13"/>
-<text text-anchor="middle" x="2528.01" y="-677.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#cbd5e1"> 595 </text>
+<path fill="none" stroke="#94a3b8" stroke-width="3.71" d="M2569.14,-855.76C2559.08,-834.3 2542.46,-796.3 2533.51,-762 2510.13,-672.34 2501.04,-562.29 2497.93,-512.17"/>
+<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.71" points="2501.43,-511.92 2497.34,-502.14 2494.44,-512.33 2501.43,-511.92"/>
+<text text-anchor="middle" x="2529.01" y="-677.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#cbd5e1"> 595 </text>
 </g>
 <!-- GroundTheory_LocalFields -->
 <g id="node33" class="node">
 <title>GroundTheory_LocalFields</title>
-<path fill="#a16207" stroke="#facc15" stroke-width="1.8" d="M3457.01,-242C3457.01,-242 3334.01,-242 3334.01,-242 3328.01,-242 3322.01,-236 3322.01,-230 3322.01,-230 3322.01,-218 3322.01,-218 3322.01,-212 3328.01,-206 3334.01,-206 3334.01,-206 3457.01,-206 3457.01,-206 3463.01,-206 3469.01,-212 3469.01,-218 3469.01,-218 3469.01,-230 3469.01,-230 3469.01,-236 3463.01,-242 3457.01,-242"/>
-<text text-anchor="middle" x="3395.51" y="-227" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">GroundTheory/LocalFields</text>
-<text text-anchor="middle" x="3395.51" y="-216" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">159 files | H=26</text>
+<path fill="#a16207" stroke="#facc15" stroke-width="1.8" d="M3418.01,-242C3418.01,-242 3295.01,-242 3295.01,-242 3289.01,-242 3283.01,-236 3283.01,-230 3283.01,-230 3283.01,-218 3283.01,-218 3283.01,-212 3289.01,-206 3295.01,-206 3295.01,-206 3418.01,-206 3418.01,-206 3424.01,-206 3430.01,-212 3430.01,-218 3430.01,-218 3430.01,-230 3430.01,-230 3430.01,-236 3424.01,-242 3418.01,-242"/>
+<text text-anchor="middle" x="3356.51" y="-227" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">GroundTheory/LocalFields</text>
+<text text-anchor="middle" x="3356.51" y="-216" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=26</text>
 </g>
 <!-- Development_AutomorphicSpectrum&#45;&gt;GroundTheory_LocalFields -->
 <g id="edge69" class="edge">
 <title>Development_AutomorphicSpectrum&#45;&gt;GroundTheory_LocalFields</title>
-<path fill="none" stroke="#94a3b8" stroke-width="3.12" d="M2612.72,-855.99C2623.17,-848.06 2634.85,-837.95 2643.51,-827 2714.4,-737.35 2666.03,-665.83 2756.51,-596 2808.19,-556.11 2837.92,-585.55 2900.51,-567 2975.69,-544.73 3007.92,-556.27 3064.51,-502 3099.98,-467.98 3083.57,-442.74 3109.51,-401 3149.17,-337.21 3154.08,-311.23 3217.51,-271 3245.6,-253.18 3280.32,-242.25 3311.62,-235.55"/>
-<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.12" points="3312.54,-238.93 3321.65,-233.52 3311.15,-232.07 3312.54,-238.93"/>
+<path fill="none" stroke="#94a3b8" stroke-width="3.12" d="M2599.27,-855.73C2608.46,-847.68 2618.81,-837.55 2626.51,-827 2693.57,-735.16 2646.26,-665.17 2736.51,-596 2793.18,-552.57 2825.77,-586.27 2894.51,-567 2972.4,-545.16 3005.79,-557.63 3064.51,-502 3100.19,-468.2 3085.65,-443.96 3109.51,-401 3143.4,-340.01 3141.08,-312.03 3197.51,-271 3219.56,-254.97 3247.11,-244.5 3273.05,-237.67"/>
+<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.12" points="3274.03,-241.04 3282.9,-235.23 3272.35,-234.24 3274.03,-241.04"/>
 </g>
 <!-- PositivityTheory__other_2_ -->
 <g id="node36" class="node">
 <title>PositivityTheory__other_2_</title>
-<path fill="#86198f" stroke="#e879f9" stroke-width="1.8" d="M2900.01,-762C2900.01,-762 2779.01,-762 2779.01,-762 2773.01,-762 2767.01,-756 2767.01,-750 2767.01,-750 2767.01,-738 2767.01,-738 2767.01,-732 2773.01,-726 2779.01,-726 2779.01,-726 2900.01,-726 2900.01,-726 2906.01,-726 2912.01,-732 2912.01,-738 2912.01,-738 2912.01,-750 2912.01,-750 2912.01,-756 2906.01,-762 2900.01,-762"/>
-<text text-anchor="middle" x="2839.51" y="-747" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">PositivityTheory/(other 2)</text>
-<text text-anchor="middle" x="2839.51" y="-736" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">4 files | H=21</text>
+<path fill="#86198f" stroke="#e879f9" stroke-width="1.8" d="M2880.01,-762C2880.01,-762 2759.01,-762 2759.01,-762 2753.01,-762 2747.01,-756 2747.01,-750 2747.01,-750 2747.01,-738 2747.01,-738 2747.01,-732 2753.01,-726 2759.01,-726 2759.01,-726 2880.01,-726 2880.01,-726 2886.01,-726 2892.01,-732 2892.01,-738 2892.01,-738 2892.01,-750 2892.01,-750 2892.01,-756 2886.01,-762 2880.01,-762"/>
+<text text-anchor="middle" x="2819.51" y="-747" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">PositivityTheory/(other 2)</text>
+<text text-anchor="middle" x="2819.51" y="-736" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=21</text>
 </g>
 <!-- Development_AutomorphicSpectrum&#45;&gt;PositivityTheory__other_2_ -->
 <g id="edge107" class="edge">
 <title>Development_AutomorphicSpectrum&#45;&gt;PositivityTheory__other_2_</title>
-<path fill="none" stroke="#64748b" stroke-width="1.12" stroke-dasharray="1,5" d="M2670.97,-855.96C2695.85,-848.99 2722.57,-839.54 2745.51,-827 2772.95,-812 2799.33,-787.84 2817.13,-769.62"/>
-<polygon fill="#64748b" stroke="#64748b" stroke-width="1.12" points="2819.82,-771.87 2824.21,-762.22 2814.77,-767.03 2819.82,-771.87"/>
-<text text-anchor="middle" x="2799.51" y="-807.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#94a3b8"> 2 </text>
+<path fill="none" stroke="#64748b" stroke-width="1.12" stroke-dasharray="1,5" d="M2653.39,-855.98C2677.33,-848.91 2703.31,-839.4 2725.51,-827 2752.81,-811.75 2779.21,-787.62 2797.05,-769.48"/>
+<polygon fill="#64748b" stroke="#64748b" stroke-width="1.12" points="2799.73,-771.74 2804.15,-762.11 2794.69,-766.89 2799.73,-771.74"/>
+<text text-anchor="middle" x="2776.51" y="-807.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#94a3b8"> 2 </text>
 </g>
 <!-- Development_AutomorphicSpectrum&#45;&gt;ReciprocityTheory_DualLattices -->
 <g id="edge68" class="edge">
 <title>Development_AutomorphicSpectrum&#45;&gt;ReciprocityTheory_DualLattices</title>
-<path fill="none" stroke="#94a3b8" stroke-width="3.13" d="M2565.57,-855.59C2556.23,-847.52 2545.64,-837.41 2537.51,-827 2465.52,-734.84 2502.8,-669.09 2411.51,-596 2344.11,-542.03 2103.74,-509.06 1967.17,-494.25"/>
-<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.13" points="1967.43,-490.76 1957.11,-493.17 1966.68,-497.72 1967.43,-490.76"/>
+<path fill="none" stroke="#94a3b8" stroke-width="3.13" d="M2560.62,-855.82C2552.84,-847.48 2543.74,-837.09 2536.51,-827 2467.75,-731.07 2497.99,-669.34 2405.51,-596 2338.76,-543.06 2102.27,-509.76 1967.12,-494.61"/>
+<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.13" points="1967.49,-491.13 1957.17,-493.5 1966.72,-498.08 1967.49,-491.13"/>
 </g>
 <!-- BuildAid -->
 <g id="node47" class="node">
 <title>BuildAid</title>
-<path fill="#4b5563" stroke="#9ca3af" stroke-width="1.8" d="M2616.01,-762C2616.01,-762 2559.01,-762 2559.01,-762 2553.01,-762 2547.01,-756 2547.01,-750 2547.01,-750 2547.01,-738 2547.01,-738 2547.01,-732 2553.01,-726 2559.01,-726 2559.01,-726 2616.01,-726 2616.01,-726 2622.01,-726 2628.01,-732 2628.01,-738 2628.01,-738 2628.01,-750 2628.01,-750 2628.01,-756 2622.01,-762 2616.01,-762"/>
-<text text-anchor="middle" x="2587.51" y="-747" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">BuildAid</text>
-<text text-anchor="middle" x="2587.51" y="-736" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">5 files | H=0</text>
+<path fill="#4b5563" stroke="#9ca3af" stroke-width="1.8" d="M2596.01,-762C2596.01,-762 2559.01,-762 2559.01,-762 2553.01,-762 2547.01,-756 2547.01,-750 2547.01,-750 2547.01,-738 2547.01,-738 2547.01,-732 2553.01,-726 2559.01,-726 2559.01,-726 2596.01,-726 2596.01,-726 2602.01,-726 2608.01,-732 2608.01,-738 2608.01,-738 2608.01,-750 2608.01,-750 2608.01,-756 2602.01,-762 2596.01,-762"/>
+<text text-anchor="middle" x="2577.51" y="-747" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">BuildAid</text>
+<text text-anchor="middle" x="2577.51" y="-736" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=0</text>
 </g>
 <!-- Development_AutomorphicSpectrum&#45;&gt;BuildAid -->
 <g id="edge92" class="edge">
 <title>Development_AutomorphicSpectrum&#45;&gt;BuildAid</title>
-<path fill="none" stroke="#64748b" stroke-width="2.03" stroke-dasharray="1,5" d="M2587.51,-855.74C2587.51,-834.36 2587.51,-797.69 2587.51,-772.44"/>
-<polygon fill="#64748b" stroke="#64748b" stroke-width="2.03" points="2591.01,-772.4 2587.51,-762.4 2584.01,-772.4 2591.01,-772.4"/>
-<text text-anchor="middle" x="2595.51" y="-807.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#94a3b8"> 15 </text>
+<path fill="none" stroke="#64748b" stroke-width="2.03" stroke-dasharray="1,5" d="M2577.51,-855.74C2577.51,-834.36 2577.51,-797.69 2577.51,-772.44"/>
+<polygon fill="#64748b" stroke="#64748b" stroke-width="2.03" points="2581.01,-772.4 2577.51,-762.4 2574.01,-772.4 2581.01,-772.4"/>
+<text text-anchor="middle" x="2585.51" y="-807.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#94a3b8"> 15 </text>
 </g>
 <!-- Development_DiscreteGroups&#45;&gt;Development_AbelianVarietyTheory -->
 <g id="edge74" class="edge">
@@ -717,16 +717,16 @@
 <!-- CompanionTheory_SpectralGeometry&#45;&gt;Development_AbelianVarietyTheory -->
 <g id="edge22" class="edge">
 <title>CompanionTheory_SpectralGeometry&#45;&gt;Development_AbelianVarietyTheory</title>
-<path fill="none" stroke="#94a3b8" stroke-width="3.83" d="M2216.28,-725.96C2199.72,-717.88 2180.22,-707.67 2163.51,-697 2141.63,-683.03 2141.69,-670.47 2117.51,-661 2076.88,-645.09 1818.38,-628.83 1668.22,-620.56"/>
-<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.83" points="1668.22,-617.06 1658.04,-620.01 1667.84,-624.05 1668.22,-617.06"/>
-<text text-anchor="middle" x="2174.01" y="-677.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#cbd5e1"> 764 </text>
+<path fill="none" stroke="#94a3b8" stroke-width="3.83" d="M2209.45,-725.91C2191.97,-718.23 2172.13,-708.33 2155.51,-697 2136.29,-683.89 2138.75,-670.49 2117.51,-661 2077.68,-643.19 1818.85,-627.7 1668.43,-620.06"/>
+<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.83" points="1668.4,-616.55 1658.24,-619.55 1668.05,-623.55 1668.4,-616.55"/>
+<text text-anchor="middle" x="2166.01" y="-677.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#cbd5e1"> 764 </text>
 </g>
 <!-- CompanionTheory_AutomorphicTheory -->
 <g id="node11" class="node">
 <title>CompanionTheory_AutomorphicTheory</title>
 <path fill="#047857" stroke="#34d399" stroke-width="1.8" d="M1652.01,-892C1652.01,-892 1467.01,-892 1467.01,-892 1461.01,-892 1455.01,-886 1455.01,-880 1455.01,-880 1455.01,-868 1455.01,-868 1455.01,-862 1461.01,-856 1467.01,-856 1467.01,-856 1652.01,-856 1652.01,-856 1658.01,-856 1664.01,-862 1664.01,-868 1664.01,-868 1664.01,-880 1664.01,-880 1664.01,-886 1658.01,-892 1652.01,-892"/>
 <text text-anchor="middle" x="1559.51" y="-877" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">CompanionTheory/AutomorphicTheory</text>
-<text text-anchor="middle" x="1559.51" y="-866" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">457 files | H=102</text>
+<text text-anchor="middle" x="1559.51" y="-866" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=102</text>
 </g>
 <!-- CompanionTheory_SpectralGeometry&#45;&gt;CompanionTheory_AutomorphicTheory -->
 <g id="edge70" class="edge">
@@ -737,28 +737,28 @@
 <!-- CompanionTheory_RealGroups -->
 <g id="node12" class="node">
 <title>CompanionTheory_RealGroups</title>
-<path fill="#047857" stroke="#34d399" stroke-width="1.8" d="M2338.01,-632C2338.01,-632 2193.01,-632 2193.01,-632 2187.01,-632 2181.01,-626 2181.01,-620 2181.01,-620 2181.01,-608 2181.01,-608 2181.01,-602 2187.01,-596 2193.01,-596 2193.01,-596 2338.01,-596 2338.01,-596 2344.01,-596 2350.01,-602 2350.01,-608 2350.01,-608 2350.01,-620 2350.01,-620 2350.01,-626 2344.01,-632 2338.01,-632"/>
-<text text-anchor="middle" x="2265.51" y="-617" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">CompanionTheory/RealGroups</text>
-<text text-anchor="middle" x="2265.51" y="-606" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">155 files | H=98</text>
+<path fill="#047857" stroke="#34d399" stroke-width="1.8" d="M2329.01,-632C2329.01,-632 2184.01,-632 2184.01,-632 2178.01,-632 2172.01,-626 2172.01,-620 2172.01,-620 2172.01,-608 2172.01,-608 2172.01,-602 2178.01,-596 2184.01,-596 2184.01,-596 2329.01,-596 2329.01,-596 2335.01,-596 2341.01,-602 2341.01,-608 2341.01,-608 2341.01,-620 2341.01,-620 2341.01,-626 2335.01,-632 2329.01,-632"/>
+<text text-anchor="middle" x="2256.51" y="-617" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">CompanionTheory/RealGroups</text>
+<text text-anchor="middle" x="2256.51" y="-606" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=98</text>
 </g>
 <!-- CompanionTheory_SpectralGeometry&#45;&gt;CompanionTheory_RealGroups -->
 <g id="edge55" class="edge">
 <title>CompanionTheory_SpectralGeometry&#45;&gt;CompanionTheory_RealGroups</title>
-<path fill="none" stroke="#94a3b8" stroke-width="3.27" d="M2248.21,-725.74C2246.92,-704.36 2249.94,-667.69 2254.77,-642.44"/>
-<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.27" points="2258.25,-642.91 2256.94,-632.4 2251.41,-641.43 2258.25,-642.91"/>
+<path fill="none" stroke="#94a3b8" stroke-width="3.27" d="M2247,-725.74C2244.2,-704.36 2244.64,-667.69 2247.7,-642.44"/>
+<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.27" points="2251.18,-642.8 2249.17,-632.4 2244.26,-641.79 2251.18,-642.8"/>
 </g>
 <!-- CompanionTheory_HarishChandraModules -->
 <g id="node17" class="node">
 <title>CompanionTheory_HarishChandraModules</title>
-<path fill="#047857" stroke="#34d399" stroke-width="1.8" d="M2141.51,-632C2141.51,-632 1939.51,-632 1939.51,-632 1933.51,-632 1927.51,-626 1927.51,-620 1927.51,-620 1927.51,-608 1927.51,-608 1927.51,-602 1933.51,-596 1939.51,-596 1939.51,-596 2141.51,-596 2141.51,-596 2147.51,-596 2153.51,-602 2153.51,-608 2153.51,-608 2153.51,-620 2153.51,-620 2153.51,-626 2147.51,-632 2141.51,-632"/>
-<text text-anchor="middle" x="2040.51" y="-617" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">CompanionTheory/HarishChandraModules</text>
-<text text-anchor="middle" x="2040.51" y="-606" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">130 files | H=89</text>
+<path fill="#047857" stroke="#34d399" stroke-width="1.8" d="M2132.51,-632C2132.51,-632 1930.51,-632 1930.51,-632 1924.51,-632 1918.51,-626 1918.51,-620 1918.51,-620 1918.51,-608 1918.51,-608 1918.51,-602 1924.51,-596 1930.51,-596 1930.51,-596 2132.51,-596 2132.51,-596 2138.51,-596 2144.51,-602 2144.51,-608 2144.51,-608 2144.51,-620 2144.51,-620 2144.51,-626 2138.51,-632 2132.51,-632"/>
+<text text-anchor="middle" x="2031.51" y="-617" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">CompanionTheory/HarishChandraModules</text>
+<text text-anchor="middle" x="2031.51" y="-606" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=89</text>
 </g>
 <!-- CompanionTheory_SpectralGeometry&#45;&gt;CompanionTheory_HarishChandraModules -->
 <g id="edge57" class="edge">
 <title>CompanionTheory_SpectralGeometry&#45;&gt;CompanionTheory_HarishChandraModules</title>
-<path fill="none" stroke="#94a3b8" stroke-width="3.25" d="M2244.51,-725.68C2233.98,-707.07 2214.85,-677.89 2190.51,-661 2174.79,-650.09 2156.4,-641.7 2137.99,-635.28"/>
-<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.25" points="2138.97,-631.92 2128.38,-632.09 2136.77,-638.56 2138.97,-631.92"/>
+<path fill="none" stroke="#94a3b8" stroke-width="3.25" d="M2242.85,-725.7C2230.53,-707.1 2208.56,-677.94 2182.51,-661 2165.71,-650.07 2146.18,-641.64 2126.85,-635.16"/>
+<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.25" points="2127.68,-631.75 2117.09,-632.04 2125.55,-638.42 2127.68,-631.75"/>
 </g>
 <!-- PositivityTheory_AutomorphicForms&#45;&gt;Development_AutomorphicArithmetic -->
 <g id="edge51" class="edge">
@@ -795,14 +795,14 @@
 <!-- CompanionTheory_AutomorphicTheory&#45;&gt;Formalism_HermitianCurvature -->
 <g id="edge67" class="edge">
 <title>CompanionTheory_AutomorphicTheory&#45;&gt;Formalism_HermitianCurvature</title>
-<path fill="none" stroke="#94a3b8" stroke-width="3.14" d="M1543.06,-855.92C1494.97,-806.05 1357.64,-663.94 1351.51,-661 971.73,-478.88 790.23,-745.01 408.51,-567 381.48,-554.39 357.9,-529.4 342.67,-510.31"/>
-<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.14" points="345.35,-508.05 336.47,-502.28 339.81,-512.33 345.35,-508.05"/>
+<path fill="none" stroke="#94a3b8" stroke-width="3.14" d="M1543.06,-855.92C1494.97,-806.05 1357.64,-663.94 1351.51,-661 972.14,-479.06 791.35,-743.71 409.51,-567 382.28,-554.4 358.41,-529.41 342.95,-510.31"/>
+<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.14" points="345.58,-507.99 336.66,-502.28 340.07,-512.31 345.58,-507.99"/>
 </g>
 <!-- CompanionTheory_RealGroups&#45;&gt;CompanionTheory_SpectralGeometry -->
 <g id="edge72" class="edge">
 <title>CompanionTheory_RealGroups&#45;&gt;CompanionTheory_SpectralGeometry</title>
-<path fill="none" stroke="#f59e0b" stroke-width="3.11" stroke-dasharray="5,2" d="M2271.35,-632.4C2272.88,-653.84 2269.88,-690.52 2264.85,-715.72"/>
-<polygon fill="#f59e0b" stroke="#f59e0b" stroke-width="3.11" points="2261.38,-715.21 2262.58,-725.74 2268.2,-716.76 2261.38,-715.21"/>
+<path fill="none" stroke="#f59e0b" stroke-width="3.11" stroke-dasharray="5,2" d="M2263.58,-632.4C2266.61,-653.84 2266.19,-690.52 2262.93,-715.72"/>
+<polygon fill="#f59e0b" stroke="#f59e0b" stroke-width="3.11" points="2259.45,-715.32 2261.37,-725.74 2266.37,-716.4 2259.45,-715.32"/>
 </g>
 <!-- Development_EtaleCohomology&#45;&gt;Development_AbelianVarietyTheory -->
 <g id="edge47" class="edge">
@@ -819,28 +819,28 @@
 <!-- Formalism_SharpRestriction&#45;&gt;Formalism_PeriodIntegrals -->
 <g id="edge65" class="edge">
 <title>Formalism_SharpRestriction&#45;&gt;Formalism_PeriodIntegrals</title>
-<path fill="none" stroke="#94a3b8" stroke-width="3.18" d="M953.8,-335.96C966.99,-327.8 982.49,-317.53 995.51,-307 1013.1,-292.77 1011.25,-281.08 1031.51,-271 1073.5,-250.11 1194.48,-237.26 1277.92,-230.62"/>
-<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.18" points="1278.21,-234.11 1287.9,-229.84 1277.66,-227.13 1278.21,-234.11"/>
+<path fill="none" stroke="#94a3b8" stroke-width="3.18" d="M952.5,-335.79C965.13,-327.6 979.98,-317.34 992.51,-307 1009.96,-292.6 1008.24,-281.05 1028.51,-271 1071.66,-249.61 1196.4,-236.83 1281.65,-230.36"/>
+<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.18" points="1282.13,-233.83 1291.85,-229.6 1281.61,-226.85 1282.13,-233.83"/>
 </g>
 <!-- Formalism_SharpRestriction&#45;&gt;Formalism_LocalRingCardinality -->
 <g id="edge42" class="edge">
 <title>Formalism_SharpRestriction&#45;&gt;Formalism_LocalRingCardinality</title>
-<path fill="none" stroke="#94a3b8" stroke-width="3.49" d="M931.34,-335.88C939.15,-317.97 953.37,-289.89 972.51,-271 981.96,-261.68 993.67,-253.6 1005.23,-246.94"/>
-<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.49" points="1006.92,-250 1014,-242.11 1003.55,-243.87 1006.92,-250"/>
-<text text-anchor="middle" x="983.01" y="-287.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#cbd5e1"> 362 </text>
+<path fill="none" stroke="#94a3b8" stroke-width="3.49" d="M930.6,-335.8C937.66,-317.84 950.79,-289.71 969.51,-271 978.98,-261.54 990.8,-253.48 1002.55,-246.88"/>
+<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.49" points="1004.31,-249.91 1011.48,-242.12 1001.01,-243.73 1004.31,-249.91"/>
+<text text-anchor="middle" x="980.01" y="-287.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#cbd5e1"> 362 </text>
 </g>
 <!-- Formalism_SharpRestriction&#45;&gt;Formalism__other_99_ -->
 <g id="edge34" class="edge">
 <title>Formalism_SharpRestriction&#45;&gt;Formalism__other_99_</title>
-<path fill="none" stroke="#94a3b8" stroke-width="3.64" d="M923.52,-335.55C922.71,-306.28 924.81,-246.52 951.51,-206 1006.37,-122.75 1112.42,-67.56 1177.39,-39.9"/>
-<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.64" points="1178.79,-43.11 1186.67,-36.02 1176.09,-36.65 1178.79,-43.11"/>
-<text text-anchor="middle" x="990.01" y="-170.6" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#cbd5e1"> 510 </text>
+<path fill="none" stroke="#94a3b8" stroke-width="3.64" d="M923.45,-335.96C922.48,-306.78 924.28,-246.48 951.51,-206 1008.42,-121.41 1117.82,-67.03 1185.65,-39.82"/>
+<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.64" points="1187.32,-42.93 1195.34,-36.01 1184.75,-36.41 1187.32,-42.93"/>
+<text text-anchor="middle" x="992.01" y="-170.6" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#cbd5e1"> 510 </text>
 </g>
 <!-- Formalism_HermitianCurvature&#45;&gt;Formalism__other_99_ -->
 <g id="edge73" class="edge">
 <title>Formalism_HermitianCurvature&#45;&gt;Formalism__other_99_</title>
-<path fill="none" stroke="#64748b" stroke-width="3.07" stroke-dasharray="1,5" d="M328.73,-465.73C334.33,-441.25 343.51,-394.99 343.51,-355 343.51,-355 343.51,-355 343.51,-120 343.51,-37.95 949.1,-22.54 1160.63,-19.66"/>
-<polygon fill="#64748b" stroke="#64748b" stroke-width="3.07" points="1160.75,-23.16 1170.7,-19.53 1160.66,-16.16 1160.75,-23.16"/>
+<path fill="none" stroke="#64748b" stroke-width="3.07" stroke-dasharray="1,5" d="M328.73,-465.73C334.33,-441.25 343.51,-394.99 343.51,-355 343.51,-355 343.51,-355 343.51,-120 343.51,-36.71 959.42,-22.11 1172.78,-19.54"/>
+<polygon fill="#64748b" stroke="#64748b" stroke-width="3.07" points="1172.98,-23.04 1182.94,-19.43 1172.9,-16.04 1172.98,-23.04"/>
 <text text-anchor="middle" x="354.01" y="-222.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#94a3b8"> 145 </text>
 </g>
 <!-- Formalism_GammaFactorNonvanishing&#45;&gt;Development_AutomorphicArithmetic -->
@@ -853,8 +853,8 @@
 <!-- CompanionTheory_HarishChandraModules&#45;&gt;CompanionTheory_SpectralGeometry -->
 <g id="edge84" class="edge">
 <title>CompanionTheory_HarishChandraModules&#45;&gt;CompanionTheory_SpectralGeometry</title>
-<path fill="none" stroke="#f59e0b" stroke-width="2.48" stroke-dasharray="5,2" d="M2153.69,-630.46C2158.35,-631 2162.98,-631.52 2167.51,-632 2207.97,-636.31 2504.91,-631.11 2532.51,-661 2587.41,-720.43 2464.26,-737.59 2364.45,-742.11"/>
-<polygon fill="#f59e0b" stroke="#f59e0b" stroke-width="2.48" points="2364.11,-738.62 2354.26,-742.53 2364.4,-745.61 2364.11,-738.62"/>
+<path fill="none" stroke="#f59e0b" stroke-width="2.48" stroke-dasharray="5,2" d="M2144.69,-630.47C2149.35,-631.01 2153.98,-631.52 2158.51,-632 2199.96,-636.38 2504.2,-630.41 2532.51,-661 2587.46,-720.38 2464.3,-737.55 2364.47,-742.09"/>
+<polygon fill="#f59e0b" stroke="#f59e0b" stroke-width="2.48" points="2364.13,-738.6 2354.28,-742.51 2364.42,-745.59 2364.13,-738.6"/>
 <text text-anchor="middle" x="2553.51" y="-677.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#fbbf24"> 40 </text>
 </g>
 <!-- Formalism_LocalToGlobal&#45;&gt;Formalism_SharpRestriction -->
@@ -867,9 +867,9 @@
 <!-- Formalism_LocalToGlobal&#45;&gt;Formalism_PeriodIntegrals -->
 <g id="edge29" class="edge">
 <title>Formalism_LocalToGlobal&#45;&gt;Formalism_PeriodIntegrals</title>
-<path fill="none" stroke="#94a3b8" stroke-width="3.77" d="M1441.8,-465.67C1427.29,-421.61 1388.88,-305.03 1371.4,-251.98"/>
-<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.77" points="1374.65,-250.66 1368.2,-242.25 1368,-252.85 1374.65,-250.66"/>
-<text text-anchor="middle" x="1422.01" y="-352.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#cbd5e1"> 667 </text>
+<path fill="none" stroke="#94a3b8" stroke-width="3.77" d="M1442.07,-465.67C1428.24,-421.61 1391.64,-305.03 1374.98,-251.98"/>
+<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.77" points="1378.26,-250.75 1371.93,-242.25 1371.58,-252.84 1378.26,-250.75"/>
+<text text-anchor="middle" x="1423.01" y="-352.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#cbd5e1"> 667 </text>
 </g>
 <!-- Formalism_LocalToGlobal&#45;&gt;ReciprocityTheory_ReductiveGroups -->
 <g id="edge66" class="edge">
@@ -880,27 +880,27 @@
 <!-- Formalism_LocalToGlobal&#45;&gt;Formalism_LocalRingCardinality -->
 <g id="edge54" class="edge">
 <title>Formalism_LocalToGlobal&#45;&gt;Formalism_LocalRingCardinality</title>
-<path fill="none" stroke="#94a3b8" stroke-width="3.28" d="M1375.86,-468.95C1341.47,-460.79 1305.22,-449.64 1293.51,-437 1242.22,-381.61 1310.67,-324.6 1257.51,-271 1242.12,-255.48 1196.09,-244.39 1151.64,-236.99"/>
-<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.28" points="1152.02,-233.5 1141.59,-235.37 1150.91,-240.41 1152.02,-233.5"/>
+<path fill="none" stroke="#94a3b8" stroke-width="3.28" d="M1376.74,-465.93C1337.75,-455.91 1295.94,-443.89 1289.51,-437 1238.02,-381.79 1306.56,-324.71 1253.51,-271 1238.68,-255.98 1194.71,-245.01 1151.77,-237.55"/>
+<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.28" points="1152.21,-234.08 1141.76,-235.88 1151.05,-240.98 1152.21,-234.08"/>
 </g>
 <!-- Formalism_LocalToGlobal&#45;&gt;Formalism__other_99_ -->
 <g id="edge30" class="edge">
 <title>Formalism_LocalToGlobal&#45;&gt;Formalism__other_99_</title>
-<path fill="none" stroke="#94a3b8" stroke-width="3.75" d="M1452.55,-465.73C1464.73,-420.53 1491.89,-296.02 1450.51,-206 1414.68,-128.05 1328.55,-70.41 1275.91,-40.99"/>
-<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.75" points="1277.58,-37.92 1267.13,-36.17 1274.21,-44.05 1277.58,-37.92"/>
-<text text-anchor="middle" x="1474.01" y="-222.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#cbd5e1"> 649 </text>
+<path fill="none" stroke="#94a3b8" stroke-width="3.75" d="M1452.85,-465.78C1465.82,-420.68 1495.07,-296.42 1454.51,-206 1420.02,-129.1 1336.55,-70.88 1285.84,-41.11"/>
+<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.75" points="1287.49,-38.02 1277.08,-36.06 1284,-44.09 1287.49,-38.02"/>
+<text text-anchor="middle" x="1478.01" y="-222.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#cbd5e1"> 649 </text>
 </g>
 <!-- Formalism_PeriodIntegrals&#45;&gt;Formalism_LocalToGlobal -->
 <g id="edge48" class="edge">
 <title>Formalism_PeriodIntegrals&#45;&gt;Formalism_LocalToGlobal</title>
-<path fill="none" stroke="#f59e0b" stroke-width="3.35" stroke-dasharray="5,2" d="M1287.89,-231.53C1204.7,-239.58 1079.86,-254.26 1065.51,-271 1055.1,-283.15 1057.08,-293.4 1065.51,-307 1100.99,-364.2 1283.48,-430.29 1382.84,-462.8"/>
-<polygon fill="#f59e0b" stroke="#f59e0b" stroke-width="3.35" points="1381.89,-466.18 1392.49,-465.94 1384.06,-459.52 1381.89,-466.18"/>
+<path fill="none" stroke="#f59e0b" stroke-width="3.35" stroke-dasharray="5,2" d="M1291.78,-231.21C1206.37,-239.08 1076.38,-253.72 1061.51,-271 1051.08,-283.13 1053.07,-293.41 1061.51,-307 1097.29,-364.59 1281.27,-430.38 1381.77,-462.79"/>
+<polygon fill="#f59e0b" stroke="#f59e0b" stroke-width="3.35" points="1380.93,-466.19 1391.52,-465.91 1383.06,-459.53 1380.93,-466.19"/>
 </g>
 <!-- Formalism_PeriodIntegrals&#45;&gt;Formalism__other_99_ -->
 <g id="edge53" class="edge">
 <title>Formalism_PeriodIntegrals&#45;&gt;Formalism__other_99_</title>
-<path fill="none" stroke="#94a3b8" stroke-width="3.28" d="M1351.65,-205.96C1328.85,-170.18 1275.89,-87.08 1248.93,-44.76"/>
-<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.28" points="1251.76,-42.69 1243.43,-36.14 1245.85,-46.45 1251.76,-42.69"/>
+<path fill="none" stroke="#94a3b8" stroke-width="3.28" d="M1356.32,-205.96C1334.93,-170.18 1285.22,-87.08 1259.92,-44.76"/>
+<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.28" points="1262.9,-42.92 1254.76,-36.14 1256.89,-46.52 1262.9,-42.92"/>
 </g>
 <!-- ReciprocityTheory_ReductiveGroups&#45;&gt;Formalism_LocalToGlobal -->
 <g id="edge77" class="edge">
@@ -912,72 +912,72 @@
 <!-- GroundTheory_HeightsAndTheta&#45;&gt;ReciprocityTheory_ReductiveGroups -->
 <g id="edge26" class="edge">
 <title>GroundTheory_HeightsAndTheta&#45;&gt;ReciprocityTheory_ReductiveGroups</title>
-<path fill="none" stroke="#94a3b8" stroke-width="3.81" d="M3039.77,-725.99C3054.01,-705.07 3076.7,-667.9 3085.51,-632 3103.24,-559.78 3118.37,-517.27 3064.51,-466 3017.76,-421.5 2849.67,-388.19 2736.39,-370.18"/>
-<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.81" points="2736.71,-366.68 2726.29,-368.59 2735.62,-373.6 2736.71,-366.68"/>
-<text text-anchor="middle" x="3112.01" y="-547.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#cbd5e1"> 734 </text>
+<path fill="none" stroke="#94a3b8" stroke-width="3.81" d="M3022.4,-725.53C3046.83,-695.52 3094.33,-631.2 3110.51,-567 3122.57,-519.17 3105.16,-493.94 3064.51,-466 2966.22,-398.45 2830.08,-371.99 2736.2,-361.64"/>
+<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.81" points="2736.43,-358.14 2726.11,-360.57 2735.69,-365.1 2736.43,-358.14"/>
+<text text-anchor="middle" x="3124.01" y="-547.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#cbd5e1"> 734 </text>
 </g>
 <!-- GroundTheory_ArithmeticGeometry -->
 <g id="node31" class="node">
 <title>GroundTheory_ArithmeticGeometry</title>
-<path fill="#a16207" stroke="#facc15" stroke-width="1.8" d="M3059.51,-632C3059.51,-632 2891.51,-632 2891.51,-632 2885.51,-632 2879.51,-626 2879.51,-620 2879.51,-620 2879.51,-608 2879.51,-608 2879.51,-602 2885.51,-596 2891.51,-596 2891.51,-596 3059.51,-596 3059.51,-596 3065.51,-596 3071.51,-602 3071.51,-608 3071.51,-608 3071.51,-620 3071.51,-620 3071.51,-626 3065.51,-632 3059.51,-632"/>
-<text text-anchor="middle" x="2975.51" y="-617" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">GroundTheory/ArithmeticGeometry</text>
-<text text-anchor="middle" x="2975.51" y="-606" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">218 files | H=28</text>
+<path fill="#a16207" stroke="#facc15" stroke-width="1.8" d="M3049.51,-632C3049.51,-632 2881.51,-632 2881.51,-632 2875.51,-632 2869.51,-626 2869.51,-620 2869.51,-620 2869.51,-608 2869.51,-608 2869.51,-602 2875.51,-596 2881.51,-596 2881.51,-596 3049.51,-596 3049.51,-596 3055.51,-596 3061.51,-602 3061.51,-608 3061.51,-608 3061.51,-620 3061.51,-620 3061.51,-626 3055.51,-632 3049.51,-632"/>
+<text text-anchor="middle" x="2965.51" y="-617" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">GroundTheory/ArithmeticGeometry</text>
+<text text-anchor="middle" x="2965.51" y="-606" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=28</text>
 </g>
 <!-- GroundTheory_HeightsAndTheta&#45;&gt;GroundTheory_ArithmeticGeometry -->
 <g id="edge79" class="edge">
 <title>GroundTheory_HeightsAndTheta&#45;&gt;GroundTheory_ArithmeticGeometry</title>
-<path fill="none" stroke="#64748b" stroke-width="2.74" stroke-dasharray="1,5" d="M3020.5,-725.74C3011.74,-704.17 2996.65,-667.03 2986.39,-641.77"/>
-<polygon fill="#64748b" stroke="#64748b" stroke-width="2.74" points="2989.59,-640.35 2982.58,-632.4 2983.1,-642.98 2989.59,-640.35"/>
-<text text-anchor="middle" x="3015.51" y="-677.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#94a3b8"> 71 </text>
+<path fill="none" stroke="#64748b" stroke-width="2.74" stroke-dasharray="1,5" d="M3001.85,-725.74C2994.8,-704.27 2982.69,-667.36 2974.41,-642.1"/>
+<polygon fill="#64748b" stroke="#64748b" stroke-width="2.74" points="2977.66,-640.81 2971.22,-632.4 2971.01,-642.99 2977.66,-640.81"/>
+<text text-anchor="middle" x="2998.51" y="-677.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#94a3b8"> 71 </text>
 </g>
 <!-- GroundTheory_HeightsAndTheta&#45;&gt;ReciprocityTheory_AnalyticForms -->
 <g id="edge40" class="edge">
 <title>GroundTheory_HeightsAndTheta&#45;&gt;ReciprocityTheory_AnalyticForms</title>
-<path fill="none" stroke="#94a3b8" stroke-width="3.54" d="M2994.15,-725.86C2936.17,-696.52 2812.54,-635.98 2703.51,-596 2659.26,-579.77 2643.53,-588.34 2601.51,-567 2571.47,-551.74 2541.62,-527.3 2521.47,-509.06"/>
-<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.54" points="2523.71,-506.37 2513.98,-502.17 2518.97,-511.51 2523.71,-506.37"/>
-<text text-anchor="middle" x="2799.01" y="-612.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#cbd5e1"> 404 </text>
+<path fill="none" stroke="#94a3b8" stroke-width="3.54" d="M2974.15,-725.86C2916.17,-696.52 2792.54,-635.98 2683.51,-596 2639.26,-579.77 2622.36,-590.51 2581.51,-567 2556.08,-552.37 2532.53,-528.47 2516.69,-510.24"/>
+<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.54" points="2519.12,-507.69 2509.98,-502.32 2513.77,-512.21 2519.12,-507.69"/>
+<text text-anchor="middle" x="2779.01" y="-612.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#cbd5e1"> 404 </text>
 </g>
 <!-- GroundTheory_ProfiniteCohomology&#45;&gt;GroundTheory_GlobalFields -->
 <g id="edge80" class="edge">
 <title>GroundTheory_ProfiniteCohomology&#45;&gt;GroundTheory_GlobalFields</title>
-<path fill="none" stroke="#64748b" stroke-width="2.72" stroke-dasharray="1,5" d="M3589.15,-530.79C3599.12,-523.33 3609.08,-513.62 3614.51,-502 3621.29,-487.5 3622.82,-479.68 3614.51,-466 3585.85,-418.79 3530.1,-390.93 3482.02,-374.93"/>
-<polygon fill="#64748b" stroke="#64748b" stroke-width="2.72" points="3482.8,-371.51 3472.21,-371.79 3480.66,-378.17 3482.8,-371.51"/>
+<path fill="none" stroke="#64748b" stroke-width="2.72" stroke-dasharray="1,5" d="M3589.15,-530.79C3599.12,-523.33 3609.08,-513.62 3614.51,-502 3621.29,-487.5 3622.82,-479.68 3614.51,-466 3578.56,-406.78 3503.03,-379.1 3442.94,-366.2"/>
+<polygon fill="#64748b" stroke="#64748b" stroke-width="2.72" points="3443.56,-362.75 3433.06,-364.17 3442.15,-369.61 3443.56,-362.75"/>
 <text text-anchor="middle" x="3627.51" y="-482.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#94a3b8"> 68 </text>
 </g>
 <!-- GroundTheory_GlobalFields&#45;&gt;GroundTheory_LocalFields -->
 <g id="edge85" class="edge">
 <title>GroundTheory_GlobalFields&#45;&gt;GroundTheory_LocalFields</title>
-<path fill="none" stroke="#64748b" stroke-width="2.48" stroke-dasharray="1,5" d="M3395.51,-335.74C3395.51,-314.36 3395.51,-277.69 3395.51,-252.44"/>
-<polygon fill="#64748b" stroke="#64748b" stroke-width="2.48" points="3399.01,-252.4 3395.51,-242.4 3392.01,-252.4 3399.01,-252.4"/>
-<text text-anchor="middle" x="3403.51" y="-287.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#94a3b8"> 40 </text>
+<path fill="none" stroke="#64748b" stroke-width="2.48" stroke-dasharray="1,5" d="M3356.51,-335.74C3356.51,-314.36 3356.51,-277.69 3356.51,-252.44"/>
+<polygon fill="#64748b" stroke="#64748b" stroke-width="2.48" points="3360.01,-252.4 3356.51,-242.4 3353.01,-252.4 3360.01,-252.4"/>
+<text text-anchor="middle" x="3364.51" y="-287.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#94a3b8"> 40 </text>
 </g>
 <!-- Formalism_LocalRingCardinality&#45;&gt;Formalism_SharpRestriction -->
 <g id="edge82" class="edge">
 <title>Formalism_LocalRingCardinality&#45;&gt;Formalism_SharpRestriction</title>
-<path fill="none" stroke="#f59e0b" stroke-width="2.59" stroke-dasharray="5,2" d="M1141.62,-233.06C1182.07,-236.43 1230.69,-240.02 1274.51,-242 1304.25,-243.34 3396.61,-249.81 3417.51,-271 3428.75,-282.39 3428.74,-295.61 3417.51,-307 3397.79,-327 1423.59,-335.29 1395.51,-336 1262.13,-339.36 1107.58,-345.34 1012.94,-349.23"/>
-<polygon fill="#f59e0b" stroke="#f59e0b" stroke-width="2.59" points="1012.68,-345.74 1002.83,-349.65 1012.97,-352.74 1012.68,-345.74"/>
-<text text-anchor="middle" x="3433.51" y="-287.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#fbbf24"> 51 </text>
+<path fill="none" stroke="#f59e0b" stroke-width="2.59" stroke-dasharray="5,2" d="M1141.59,-232.92C1183.1,-236.32 1233.31,-239.98 1278.51,-242 1307.65,-243.3 3358.03,-250.23 3378.51,-271 3389.75,-282.39 3389.74,-295.6 3378.51,-307 3359.18,-326.62 1423.05,-335.3 1395.51,-336 1262.13,-339.38 1107.58,-345.35 1012.94,-349.24"/>
+<polygon fill="#f59e0b" stroke="#f59e0b" stroke-width="2.59" points="1012.68,-345.75 1002.83,-349.66 1012.97,-352.74 1012.68,-345.75"/>
+<text text-anchor="middle" x="3394.51" y="-287.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#fbbf24"> 51 </text>
 </g>
 <!-- GroundTheory_AutomorphicForms&#45;&gt;GroundTheory_GlobalFields -->
 <g id="edge78" class="edge">
 <title>GroundTheory_AutomorphicForms&#45;&gt;GroundTheory_GlobalFields</title>
-<path fill="none" stroke="#64748b" stroke-width="2.79" stroke-dasharray="1,5" d="M3343.6,-465.74C3353.71,-444.17 3371.12,-407.03 3382.96,-381.77"/>
-<polygon fill="#64748b" stroke="#64748b" stroke-width="2.79" points="3386.28,-382.94 3387.36,-372.4 3379.94,-379.97 3386.28,-382.94"/>
-<text text-anchor="middle" x="3380.51" y="-417.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#94a3b8"> 78 </text>
+<path fill="none" stroke="#64748b" stroke-width="2.79" stroke-dasharray="1,5" d="M3338.34,-465.74C3341.85,-444.36 3347.87,-407.69 3352.01,-382.44"/>
+<polygon fill="#64748b" stroke="#64748b" stroke-width="2.79" points="3355.49,-382.83 3353.66,-372.4 3348.58,-381.7 3355.49,-382.83"/>
+<text text-anchor="middle" x="3355.51" y="-417.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#94a3b8"> 78 </text>
 </g>
 <!-- Lemmata__ -->
 <g id="node38" class="node">
 <title>Lemmata__</title>
-<path fill="#6b21a8" stroke="#c084fc" stroke-width="1.8" d="M823.01,-139C823.01,-139 748.01,-139 748.01,-139 742.01,-139 736.01,-133 736.01,-127 736.01,-127 736.01,-115 736.01,-115 736.01,-109 742.01,-103 748.01,-103 748.01,-103 823.01,-103 823.01,-103 829.01,-103 835.01,-109 835.01,-115 835.01,-115 835.01,-127 835.01,-127 835.01,-133 829.01,-139 823.01,-139"/>
-<text text-anchor="middle" x="785.51" y="-124" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">Lemmata/*</text>
-<text text-anchor="middle" x="785.51" y="-113" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">167 files | H=17</text>
+<path fill="#6b21a8" stroke="#c084fc" stroke-width="1.8" d="M823.01,-139C823.01,-139 772.01,-139 772.01,-139 766.01,-139 760.01,-133 760.01,-127 760.01,-127 760.01,-115 760.01,-115 760.01,-109 766.01,-103 772.01,-103 772.01,-103 823.01,-103 823.01,-103 829.01,-103 835.01,-109 835.01,-115 835.01,-115 835.01,-127 835.01,-127 835.01,-133 829.01,-139 823.01,-139"/>
+<text text-anchor="middle" x="797.51" y="-124" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">Lemmata/*</text>
+<text text-anchor="middle" x="797.51" y="-113" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=17</text>
 </g>
 <!-- Formalism__other_99_&#45;&gt;Lemmata__ -->
 <g id="edge88" class="edge">
 <title>Formalism__other_99_&#45;&gt;Lemmata__</title>
-<path fill="none" stroke="#f59e0b" stroke-width="2.37" stroke-dasharray="5,2" d="M1170.98,-32.9C1085,-52.33 929.95,-87.36 845.05,-106.55"/>
-<polygon fill="#f59e0b" stroke="#f59e0b" stroke-width="2.37" points="844.04,-103.19 835.06,-108.81 845.58,-110.02 844.04,-103.19"/>
-<text text-anchor="middle" x="1030.51" y="-67.6" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#fbbf24"> 31 </text>
+<path fill="none" stroke="#f59e0b" stroke-width="2.37" stroke-dasharray="5,2" d="M1182.83,-32.94C1092.65,-53.31 926.71,-90.81 845.22,-109.22"/>
+<polygon fill="#f59e0b" stroke="#f59e0b" stroke-width="2.37" points="844.22,-105.86 835.24,-111.48 845.76,-112.69 844.22,-105.86"/>
+<text text-anchor="middle" x="1042.51" y="-67.6" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#fbbf24"> 31 </text>
 </g>
 <!-- CompanionTheory_ThickeningEstimates&#45;&gt;Development_AbelianVarietyTheory -->
 <g id="edge96" class="edge">
@@ -989,23 +989,23 @@
 <!-- Development_ResolutionOfSingularities&#45;&gt;Development_AutomorphicArithmetic -->
 <g id="edge110" class="edge">
 <title>Development_ResolutionOfSingularities&#45;&gt;Development_AutomorphicArithmetic</title>
-<path fill="none" stroke="#f59e0b" stroke-width="0.9" stroke-dasharray="5,2" d="M3179.37,-891.31C3403.38,-926.6 3897.73,-1010.85 3849.51,-1060 3808.8,-1101.5 2021.34,-1105.61 1552.27,-1105.98"/>
-<polygon fill="#f59e0b" stroke="#f59e0b" stroke-width="0.9" points="1552.1,-1102.48 1542.1,-1105.98 1552.1,-1109.48 1552.1,-1102.48"/>
-<text text-anchor="middle" x="3811.51" y="-1002.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#fbbf24"> 1 </text>
+<path fill="none" stroke="#f59e0b" stroke-width="0.9" stroke-dasharray="5,2" d="M3179.12,-891.61C3400.55,-927.21 3886,-1011.6 3838.51,-1060 3798,-1101.3 2019.68,-1105.56 1552.15,-1105.97"/>
+<polygon fill="#f59e0b" stroke="#f59e0b" stroke-width="0.9" points="1552.01,-1102.47 1542.01,-1105.97 1552.02,-1109.47 1552.01,-1102.47"/>
+<text text-anchor="middle" x="3794.51" y="-1002.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#fbbf24"> 1 </text>
 </g>
 <!-- GroundTheory_PAdicHodge&#45;&gt;GroundTheory_LocalFields -->
 <g id="edge90" class="edge">
 <title>GroundTheory_PAdicHodge&#45;&gt;GroundTheory_LocalFields</title>
-<path fill="none" stroke="#64748b" stroke-width="2.21" stroke-dasharray="1,5" d="M3405.18,-660.53C3408.73,-631.24 3419.26,-571.44 3448.51,-531 3461.59,-512.91 3479.25,-521.82 3489.51,-502 3510.14,-462.13 3490.89,-445.87 3489.51,-401 3488.62,-372.07 3496.02,-362.97 3485.51,-336 3472.2,-301.82 3444.25,-270.1 3423,-249.4"/>
-<polygon fill="#64748b" stroke="#64748b" stroke-width="2.21" points="3425.18,-246.63 3415.52,-242.28 3420.36,-251.71 3425.18,-246.63"/>
-<text text-anchor="middle" x="3506.51" y="-482.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#94a3b8"> 22 </text>
+<path fill="none" stroke="#64748b" stroke-width="2.21" stroke-dasharray="1,5" d="M3405.18,-660.53C3408.73,-631.24 3419.26,-571.44 3448.51,-531 3461.59,-512.91 3479.25,-521.82 3489.51,-502 3510.14,-462.13 3502.44,-443.99 3489.51,-401 3470.56,-338.02 3417.19,-280.33 3384.1,-249.18"/>
+<polygon fill="#64748b" stroke="#64748b" stroke-width="2.21" points="3386.28,-246.43 3376.56,-242.21 3381.53,-251.57 3386.28,-246.43"/>
+<text text-anchor="middle" x="3509.51" y="-482.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#94a3b8"> 22 </text>
 </g>
 <!-- ReciprocityTheory_GroupCohomology -->
 <g id="node41" class="node">
 <title>ReciprocityTheory_GroupCohomology</title>
 <path fill="#0f766e" stroke="#2dd4bf" stroke-width="1.8" d="M662.01,-372C662.01,-372 483.01,-372 483.01,-372 477.01,-372 471.01,-366 471.01,-360 471.01,-360 471.01,-348 471.01,-348 471.01,-342 477.01,-336 483.01,-336 483.01,-336 662.01,-336 662.01,-336 668.01,-336 674.01,-342 674.01,-348 674.01,-348 674.01,-360 674.01,-360 674.01,-366 668.01,-372 662.01,-372"/>
 <text text-anchor="middle" x="572.51" y="-357" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">ReciprocityTheory/GroupCohomology</text>
-<text text-anchor="middle" x="572.51" y="-346" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">56 files | H=12</text>
+<text text-anchor="middle" x="572.51" y="-346" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">H=12</text>
 </g>
 <!-- ReciprocityTheory_ClassFieldTheory&#45;&gt;ReciprocityTheory_GroupCohomology -->
 <g id="edge89" class="edge">
@@ -1017,100 +1017,100 @@
 <!-- GroundTheory_ArithmeticGeometry&#45;&gt;GroundTheory__minor_5_ -->
 <g id="edge98" class="edge">
 <title>GroundTheory_ArithmeticGeometry&#45;&gt;GroundTheory__minor_5_</title>
-<path fill="none" stroke="#64748b" stroke-width="1.8" stroke-dasharray="1,5" d="M2943.55,-595.74C2901.02,-572.77 2825.81,-532.15 2779.26,-507.01"/>
-<polygon fill="#64748b" stroke="#64748b" stroke-width="1.8" points="2780.81,-503.87 2770.35,-502.19 2777.48,-510.02 2780.81,-503.87"/>
-<text text-anchor="middle" x="2889.51" y="-547.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#94a3b8"> 9 </text>
+<path fill="none" stroke="#64748b" stroke-width="1.8" stroke-dasharray="1,5" d="M2934.9,-595.74C2894.25,-572.82 2822.43,-532.32 2777.82,-507.16"/>
+<polygon fill="#64748b" stroke="#64748b" stroke-width="1.8" points="2779.43,-504.06 2769,-502.19 2775.99,-510.15 2779.43,-504.06"/>
+<text text-anchor="middle" x="2883.51" y="-547.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#94a3b8"> 9 </text>
 </g>
 <!-- ReciprocityTheory_AnalyticForms&#45;&gt;ReciprocityTheory__minor_15_ -->
 <g id="edge94" class="edge">
 <title>ReciprocityTheory_AnalyticForms&#45;&gt;ReciprocityTheory__minor_15_</title>
-<path fill="none" stroke="#64748b" stroke-width="1.85" stroke-dasharray="1,5" d="M2405.32,-477.03C2356,-471.2 2295.01,-459.7 2244.51,-437 2135.36,-387.94 2145.11,-311.54 2032.51,-271 1919.46,-230.3 1071.58,-246.47 951.51,-242 861.38,-238.65 758.51,-233.62 686.43,-229.9"/>
-<polygon fill="#64748b" stroke="#64748b" stroke-width="1.85" points="686.19,-226.39 676.02,-229.36 685.83,-233.38 686.19,-226.39"/>
+<path fill="none" stroke="#64748b" stroke-width="1.85" stroke-dasharray="1,5" d="M2405.32,-477.03C2356,-471.2 2295.01,-459.7 2244.51,-437 2135.36,-387.94 2145.11,-311.54 2032.51,-271 1919.46,-230.3 1071.58,-246.55 951.51,-242 864.91,-238.72 766.21,-233.76 696.27,-230.05"/>
+<polygon fill="#64748b" stroke="#64748b" stroke-width="1.85" points="696.34,-226.55 686.17,-229.51 695.97,-233.54 696.34,-226.55"/>
 <text text-anchor="middle" x="2164.51" y="-352.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#94a3b8"> 10 </text>
 </g>
 <!-- GroundTheory_LocalFields&#45;&gt;Development_AutomorphicArithmetic -->
 <g id="edge100" class="edge">
 <title>GroundTheory_LocalFields&#45;&gt;Development_AutomorphicArithmetic</title>
-<path fill="none" stroke="#f59e0b" stroke-width="1.69" stroke-dasharray="5,2" d="M3388.22,-242.21C3381.87,-260.18 3375.64,-288.32 3389.51,-307 3416.08,-342.78 3458.94,-300.22 3485.51,-336 3547.05,-418.87 3444.12,-465.26 3461.51,-567 3467.82,-603.93 3506.54,-690.18 3517.51,-726 3552.49,-840.21 3570.28,-867.53 3585.51,-986 3589.71,-1018.62 3608.52,-1036.5 3585.51,-1060 3549.64,-1096.65 1987.53,-1104.28 1552.13,-1105.7"/>
+<path fill="none" stroke="#f59e0b" stroke-width="1.69" stroke-dasharray="5,2" d="M3349.22,-242.21C3342.87,-260.18 3336.64,-288.32 3350.51,-307 3377.08,-342.78 3417.67,-302.02 3446.51,-336 3502.76,-402.27 3464.5,-444.13 3461.51,-531 3460.96,-546.99 3458.82,-551.23 3461.51,-567 3467.82,-603.93 3506.54,-690.18 3517.51,-726 3552.49,-840.21 3570.28,-867.53 3585.51,-986 3589.71,-1018.62 3608.52,-1036.5 3585.51,-1060 3549.64,-1096.65 1987.53,-1104.28 1552.13,-1105.7"/>
 <polygon fill="#f59e0b" stroke="#f59e0b" stroke-width="1.69" points="1552.05,-1102.2 1542.06,-1105.74 1552.07,-1109.2 1552.05,-1102.2"/>
 <text text-anchor="middle" x="3511.51" y="-677.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#fbbf24"> 7 </text>
 </g>
 <!-- ReciprocityTheory_L2DbarEstimates&#45;&gt;Lemmata__ -->
 <g id="edge105" class="edge">
 <title>ReciprocityTheory_L2DbarEstimates&#45;&gt;Lemmata__</title>
-<path fill="none" stroke="#f59e0b" stroke-width="1.3" stroke-dasharray="5,2" d="M2127.75,-466.77C2125.32,-466.5 2122.9,-466.24 2120.51,-466 1952.33,-449.24 1524.45,-478.1 1360.51,-437 1356.51,-436 1095.7,-310.5 1093.51,-307 1085.03,-293.43 1084.97,-284.53 1093.51,-271 1109.55,-245.62 1129.86,-259.12 1154.51,-242 1190.95,-216.69 1251.19,-200.98 1221.51,-168 1196.82,-140.57 959.3,-128.3 845.6,-123.96"/>
-<polygon fill="#f59e0b" stroke="#f59e0b" stroke-width="1.3" points="845.44,-120.45 835.32,-123.58 845.18,-127.45 845.44,-120.45"/>
-<text text-anchor="middle" x="1098.51" y="-287.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#fbbf24"> 3 </text>
+<path fill="none" stroke="#f59e0b" stroke-width="1.3" stroke-dasharray="5,2" d="M2127.75,-466.77C2125.32,-466.5 2122.9,-466.24 2120.51,-466 1951.89,-449.2 1522.94,-477.96 1358.51,-437 1350.46,-434.99 1093.92,-314.03 1089.51,-307 1081.01,-293.45 1080.8,-284.42 1089.51,-271 1106.73,-244.46 1128.12,-259.44 1154.51,-242 1192.28,-217.04 1254.76,-201.68 1224.51,-168 1199.53,-140.18 951.58,-127.72 845.38,-123.62"/>
+<polygon fill="#f59e0b" stroke="#f59e0b" stroke-width="1.3" points="845.38,-120.12 835.26,-123.24 845.12,-127.12 845.38,-120.12"/>
+<text text-anchor="middle" x="1094.51" y="-287.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#fbbf24"> 3 </text>
 </g>
 <!-- GroundTheory__minor_5_&#45;&gt;GroundTheory_GlobalFields -->
 <g id="edge97" class="edge">
 <title>GroundTheory__minor_5_&#45;&gt;GroundTheory_GlobalFields</title>
-<path fill="none" stroke="#64748b" stroke-width="1.8" stroke-dasharray="1,5" d="M2807.79,-468.75C2812.43,-467.81 2817.04,-466.89 2821.51,-466 2994.24,-431.61 3196.51,-392.85 3308.93,-371.44"/>
-<polygon fill="#64748b" stroke="#64748b" stroke-width="1.8" points="3309.69,-374.85 3318.86,-369.54 3308.38,-367.98 3309.69,-374.85"/>
-<text text-anchor="middle" x="3152.51" y="-417.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#94a3b8"> 9 </text>
+<path fill="none" stroke="#64748b" stroke-width="1.8" stroke-dasharray="1,5" d="M2807.61,-468.69C2920.92,-445.22 3146,-398.6 3269.83,-372.95"/>
+<polygon fill="#64748b" stroke="#64748b" stroke-width="1.8" points="3270.58,-376.37 3279.67,-370.92 3269.16,-369.52 3270.58,-376.37"/>
+<text text-anchor="middle" x="3125.51" y="-417.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#94a3b8"> 9 </text>
 </g>
 <!-- PositivityTheory__other_2_&#45;&gt;Development_WeilBound -->
 <g id="edge104" class="edge">
 <title>PositivityTheory__other_2_&#45;&gt;Development_WeilBound</title>
-<path fill="none" stroke="#64748b" stroke-width="1.3" stroke-dasharray="1,5" d="M2857.72,-762.23C2865.7,-770.43 2874.77,-780.68 2881.51,-791 2921.8,-852.68 2952.52,-934.5 2966.77,-976.16"/>
-<polygon fill="#64748b" stroke="#64748b" stroke-width="1.3" points="2963.52,-977.48 2970.03,-985.85 2970.16,-975.25 2963.52,-977.48"/>
-<text text-anchor="middle" x="2938.51" y="-872.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#94a3b8"> 3 </text>
+<path fill="none" stroke="#64748b" stroke-width="1.3" stroke-dasharray="1,5" d="M2848.65,-762.01C2860.02,-769.75 2872.47,-779.7 2881.51,-791 2927.88,-848.93 2956.2,-933.33 2968.43,-976.06"/>
+<polygon fill="#64748b" stroke="#64748b" stroke-width="1.3" points="2965.07,-977.05 2971.13,-985.74 2971.82,-975.17 2965.07,-977.05"/>
+<text text-anchor="middle" x="2943.51" y="-872.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#94a3b8"> 3 </text>
 </g>
 <!-- ReciprocityTheory_SemistableReduction&#45;&gt;Lemmata__ -->
 <g id="edge99" class="edge">
 <title>ReciprocityTheory_SemistableReduction&#45;&gt;Lemmata__</title>
-<path fill="none" stroke="#64748b" stroke-width="1.75" stroke-dasharray="1,5" d="M646.71,-400.99C661.32,-393.87 676.46,-384.32 687.51,-372 747.12,-305.57 772.38,-198.68 781.33,-149"/>
-<polygon fill="#64748b" stroke="#64748b" stroke-width="1.75" points="784.8,-149.47 783.05,-139.02 777.9,-148.29 784.8,-149.47"/>
-<text text-anchor="middle" x="751.51" y="-287.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#94a3b8"> 8 </text>
+<path fill="none" stroke="#64748b" stroke-width="1.75" stroke-dasharray="1,5" d="M645.97,-400.94C660.69,-393.78 676.09,-384.21 687.51,-372 749.51,-305.69 780.3,-198.74 791.88,-149.02"/>
+<polygon fill="#64748b" stroke="#64748b" stroke-width="1.75" points="795.35,-149.56 794.13,-139.04 788.52,-148.03 795.35,-149.56"/>
+<text text-anchor="middle" x="756.51" y="-287.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#94a3b8"> 8 </text>
 </g>
 <!-- Lemmata__&#45;&gt;Formalism__other_99_ -->
 <g id="edge44" class="edge">
 <title>Lemmata__&#45;&gt;Formalism__other_99_</title>
-<path fill="none" stroke="#94a3b8" stroke-width="3.43" d="M809.67,-102.98C828.79,-90.39 856.67,-73.93 883.51,-65 975.95,-34.24 1088.59,-23.95 1160.43,-20.57"/>
-<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.43" points="1160.89,-24.05 1170.73,-20.12 1160.58,-17.06 1160.89,-24.05"/>
+<path fill="none" stroke="#94a3b8" stroke-width="3.43" d="M818.37,-102.89C834.97,-90.24 859.35,-73.76 883.51,-65 979.52,-30.19 1098.22,-21 1172.67,-18.95"/>
+<polygon fill="#94a3b8" stroke="#94a3b8" stroke-width="3.43" points="1172.96,-22.45 1182.88,-18.71 1172.8,-15.45 1172.96,-22.45"/>
 <text text-anchor="middle" x="894.01" y="-67.6" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#cbd5e1"> 322 </text>
 </g>
 <!-- ReciprocityTheory_DualLattices&#45;&gt;Lemmata__ -->
 <g id="edge112" class="edge">
 <title>ReciprocityTheory_DualLattices&#45;&gt;Lemmata__</title>
-<path fill="none" stroke="#64748b" stroke-width="0.9" stroke-dasharray="1,5" d="M1845.88,-465.95C1754.19,-402.64 1435.3,-183.94 1382.51,-168 1283.32,-138.05 976.59,-126.85 845.7,-123.36"/>
-<polygon fill="#64748b" stroke="#64748b" stroke-width="0.9" points="845.55,-119.86 835.46,-123.09 845.37,-126.85 845.55,-119.86"/>
-<text text-anchor="middle" x="1611.51" y="-287.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#94a3b8"> 1 </text>
+<path fill="none" stroke="#64748b" stroke-width="0.9" stroke-dasharray="1,5" d="M1842.18,-465.81C1781.17,-428.3 1633.81,-334.97 1521.51,-242 1485.44,-212.14 1489.18,-187.3 1446.51,-168 1392.17,-143.42 985.71,-128.09 845.16,-123.47"/>
+<polygon fill="#64748b" stroke="#64748b" stroke-width="0.9" points="845.23,-119.97 835.12,-123.15 845,-126.97 845.23,-119.97"/>
+<text text-anchor="middle" x="1607.51" y="-287.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#94a3b8"> 1 </text>
 </g>
 <!-- Formalism_PairingDivisors&#45;&gt;Formalism__other_99_ -->
 <g id="edge103" class="edge">
 <title>Formalism_PairingDivisors&#45;&gt;Formalism__other_99_</title>
-<path fill="none" stroke="#64748b" stroke-width="1.3" stroke-dasharray="1,5" d="M1185.72,-270.76C1194.18,-225.21 1217.2,-101.36 1227.46,-46.17"/>
-<polygon fill="#64748b" stroke="#64748b" stroke-width="1.3" points="1230.95,-46.56 1229.33,-36.09 1224.07,-45.28 1230.95,-46.56"/>
-<text text-anchor="middle" x="1210.51" y="-170.6" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#94a3b8"> 3 </text>
+<path fill="none" stroke="#64748b" stroke-width="1.3" stroke-dasharray="1,5" d="M1182.74,-270.76C1193.94,-225.12 1224.43,-100.85 1237.93,-45.83"/>
+<polygon fill="#64748b" stroke="#64748b" stroke-width="1.3" points="1241.33,-46.64 1240.32,-36.09 1234.54,-44.97 1241.33,-46.64"/>
+<text text-anchor="middle" x="1213.51" y="-170.6" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#94a3b8"> 3 </text>
 </g>
 <!-- ReciprocityTheory_GroupCohomology&#45;&gt;ReciprocityTheory__minor_15_ -->
 <g id="edge114" class="edge">
 <title>ReciprocityTheory_GroupCohomology&#45;&gt;ReciprocityTheory__minor_15_</title>
-<path fill="none" stroke="#64748b" stroke-width="0.9" stroke-dasharray="1,5" d="M575.48,-335.74C579.15,-314.36 585.46,-277.69 589.8,-252.44"/>
-<polygon fill="#64748b" stroke="#64748b" stroke-width="0.9" points="593.28,-252.85 591.52,-242.4 586.38,-251.66 593.28,-252.85"/>
-<text text-anchor="middle" x="591.51" y="-287.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#94a3b8"> 1 </text>
+<path fill="none" stroke="#64748b" stroke-width="0.9" stroke-dasharray="1,5" d="M576.83,-335.74C582.2,-314.27 591.42,-277.36 597.74,-252.1"/>
+<polygon fill="#64748b" stroke="#64748b" stroke-width="0.9" points="601.13,-252.95 600.16,-242.4 594.34,-251.25 601.13,-252.95"/>
+<text text-anchor="middle" x="597.51" y="-287.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#94a3b8"> 1 </text>
 </g>
 <!-- Formalism_SatakeDualWeyl&#45;&gt;Formalism__other_99_ -->
 <g id="edge93" class="edge">
 <title>Formalism_SatakeDualWeyl&#45;&gt;Formalism__other_99_</title>
-<path fill="none" stroke="#f59e0b" stroke-width="1.85" stroke-dasharray="5,2" d="M1695.89,-465.71C1736.77,-423.82 1848.44,-316.98 1965.51,-271 2150.21,-198.46 3878.53,-206.6 3739.51,-65 3695.7,-20.38 1709.89,-18.8 1304.37,-18.95"/>
-<polygon fill="#f59e0b" stroke="#f59e0b" stroke-width="1.85" points="1304.24,-15.44 1294.24,-18.95 1304.24,-22.44 1304.24,-15.44"/>
+<path fill="none" stroke="#f59e0b" stroke-width="1.85" stroke-dasharray="5,2" d="M1695.89,-465.71C1736.77,-423.82 1848.44,-316.98 1965.51,-271 2150.21,-198.46 3878.53,-206.6 3739.51,-65 3695.93,-20.6 1720.67,-18.85 1316.35,-18.95"/>
+<polygon fill="#f59e0b" stroke="#f59e0b" stroke-width="1.85" points="1316.25,-15.45 1306.25,-18.95 1316.25,-22.45 1316.25,-15.45"/>
 <text text-anchor="middle" x="2748.51" y="-222.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#fbbf24"> 10 </text>
 </g>
 <!-- ReciprocityTheory__minor_15_&#45;&gt;Lemmata__ -->
 <g id="edge108" class="edge">
 <title>ReciprocityTheory__minor_15_&#45;&gt;Lemmata__</title>
-<path fill="none" stroke="#64748b" stroke-width="1.12" stroke-dasharray="1,5" d="M626.91,-205.87C659.25,-188.77 709.06,-162.43 744.22,-143.83"/>
-<polygon fill="#64748b" stroke="#64748b" stroke-width="1.12" points="746.07,-146.82 753.27,-139.05 742.8,-140.63 746.07,-146.82"/>
-<text text-anchor="middle" x="701.51" y="-170.6" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#94a3b8"> 2 </text>
+<path fill="none" stroke="#64748b" stroke-width="1.12" stroke-dasharray="1,5" d="M636.79,-205.83C657.31,-194.94 684.44,-180.59 708.51,-168 723.7,-160.06 740.39,-151.41 755.16,-143.79"/>
+<polygon fill="#64748b" stroke="#64748b" stroke-width="1.12" points="756.8,-146.88 764.09,-139.18 753.59,-140.66 756.8,-146.88"/>
+<text text-anchor="middle" x="713.51" y="-170.6" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#94a3b8"> 2 </text>
 </g>
 <!-- Formalism_RealPlaceAnalysis&#45;&gt;Development_AutomorphicArithmetic -->
 <g id="edge102" class="edge">
 <title>Formalism_RealPlaceAnalysis&#45;&gt;Development_AutomorphicArithmetic</title>
-<path fill="none" stroke="#f59e0b" stroke-width="1.53" stroke-dasharray="5,2" d="M1349.13,-500.51C1353.65,-501.08 1358.13,-501.59 1362.51,-502 1490.18,-514.03 3546.09,-499.97 3670.51,-531 3792.79,-561.5 3856.93,-553.38 3922.51,-661 3969.04,-737.36 3937.52,-1000.79 3870.51,-1060 3826.55,-1098.85 2023.64,-1104.92 1552.3,-1105.84"/>
-<polygon fill="#f59e0b" stroke="#f59e0b" stroke-width="1.53" points="1552.08,-1102.34 1542.09,-1105.86 1552.1,-1109.34 1552.08,-1102.34"/>
-<text text-anchor="middle" x="3949.51" y="-807.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#fbbf24"> 5 </text>
+<path fill="none" stroke="#f59e0b" stroke-width="1.53" stroke-dasharray="5,2" d="M1349.13,-500.51C1353.65,-501.08 1358.13,-501.59 1362.51,-502 1490.18,-514.03 3546.09,-499.97 3670.51,-531 3792.79,-561.5 3856.93,-553.38 3922.51,-661 3969.22,-737.65 3927.65,-1001.56 3859.51,-1060 3815.2,-1098.01 2022.85,-1104.69 1552.55,-1105.79"/>
+<polygon fill="#f59e0b" stroke="#f59e0b" stroke-width="1.53" points="1552.35,-1102.29 1542.36,-1105.82 1552.37,-1109.29 1552.35,-1102.29"/>
+<text text-anchor="middle" x="3946.51" y="-807.1" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#fbbf24"> 5 </text>
 </g>
 <!-- ReciprocityTheory_GeometryOfNumbers&#45;&gt;Development_AutomorphicArithmetic -->
 <g id="edge113" class="edge">
