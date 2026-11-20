@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proof Spine, Bottlenecks &amp; Critical Dependency Chain</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    color: #222;
+    background: #fff;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px 20px 60px;
+  }
+  nav.top-nav {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;
+    color: #555;
+  }
+  nav.top-nav a {
+    color: #0056b3;
+    text-decoration: none;
+  }
+  nav.top-nav a:hover {
+    text-decoration: underline;
+  }
+  h1, h2, h3, h4 {
+    color: #111;
+    line-height: 1.3;
+    margin-top: 1.4em;
+    margin-bottom: 0.5em;
+  }
+  h1 {
+    font-size: 1.8em;
+    margin-top: 0.4em;
+    padding-bottom: 0.3em;
+    border-bottom: 1px solid #ddd;
+  }
+  h2 {
+    font-size: 1.4em;
+    padding-bottom: 0.2em;
+    border-bottom: 1px solid #eee;
+  }
+  h3 { font-size: 1.15em; }
+  h4 { font-size: 1.02em; }
+  p, ul, ol, blockquote {
+    margin: 0.7em 0;
+  }
+  ul, ol {
+    padding-left: 1.6em;
+  }
+  li {
+    margin: 0.25em 0;
+  }
+  blockquote {
+    margin-left: 0;
+    padding: 0.4em 1em;
+    border-left: 4px solid #ccc;
+    color: #444;
+    background: #f9f9f9;
+  }
+  hr {
+    border: 0;
+    border-top: 1px solid #ddd;
+    margin: 1.8em 0;
+  }
+  a {
+    color: #0056b3;
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+  code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 0.9em;
+    background: #f4f4f4;
+    padding: 0.15em 0.35em;
+    border-radius: 3px;
+  }
+  pre {
+    background: #f6f8fa;
+    border: 1px solid #e1e4e8;
+    border-radius: 4px;
+    padding: 12px 14px;
+    overflow-x: auto;
+    font-size: 0.88em;
+    line-height: 1.45;
+  }
+  pre code {
+    background: none;
+    padding: 0;
+    font-size: inherit;
+  }
+  .table-wrap {
+    overflow-x: auto;
+    margin: 1em 0;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 0.92em;
+  }
+  th, td {
+    border: 1px solid #ccc;
+    padding: 7px 10px;
+    vertical-align: top;
+    text-align: left;
+  }
+  th {
+    background: #f3f4f6;
+    font-weight: 600;
+  }
+  tr:nth-child(even) td {
+    background: #fafafa;
+  }
+  details {
+    margin: 1em 0;
+    padding: 0.5em 0.8em;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #fafafa;
+  }
+  summary {
+    cursor: pointer;
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+<nav class="top-nav">
+  <a href="../index.html">&larr; Back to Analysis Portal</a> &middot;
+  <a href="PROOF_SPINE_REPORT.md">Raw Markdown (PROOF_SPINE_REPORT.md)</a>
+</nav>
+<main>
+<h1 id="proof-spine-bottlenecks-amp-critical-dependency-chain">Proof Spine, Bottlenecks &amp; Critical Dependency Chain</h1>
+<p>This report analyzes the logical dependency DAG of the proof—tracing its mandatory mathematical bottlenecks (dominator tree rooted at <a href="file:///home/ubuntu/riemann_proof/lean/src/Main.lean">Main.lean</a>), its deepest critical dependency chain from the final RH/GRH theorems down to foundational algebraic-geometry leaves, and the key bridge modules connecting the major theories (interactive explorer in <a href="file:///home/ubuntu/riemann_proof/analysis/proof_spine/spine_dashboard.html">spine_dashboard.html</a>).</p>
+<blockquote><p><strong>Edge Orientation Convention:</strong> Throughout this report, a directed edge <code>(u, v)</code> means module <code>u</code> <strong>depends on</strong> <code>v</code> (<code>u</code> imports <code>v</code>). Hence <code>Main.lean</code> is the unique root/source at the apex of the proof, and foundational leaf modules sit at the base (<code>height = 0</code>).</p></blockquote>
+<hr>
+<h2 id="executive-overview-mathematical-architecture-of-the-proof-dag">Executive Overview: Mathematical Architecture of the Proof DAG</h2>
+<p>Two structural phenomena govern the logical organization of the proof:</p>
+<ol><li><strong>A Two-Branch Apex Junction (<code>MainTheoremsAll</code>):</strong> Right below <a href="file:///home/ubuntu/riemann_proof/lean/src/Main.lean">Main.lean</a>, <a href="file:///home/ubuntu/riemann_proof/lean/src/Supplements/Kernels/MainTheoremsAll.lean">MainTheoremsAll.lean</a> unites two top-level proof branches:<ul><li>The <strong>critical-line / RH &amp; GRH theorem kernel</strong> (<a href="file:///home/ubuntu/riemann_proof/lean/src/Supplements/Kernels/MainTheoremsCritical.lean">MainTheoremsCritical.lean</a> $\to$ <a href="file:///home/ubuntu/riemann_proof/lean/src/Supplements/Kernels/MainTheorems.lean">MainTheorems.lean</a> $\to$ <a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean">MainConclusion.lean</a>), and</li><li>The <strong>explicit small-class-number Selmer bound</strong> over $\mathbb{Q}(\sqrt{-3})$ (<a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicArithmetic/AutomorphicVarieties/SmallClassNumbers/CorGKOf.lean">CorGKOf.lean</a>). Because both branches share the core automorphic-Galois and modularity-Selmer engines, major foundational bridges such as <a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicArithmetic/Foundations/GaloisRepresentations/IntegralStructures/RowSrc.lean">RowSrc.lean</a> (strong local-global Galois compatibility) and <a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/ThresholdArguments/DenseThresholdCases/TopMainZj.lean">TopMainZj.lean</a> (automorphic/Galois/CM modularity inputs) attach directly beneath <code>MainTheoremsAll</code> in the dominator tree.</li></ul></li><li><strong>A Deep Serial Algebraic-Geometric &amp; Automorphic Spine:</strong> While high-level synthesis modules aggregate many parallel inputs, the deepest dependency chain in the proof forms a tight serial spine running from <code>Main.lean</code> through local-global Galois compatibility (<code>RowSrc</code>), weight-one geometric realization (<code>GeometricRealizationOfWeightOne</code>), finite-étale Kodaira-Spencer models (<code>KsGoodHolds</code>), Harris-Taylor correspondence extensions (<code>FlagModelValueIndependent</code>), Siegel family representability, dual abelian schemes, the Theorem of the Cube (<code>TheoremOfCubeAbelianSchemeOverArbitraryBase</code>), Iwasawa decomposition and unitary family existence (<code>ExistsUnfFamily</code>), Serre vanishing, and PEL Shimura toroidal compactifications (<code>UniformisationConclusion</code>) down to split algebraic tori (<a href="file:///home/ubuntu/riemann_proof/lean/src/ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/SemiabelianSchemes/SplitTori/SplitTorusAff.lean">SplitTorusAff.lean</a>).</li></ol>
+<hr>
+<h2 id="1-entry-funnel-amp-foundational-base">1. Entry Funnel &amp; Foundational Base</h2>
+<h3 id="11-the-apex-entry-funnel">1.1 The Apex Entry Funnel</h3>
+<p>At the top of the proof hierarchy:</p>
+<ul><li><strong>Apex:</strong> <a href="file:///home/ubuntu/riemann_proof/lean/src/Main.lean#L1-L12">Main.lean</a> states and exports the five headline theorems (<code>riemannHypothesis</code>, <code>riemannZeta_eq_zero_re</code>, <code>LFunction_ne_zero_of_half_lt_re</code>, <code>LFunction_eq_zero_re</code>, <code>LFunction_eq_zero_re_of_isPrimitive</code>) from <code>Statements</code> and <code>Supplements.Kernels.MainTheoremsAll</code>.</li><li><strong>Target Specifications &amp; Root Junction:</strong><ul><li><a href="file:///home/ubuntu/riemann_proof/lean/src/Statements.lean#L1-L16">Statements.lean</a> defines the four standalone target propositions (<code>RiemannZetaZerosOnLine</code>, <code>DirichletLNonvanishingRightOfHalf</code>, <code>DirichletLZerosOnLine</code>, <code>PrimitiveDirichletLZerosOnLine</code>) directly over Mathlib.</li><li><a href="file:///home/ubuntu/riemann_proof/lean/src/Supplements/Kernels/MainTheoremsAll.lean#L1-L2">MainTheoremsAll.lean</a> joins <code>Supplements.Kernels.MainTheoremsCritical</code> and <code>CorGKOf</code>.</li></ul></li><li><strong>Analytic &amp; Selmer Branches:</strong><ul><li><a href="file:///home/ubuntu/riemann_proof/lean/src/Supplements/Kernels/MainTheoremsCritical.lean#L1-L4">MainTheoremsCritical.lean</a> pairs <code>MainTheorems</code> with three small-class-number arithmetic modules (<code>ClassNumberThree</code>, <code>LenEqZeroIff</code>, <code>OnePoint</code>).</li><li><a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicArithmetic/AutomorphicVarieties/SmallClassNumbers/CorGKOf.lean#L1-L29">CorGKOf.lean</a> proves <code>UpperTheory.V.SmallClassNumbers.corGK</code> and <code>bound</code> over $\mathbb{Q}(\sqrt{-3})$, pulling in <code>ClassNumberThree</code>, <code>TopMainZj</code>, <code>DefiniteNHolds</code>, and <code>RowSrc</code>.</li><li><a href="file:///home/ubuntu/riemann_proof/lean/src/Supplements/Kernels/MainTheorems.lean#L1-L16">MainTheorems.lean</a> connects <a href="file:///home/ubuntu/riemann_proof/lean/src/Formalism/GammaFactorNonvanishing/CritLine.lean#L11-L32">CritLine.lean</a>, <a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicArithmetic/CharacterBoxes/ClaimStrip.lean#L59-L102">ClaimStrip.lean</a>, and <a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean#L7-L14">MainConclusion.lean</a> to discharge <code>allChi</code>, <code>rhOfAll</code>, <code>critAll</code>, and <code>claimAll</code>.</li></ul></li></ul>
+<h3 id="12-foundational-base-leaf-modules">1.2 Foundational Base (Leaf Modules)</h3>
+<p>At the bottom of the dependency DAG (<code>out_degree = 0</code>), every leaf module builds directly on external <code>Mathlib</code> theories (such as scheme theory, commutative algebra, Haar measure, complex analysis, and Galois theory). Key foundational leaf interfaces include:</p>
+<ul><li><strong>Quasi-Excellent Log-Resolution Specifications:</strong> <a href="file:///home/ubuntu/riemann_proof/lean/src/ReciprocityTheory/AnalyticForms/RegularLocalRings/FinalTheorems.lean">FinalTheorems.lean</a> (defining Cartier blowups, quasi-excellent rings <code>QERing</code>, and strong log-resolution <code>GFLogStR</code>).</li><li><strong>Blowup Universal Properties:</strong> <a href="file:///home/ubuntu/riemann_proof/lean/src/Development/ResolutionOfSingularities/Foundations/BlowupUniversalProperty.lean">BlowupUniversalProperty.lean</a>.</li><li><strong>Non-Galois Unit &amp; Orbit Lattice Groups:</strong> <a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AbelianVarietyTheory/Definitions/NonGaloisDescent/UnitLemmaGroup.lean">UnitLemmaGroup.lean</a>.</li><li><strong>Split Tori &amp; Torsion Schemes:</strong> <a href="file:///home/ubuntu/riemann_proof/lean/src/ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/SemiabelianSchemes/SplitTori/SplitTorusAff.lean">SplitTorusAff.lean</a>.</li><li><strong>Capelli Identities &amp; Differential Operators:</strong> <a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicArithmetic/IntegralCasts/CapelliIdentities/CovariantDegrees.lean">CovariantDegrees.lean</a> and <a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicArithmetic/IntegralCasts/CapelliIdentities/MemOfClosed.lean">MemOfClosed.lean</a>.</li></ul>
+<hr>
+<h2 id="2-stratigraphic-layering-across-theories">2. Stratigraphic Layering Across Theories</h2>
+<p>The mathematical domains of the proof stratify naturally into five functional layers from the apex down to the base:</p>
+<ol><li><strong>Apex &amp; Analytic Reflection Layer (<code>(root)</code>, <code>Supplements</code>, <code>Formalism/GammaFactorNonvanishing</code>):</strong> Converts universal right half-plane nonvanishing (<code>EveryCharacter</code>) into the classical Riemann Hypothesis and Generalized Riemann Hypothesis via Euler-factor stripping (<code>ClaimStrip</code>) and functional-equation reflection (<code>CritLine</code>, <code>RhOfRight</code>).</li><li><strong>Upper Automorphic &amp; Positivity Synthesis (<code>PositivityTheory</code>, upper <code>Development</code>):</strong> Constructs parallel weight-one Hilbert Eisenstein series, Rankin-Selberg zeta integrals on $\mathrm{GL}_3 \times \mathrm{GL}_2$ and $\mathrm{GL}_2 \times \mathrm{GL}_2$, local-global Galois representations, modularity-lifting patching reductions, and windowed Chebyshev character boxes.</li><li><strong>Core Geometric &amp; Representation-Theoretic Engine (<code>Development/AbelianVarietyTheory</code>, <code>Development/AutomorphicSpectrum</code>, <code>Development/WeilBound</code>, <code>CompanionTheory</code>):</strong> Develops the theory of polarized abelian schemes, dual abelian varieties, de Rham and crystalline comparisons, Moriwaki arithmetic bigness, Harish-Chandra discrete series characters (<code>DSInfCharCap</code>), and Flath restricted tensor product factorizations.</li><li><strong>Specification &amp; Harmonic-Analytic Infrastructure (<code>Formalism</code>):</strong> Provides the local-to-global theta-lift stage contracts (<code>LinksStage</code>), formal differential operator chart-independence (<code>ThExprUniqOfChartIndep2</code>), the master CM host / Hermitian lattice coordination structure (<code>D7</code>), local Bloch-Kato orthogonality (<code>LocCoh</code>), and local Tate duality (<code>LocalTateDualityK</code>).</li><li><strong>Algebraic-Geometric, Cohomological &amp; Arakelov Bedrock (<code>ReciprocityTheory</code>, <code>GroundTheory</code>, <code>Lemmata</code>):</strong> Supplies PEL Shimura toroidal compactifications (<code>UniformisationConclusion</code>), uniqueness of Mumford semiabelian uniformisations (<code>UnifUniqSt</code>), the 24-law contract for polarized abelian schemes (<code>GlobalSectionsRankAlgClosed</code>), Arakelov Hermitian lattices and Bost-Zhang slope bounds (<code>KernelsLattice</code>), Whittaker multiplicity one (<code>Injective</code>), and Poitou-Tate nine-term Galois cohomology duality (<code>PoitouTateNineTermGs</code>).</li></ol>
+<hr>
+<h2 id="3-dominator-tree-amp-mandatory-proof-bottlenecks">3. Dominator Tree &amp; Mandatory Proof Bottlenecks</h2>
+<p>In the dependency DAG rooted at <code>Main.lean</code>, a module $d$ <strong>dominates</strong> a module $u$ if <em>every</em> dependency path from <code>Main.lean</code> to $u$ must pass through $d$. Computing the exact Cooper-Harvey-Kennedy dominator tree reveals the mandatory mathematical bottlenecks of the proof.</p>
+<h3 id="dominator-skeleton-diagram">Dominator Skeleton Diagram</h3>
+<pre><code class="language-mermaid">flowchart TD
+    M["Main (Final RH &amp; GRH Exports)"] --&gt; S["Statements (Standalone Target Specs)"]
+    M --&gt; MTA["MainTheoremsAll (Apex Junction)"]
+
+    MTA --&gt; RS["RowSrc (Strong Local-Global Galois Row0b)"]
+    RS --&gt; GRTL["GaloisRepresentationsOfThetaLift"]
+    GRTL --&gt; WOGR["WeightOneGeometricRealization"]
+    WOGR --&gt; GRWO["GeometricRealizationOfWeightOne (GeoOne)"]
+
+    MTA --&gt; RHEC["RiemannHypothesisOfEveryCharacter"]
+    RHEC --&gt; CSH["CovolumeOfSlimAndHyp (covolX_of_slim2)"]
+    CSH --&gt; CHPS["CovolumeOfHeightPrintsStatement"]
+    CHPS --&gt; CHH["CovolumeOfHeightHyp (Moret-Bailly Second Jets)"]
+
+    MTA --&gt; TMZ["TopMainZj (Automorphic, Galois &amp; CM Inputs)"]
+    TMZ --&gt; WB["WindowBoundOfLiteratureLevel (Patching -&gt; VWin)"]
+    WB --&gt; ZU["ZetaUr (Kato Euler System Integrality)"]
+
+    MTA --&gt; TCS["TopCovolSlim2Use (Arakelov Self-Intersection -&gt; CovolX)"]
+    TCS --&gt; GTVA["GoodTowerVolumeTheoremAlt"]
+    GTVA --&gt; FTIRS["FinalTheoremOfInputsRightStatement"]
+    FTIRS --&gt; FTIR["FinalTheoremOfInputsRight"]
+    FTIR --&gt; GTVS["GoodTowerVolumeTheoremStatement"]
+    GTVS --&gt; GTV["GoodTowerVolumeTheorem (GoodTowerExistsX &amp; VolumeTheoremX)"]
+
+    MTA --&gt; MTC["MainTheoremsCritical"]
+    MTC --&gt; MT["MainTheorems (allChi, rhOfAll, critAll, claimAll)"]
+    MT --&gt; MC["MainConclusion (UpperTheory.FinalTheorems.everyCharacter)"]
+    MC --&gt; EC["EveryCharacterOfLiteratureOfVWin"]
+    EC --&gt; SEST["SiegelEisensteinSecondTermHypotheses"]</code></pre>
+<h3 id="key-mathematical-dominator-bottlenecks">Key Mathematical Dominator Bottlenecks</h3>
+<div class="table-wrap"><table><thead><tr><th>Bottleneck Module</th><th>Immediate Dominator</th><th>Mathematical Role &amp; Bridge</th></tr></thead><tbody><tr><td><a href="file:///home/ubuntu/riemann_proof/lean/src/Main.lean#L1-L12">Main.lean</a></td><td>— (Root)</td><td>Final theorem exports (<code>riemannHypothesis</code>, <code>riemannZeta_eq_zero_re</code>, <code>LFunction_ne_zero_of_half_lt_re</code>, <code>LFunction_eq_zero_re</code>, <code>LFunction_eq_zero_re_of_isPrimitive</code>).</td></tr><tr><td><a href="file:///home/ubuntu/riemann_proof/lean/src/Supplements/Kernels/MainTheoremsAll.lean#L1-L2">MainTheoremsAll.lean</a></td><td><code>Main</code></td><td>Apex junction merging <code>MainTheoremsCritical</code> and <code>CorGKOf</code>; dominates the entire proof below <code>Main</code>.</td></tr><tr><td><a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicArithmetic/Foundations/GaloisRepresentations/IntegralStructures/RowSrc.lean#L6">RowSrc.lean</a></td><td><code>MainTheoremsAll</code></td><td>Bridges theta-kernel Parseval input <code>tLiftK</code> into <code>galoisLocalGlobalStrong_recParameter</code> (<code>Row0b recT</code>); shared by both <code>MainConclusion</code> and <code>CorGKOf</code>.</td></tr><tr><td><a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicArithmetic/Foundations/GaloisRepresentations/IntegralStructures/GaloisRepresentationsOfThetaLift.lean#L6">GaloisRepresentationsOfThetaLift.lean</a></td><td><code>RowSrc</code></td><td>Bridges weight-one geometric realization <code>geoOne_holds</code> and <code>TLiftK</code> to strong local-global Galois compatibility (<code>galoisRepresentations_of_thetaLift</code>).</td></tr><tr><td><a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicArithmetic/Foundations/GaloisRepresentations/IntegralStructures/GeometricFlagBases/WeightOneGeometricRealization.lean#L7-L11">WeightOneGeometricRealization.lean</a></td><td><code>GaloisRepresentationsOfThetaLift</code></td><td>Discharges <code>HolomorphicLefschetzFormula</code> via <code>lefschetz_fixedPoint_finite_etale_correspondence</code> to establish <code>GeoOne</code>.</td></tr><tr><td><a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicArithmetic/Foundations/GaloisRepresentations/IntegralStructures/GeometricFlagBases/GeometricRealizationOfWeightOne.lean#L18-L25">GeometricRealizationOfWeightOne.lean</a></td><td><code>WeightOneGeometricRealization</code></td><td>Synthesizes crystalline towers, $p$-adic Witt lattices, finite-étale Kodaira-Spencer (<code>ksGood_holds</code>), and Lefschetz sigma sums (<code>ksHodge_of_geo</code>).</td></tr><tr><td><a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicArithmetic/CharacterBoxes/RiemannHypothesisOfEveryCharacter.lean#L211-L231">RiemannHypothesisOfEveryCharacter.lean</a></td><td><code>MainTheoremsAll</code></td><td>Assembles operator, interpolation, and covolume inputs and proves <code>riemannHypothesis_of_everyCharacter</code> via <code>completedRiemannZeta_one_sub</code>.</td></tr><tr><td><a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/ThresholdArguments/DenseThresholdCases/TopMainZj.lean#L18-L74">TopMainZj.lean</a></td><td><code>MainTheoremsAll</code></td><td>Packages <code>OpenImageCondition</code> into <code>LitLocAlt</code>, <code>LiteratureAutomorphyHypothesis</code>, and <code>LiteratureCMHypothesis</code> to build <code>VWin</code>.</td></tr><tr><td><a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/ThresholdArguments/DenseThresholdCases/WindowBoundOfLiteratureLevel.lean#L25-L34">WindowBoundOfLiteratureLevel.lean</a></td><td><code>TopMainZj</code></td><td>Reduces <code>VWin</code> to <code>LiteratureRankNHypothesis</code> via descent-vanishing patching (<code>published_hypotheses_from_patching_alt</code>) and Kato's bounds.</td></tr><tr><td><a href="file:///home/ubuntu/riemann_proof/lean/src/Development/WeilBound/CoreStatements/AutomorphicKernels/MoriwakiBigness/HilbertSamuelApplications/TopCovolSlim2Use.lean#L13-L19">TopCovolSlim2Use.lean</a></td><td><code>MainTheoremsAll</code></td><td>Bridges Moriwaki bigness, Fargues exactness, Zarhin, Nef Riemann-Roch, Scholze-Weinstein, and Fubini-Study Chow heights to <code>CovolX</code>.</td></tr><tr><td><a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AbelianVarietyTheory/Proofs/DivisorProofs/CovolumeOfSlimAndHyp.lean#L22">CovolumeOfSlimAndHyp.lean</a></td><td><code>RiemannHypothesisOfEveryCharacter</code></td><td>Proves <code>covolX_of_slim₂</code>, turning <code>Slim</code> + <code>HypothesesXH</code> into <code>CovolX</code> via <code>exists_ch2Const_of_prints</code> and <a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AbelianVarietyTheory/Proofs/DivisorProofs/CovolumeOfHeightHyp.lean#L22-L27">CovolumeOfHeightHyp.lean</a> (<code>second_jets_moret_bailly</code>).</td></tr><tr><td><a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean#L7-L14">MainConclusion.lean</a></td><td><code>MainTheorems</code></td><td>Closes <code>UpperTheory.FinalTheorems.everyCharacter</code> and <code>riemannHypothesis</code> from <code>Row0b</code> + <code>VWin</code>.</td></tr><tr><td><a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/EveryCharacterOfLiteratureOfVWin.lean#L810-L813">EveryCharacterOfLiteratureOfVWin.lean</a></td><td><code>MainConclusion</code></td><td>Binds <code>OpenLiteratureStatements</code>, <code>published_results_arithmetic</code>, and <code>topCovolSlim2_use_alt_alt</code> into <code>EveryCharacter</code>.</td></tr><tr><td><a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/SiegelEisensteinSecondTermHypotheses.lean#L44-L73">SiegelEisensteinSecondTermHypotheses.lean</a></td><td><code>EveryCharacterOfLiteratureOfVWin</code></td><td>Bridges Fock models, Howe unramifiedness, and evaluation grids to <code>nonempty_hyps_definite_side_of_closed_bound</code>.</td></tr><tr><td><a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicSpectrum/Proofs/GeometryProofs/GoodTowerVolumeTheoremAlt.lean#L32-L42">GoodTowerVolumeTheoremAlt.lean</a></td><td><code>TopCovolSlim2Use</code></td><td>Assembles Arakelov intersection system, Moriwaki HS/bigness, <code>ResK</code>, Fargues Hodge-Tate, Zarhin, and <code>thetaUnifAV_closed</code> into <code>GoodTowerExistsX ∧ VolumeTheoremX</code> via <a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicSpectrum/Proofs/GeometryProofs/FinalTheoremOfInputsRight.lean#L28-L39">FinalTheoremOfInputsRight.lean</a> and <a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicSpectrum/Proofs/DivisibilityProofs/GoodTowerVolumeTheorem.lean#L36-L50">GoodTowerVolumeTheorem.lean</a>.</td></tr><tr><td><a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/KatoQuadraticCharacters/UnramifiedZeta/ZetaUr.lean#L9-L12">ZetaUr.lean</a></td><td><code>WindowBoundOfLiteratureLevel</code></td><td>Proves <code>GlobalTheory.Ord2.ZetaUr</code> from Kato's Euler-system integrality and smoothed zeta-class Hodge-Tate law.</td></tr><tr><td><a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AbelianVarietyTheory/Proofs/DivisorProofs/ToroidalCompactificationFanLogKodairaSpencerIso.lean#L8-L9">ToroidalCompactificationFanLogKodairaSpencerIso.lean</a></td><td><code>MainTheoremsAll</code></td><td>Bridges rigid boundary charts for unitary data to <code>ToroidalForFanKS</code>.</td></tr></tbody></table></div>
+<hr>
+<h2 id="4-the-critical-dependency-chain-apex-to-split-tori">4. The Critical Dependency Chain (Apex to Split Tori)</h2>
+<p>Tracing the deepest directed path in the DAG from <a href="file:///home/ubuntu/riemann_proof/lean/src/Main.lean">Main.lean</a> down to the base leaf <a href="file:///home/ubuntu/riemann_proof/lean/src/ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/SemiabelianSchemes/SplitTori/SplitTorusAff.lean#L27-L43">SplitTorusAff.lean</a> reveals a nearly linear spine of mathematical reductions:</p>
+<div class="table-wrap"><table><thead><tr><th>Phase</th><th>Theory / Subtree</th><th>Key Mathematical Progression Along the Spine</th></tr></thead><tbody><tr><td><strong>Phase 1: Final Exports</strong></td><td><code>(root)</code> → <code>Supplements.Kernels</code></td><td><a href="file:///home/ubuntu/riemann_proof/lean/src/Main.lean">Main.lean</a> → <a href="file:///home/ubuntu/riemann_proof/lean/src/Supplements/Kernels/MainTheoremsAll.lean">MainTheoremsAll.lean</a> → <a href="file:///home/ubuntu/riemann_proof/lean/src/Supplements/Kernels/MainTheoremsCritical.lean">MainTheoremsCritical.lean</a> → <a href="file:///home/ubuntu/riemann_proof/lean/src/Supplements/Kernels/MainTheorems.lean">MainTheorems.lean</a></td></tr><tr><td><strong>Phase 2: Galois &amp; Weight-1 Realization</strong></td><td><code>Development/AutomorphicArithmetic</code></td><td><a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean">MainConclusion.lean</a> → <a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicArithmetic/Foundations/GaloisRepresentations/IntegralStructures/RowSrc.lean">RowSrc.lean</a> → <code>GaloisRepresentationsOfThetaLift</code> → <code>WeightOneGeometricRealization</code> → <code>GeometricRealizationOfWeightOne</code> → <a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicArithmetic/Foundations/GaloisRepresentations/FiniteEtaleModels/KsGoodHolds.lean#L45">KsGoodHolds.lean</a> → <code>CovLink</code> → <code>QuotObjLink</code> → <code>MEsNorm</code></td></tr><tr><td><strong>Phase 3: Siegel Moduli, Dual Abelian Schemes &amp; Theorem of the Cube</strong></td><td><code>Development/AbelianVarietyTheory</code></td><td><a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AbelianVarietyTheory/Proofs/DivisorProofs/FlagModelValueIndependent.lean#L17">FlagModelValueIndependent.lean</a> (Harris-Taylor correspondence extension) → <code>IsHeckeMapLevRefl</code> → Siegel family representability (<code>SiegelKernelBoundedRepresentableOfCoprime</code>, <code>SiegelObjectDualNumberClassifiedStatement</code>) → dual abelian schemes and Poincaré de Rham duality (<code>HasProperSmoothDualRepresentativeFiniteTypeStatement</code>, <code>AbelianSchemeFirstDeRhamStructure</code>, <code>PoincareDeRhamDuality</code>) → <a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AbelianVarietyTheory/Proofs/DivisorProofs/TheoremOfCubeAbelianSchemeOverArbitraryBase.lean#L5">TheoremOfCubeAbelianSchemeOverArbitraryBase.lean</a></td></tr><tr><td><strong>Phase 4: Cubic Forms &amp; Block Decomposition</strong></td><td><code>CompanionTheory</code> → <code>WeilBound</code> → <code>AutomorphicSpectrum</code></td><td><a href="file:///home/ubuntu/riemann_proof/lean/src/CompanionTheory/AutomorphicTheory/TemperedLocalSpectra/CubicForms/ImportsBis.lean#L1-L2">ImportsBis.lean</a> → <a href="file:///home/ubuntu/riemann_proof/lean/src/Development/WeilBound/CoreStatements/TemperedRepresentationTheory/CubeTheorem/CubeTheoremHolds.lean#L14">CubeTheoremHolds.lean</a> → <code>BlockDecomposition.PerfectOfModelsStatement</code> / <code>CubeTheoremOfPerfect</code></td></tr><tr><td><strong>Phase 5: Projectivity, Unitary Families &amp; Serre Vanishing</strong></td><td><code>Development/AbelianVarietyTheory</code></td><td><code>IwasawaDecomposition.IsProjOverOfIsProjOverBase</code> → <code>LineModel</code> → <a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AbelianVarietyTheory/Proofs/UnitaryExistence/ExistsUnfFamily.lean#L38">ExistsUnfFamily.lean</a> → <code>ExistsSectionsPowLineBundleFromLocalBasis</code> → <code>FinrankPrincipalPolarisationSectionModuleLeOneStatement</code> → <a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AbelianVarietyTheory/Proofs/CoherentCohomologyProofs/SerreVanishingH1TwistStatement.lean#L11">SerreVanishingH1TwistStatement.lean</a> → <code>ExistsSecNonzeroLocusEqOfLbIso</code></td></tr><tr><td><strong>Phase 6: Toroidal Compactification, Mumford Uniformisation &amp; Split Tori</strong></td><td><code>ReciprocityTheory/ReductiveGroups/ArithmeticGeometry</code></td><td><a href="file:///home/ubuntu/riemann_proof/lean/src/ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/BirationalGeometry/ToroidalCompactification/AmplePt.lean#L14">AmplePt.lean</a> → DVR/toroidal valuations (<code>RosVal</code>, <code>CubeVal</code>, <code>ValCalc</code>, <code>HasArcDataIff</code>) → <a href="file:///home/ubuntu/riemann_proof/lean/src/ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/BirationalGeometry/ToroidalCompactification/UniformisationConclusion.lean#L119">UniformisationConclusion.lean</a> → <code>ExtensionDescent</code> (<code>QkToAkU</code> .. <code>NonzeroLocus</code>) → <a href="file:///home/ubuntu/riemann_proof/lean/src/ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/SemiabelianSchemes/AbelianSchemeQuotients/IsAbelianScheme.lean#L13">IsAbelianScheme.lean</a> → <a href="file:///home/ubuntu/riemann_proof/lean/src/ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/SemiabelianSchemes/SplitTori/SplitTorusAff.lean#L27">SplitTorusAff.lean</a></td></tr></tbody></table></div>
+<hr>
+<h2 id="5-foundational-hubs-amp-cross-theory-bridge-modules">5. Foundational Hubs &amp; Cross-Theory Bridge Modules</h2>
+<h3 id="51-core-foundational-contract-hubs">5.1 Core Foundational Contract Hubs</h3>
+<p>The modules most heavily relied upon across the proof define the shared geometric, representation-theoretic, and arithmetic specifications:</p>
+<ul><li><strong>PEL Shimura Toroidal &amp; Semiabelian Uniformisation (<code>ReciprocityTheory</code>):</strong><ul><li><a href="file:///home/ubuntu/riemann_proof/lean/src/ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/BirationalGeometry/ToroidalCompactification/UniformisationConclusion.lean">UniformisationConclusion.lean</a> — PEL toroidal boundary uniformisation (<code>PELUnif</code>, <code>Model.N3</code>, <code>Model.N4</code>, <code>PartI</code>).</li><li><a href="file:///home/ubuntu/riemann_proof/lean/src/ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/ExtensionDescent/UnifUniqSt.lean">UnifUniqSt.lean</a> — Canonical uniqueness of Mumford semiabelian uniformisations (<code>UnifUniqSt</code>).</li><li><a href="file:///home/ubuntu/riemann_proof/lean/src/ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/BirationalGeometry/ToroidalCompactification/HeckeKer.lean">HeckeKer.lean</a> — Congruence-level automorphisms and prime-to-level Hecke correspondences on toroidal models (<code>ToroidalLevelCompatibility</code>, <code>ToroidalHeckeCompatibility</code>).</li><li><a href="file:///home/ubuntu/riemann_proof/lean/src/ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/ExtensionDescent/SecBaseChangeAnySt.lean">SecBaseChangeAnySt.lean</a> — Base-change compatibility of global section bases of $L^n$ and Weil-pairing character duality (<code>Laws2</code>).</li><li><a href="file:///home/ubuntu/riemann_proof/lean/src/ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/BirationalGeometry/ToroidalCompactification/IsHolPeriods.lean">IsHolPeriods.lean</a> — Complex-analytic Shimura period lattices and Riemann theta frames (<code>FamilyUnif</code>, <code>N1c</code>).</li><li><a href="file:///home/ubuntu/riemann_proof/lean/src/ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/BirationalGeometry/ToroidalCompactification/CubeVal.lean">CubeVal.lean</a> — Toroidal DVR valuation laws for cubical line bundles.</li></ul></li><li><strong>Divisor Cones, Anisotropic Siegel-Weil &amp; Discrete Series (<code>Development/AbelianVarietyTheory</code>):</strong><ul><li><a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AbelianVarietyTheory/Definitions/Divisors/CTSmallCone.lean">CTSmallCone.lean</a>, <a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AbelianVarietyTheory/Definitions/Divisors/SiegelWeilAnisotropicHermitian.lean">SiegelWeilAnisotropicHermitian.lean</a>, <a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AbelianVarietyTheory/Definitions/Divisors/DiscreteSeriesHermitianUnique.lean">DiscreteSeriesHermitianUnique.lean</a>, <a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AbelianVarietyTheory/PublishedTheorems/AutomorphicForms₂/ExistsNormLeHeightPow.lean">ExistsNormLeHeightPow.lean</a>, <a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AbelianVarietyTheory/BlockTheory/DivisorBase/WeilTensorModels.lean">WeilTensorModels.lean</a>, and <a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AbelianVarietyTheory/Definitions/Degenerations/AdmissibleBaseOfCompleteDvr.lean">AdmissibleBaseOfCompleteDvr.lean</a>.</li></ul></li><li><strong>CM Host Package, Fontaine Period Rings &amp; Formal Differential Operators (<code>Formalism</code>):</strong><ul><li><a href="file:///home/ubuntu/riemann_proof/lean/src/Formalism/LocalRingCardinality/RhoDetPrimeEqMuTildeMulChiPow.lean">RhoDetPrimeEqMuTildeMulChiPow.lean</a> — Master coordination structure <code>D7</code> for CM hosts, self-dual Hermitian lattices, Fontaine period rings, and Galois types.</li><li><a href="file:///home/ubuntu/riemann_proof/lean/src/Formalism/SharpRestriction/Divisibility/GeneratorPowers/ThExprUniqOfChartIndep2.lean">ThExprUniqOfChartIndep2.lean</a> — Chart-independence of formal differential operators on theta sections.</li><li><a href="file:///home/ubuntu/riemann_proof/lean/src/Formalism/LocalRingCardinality/AdicCompletionLocal/LocTied.lean">LocTied.lean</a> — Identification of abstract local Fontaine period rings with $B_{\mathrm{cris}}$ and $B_{\mathrm{dR}}$.</li><li><a href="file:///home/ubuntu/riemann_proof/lean/src/Formalism/SharpRestriction/ParConsts.lean#L19-L99">ParConsts.lean</a> — Parameter-constant packing (<code>FamP</code>, <code>parConsts</code>, <code>NoGain</code>) through which nearly nine-tenths of all directed <code>Main</code>-to-leaf paths flow.</li></ul></li></ul>
+<h3 id="52-major-synthesis-amp-aggregation-hubs">5.2 Major Synthesis &amp; Aggregation Hubs</h3>
+<p>Modules that pull together large collections of intermediate lemmas into unified mathematical results:</p>
+<ul><li><strong>Hermitian Curvature &amp; Heisenberg Measure Preservation (<code>Formalism</code>):</strong> <a href="file:///home/ubuntu/riemann_proof/lean/src/Formalism/HermitianCurvature/HeisenbergConjugationMeasurePreserving.lean">HeisenbergConjugationMeasurePreserving.lean</a>.</li><li><strong>Arakelov Heights, Complex Analytic Sets &amp; Hilbert-Samuel Volumes (<code>GroundTheory</code>):</strong> <a href="file:///home/ubuntu/riemann_proof/lean/src/GroundTheory/HeightsAndTheta/Heights/ComplexAnalyticSets/Assembly.lean">ComplexAnalyticSets/Assembly.lean</a>, <a href="file:///home/ubuntu/riemann_proof/lean/src/GroundTheory/HeightsAndTheta/Heights/HilbertSamuel/AssemblyBase.lean">HilbertSamuel/AssemblyBase.lean</a>, <a href="file:///home/ubuntu/riemann_proof/lean/src/GroundTheory/HeightsAndTheta/Heights/Intersections/Assembly.lean">Intersections/Assembly.lean</a>, <a href="file:///home/ubuntu/riemann_proof/lean/src/GroundTheory/HeightsAndTheta/Heights/ArithmeticBezout/Assembly.lean">ArithmeticBezout/Assembly.lean</a>, and <a href="file:///home/ubuntu/riemann_proof/lean/src/GroundTheory/HeightsAndTheta/Heights/LocalFiniteness/HilbertSamuelGrowthOffHypersurfacePolynomial.lean">HilbertSamuelGrowthOffHypersurfacePolynomial.lean</a>.</li><li><strong>Capelli Integral Bounds &amp; Resolution of Singularities (<code>Development</code>):</strong> <a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicArithmetic/IntegralCasts/CapelliIdentities/CapelliComplements/KappaIntegralBound.lean">KappaIntegralBound.lean</a>, <a href="file:///home/ubuntu/riemann_proof/lean/src/Development/ResolutionOfSingularities/EmbeddedResolution/StrongResolution/AffineCentersOverSingularLocus.lean">AffineCentersOverSingularLocus.lean</a>, and <a href="file:///home/ubuntu/riemann_proof/lean/src/Development/WeilBound/CoreStatements/AutomorphicKernels/MoriwakiBigness/MoriwakiBigTheorem/HSChain.lean">HSChain.lean</a>.</li><li><strong>Top-Level Character-Box &amp; Modularity Syntheses (<code>Development</code>):</strong> <a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicArithmetic/CharacterBoxes/RiemannHypothesisOfEveryCharacter.lean">RiemannHypothesisOfEveryCharacter.lean</a>, <a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/EveryCharacterOfLiteratureOfVWin.lean">EveryCharacterOfLiteratureOfVWin.lean</a>, <a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/ThresholdArguments/DenseThresholdCases/TemperedProductOfSquareIntegrable.lean">TemperedProductOfSquareIntegrable.lean</a>, and <a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/ThresholdArguments/DenseThresholdCases/PublishedHypothesesFromPatching.lean">PublishedHypothesesFromPatching.lean</a>.</li></ul>
+<h3 id="53-cross-theory-bridge-modules">5.3 Cross-Theory Bridge Modules</h3>
+<p>Modules sitting directly on the boundary between distinct top-level mathematical theories (linking upstream foundations to downstream consumers):</p>
+<ul><li><a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AbelianVarietyTheory/Definitions/AutomorphicMembership/Brauer.lean">Brauer.lean</a> &amp; <a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AbelianVarietyTheory/Definitions/AutomorphicMembership/ParMem.lean">ParMem.lean</a> — Bundles local $\mathrm{GL}_n$, global automorphic, Galois cohomology, and CM abelian-variety theorems (<code>LitLoc</code>, <code>LitAut</code>, <code>LitCoh</code>, <code>LitCM</code>, <code>LitN</code>).</li><li><a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicArithmetic/AutomorphicVarieties/AutomorphicForms/Hypotheses2.lean">Hypotheses2.lean</a> &amp; <a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicArithmetic/AutomorphicVarieties/AutomorphicForms/GalUnitary.lean">GalUnitary.lean</a> — Bridges unitary automorphic forms and Galois representations across <code>Development</code>, <code>PositivityTheory</code>, and <code>CompanionTheory</code>.</li><li><a href="file:///home/ubuntu/riemann_proof/lean/src/Formalism/SharpRestriction/LevelLetterCocycles/LocCoh.lean">LocCoh.lean</a> — Connects local Bloch-Kato finite-part cohomology and Tate cup-product orthogonality in <code>Formalism</code> to <code>Development</code>.</li><li><a href="file:///home/ubuntu/riemann_proof/lean/src/ReciprocityTheory/ReductiveGroups/TraceFormulas/LatDefs.lean">LatDefs.lean</a> — Connects trace-formula lattice definitions in <code>ReciprocityTheory</code> to <code>Development</code> and <code>Formalism</code>.</li><li><a href="file:///home/ubuntu/riemann_proof/lean/src/GroundTheory/HeightsAndTheta/Heights/HilbertSamuel/StatementsArith.lean">StatementsArith.lean</a> — Connects arithmetic Hilbert-Samuel height statements in <code>GroundTheory</code> to <code>Development</code>.</li><li><a href="file:///home/ubuntu/riemann_proof/lean/src/Development/AbelianVarietyTheory/Definitions/Jets/SumIoPr.lean">SumIoPr.lean</a> — Connects archimedean $U(p,q)$ Casimir and tensor-branching algebra in <code>Development</code> to <code>CompanionTheory</code>.</li><li><a href="file:///home/ubuntu/riemann_proof/lean/src/CompanionTheory/SpectralGeometry/CountingDefinitions/AdelicEulerProducts/IsEulerProd.lean">IsEulerProd.lean</a> — Connects adelic Siegel-Weil Euler-product measure disintegrations in <code>CompanionTheory</code> to <code>Development</code>.</li><li><a href="file:///home/ubuntu/riemann_proof/lean/src/Formalism/SatakeDualWeyl/KpqSubgroupCompact.lean">KpqSubgroupCompact.lean</a> — Connects adelic unitary Cartan decompositions and Satake transforms in <code>Formalism</code> to <code>Development</code> and <code>CompanionTheory</code>.</li></ul>
+</main>
+<script src="../render_reports.js" data-md="PROOF_SPINE_REPORT.md"></script>
+</body>
+</html>
