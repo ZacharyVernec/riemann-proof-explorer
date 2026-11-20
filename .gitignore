@@ -1,0 +1,12 @@
+# Split archive parts
+lean.tar.gz.part*
+
+# Build / cache / editor artifacts
+.lake/
+__pycache__/
+*.pyc
+.venv/
+.DS_Store
+*.swp
+*.swo
+*~
