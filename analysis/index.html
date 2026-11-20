@@ -1,362 +1,231 @@
+<!--
+  Serve locally:
+  python3 -m http.server 8000 --directory /home/ubuntu/riemann_proof/analysis
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Riemann Hypothesis Lean 4 Formalization — Structural Analysis Portal</title>
+<title>Riemann Hypothesis &amp; GRH Proof — Mathematical Architecture Portal</title>
 <style>
-  :root {
-    --bg: #0b101b;
-    --panel: #131a2a;
-    --panel-alt: #192238;
-    --border: #273352;
-    --text: #e6ecf7;
-    --muted: #9aa7c2;
-    --accent: #60a5fa;
-    --accent-2: #34d399;
-    --accent-3: #f59e0b;
-    --accent-4: #a78bfa;
-    --accent-5: #f472b6;
-    --code-bg: #0a0e17;
-  }
-  * { box-sizing: border-box; }
   body {
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.55;
-  }
-  .wrap {
-    max-width: 1200px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    color: #222;
+    background: #fff;
+    max-width: 980px;
     margin: 0 auto;
-    padding: 36px 24px 60px;
+    padding: 24px 20px 60px;
   }
   header {
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 24px;
-    margin-bottom: 28px;
-  }
-  .eyebrow {
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--accent);
-    font-weight: 700;
-    margin-bottom: 8px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 16px;
+    margin-bottom: 24px;
   }
   h1 {
-    margin: 0 0 10px;
-    font-size: 28px;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-  }
-  .subtitle {
-    color: var(--muted);
-    font-size: 15px;
-    max-width: 860px;
-    margin: 0;
-  }
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
-    gap: 14px;
-    margin: 24px 0 28px;
-  }
-  .stat-card {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 14px 16px;
-  }
-  .stat-val {
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--text);
-    font-variant-numeric: tabular-nums;
-  }
-  .stat-label {
-    font-size: 12px;
-    color: var(--muted);
-    margin-top: 2px;
-  }
-  .serve-box {
-    background: var(--panel-alt);
-    border: 1px solid var(--border);
-    border-left: 4px solid var(--accent-2);
-    border-radius: 8px;
-    padding: 14px 18px;
-    margin-bottom: 30px;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-  }
-  .serve-box code {
-    background: var(--code-bg);
-    border: 1px solid var(--border);
-    color: #93c5fd;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    font-size: 13px;
-    user-select: all;
-  }
-  .cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-    gap: 18px;
-  }
-  .card {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    transition: border-color 0.15s ease, transform 0.15s ease;
-  }
-  .card:hover {
-    border-color: #465c8f;
-    transform: translateY(-2px);
-  }
-  .card-num {
-    display: inline-block;
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    padding: 3px 8px;
-    border-radius: 999px;
-    margin-bottom: 10px;
-  }
-  .c1 { background: rgba(96, 165, 250, 0.15); color: var(--accent); }
-  .c2 { background: rgba(52, 211, 153, 0.15); color: var(--accent-2); }
-  .c3 { background: rgba(245, 158, 11, 0.15); color: var(--accent-3); }
-  .c4 { background: rgba(167, 139, 250, 0.15); color: var(--accent-4); }
-  .c5 { background: rgba(244, 114, 182, 0.15); color: var(--accent-5); }
-  .card h2 {
     margin: 0 0 8px;
-    font-size: 19px;
+    font-size: 1.75em;
+    color: #111;
   }
-  .card p {
-    margin: 0 0 12px;
-    color: var(--muted);
-    font-size: 14px;
+  h2 {
+    margin: 0 0 8px;
+    font-size: 1.25em;
+    color: #111;
   }
-  .findings {
-    margin: 0 0 16px;
-    padding-left: 18px;
-    font-size: 13px;
-    color: #cbd5e1;
+  p {
+    margin: 0.5em 0;
   }
-  .findings li {
-    margin-bottom: 5px;
+  a {
+    color: #0056b3;
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+  code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.9em;
+    background: #f4f4f4;
+    padding: 0.15em 0.35em;
+    border-radius: 3px;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 12px 0 28px;
+    font-size: 0.92em;
+  }
+  th, td {
+    border: 1px solid #ccc;
+    padding: 7px 10px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th {
+    background: #f5f5f5;
+    font-weight: 600;
+  }
+  ul {
+    margin: 0.5em 0 1em;
+    padding-left: 1.5em;
+  }
+  li {
+    margin: 0.25em 0;
+  }
+  .section-item {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 18px 20px;
+    margin-bottom: 18px;
   }
   .links {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
+    margin-top: 12px;
     padding-top: 12px;
-    border-top: 1px solid var(--border);
+    border-top: 1px solid #eee;
   }
   .btn {
     display: inline-block;
+    padding: 5px 12px;
+    font-size: 0.88em;
+    font-weight: 500;
+    color: #222;
+    background: #f5f5f5;
+    border: 1px solid #bbb;
+    border-radius: 3px;
     text-decoration: none;
-    font-size: 13px;
-    font-weight: 600;
-    padding: 7px 12px;
-    border-radius: 7px;
-    border: 1px solid var(--border);
-    color: var(--text);
-    background: var(--panel-alt);
   }
   .btn:hover {
-    border-color: var(--accent);
-    color: #ffffff;
-  }
-  .btn.primary {
-    background: #1d4ed8;
-    border-color: #2563eb;
-    color: #ffffff;
-  }
-  .btn.primary:hover {
-    background: #2563eb;
-  }
-  footer {
-    margin-top: 36px;
-    padding-top: 18px;
-    border-top: 1px solid var(--border);
-    color: var(--muted);
-    font-size: 13px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 12px;
-  }
-  footer a {
-    color: var(--accent);
+    background: #e9e9e9;
+    border-color: #888;
     text-decoration: none;
   }
-  footer a:hover { text-decoration: underline; }
+  .btn.primary {
+    background: #222;
+    color: #fff;
+    border-color: #222;
+  }
+  .btn.primary:hover {
+    background: #000;
+    border-color: #000;
+  }
+  footer {
+    margin-top: 32px;
+    padding-top: 14px;
+    border-top: 1px solid #ccc;
+    font-size: 0.88em;
+    color: #555;
+  }
 </style>
 </head>
 <body>
-<div class="wrap">
   <header>
-    <div class="eyebrow">Lean 4.33.1 Formalization Comprehension Suite</div>
-    <h1>Riemann Hypothesis Formalization — Structural &amp; Mathematical Portal</h1>
-    <p class="subtitle">
-      A self-contained, comment-free exploration suite built from the static import graph and Lean source declarations of
-      <code>/home/ubuntu/riemann_proof/lean/src/</code>. No Lean compiler or external network access required.
+    <h1>Riemann Hypothesis &amp; GRH Proof — Mathematical Architecture Portal</h1>
+    <p>
+      Offline exploration suite mapping the mathematical structure, theorem milestones, cross-theory contracts, and logical dependency chains of the proof.
     </p>
   </header>
 
-  <section class="stats-grid" aria-label="Repository Summary Metrics">
-    <div class="stat-card">
-      <div class="stat-val">175,187</div>
-      <div class="stat-label">.lean Files (100% reachable from Main.lean)</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-val">17,374,215</div>
-      <div class="stat-label">Lines of Lean (~1.03 GB, 0 comments)</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-val">753,261</div>
-      <div class="stat-label">Internal Import Edges (Strict DAG)</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-val">1,057,807</div>
-      <div class="stat-label">Declarations (784k theorems, 213k defs)</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-val">43 / 202</div>
-      <div class="stat-label">Max BFS Depth / Longest Path Length</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-val">0 / 0</div>
-      <div class="stat-label">Axioms / <code>sorry</code> Found Statically</div>
-    </div>
-  </section>
+  <table>
+    <thead>
+      <tr>
+        <th>1. Analytic Engine</th>
+        <th>2. Selmer &amp; Modularity</th>
+        <th>3. Galois &amp; Theta Lifts</th>
+        <th>4. Arakelov &amp; Shimura</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Functional-equation reflection &amp; windowed Landau–Chebyshev nonvanishing on cyclic character groups</td>
+        <td>Modularity lifting, descent-vanishing patching, $U(3)$ Selmer counting &amp; Kato's Euler system</td>
+        <td>Weight-one geometric realization, holomorphic Lefschetz trace, unitary theta lifts &amp; Local Langlands</td>
+        <td>PEL toroidal compactifications, Mumford uniformisation, Moriwaki bigness &amp; lattice covolume bounds</td>
+      </tr>
+    </tbody>
+  </table>
 
-  <div class="serve-box">
-    <div>
-      <strong>Serve Locally for Best Browser Experience:</strong>
-      <div style="font-size: 13px; color: var(--muted);">All HTML pages and reports are 100% offline with zero external CDN dependencies.</div>
-    </div>
-    <code>python3 -m http.server 8000 --directory /home/ubuntu/riemann_proof/analysis</code>
-  </div>
-
-  <section class="cards">
-    <article class="card">
-      <div>
-        <span class="card-num c5">Start Here for the Math</span>
-        <h2>Top-Down Mathematical Blueprint</h2>
-        <p>Traces the proof from <code>Main.lean</code> &amp; <code>Statements.lean</code> down through 45 verified mathematical milestones in plain English, hiding Lean syntax.</p>
-        <ul class="findings">
-          <li><strong>5 Stages (45 nodes, 112 edges):</strong> Final RH/GRH exports &rarr; functional-equation reflection &rarr; <code>MainConclusion</code> bridges &rarr; 6 major theory pillars &rarr; foundational machinery.</li>
-          <li><strong>Static Audit:</strong> 0 <code>sorry</code>, 0 <code>axiom</code>, 0 <code>opaque</code>; <code>OpenLiteratureStatements</code> &amp; <code>OpenImageCondition</code> are discharged in <code>MainConclusion.lean</code> &amp; <code>VwinOfRow.lean</code>.</li>
-        </ul>
-      </div>
+  <section>
+    <div class="section-item">
+      <h2>1. Top-Down Mathematical Blueprint</h2>
+      <p>Traces the proof from the final RH and GRH theorems down through 45 verified mathematical milestones in plain English.</p>
+      <ul>
+        <li><strong>5 Stages (Stages 0–4):</strong> Final RH/GRH exports &rarr; functional-equation reflection &rarr; <code>MainConclusion</code> bridges &rarr; 6 major theory pillars &rarr; foundational machinery.</li>
+        <li><strong>Unconditional Discharge:</strong> Shows how abstract literature and open-image bundles (<code>OpenLiteratureStatements</code>, <code>OpenImageCondition</code>) are instantiated unconditionally in <code>MainConclusion.lean</code> &amp; <code>VwinOfRow.lean</code>.</li>
+      </ul>
       <div class="links">
-        <a class="btn primary" href="blueprint/blueprint.html">Open Blueprint Explorer</a>
+        <a class="btn primary" href="blueprint/blueprint.html">Interactive Blueprint Explorer</a>
         <a class="btn" href="blueprint/BLUEPRINT.html">BLUEPRINT.html</a>
-        <a class="btn" href="blueprint/blueprint_data.json">JSON</a>
+        <a class="btn" href="blueprint/BLUEPRINT.md">BLUEPRINT.md</a>
+        <a class="btn" href="blueprint/blueprint_data.json">blueprint_data.json</a>
       </div>
-    </article>
+    </div>
 
-    <article class="card">
-      <div>
-        <span class="card-num c1">Architecture Map</span>
-        <h2>Directory-Level Dependency Graph</h2>
-        <p>Rolls up 753,261 file-level imports to Depth-1 (10 dirs), Depth-2 (330 dirs), and Depth-3 (746 dirs) with upstream/downstream tracing.</p>
-        <ul class="findings">
-          <li><strong>Consumer vs. Foundation:</strong> <code>Development</code> initiates 93.7% of cross-top-dir imports into <code>Formalism</code> (41,857) &amp; <code>ReciprocityTheory</code> (38,051).</li>
-          <li><strong>Directory Cycles vs. File DAG:</strong> Strict DAG at file level, with bidirectional directory flows like <code>WeilBound &harr; AutomorphicSpectrum</code>.</li>
-        </ul>
-      </div>
+    <div class="section-item">
+      <h2>2. Cross-Boundary Mathematical Interfaces</h2>
+      <p>Isolates the public mathematical contracts and theorem specifications exported across theory boundaries, with 59 source-verified API translations.</p>
+      <ul>
+        <li><strong>Specification Contracts:</strong> Details the foundational structures (<code>PELUnif</code>, <code>UnifUniqSt</code>, <code>Laws</code>, <code>LocCoh</code>, <code>D7</code>, <code>LocalTateDualityK</code>) that decouple the major theory engines.</li>
+        <li><strong>Theory Bridges:</strong> Explains how analytic character boxes, local-global Galois representations, theta lifts, and Arakelov height bounds interface with one another.</li>
+      </ul>
       <div class="links">
-        <a class="btn primary" href="dependency_graph/dependency_explorer.html">Open Dependency Explorer</a>
+        <a class="btn primary" href="interfaces/interface_browser.html">Interactive Interface Browser</a>
+        <a class="btn" href="interfaces/INTERFACES_REPORT.html">INTERFACES_REPORT.html</a>
+        <a class="btn" href="interfaces/INTERFACES_REPORT.md">INTERFACES_REPORT.md</a>
+        <a class="btn" href="interfaces/interfaces.json">interfaces.json</a>
+      </div>
+    </div>
+
+    <div class="section-item">
+      <h2>3. Proof Spine &amp; Bottleneck Analysis</h2>
+      <p>Maps the mandatory mathematical bottlenecks (Cooper-Harvey-Kennedy dominator tree rooted at <code>Main</code>), the deep critical dependency chain, and cross-theory bridge theorems.</p>
+      <ul>
+        <li><strong>Mandatory Bottlenecks:</strong> Traces how <code>MainConclusion</code>, <code>RowSrc</code> (local-global Galois compatibility), <code>TopMainZj</code> (modularity/Selmer window bounds), and <code>TopCovolSlim2Use</code> (Arakelov covolumes) govern the proof DAG.</li>
+        <li><strong>Critical Chain:</strong> Follows the deepest mathematical dependency chain from <code>Main.lean</code> through weight-one geometric realization, Kodaira-Spencer models, and the Theorem of the Cube down to <code>SplitTorusAff.lean</code>.</li>
+      </ul>
+      <div class="links">
+        <a class="btn primary" href="proof_spine/spine_dashboard.html">Interactive Spine Dashboard</a>
+        <a class="btn" href="proof_spine/PROOF_SPINE_REPORT.html">PROOF_SPINE_REPORT.html</a>
+        <a class="btn" href="proof_spine/PROOF_SPINE_REPORT.md">PROOF_SPINE_REPORT.md</a>
+        <a class="btn" href="proof_spine/spine_metrics.json">spine_metrics.json</a>
+      </div>
+    </div>
+
+    <div class="section-item">
+      <h2>4. Theory-Level Dependency Graph</h2>
+      <p>Maps the logical dependencies across top-level mathematical domains and sub-theories with upstream/downstream tracing.</p>
+      <ul>
+        <li><strong>Synthesis vs. Foundation:</strong> Visualizes how the upper proof syntheses (<code>Development</code>, <code>PositivityTheory</code>, <code>CompanionTheory</code>) draw on <code>Formalism</code>, <code>ReciprocityTheory</code>, and <code>GroundTheory</code>.</li>
+        <li><strong>Co-Evolving Sub-Theories:</strong> Strict DAG at module level, with bidirectional topical interplay such as <code>WeilBound &harr; AutomorphicSpectrum</code>.</li>
+      </ul>
+      <div class="links">
+        <a class="btn primary" href="dependency_graph/dependency_explorer.html">Interactive Dependency Explorer</a>
+        <a class="btn" href="dependency_graph/README.html">README.html</a>
         <a class="btn" href="dependency_graph/top_level_graph.svg">Top-Level SVG</a>
         <a class="btn" href="dependency_graph/depth2_major_graph.svg">Depth-2 SVG</a>
-        <a class="btn" href="dependency_graph/README.html">README.html</a>
       </div>
-    </article>
+    </div>
 
-    <article class="card">
-      <div>
-        <span class="card-num c2">Public API Extraction</span>
-        <h2>Cross-Boundary Interface Browser</h2>
-        <p>Filters out 94.7% of internal plumbing by isolating only files imported across top-level or depth-2 folder boundaries, with 59 source-verified API translations.</p>
-        <ul class="findings">
-          <li><strong>118.8&times; Encapsulation:</strong> <code>Development</code> has 141,928 files but exports just 1,195 (0.84%) across its top-level boundary.</li>
-          <li><strong>Contract Hubs:</strong> <code>Formalism</code> &amp; <code>ReciprocityTheory</code> absorb 86.3% of all cross-top-dir edges (e.g., <code>UniformisationConclusion</code> with 2,379 callers).</li>
-        </ul>
-      </div>
+    <div class="section-item">
+      <h2>5. Inventory of <code>PublishedTheorems</code></h2>
+      <p>Audits all 6 <code>PublishedTheorems</code> directories, comparing formalized mathematical statements against peer-reviewed literature across 11 topical tables.</p>
+      <ul>
+        <li><strong>Literature Comparison:</strong> Documents bespoke CM host restrictions (<code>D7</code>, <code>Host E</code>), domain/characteristic specializations, and weakened equivalences.</li>
+        <li><strong>Scaffolding Catalog:</strong> Separates literature-derived theorems from internal proof-decomposition predicates and non-vacuity checks.</li>
+      </ul>
       <div class="links">
-        <a class="btn primary" href="interfaces/interface_browser.html">Open Interface Browser</a>
-        <a class="btn" href="interfaces/INTERFACES_REPORT.html">INTERFACES_REPORT.html</a>
-        <a class="btn" href="interfaces/interfaces.json">JSON</a>
+        <a class="btn primary" href="published_theorems/PUBLISHED_THEOREMS_INVENTORY.html">PUBLISHED_THEOREMS_INVENTORY.html</a>
+        <a class="btn" href="published_theorems/PUBLISHED_THEOREMS_INVENTORY.md">PUBLISHED_THEOREMS_INVENTORY.md</a>
       </div>
-    </article>
-
-    <article class="card">
-      <div>
-        <span class="card-num c3">DAG Spine &amp; Bottlenecks</span>
-        <h2>Proof Spine &amp; Dominator Analysis</h2>
-        <p>Computes the Cooper-Harvey-Kennedy dominator tree rooted at <code>Main</code>, the exact 202-edge critical path, stratigraphic height layers, and bridge hubs.</p>
-        <ul class="findings">
-          <li><strong>Apex Choke Points:</strong> <code>MainTheoremsAll</code> dominates 175,185 files; top spines include <code>RowSrc</code> (13,055) &amp; <code>RiemannHypothesisOfEveryCharacter</code> (10,065).</li>
-          <li><strong>Critical Chain:</strong> 203 modules from <code>Main.lean</code> down to <code>SplitTorusAff.lean</code> (height 0), with 182 mandatory single-node levels.</li>
-        </ul>
-      </div>
-      <div class="links">
-        <a class="btn primary" href="proof_spine/spine_dashboard.html">Open Spine Dashboard</a>
-        <a class="btn" href="proof_spine/PROOF_SPINE_REPORT.html">PROOF_SPINE_REPORT.html</a>
-        <a class="btn" href="proof_spine/spine_metrics.json">JSON</a>
-      </div>
-    </article>
-
-    <article class="card">
-      <div>
-        <span class="card-num c4">Volume &amp; Granularity</span>
-        <h2>Size Treemap &amp; Sunburst</h2>
-        <p>Zoomable squarified treemap and radial sunburst across all 3,615 nested directory nodes, switchable by Files, Lines, Theorems, or Defs.</p>
-        <ul class="findings">
-          <li><strong>Concentration:</strong> <code>Development/AbelianVarietyTheory</code> holds 99,187 files (56.6%); <code>DivisorProofs</code> alone holds 42,424 files (24.2%).</li>
-          <li><strong>Micro-Module Style:</strong> Median file is 58 lines / 2 decls, with 46,610 tiny <code>*Statement.lean</code> wrapper files (~13.4 lines avg).</li>
-        </ul>
-      </div>
-      <div class="links">
-        <a class="btn primary" href="size_treemap/treemap_sunburst.html">Open Treemap &amp; Sunburst</a>
-        <a class="btn" href="size_treemap/SIZE_ANALYSIS.html">SIZE_ANALYSIS.html</a>
-        <a class="btn" href="size_treemap/hierarchy_sizes.json">JSON</a>
-      </div>
-    </article>
-
-    <article class="card">
-      <div>
-        <span class="card-num c1">Literature Audit</span>
-        <h2>Inventory of <code>PublishedTheorems</code></h2>
-        <p>Audits all 6 <code>PublishedTheorems</code> directories (1,070 Lean files, 107,128 lines), comparing formalized statements against peer-reviewed literature across 11 topical tables.</p>
-        <ul class="findings">
-          <li><strong>Literature Comparison:</strong> Documents bespoke CM host restrictions (<code>D7</code>, <code>Host E</code>), domain/characteristic specializations, and weakened equivalences.</li>
-          <li><strong>Scaffolding Catalog:</strong> Identifies 273 internal proof-decomposition <code>Prop</code>s, 129 boilerplate wrappers, ~110 non-vacuity checks, and refactoring misnomers.</li>
-        </ul>
-      </div>
-      <div class="links">
-        <a class="btn primary" href="published_theorems/PUBLISHED_THEOREMS_INVENTORY.html">Open Inventory Report (HTML)</a>
-        <a class="btn" href="published_theorems/PUBLISHED_THEOREMS_INVENTORY.md">Markdown</a>
-      </div>
-    </article>
+    </div>
   </section>
 
   <footer>
-    <div>Canonical Index: <a href="data/meta.json">data/meta.json</a> · SQLite DB: <code>data/graph.sqlite</code> · Generator: <code>build_index.py</code></div>
-    <div>Entry files: <a href="../lean/src/Main.lean">lean/src/Main.lean</a> · <a href="../lean/src/Statements.lean">lean/src/Statements.lean</a></div>
+    <div>Mathematical Blueprint: <a href="blueprint/BLUEPRINT.html">blueprint/BLUEPRINT.html</a> &middot; Interfaces: <a href="interfaces/INTERFACES_REPORT.html">interfaces/INTERFACES_REPORT.html</a></div>
+    <div>Entry files: <a href="../lean/src/Main.lean">lean/src/Main.lean</a> &middot; <a href="../lean/src/Statements.lean">lean/src/Statements.lean</a></div>
   </footer>
-</div>
 </body>
 </html>

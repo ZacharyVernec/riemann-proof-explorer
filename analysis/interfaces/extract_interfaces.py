@@ -409,100 +409,25 @@ def build_browser_payload(full_data: dict, max_files_per_d2: int = 120, max_file
 
 
 def render_report(full_export: dict) -> str:
-    """Render structured Markdown report with compression tables and plain-English API summaries."""
-    meta = full_export["meta"]
-    top_dirs = full_export["top_dirs"]
-    d2_dirs = full_export["depth2_dirs"]
-    top_matrix = full_export["top_dir_matrix"]
+    """Render structured Markdown report focusing on mathematical interfaces and plain-English API summaries."""
     analyzed = full_export["analyzed_interfaces"]
 
     lines: list[str] = []
     a = lines.append
 
-    a("# Cross-Boundary Interface & Compression Analysis")
+    a("# Cross-Boundary Mathematical Interfaces & Contracts")
     a("")
-    a("This report extracts and analyzes the cross-boundary public interfaces of the Lean 4 codebase in [`lean/src`](file:///home/ubuntu/riemann_proof/lean/src), built from [`analysis/data/graph.sqlite`](file:///home/ubuntu/riemann_proof/analysis/data/graph.sqlite) and verified directly against the `.lean` source files.")
+    a("This report translates the cross-boundary public mathematical interfaces of the proof in [`lean/src`](file:///home/ubuntu/riemann_proof/lean/src), focusing on the mathematical specifications, theorem contracts, and bridges that link the major sub-theories.")
     a("")
-    a("An **interface file** of a directory `D` is defined as any `.lean` module inside `D` that is directly imported by at least one module strictly outside `D`. The **compression ratio** is `interface_files / total_files` (smaller ratios indicate tighter encapsulation behind narrow boundary contracts).")
+    a("## 1. Architectural Overview of Mathematical Boundaries")
     a("")
-    a("## 1. Executive Summary & Architectural Findings")
+    a("- **`Development` as the Central Synthesis Engine:** `Development` develops the core proofs across abelian varieties, automorphic arithmetic, automorphic spectrum, the Weil bound, étale cohomology, discrete groups, and resolution of singularities. Its final outputs funnel into `Supplements/Kernels/` (`MainTheoremsAll.lean`) and from there into `Main.lean`, while also supplying local-global compatibility, representation-algebra, and literature-bundle contracts (`SumIoPr`, `Brauer`, `Langlands`, `LocIsotypic`, `RealTransport`) to `CompanionTheory` and `PositivityTheory`.")
+    a("- **`Formalism` & `ReciprocityTheory` as Specification Contract Hubs:** `Formalism` and `ReciprocityTheory` export the foundational **mathematical specification packages (`Prop` predicates and `structure` contracts)**—such as `UniformisationConclusion`, `PELUnif`, `UnifUniqSt`, `HeckeKer`, `Laws`, `Laws2`, `LocCoh`, `D7`, and `LocalTateDualityK`—that decouple the upper analytic, Galois, and Arakelov engines from the underlying algebraic-geometric and harmonic-analytic constructions.")
+    a("- **`GroundTheory`, `CompanionTheory` & `PositivityTheory` as Specialized Pillars:** `GroundTheory` supplies Arakelov Hermitian lattices (`KernelsLattice`), Whittaker multiplicity one (`Injective`), Poitou-Tate nine-term duality (`PoitouTateNineTermGs`), and idelic norm product formulas (`IdeleNorms`). `CompanionTheory` supplies adelic Siegel-Weil Euler-product measures (`IsEulerProd`), Harish-Chandra discrete series Capelli characters (`DiscreteSeriesInfinitesimalCharacter`), and Flath factorization. `PositivityTheory` supplies $\\mathrm{GL}(3)\\times\\mathrm{GL}(2)$ and $\\mathrm{GL}(2)\\times\\mathrm{GL}(2)$ Rankin-Selberg zeta integrals and weight-one Hilbert Eisenstein series.")
     a("")
-    a(f"- **Global Scale & Boundary Compression:** Out of **{meta['total_files']:,} files** ({meta['total_lines']:,} lines; 100% reachable from `Main.lean` in a strict DAG with {meta['total_internal_edges']:,} internal edges), only **{meta['top_dir_interface_files']:,} files ({meta['top_dir_overall_compression_ratio']*100:.2f}%)** cross a top-level directory boundary ({meta['total_cross_top_edges']:,} cross-boundary edges), and **{meta['depth2_dir_interface_files']:,} files ({meta['depth2_dir_overall_compression_ratio']*100:.2f}%)** cross a depth-2 sub-theory boundary ({meta['total_cross_d2_edges']:,} cross-boundary edges across {meta['depth2_dir_count']} depth-2 buckets).")
-    a("- **Extreme Encapsulation of `Development` (118.8x compression):** `Development` contains **141,928 files** (81.0% of the repository, 12.23M lines), yet exports only **1,195 interface files** (`0.0084` compression ratio, `0.0132` by lines) outside `Development`. Its final proof outputs funnel through a 6-file bottleneck into `Supplements/Kernels/` and from there via a single barrel file (`MainTheoremsAll.lean`) into `Main.lean`.")
-    a("- **`Formalism` & `ReciprocityTheory` as High-Traffic Specification Hubs:** Together, `Formalism` (**43,538** incoming external edges into 3,640 interface files) and `ReciprocityTheory` (**39,723** incoming external edges into 1,503 interface files) absorb **86.3%** of all cross-top-directory imports (`83,261 / 96,497`). Reading the highest fan-in files reveals that they primarily export **mathematical specification packages (`Prop` predicates and `structure` contracts)**—such as `UniformisationConclusion`, `PELUnif`, `UnifUniqSt`, `HeckeKer`, `Laws`, `Laws2`, `LocCoh`, `D7`, and `LocalTateDualityK`—rather than raw leaf lemmas.")
-    a("- **Depth-2 Sub-Theory Extremes:** Among depth-2 sub-theories with at least 20 files, the tightest compression occurs in `Formalism/AdmissibleDesigns` (**4.30%**, 4/93), `Formalism/WachLatticeTwists` (**4.58%**, 12/262), `Development/AutomorphicArithmetic` (**5.56%**, 1,024/18,431), `ReciprocityTheory/Chebotarev` (**6.38%**, 3/47), `Development/ResolutionOfSingularities` (**7.62%**, 38/499), and `Development/AbelianVarietyTheory` (**9.58%**, 9,498/99,187). Conversely, foundational leaf toolkits such as `Lemmata/*` (**100.0%**, 167 single-file modules), `Formalism/FrobeniusOrbits` (**96.88%**), `Formalism/RealPlaceAnalysis` (**90.74%**), and `Formalism/HarderNarasimhan` (**90.70%**) expose nearly all their modules externally.")
-    a("- **Bidirectional Directory Coupling within a Strict Module DAG:** Although module imports form a strict acyclic DAG (`is_dag = true`), directories exhibit rich two-way interdependence: `Development` heavily imports `Formalism` (41,857 edges) and `ReciprocityTheory` (38,051 edges), while `CompanionTheory` imports `Development` (1,437 edges) and `PositivityTheory` imports `Development` (632 edges), and `Development` in turn imports `CompanionTheory` (1,874 edges) and `PositivityTheory` (1,057 edges).")
-    a("- **Architectural Idioms Discovered in Source:** Direct reading uncovered thin 1-line re-export facades (`CompanionTheory/EightfoldTheory/VariationTheory/AutomorphicForms/Newform.lean`, imported 248 times by `Development`) and 4-line library-suggestion deny-list directives (`BuildAid/D1.lean`–`D5.lean`), illustrating how namespace facades and build-tuning hooks appear alongside mathematical theorem/definition interfaces.")
+    a("## 2. Sub-Theory Public APIs in Plain Mathematical English (59 Verified Interfaces)")
     a("")
-
-    a("## 2. Top-Level Directory Compression & Dependency Flow")
-    a("")
-    a("| Top-Level Directory | Total Files | Interface Files | Compression Ratio | Compression Factor | Ext Import Edges (In) | Unique Ext Importers | Ext Outgoing Edges | Total Lines | Interface Lines (Ratio) |")
-    a("|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|")
-    for d in top_dirs:
-        cf = f"{d['compression_factor']:.2f}x" if d["compression_factor"] else "Apex (0 exports)"
-        a(
-            f"| `{d['dir_key']}` | {d['total_files']:,} | {d['interface_files_count']:,} | "
-            f"{d['compression_ratio']:.4f} ({d['compression_ratio']*100:.2f}%) | {cf} | "
-            f"{d['total_ext_imports']:,} | {d['unique_ext_importers']:,} | {d['outgoing_ext_imports']:,} | "
-            f"{d['total_lines']:,} | {d['interface_lines']:,} ({d['line_compression_ratio']:.4f}) |"
-        )
-    a("")
-    a("> **Note on `(root)` and `Formalism` at depth 2:** At depth-1 (`top_dir`), `(root)` contains `Main.lean` and `Statements.lean`, with `0` external importers because `Main.lean` sits at the root of the DAG (`dist_from_main = 0`). At depth-2 (`depth2_dir`), `dir_stats` partitions root-level files directly inside `Formalism/*.lean` (9 files such as `Formalism/ZetaRealNonvanish.lean` and `Formalism/StatementOC.lean`) separately from `Formalism/<Subdir>` (107 subdirectories).")
-    a("")
-    a("### Major Cross-Boundary Dependency Flows (`src` imports `dst`)")
-    a("")
-    a("| Source Top-Dir | Target Top-Dir | Import Edges | Source Files | Target Interface Files |")
-    a("|---|---|---:|---:|---:|")
-    for row in top_matrix[:18]:
-        a(f"| `{row['src_dir']}` | `{row['dst_dir']}` | {row['edges']:,} | {row['src_files']:,} | {row['dst_files']:,} |")
-    a("")
-
-    a("## 3. Depth-2 Sub-Theory Compression Statistics")
-    a("")
-    a("### 3.1 Top 35 Largest Depth-2 Sub-Theories (by Total Files)")
-    a("")
-    a("| Depth-2 Directory | Files | Interface Files | Ratio | Ext Edges (In) | Unique Ext Importers | Top Interface File (Ext Fan-In) |")
-    a("|---|---:|---:|---:|---:|---:|---|")
-    for d in d2_dirs[:35]:
-        if d["interface_files"]:
-            tf = d["interface_files"][0]
-            top_cell = f"[{tf['rel_path'].split('/')[-1]}](file:///home/ubuntu/riemann_proof/lean/src/{tf['rel_path']}) ({tf['ext_fan_in']:,})"
-        else:
-            top_cell = "-"
-        a(
-            f"| `{d['dir_key']}` | {d['total_files']:,} | {d['interface_files_count']:,} | "
-            f"{d['compression_ratio']:.4f} | {d['total_ext_imports']:,} | {d['unique_ext_importers']:,} | {top_cell} |"
-        )
-    a("")
-
-    a("### 3.2 Highest-Compression Depth-2 Sub-Theories (`total_files >= 20`, Lowest Ratio)")
-    a("")
-    a("| Depth-2 Directory | Files | Interface Files | Ratio | Compression Factor | Ext Edges (In) |")
-    a("|---|---:|---:|---:|---:|---:|")
-    d2_ge20 = [d for d in d2_dirs if d["total_files"] >= 20]
-    for d in sorted(d2_ge20, key=lambda x: (x["compression_ratio"], -x["total_files"]))[:15]:
-        cf = f"{d['compression_factor']:.2f}x" if d["compression_factor"] else "-"
-        a(
-            f"| `{d['dir_key']}` | {d['total_files']:,} | {d['interface_files_count']:,} | "
-            f"{d['compression_ratio']:.4f} | {cf} | {d['total_ext_imports']:,} |"
-        )
-    a("")
-
-    a("### 3.3 Top 15 Depth-2 Sub-Theories by Cross-Boundary Fan-In")
-    a("")
-    a("| Depth-2 Directory | Ext Import Edges | Unique Ext Importers | Interface / Total Files | Ratio |")
-    a("|---|---:|---:|---:|---:|")
-    for d in sorted(d2_dirs, key=lambda x: -x["total_ext_imports"])[:15]:
-        a(
-            f"| `{d['dir_key']}` | {d['total_ext_imports']:,} | {d['unique_ext_importers']:,} | "
-            f"{d['interface_files_count']:,} / {d['total_files']:,} | {d['compression_ratio']:.4f} |"
-        )
-    a("")
-
-    a("## 4. Sub-Theory Public APIs in Plain Mathematical English (59 Verified Interface Files)")
-    a("")
-    a("Every file below was read directly from `/home/ubuntu/riemann_proof/lean/src/`, and all listed declaration names and line numbers were verified against `graph.sqlite`.")
+    a("Every interface below was read directly from `/home/ubuntu/riemann_proof/lean/src/`, and all listed declaration names and line numbers were verified against the declaration index.")
     a("")
 
     order_top = [
@@ -521,31 +446,22 @@ def render_report(full_export: dict) -> str:
     for item in analyzed:
         by_top[item["top_dir"]].append(item)
 
-    top_lookup = {d["dir_key"]: d for d in top_dirs}
-
     for td in order_top:
         items = by_top.get(td, [])
         if not items:
             continue
-        td_stat = top_lookup[td]
-        a(f"### 4.{order_top.index(td)+1} `{td}` ({td_stat['total_files']:,} files -> {td_stat['interface_files_count']:,} top-dir interfaces, ratio `{td_stat['compression_ratio']:.4f}`)")
+        a(f"### 2.{order_top.index(td)+1} `{td}`")
         a("")
-        # Keep Main before Statements, Supplements All before MainTheorems, otherwise sort by fan-in desc
         if td in ("(root)", "Supplements"):
             items_sorted = sorted(items, key=lambda x: (x["dist_from_main"], x["rel_path"]))
         else:
             items_sorted = sorted(items, key=lambda x: (-x["top_ext_fan_in"], -x["d2_ext_fan_in"], -x["tot_in_degree"], x["rel_path"]))
 
         for it in items_sorted:
-            top_imps = ", ".join(f"`{k}` ({v})" for k, v in list(it["importing_top_dirs"].items())[:5]) or "None (apex)"
-            d2_imps = ", ".join(f"`{k}` ({v})" for k, v in list(it["importing_d2_dirs"].items())[:4]) or "None"
+            top_imps = ", ".join(f"`{k}`" for k in list(it["importing_top_dirs"].keys())[:5]) or "None (apex)"
+            d2_imps = ", ".join(f"`{k}`" for k in list(it["importing_d2_dirs"].keys())[:4]) or "None"
             a(f"#### [`{it['rel_path']}`]({it['file_url']})")
-            a(
-                f"- **Role:** {it['role']} | **Depth-2:** `{it['depth2_dir']}` | **Lines:** {it['lines']} | "
-                f"**Top-Dir Ext Fan-In:** {it['top_ext_fan_in']:,} | **Depth-2 Ext Fan-In:** {it['d2_ext_fan_in']:,} | "
-                f"**Total In-Degree:** {it['tot_in_degree']:,} (`dist={it['dist_from_main']}`, `height={it['height_from_leaves']}`)"
-            )
-            a(f"- **External Importers:** Top-dirs: {top_imps} | Depth-2 dirs: {d2_imps}")
+            a(f"- **Role:** {it['role']} | **Sub-Theory:** `{it['depth2_dir']}` | **Used by:** Top-level: {top_imps} · Sub-theories: {d2_imps}")
             a(f"- **Plain-English Mathematical Summary:** {it['plain_english_summary']}")
             if it["key_exports"]:
                 a("- **Key Exported Declarations:**")
@@ -553,7 +469,7 @@ def render_report(full_export: dict) -> str:
                     link = f"{it['file_url']}#L{ke['line_no']}"
                     a(f"  - `{ke['kind']}` [`{ke['name']}`]({link}) (L{ke['line_no']}): {ke['summary']}")
             else:
-                a("- **Key Exported Declarations:** No local `theorem`/`def`/`structure` declarations (pure import barrel / command directive).")
+                a("- **Key Exported Declarations:** Pure import barrel / namespace directive.")
             a("")
 
     return "\n".join(lines) + "\n"
@@ -573,42 +489,41 @@ def render_html(payload: dict) -> str:
 <title>Riemann Proof Lean Codebase — Cross-Boundary Interface Browser</title>
 <style>
   :root {{
-    --bg: #0b1020;
-    --panel: #121931;
-    --panel2: #182240;
-    --border: #28355e;
-    --text: #e6ecff;
-    --muted: #9aa9d4;
-    --accent: #6aa9ff;
-    --accent2: #5de4c7;
-    --warn: #ffd166;
-    --badge-bg: #1e2c52;
-    --code-bg: #090e1c;
-    --row-hover: #1b274b;
+    --bg: #ffffff;
+    --panel: #fafafa;
+    --panel2: #f2f2f2;
+    --border: #cccccc;
+    --text: #111111;
+    --muted: #555555;
+    --accent: #0056b3;
+    --accent2: #0056b3;
+    --warn: #b45309;
+    --badge-bg: #eeeeee;
+    --code-bg: #ffffff;
+    --row-hover: #f5f5f5;
   }}
   * {{ box-sizing: border-box; }}
   body {{
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     background: var(--bg);
     color: var(--text);
-    line-height: 1.45;
+    line-height: 1.5;
   }}
   header {{
-    background: linear-gradient(135deg, #101833 0%, #162347 100%);
+    background: #ffffff;
     border-bottom: 1px solid var(--border);
-    padding: 16px 24px;
+    padding: 12px 20px;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
   }}
   header h1 {{
     margin: 0;
     font-size: 1.25rem;
     font-weight: 700;
-    letter-spacing: -0.01em;
   }}
   header .sub {{
     color: var(--muted);
@@ -618,67 +533,60 @@ def render_html(payload: dict) -> str:
   .top-stats {{
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 8px;
   }}
   .pill {{
     background: var(--badge-bg);
     border: 1px solid var(--border);
-    border-radius: 999px;
-    padding: 5px 12px;
+    padding: 3px 8px;
     font-size: 0.8rem;
     color: var(--text);
   }}
-  .pill b {{ color: var(--accent2); }}
+  .pill b {{ color: var(--text); }}
   .toolbar {{
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
-    padding: 12px 24px;
+    gap: 8px;
+    padding: 8px 20px;
     background: var(--panel);
     border-bottom: 1px solid var(--border);
     align-items: center;
   }}
   .tabs {{
     display: inline-flex;
-    background: var(--code-bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 3px;
+    gap: 4px;
   }}
   .tab {{
-    border: 0;
-    background: transparent;
-    color: var(--muted);
-    padding: 6px 14px;
-    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: #ffffff;
+    color: var(--text);
+    padding: 5px 10px;
     cursor: pointer;
-    font-size: 0.86rem;
-    font-weight: 600;
+    font-size: 0.84rem;
+  }}
+  .tab:hover {{
+    background: #eeeeee;
   }}
   .tab.active {{
-    background: var(--accent);
-    color: #081024;
+    background: #222222;
+    color: #ffffff;
+    border-color: #222222;
   }}
   input[type="search"], select {{
     background: var(--code-bg);
     color: var(--text);
     border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 8px 12px;
-    font-size: 0.88rem;
-    outline: none;
-  }}
-  input[type="search"]:focus, select:focus {{
-    border-color: var(--accent);
+    padding: 5px 10px;
+    font-size: 0.85rem;
   }}
   #globalSearch {{
-    flex: 1 1 320px;
-    min-width: 240px;
+    flex: 1 1 300px;
+    min-width: 220px;
   }}
   .layout {{
     display: grid;
-    grid-template-columns: 360px 1fr;
-    min-height: calc(100vh - 130px);
+    grid-template-columns: 320px 1fr;
+    min-height: calc(100vh - 110px);
   }}
   @media (max-width: 960px) {{
     .layout {{ grid-template-columns: 1fr; }}
@@ -688,16 +596,16 @@ def render_html(payload: dict) -> str:
     background: var(--panel);
     display: flex;
     flex-direction: column;
-    max-height: calc(100vh - 130px);
+    max-height: calc(100vh - 110px);
   }}
   .sidebar-head {{
-    padding: 10px 14px;
+    padding: 8px 12px;
     border-bottom: 1px solid var(--border);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 8px;
     font-size: 0.8rem;
+    font-weight: 600;
     color: var(--muted);
   }}
   .dir-list {{
@@ -705,116 +613,106 @@ def render_html(payload: dict) -> str:
     flex: 1;
   }}
   .dir-item {{
-    padding: 10px 14px;
-    border-bottom: 1px solid rgba(40,53,94,0.5);
+    padding: 8px 12px;
+    border-bottom: 1px solid #e5e5e5;
     cursor: pointer;
-    transition: background 0.12s;
   }}
-  .dir-item:hover {{ background: var(--row-hover); }}
+  .dir-item:hover {{ background: #eeeeee; }}
   .dir-item.active {{
-    background: #1d2d57;
+    background: #e6f0fa;
     border-left: 3px solid var(--accent);
-    padding-left: 11px;
+    padding-left: 9px;
   }}
   .dir-name {{
     font-weight: 600;
-    font-size: 0.88rem;
+    font-size: 0.86rem;
     word-break: break-word;
   }}
   .dir-meta {{
     display: flex;
     justify-content: space-between;
     gap: 8px;
-    margin-top: 4px;
-    font-size: 0.77rem;
+    margin-top: 3px;
+    font-size: 0.76rem;
     color: var(--muted);
   }}
   .ratio-bar {{
-    height: 4px;
-    background: var(--code-bg);
-    border-radius: 3px;
-    margin-top: 6px;
-    overflow: hidden;
+    height: 3px;
+    background: #e0e0e0;
+    margin-top: 4px;
   }}
   .ratio-fill {{
     height: 100%;
-    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    background: var(--accent);
   }}
   .main {{
-    padding: 20px 24px;
+    padding: 16px 20px;
     overflow-y: auto;
-    max-height: calc(100vh - 130px);
+    max-height: calc(100vh - 110px);
   }}
   .kpi-grid {{
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 12px;
-    margin-bottom: 18px;
+    grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+    gap: 10px;
+    margin-bottom: 16px;
   }}
   .kpi {{
-    background: var(--panel);
+    background: #ffffff;
     border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 12px 14px;
+    padding: 10px 12px;
   }}
   .kpi .lbl {{
     font-size: 0.75rem;
     color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
   }}
   .kpi .val {{
-    font-size: 1.32rem;
+    font-size: 1.2rem;
     font-weight: 700;
-    margin-top: 4px;
+    margin-top: 2px;
     color: var(--text);
   }}
   .kpi .hint {{
     font-size: 0.75rem;
-    color: var(--accent2);
+    color: var(--muted);
     margin-top: 2px;
   }}
   .card {{
-    background: var(--panel);
+    background: #ffffff;
     border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 16px;
-    margin-bottom: 16px;
+    padding: 14px;
+    margin-bottom: 14px;
   }}
   .card h2, .card h3 {{
-    margin: 0 0 10px 0;
+    margin: 0 0 8px 0;
     font-size: 1rem;
   }}
   .flow-chips {{
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 6px;
   }}
   .chip {{
-    background: var(--panel2);
+    background: var(--panel);
     border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 6px 10px;
+    padding: 4px 8px;
     font-size: 0.8rem;
   }}
-  .chip b {{ color: var(--accent); }}
+  .chip b {{ color: var(--text); }}
   table {{
     width: 100%;
     border-collapse: collapse;
     font-size: 0.84rem;
   }}
   th, td {{
-    padding: 8px 10px;
+    padding: 6px 8px;
     text-align: left;
-    border-bottom: 1px solid rgba(40,53,94,0.6);
+    border: 1px solid #dddddd;
     vertical-align: top;
   }}
   th {{
-    color: var(--muted);
+    color: var(--text);
     font-weight: 600;
-    font-size: 0.76rem;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
+    font-size: 0.78rem;
     background: var(--panel2);
     position: sticky;
     top: 0;
@@ -827,13 +725,12 @@ def render_html(payload: dict) -> str:
   }}
   .badge {{
     display: inline-block;
-    padding: 2px 8px;
-    border-radius: 999px;
+    padding: 1px 6px;
     font-size: 0.72rem;
     font-weight: 600;
     background: var(--badge-bg);
     border: 1px solid var(--border);
-    color: var(--accent2);
+    color: var(--text);
     white-space: nowrap;
   }}
   .badge.warn {{ color: var(--warn); }}
@@ -844,11 +741,10 @@ def render_html(payload: dict) -> str:
   }}
   a.filelink:hover {{ text-decoration: underline; }}
   .summary-box {{
-    background: var(--panel2);
-    border-left: 3px solid var(--accent2);
-    padding: 12px 14px;
-    border-radius: 6px;
-    margin: 10px 0 14px 0;
+    background: #fafafa;
+    border-left: 3px solid #888888;
+    padding: 10px 12px;
+    margin: 8px 0 12px 0;
     font-size: 0.92rem;
   }}
   .detail-header {{
@@ -860,47 +756,46 @@ def render_html(payload: dict) -> str:
     margin-bottom: 8px;
   }}
   .btn {{
-    background: var(--panel2);
+    background: #ffffff;
     color: var(--text);
     border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 6px 12px;
+    padding: 5px 10px;
     cursor: pointer;
     font-size: 0.82rem;
   }}
-  .btn:hover {{ border-color: var(--accent); }}
+  .btn:hover {{ background: #eeeeee; }}
   .muted {{ color: var(--muted); }}
   .table-wrap {{
     max-height: 500px;
     overflow: auto;
     border: 1px solid var(--border);
-    border-radius: 8px;
   }}
 </style>
 </head>
 <body>
+<nav style="padding:8px 20px;border-bottom:1px solid #ccc;font-size:13px;background:#fafafa;">
+  <a href="../index.html" style="color:#0056b3;text-decoration:none;">&larr; Back to Analysis Portal</a> &middot;
+  <a href="INTERFACES_REPORT.html" style="color:#0056b3;text-decoration:none;">INTERFACES_REPORT.html</a> &middot;
+  <a href="INTERFACES_REPORT.md" style="color:#0056b3;text-decoration:none;">INTERFACES_REPORT.md</a>
+</nav>
 <header>
   <div>
-    <h1>Lean Riemann Proof — Cross-Boundary Interface Browser</h1>
-    <div class="sub">100% self-contained explorer of directory compression, public API surfaces, declarations, and plain-English mathematics</div>
+    <h1>Riemann Proof — Cross-Boundary Mathematical Interface Browser</h1>
+    <div class="sub">Self-contained explorer of cross-theory public API surfaces, declarations, and plain-English mathematics</div>
   </div>
   <div class="top-stats" id="topStats"></div>
 </header>
 
 <div class="toolbar">
   <div class="tabs">
-    <button class="tab active" data-mode="top">Top-Level Dirs (<span id="cntTop">0</span>)</button>
+    <button class="tab active" data-mode="analyzed">Analyzed APIs (<span id="cntAn">0</span>)</button>
+    <button class="tab" data-mode="top">Top-Level Theories (<span id="cntTop">0</span>)</button>
     <button class="tab" data-mode="d2">Depth-2 Sub-Theories (<span id="cntD2">0</span>)</button>
-    <button class="tab" data-mode="analyzed">Analyzed APIs (<span id="cntAn">0</span>)</button>
     <button class="tab" data-mode="search">Global Search</button>
   </div>
   <input id="globalSearch" type="search" placeholder="Filter directories, interface paths, Lean declarations, or math terms...">
   <select id="sortSelect" title="Sort directories">
-    <option value="files">Sort: Total Files</option>
-    <option value="ext">Sort: External Imports</option>
-    <option value="ifaces">Sort: Interface Files</option>
-    <option value="ratio_asc">Sort: Lowest Ratio (Most Compressed)</option>
-    <option value="ratio_desc">Sort: Highest Ratio</option>
+    <option value="ext">Sort: Cross-Theory Connections</option>
     <option value="name">Sort: Name A-Z</option>
   </select>
 </div>
@@ -923,9 +818,9 @@ def render_html(payload: dict) -> str:
   const ANALYZED_MAP = new Map(DATA.analyzed_interfaces.map(x => [x.rel_path, x]));
 
   const state = {{
-    mode: "top",
+    mode: "analyzed",
     query: "",
-    sort: "files",
+    sort: "ext",
     selectedDir: "Development",
     selectedFile: DATA.analyzed_interfaces[0] ? DATA.analyzed_interfaces[0].rel_path : null,
     fileFilter: ""
@@ -938,7 +833,6 @@ def render_html(payload: dict) -> str:
     .replace(/"/g, "&quot;");
 
   const fmt = (n) => n == null ? "-" : Number(n).toLocaleString();
-  const pct = (r) => (Number(r) * 100).toFixed(2) + "%";
   const fileUrl = (rel, line) => "file:///home/ubuntu/riemann_proof/lean/src/" + encodeURI(rel) + (line ? "#L" + line : "");
 
   // Header stats
@@ -946,21 +840,16 @@ def render_html(payload: dict) -> str:
   document.getElementById("cntD2").textContent = DATA.depth2_dirs.length;
   document.getElementById("cntAn").textContent = DATA.analyzed_interfaces.length;
   document.getElementById("topStats").innerHTML = [
-    `<span class="pill">Files: <b>${{fmt(DATA.meta.total_files)}}</b></span>`,
-    `<span class="pill">Top-Dir Interfaces: <b>${{fmt(DATA.meta.top_dir_interface_files)}}</b> (${{pct(DATA.meta.top_dir_interface_files / DATA.meta.total_files)}})</span>`,
-    `<span class="pill">Depth-2 Interfaces: <b>${{fmt(DATA.meta.depth2_dir_interface_files)}}</b> (${{pct(DATA.meta.depth2_dir_interface_files / DATA.meta.total_files)}})</span>`,
-    `<span class="pill">Deep-Read Files: <b>${{DATA.analyzed_interfaces.length}}</b></span>`
+    `<span class="pill">Top-Level Theories: <b>${{DATA.top_dirs.length}}</b></span>`,
+    `<span class="pill">Sub-Theories: <b>${{DATA.depth2_dirs.length}}</b></span>`,
+    `<span class="pill">Analyzed Mathematical Interfaces: <b>${{DATA.analyzed_interfaces.length}}</b></span>`
   ].join("");
 
   function sortDirs(list) {{
     const arr = list.slice();
     switch (state.sort) {{
-      case "ext": arr.sort((a, b) => b.total_ext_imports - a.total_ext_imports || b.total_files - a.total_files); break;
-      case "ifaces": arr.sort((a, b) => b.interface_files_count - a.interface_files_count); break;
-      case "ratio_asc": arr.sort((a, b) => a.compression_ratio - b.compression_ratio || b.total_files - a.total_files); break;
-      case "ratio_desc": arr.sort((a, b) => b.compression_ratio - a.compression_ratio || b.total_files - a.total_files); break;
       case "name": arr.sort((a, b) => a.dir_key.localeCompare(b.dir_key)); break;
-      default: arr.sort((a, b) => b.total_files - a.total_files);
+      default: arr.sort((a, b) => b.total_ext_imports - a.total_ext_imports || a.dir_key.localeCompare(b.dir_key));
     }}
     return arr;
   }}
@@ -992,7 +881,6 @@ def render_html(payload: dict) -> str:
           <div class="muted" style="font-size:0.74rem;word-break:break-all;">${{esc(item.depth2_dir)}}</div>
           <div class="dir-meta">
             <span class="badge">${{esc(item.role)}}</span>
-            <span>top_in: <b>${{fmt(item.top_ext_fan_in)}}</b> · d2_in: <b>${{fmt(item.d2_ext_fan_in)}}</b></span>
           </div>
         </div>
       `).join("") || `<div style="padding:16px" class="muted">No analyzed files match "${{esc(state.query)}}".</div>`;
@@ -1003,7 +891,7 @@ def render_html(payload: dict) -> str:
     }}
 
     const srcList = state.mode === "top" ? DATA.top_dirs : DATA.depth2_dirs;
-    lblEl.textContent = state.mode === "top" ? "Top-Level Directories" : "Depth-2 Directories";
+    lblEl.textContent = state.mode === "top" ? "Top-Level Theories" : "Depth-2 Sub-Theories";
     const filtered = sortDirs(srcList).filter(d => {{
       if (!q) return true;
       if (d.dir_key.toLowerCase().includes(q)) return true;
@@ -1015,15 +903,12 @@ def render_html(payload: dict) -> str:
     }}
 
     listEl.innerHTML = filtered.map(d => {{
-      const fillW = Math.min(100, Math.max(2, d.compression_ratio * 100));
       return `
         <div class="dir-item ${{d.dir_key === state.selectedDir ? "active" : ""}}" data-dir="${{esc(d.dir_key)}}">
           <div class="dir-name">${{esc(d.dir_key)}}</div>
           <div class="dir-meta">
-            <span>${{fmt(d.interface_files_count)}} / ${{fmt(d.total_files)}} files (${{pct(d.compression_ratio)}})</span>
-            <span>ext: <b>${{fmt(d.total_ext_imports)}}</b></span>
+            <span>Parent: ${{esc(d.parent_key || "(root)")}}</span>
           </div>
-          <div class="ratio-bar"><div class="ratio-fill" style="width:${{fillW}}%"></div></div>
         </div>
       `;
     }}).join("") || `<div style="padding:16px" class="muted">No directories match "${{esc(state.query)}}".</div>`;
@@ -1055,8 +940,7 @@ def render_html(payload: dict) -> str:
             </h2>
           </div>
           <div style="text-align:right;font-size:0.82rem;" class="muted">
-            Lines: <b>${{fmt(item.lines)}}</b> · dist_from_main: <b>${{item.dist_from_main}}</b> · height: <b>${{item.height_from_leaves}}</b><br>
-            Top Ext Fan-In: <b>${{fmt(item.top_ext_fan_in)}}</b> · Depth-2 Ext Fan-In: <b>${{fmt(item.d2_ext_fan_in)}}</b> · Total In: <b>${{fmt(item.tot_in_degree)}}</b>
+            Sub-Theory: <b>${{esc(item.depth2_dir)}}</b>
           </div>
         </div>
 
@@ -1064,15 +948,15 @@ def render_html(payload: dict) -> str:
 
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
           <div>
-            <div class="muted" style="font-size:0.78rem;margin-bottom:4px;">Imported by External Top-Dirs</div>
+            <div class="muted" style="font-size:0.78rem;margin-bottom:4px;">Used by Top-Level Theories</div>
             <div class="flow-chips">
-              ${{topImps.map(([k, v]) => `<span class="chip"><b>${{esc(k)}}</b>: ${{fmt(v)}}</span>`).join("") || '<span class="muted">None (apex)</span>'}}
+              ${{topImps.map(([k]) => `<span class="chip"><b>${{esc(k)}}</b></span>`).join("") || '<span class="muted">None (apex)</span>'}}
             </div>
           </div>
           <div>
-            <div class="muted" style="font-size:0.78rem;margin-bottom:4px;">Imported by External Depth-2 Dirs</div>
+            <div class="muted" style="font-size:0.78rem;margin-bottom:4px;">Used by Depth-2 Sub-Theories</div>
             <div class="flow-chips">
-              ${{d2Imps.slice(0, 12).map(([k, v]) => `<span class="chip"><b>${{esc(k)}}</b>: ${{fmt(v)}}</span>`).join("") || '<span class="muted">None</span>'}}
+              ${{d2Imps.slice(0, 12).map(([k]) => `<span class="chip"><b>${{esc(k)}}</b></span>`).join("") || '<span class="muted">None</span>'}}
               ${{d2Imps.length > 12 ? `<span class="chip muted">+${{d2Imps.length - 12}} more</span>` : ""}}
             </div>
           </div>
@@ -1144,19 +1028,16 @@ def render_html(payload: dict) -> str:
         <h2>Global Cross-Boundary Search Results ${{q ? 'for "' + esc(state.query) + '"' : "(All Top Interfaces)"}}</h2>
         <p class="muted">Matched ${{matchedDirs.length}} depth-2 directories (showing up to 30) and ${{matchedFiles.length}} top-dir interface files (showing top 80).</p>
         <div class="flow-chips" style="margin-bottom:14px;">
-          ${{matchedDirs.map(d => `<span class="chip" style="cursor:pointer;" data-jumpd2="${{esc(d.dir_key)}}"><b>${{esc(d.dir_key)}}</b> (${{d.interface_files_count}}/${{d.total_files}})</span>`).join("")}}
+          ${{matchedDirs.map(d => `<span class="chip" style="cursor:pointer;" data-jumpd2="${{esc(d.dir_key)}}"><b>${{esc(d.dir_key)}}</b></span>`).join("")}}
         </div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>File</th><th>Depth-2 Dir</th><th>Top Ext In</th><th>Tot In</th><th>Lines</th><th>Status</th></tr></thead>
+            <thead><tr><th>Interface Module</th><th>Sub-Theory</th><th>Status</th></tr></thead>
             <tbody>
               ${{matchedFiles.slice(0, 80).map(f => `
                 <tr class="${{f.a ? "clickable" : ""}}" data-openan="${{f.a ? esc(f.p) : ""}}">
                   <td class="mono"><a class="filelink" href="${{fileUrl(f.p)}}" target="_blank">${{esc(f.p)}}</a></td>
                   <td>${{esc(f.d2)}}</td>
-                  <td><b>${{fmt(f.e)}}</b></td>
-                  <td>${{fmt(f.t)}}</td>
-                  <td>${{fmt(f.l)}}</td>
                   <td>${{f.a ? '<span class="badge">Analyzed API</span>' : '<span class="muted">Indexed</span>'}}</td>
                 </tr>
               `).join("")}}
@@ -1215,34 +1096,22 @@ def render_html(payload: dict) -> str:
         <div>
           <h2 style="margin:0;">${{esc(d.dir_key)}}</h2>
           <div class="muted" style="font-size:0.84rem;">
-            ${{state.mode === "top" ? "Top-Level Directory" : "Depth-2 Sub-Theory"}}${{d.parent_key ? " · parent: " + esc(d.parent_key) : ""}}
-            · min dist from Main: <b>${{d.min_dist_from_main}}</b> · max height: <b>${{d.max_height}}</b>
+            ${{state.mode === "top" ? "Top-Level Theory" : "Depth-2 Sub-Theory"}}${{d.parent_key ? " · parent: " + esc(d.parent_key) : ""}}
           </div>
         </div>
-        <div class="muted" style="font-size:0.84rem;">
-          ${{fmt(d.total_lines)}} lines · ${{fmt(d.theorems)}} theorems · ${{fmt(d.defs)}} defs · ${{fmt(d.structures)}} structures
-        </div>
-      </div>
-
-      <div class="kpi-grid">
-        <div class="kpi"><div class="lbl">Total Files</div><div class="val">${{fmt(d.total_files)}}</div><div class="hint">${{fmt(d.total_lines)}} lines</div></div>
-        <div class="kpi"><div class="lbl">Interface Files</div><div class="val">${{fmt(d.interface_files_count)}}</div><div class="hint">${{fmt(d.interface_lines)}} lines</div></div>
-        <div class="kpi"><div class="lbl">Compression Ratio</div><div class="val">${{pct(d.compression_ratio)}}</div><div class="hint">${{d.compression_factor ? d.compression_factor + "x compression" : "Apex (0 exports)"}}</div></div>
-        <div class="kpi"><div class="lbl">Cross-Boundary Imports</div><div class="val">${{fmt(d.total_ext_imports)}}</div><div class="hint">from ${{fmt(d.unique_ext_importers)}} external files</div></div>
-        <div class="kpi"><div class="lbl">Outgoing Ext Imports</div><div class="val">${{fmt(d.outgoing_ext_imports)}}</div><div class="hint">into ${{d.imported_external_dirs.length}} external dirs</div></div>
       </div>
 
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
         <div class="card">
-          <h3>Imported By External Directories (${{d.importing_dirs.length}})</h3>
+          <h3>Used By External Theories (${{d.importing_dirs.length}})</h3>
           <div class="flow-chips">
-            ${{d.importing_dirs.map(x => `<span class="chip"><b>${{esc(x.dir)}}</b>: ${{fmt(x.edges)}} edges (${{fmt(x.src_files)}} -> ${{fmt(x.dst_files)}} files)</span>`).join("") || '<span class="muted">No external importers.</span>'}}
+            ${{d.importing_dirs.map(x => `<span class="chip"><b>${{esc(x.dir)}}</b></span>`).join("") || '<span class="muted">No external dependents.</span>'}}
           </div>
         </div>
         <div class="card">
-          <h3>Imports From External Directories (${{d.imported_external_dirs.length}})</h3>
+          <h3>Depends On External Theories (${{d.imported_external_dirs.length}})</h3>
           <div class="flow-chips">
-            ${{d.imported_external_dirs.map(x => `<span class="chip"><b>${{esc(x.dir)}}</b>: ${{fmt(x.edges)}} edges (${{fmt(x.src_files)}} -> ${{fmt(x.dst_files)}} files)</span>`).join("") || '<span class="muted">No external dependencies (self-contained / Mathlib only).</span>'}}
+            ${{d.imported_external_dirs.map(x => `<span class="chip"><b>${{esc(x.dir)}}</b></span>`).join("") || '<span class="muted">No external dependencies (self-contained / Mathlib only).</span>'}}
           </div>
         </div>
       </div>
@@ -1251,7 +1120,7 @@ def render_html(payload: dict) -> str:
 
       ${{analyzedInDir.length ? `
         <div class="card">
-          <h3>Deep-Read Analyzed Public APIs in ${{esc(d.dir_key)}} (${{analyzedInDir.length}})</h3>
+          <h3>Analyzed Mathematical Interfaces in ${{esc(d.dir_key)}} (${{analyzedInDir.length}})</h3>
           <div class="flow-chips">
             ${{analyzedInDir.map(x => `
               <button class="btn" data-pickan="${{esc(x.rel_path)}}">
@@ -1265,20 +1134,16 @@ def render_html(payload: dict) -> str:
 
       <div class="card">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
-          <h3 style="margin:0;">Exported Cross-Boundary Interface Files (<span id="shownCount">showing ${{shown.length}} of ${{fmt(d.interface_files_count)}}</span>)</h3>
-          <input id="localFileFilter" type="search" value="${{esc(state.fileFilter)}}" placeholder="Filter files inside this directory..." style="min-width:260px;">
+          <h3 style="margin:0;">Cross-Boundary Interface Modules (<span id="shownCount">showing ${{shown.length}}</span>)</h3>
+          <input id="localFileFilter" type="search" value="${{esc(state.fileFilter)}}" placeholder="Filter modules inside this theory..." style="min-width:260px;">
         </div>
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
                 <th>#</th>
-                <th>Interface File</th>
-                <th>Ext Fan-In</th>
-                <th>Tot In</th>
-                <th>Lines</th>
-                <th>T / D / S</th>
-                <th>Importing External Dirs</th>
+                <th>Interface Module</th>
+                <th>Used By External Theories</th>
                 <th>API</th>
               </tr>
             </thead>
@@ -1296,26 +1161,22 @@ def render_html(payload: dict) -> str:
         return true;
       }});
       const sc = document.getElementById("shownCount");
-      if (sc) sc.textContent = `showing ${{rows.length}} of ${{fmt(d.interface_files_count)}}` + (d.shown_files_count < d.interface_files_count ? ` (top ${{d.shown_files_count}} embedded)` : "");
+      if (sc) sc.textContent = `showing ${{rows.length}}`;
       const tb = document.getElementById("ifaceTbody");
       if (!tb) return;
       tb.innerHTML = rows.map((f, idx) => {{
         const eds = f.ed || {{}};
-        const edStr = Object.entries(eds).slice(0, 4).map(([k, v]) => `${{k}} (${{v}})`).join(", ");
+        const edStr = Object.keys(eds).slice(0, 4).join(", ");
         const moreEd = Object.keys(eds).length > 4 ? ` +${{Object.keys(eds).length - 4}}` : "";
         return `
           <tr class="${{f.a ? "clickable" : ""}}" data-pickan="${{f.a ? esc(f.p) : ""}}">
             <td class="muted">${{idx + 1}}</td>
             <td class="mono"><a class="filelink" href="${{fileUrl(f.p)}}" target="_blank">${{esc(f.p)}}</a></td>
-            <td><b>${{fmt(f.e)}}</b></td>
-            <td>${{fmt(f.t)}}</td>
-            <td>${{fmt(f.l)}}</td>
-            <td class="mono">${{f.th}}/${{f.df}}/${{f.st}}</td>
             <td style="font-size:0.78rem;">${{esc(edStr + moreEd)}}</td>
             <td>${{f.a ? '<span class="badge">View Summary</span>' : '<span class="muted">-</span>'}}</td>
           </tr>
         `;
-      }}).join("") || `<tr><td colspan="8" class="muted">No cross-boundary interface files in this directory.</td></tr>`;
+      }}).join("") || `<tr><td colspan="4" class="muted">No cross-boundary interface modules in this directory.</td></tr>`;
       tb.querySelectorAll("[data-pickan]").forEach(el => {{
         if (el.dataset.pickan) {{
           el.onclick = (ev) => {{

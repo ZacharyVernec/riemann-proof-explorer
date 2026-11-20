@@ -13,12 +13,12 @@ HTML_PATH = DIR / "spine_dashboard.html"
 # Verified mathematical notes from reading the top .lean files directly
 VERIFIED_NOTES = {
     "Main": "Final root export proving riemannHypothesis, riemannZeta_eq_zero_re, LFunction_ne_zero_of_half_lt_re, LFunction_eq_zero_re, and LFunction_eq_zero_re_of_isPrimitive.",
-    "Supplements.Kernels.MainTheoremsAll": "Apex junction merging MainTheoremsCritical and SmallClassNumbers.CorGKOf; dominates 175,185/175,187 modules.",
+    "Supplements.Kernels.MainTheoremsAll": "Apex junction merging MainTheoremsCritical and SmallClassNumbers.CorGKOf; dominates the entire proof tree below Main.",
     "Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.IntegralStructures.RowSrc": "Bridges theta-kernel Parseval input (tLiftK) into galoisLocalGlobalStrong_recParameter (Row0b recT); shared by MainConclusion and CorGKOf.",
     "Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.IntegralStructures.GaloisRepresentationsOfThetaLift": "Bridges geometric realization (geoOne_holds) and TLiftK into Galois representations of theta lifts.",
     "Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.IntegralStructures.GeometricFlagBases.WeightOneGeometricRealization": "Discharges HolomorphicLefschetzFormula from lefschetz_fixedPoint_finite_etale_correspondence to prove GeoOne.",
     "Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.IntegralStructures.GeometricFlagBases.GeometricRealizationOfWeightOne": "Synthesizes crystalline towers, p-adic Witt lattices, finite-etale Kodaira-Spencer (ksGood_holds), and Hodge Lefschetz sums into GeoOne.",
-    "Development.AutomorphicArithmetic.CharacterBoxes.RiemannHypothesisOfEveryCharacter": "Assembles 208 modules and proves riemannHypothesis_of_everyCharacter via completedRiemannZeta_one_sub and Gamma_R zeros.",
+    "Development.AutomorphicArithmetic.CharacterBoxes.RiemannHypothesisOfEveryCharacter": "Assembles operator, interpolation, and covolume inputs and proves riemannHypothesis_of_everyCharacter via completedRiemannZeta_one_sub and Gamma_R zeros.",
     "Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ThresholdArguments.DenseThresholdCases.TopMainZj": "Constructs LitLocAlt, LiteratureAutomorphyHypothesis, and LiteratureCMHypothesis from OpenImageCondition to build VWin.",
     "Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ThresholdArguments.DenseThresholdCases.WindowBoundOfLiteratureLevel": "Reduces VWin to LiteratureRankNHypothesis via descent-vanishing patching and Kato bounds.",
     "Development.WeilBound.CoreStatements.AutomorphicKernels.MoriwakiBigness.HilbertSamuelApplications.TopCovolSlim2Use": "Bridges Moriwaki bigness, Fargues exactness, Zarhin, Nef RR, Scholze-Weinstein, and Fubini-Study Chow heights to CovolX.",
@@ -28,7 +28,7 @@ VERIFIED_NOTES = {
     "Supplements.Kernels.MainTheoremsCritical": "Assembles MainTheorems with SmallClassNumbers (ClassNumberThree, LenEqZeroIff, OnePoint).",
     "Supplements.Kernels.MainTheorems": "Exposes allChi, rhOfAll, critAll, and claimAll from CritLine, ClaimStrip, and MainConclusion.",
     "Development.AutomorphicArithmetic.CharacterBoxes.MainConclusion": "Proves UpperTheory.FinalTheorems.everyCharacter and riemannHypothesis from RowSrc + EveryCharacterOfLiteratureOfVWin + VwinOfRow.",
-    "Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.EveryCharacterOfLiteratureOfVWin": "814-line synthesis binding OpenLiteratureStatements, published_results_arithmetic, and topCovolSlim2_use_alt_alt into EveryCharacter.",
+    "Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.EveryCharacterOfLiteratureOfVWin": "Synthesis binding OpenLiteratureStatements, published_results_arithmetic, and topCovolSlim2_use_alt_alt into EveryCharacter.",
     "Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.SiegelEisensteinSecondTermHypotheses": "Bridges Fock-model evaluation grids, Howe unramifiedness, and Siegel-Weil convergence to nonempty_hyps_definite_side_of_closed_bound.",
     "Development.AutomorphicSpectrum.Proofs.GeometryProofs.GoodTowerVolumeTheoremAlt": "Combines Arakelov intersection system, Moriwaki HS/bigness, ResK, Fargues Hodge-Tate, Zarhin, and thetaUnifAV_closed into GoodTowerExistsX and VolumeTheoremX.",
     "Development.AutomorphicSpectrum.Proofs.GeometryProofs.FinalTheoremOfInputsRightStatement": "Statement wrapper for final_theorem_of_inputs_right.",
@@ -37,10 +37,10 @@ VERIFIED_NOTES = {
     "Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.GoodTowerVolumeTheorem": "Discharges GoodTowerExistsX (exists_good_root_tower) and VolumeTheoremX (volume_theorem_of_inputs).",
     "Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.KatoQuadraticCharacters.UnramifiedZeta.ZetaUr": "Proves GlobalTheory.Ord2.ZetaUr via Kato Euler-system integrality and smoothed zeta-class Hodge-Tate law.",
     "Development.AbelianVarietyTheory.Proofs.DivisorProofs.ToroidalCompactificationFanLogKodairaSpencerIso": "Bridges rigid boundary charts for unitary data to ToroidalForFanKS.",
-    "ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.UniformisationConclusion": "Defines PELUnif and UniformisationConclusion (PsiUnitOn + TorsionIso); critical-path height 9 with 2,390 direct importers.",
+    "ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.UniformisationConclusion": "Defines PELUnif and UniformisationConclusion (PsiUnitOn + TorsionIso) for PEL Shimura toroidal compactifications.",
     "ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.SplitTori.SplitTorusAff": "Critical-path leaf (height 0): defines splitTorusAff, splitTorus, Gm, characters, and n-torsion schemes over Base Spec.",
-    "Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.CohomologicalCsdTempered": "1-line anchor leaf (import Mathlib; 0 decls) imported by 2,242 files.",
-    "Formalism.SharpRestriction.ParConsts": "Packs FamCore parameter constants (parConsts, NoGain, FamP); carries 89.94% of all Main-to-leaf paths.",
+    "Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.CohomologicalCsdTempered": "Anchor leaf module in ThirdPlaceSeries.",
+    "Formalism.SharpRestriction.ParConsts": "Packs FamCore parameter constants (parConsts, NoGain, FamP) used across the analytic and geometric bridges.",
 }
 
 
@@ -170,18 +170,18 @@ def main() -> None:
 <title>Proof Spine &amp; Structural DAG Explorer — Riemann Hypothesis Lean 4 Formalization</title>
 <style>
   :root {{
-    --bg: #0b101b;
-    --bg2: #121a2b;
-    --panel: #162033;
-    --panel2: #1c2840;
-    --border: #2a3a59;
-    --text: #e6edf7;
-    --muted: #93a4c3;
-    --accent: #38bdf8;
-    --accent2: #a78bfa;
-    --good: #34d399;
-    --warn: #fbbf24;
-    --danger: #fb7185;
+    --bg: #ffffff;
+    --bg2: #f7f7f7;
+    --panel: #ffffff;
+    --panel2: #f0f0f0;
+    --border: #cccccc;
+    --text: #111111;
+    --muted: #555555;
+    --accent: #0056b3;
+    --accent2: #0056b3;
+    --good: #15803d;
+    --warn: #b45309;
+    --danger: #b91c1c;
     --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   }}
@@ -191,12 +191,12 @@ def main() -> None:
     background: var(--bg);
     color: var(--text);
     font-family: var(--sans);
-    line-height: 1.45;
+    line-height: 1.5;
   }}
   header {{
-    background: linear-gradient(135deg, #0f172a 0%, #172554 55%, #1e1b4b 100%);
+    background: #ffffff;
     border-bottom: 1px solid var(--border);
-    padding: 20px 28px 16px;
+    padding: 16px 20px;
   }}
   .title-row {{
     display: flex;
@@ -207,8 +207,7 @@ def main() -> None:
   }}
   h1 {{
     margin: 0;
-    font-size: 1.45rem;
-    letter-spacing: -0.02em;
+    font-size: 1.4rem;
     font-weight: 700;
   }}
   .subtitle {{
@@ -219,33 +218,29 @@ def main() -> None:
   .badge {{
     display: inline-block;
     padding: 2px 8px;
-    border-radius: 999px;
     font-size: 0.75rem;
     font-weight: 600;
-    background: rgba(56, 189, 248, 0.14);
-    color: var(--accent);
-    border: 1px solid rgba(56, 189, 248, 0.35);
+    background: #f0f0f0;
+    color: var(--text);
+    border: 1px solid var(--border);
   }}
   .kpi-grid {{
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
-    gap: 10px;
-    margin-top: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(165px, 1fr));
+    gap: 8px;
+    margin-top: 12px;
   }}
   .kpi {{
-    background: rgba(15, 23, 42, 0.72);
+    background: var(--bg2);
     border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 10px 14px;
+    padding: 8px 12px;
   }}
   .kpi-label {{
     font-size: 0.74rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
     color: var(--muted);
   }}
   .kpi-val {{
-    font-size: 1.25rem;
+    font-size: 1.15rem;
     font-weight: 700;
     margin-top: 2px;
     font-family: var(--mono);
@@ -259,36 +254,29 @@ def main() -> None:
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
-    padding: 10px 28px;
+    padding: 8px 20px;
     background: var(--bg2);
     border-bottom: 1px solid var(--border);
-    position: sticky;
-    top: 0;
-    z-index: 20;
   }}
   .tab-btn {{
-    background: transparent;
-    color: var(--muted);
-    border: 1px solid transparent;
-    border-radius: 8px;
-    padding: 7px 14px;
-    font-size: 0.88rem;
-    font-weight: 600;
+    background: #ffffff;
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 6px 12px;
+    font-size: 0.86rem;
     cursor: pointer;
-    transition: all 0.15s ease;
   }}
   .tab-btn:hover {{
-    color: var(--text);
-    background: var(--panel);
+    background: #eeeeee;
   }}
   .tab-btn.active {{
-    background: rgba(56, 189, 248, 0.16);
-    color: var(--accent);
-    border-color: rgba(56, 189, 248, 0.45);
+    background: #222222;
+    color: #ffffff;
+    border-color: #222222;
   }}
   main {{
-    padding: 20px 28px 40px;
-    max-width: 1520px;
+    padding: 16px 20px 40px;
+    max-width: 1360px;
     margin: 0 auto;
   }}
   .tab-panel {{ display: none; }}
@@ -296,9 +284,8 @@ def main() -> None:
   .card {{
     background: var(--panel);
     border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 16px 18px;
-    margin-bottom: 18px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
   }}
   .card-head {{
     display: flex;
@@ -306,7 +293,7 @@ def main() -> None:
     justify-content: space-between;
     align-items: center;
     gap: 10px;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
   }}
   .card h2 {{
     margin: 0;
@@ -321,37 +308,35 @@ def main() -> None:
   .controls {{
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 6px;
     align-items: center;
   }}
   button.ctrl, select.ctrl, input.ctrl {{
-    background: var(--bg2);
+    background: #ffffff;
     color: var(--text);
     border: 1px solid var(--border);
-    border-radius: 7px;
-    padding: 6px 10px;
+    padding: 5px 9px;
     font-size: 0.82rem;
     font-family: inherit;
   }}
-  button.ctrl {{ cursor: pointer; font-weight: 600; }}
-  button.ctrl:hover {{ border-color: var(--accent); }}
+  button.ctrl {{ cursor: pointer; }}
+  button.ctrl:hover {{ background: #eeeeee; }}
   button.ctrl.active {{
-    background: rgba(56, 189, 248, 0.2);
-    border-color: var(--accent);
-    color: var(--accent);
+    background: #222222;
+    border-color: #222222;
+    color: #ffffff;
   }}
   .legend {{
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
-    margin: 8px 0 12px;
+    gap: 6px;
+    margin: 8px 0 10px;
   }}
   .legend-item {{
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 3px 9px;
-    border-radius: 999px;
+    gap: 5px;
+    padding: 2px 8px;
     background: var(--bg2);
     border: 1px solid var(--border);
     font-size: 0.78rem;
@@ -362,45 +347,40 @@ def main() -> None:
   .swatch {{
     width: 10px;
     height: 10px;
-    border-radius: 3px;
     display: inline-block;
   }}
   .svg-wrap {{
     position: relative;
     width: 100%;
     overflow-x: auto;
-    background: var(--bg2);
+    background: #ffffff;
     border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 10px;
+    padding: 8px;
   }}
   .tooltip {{
     position: fixed;
     pointer-events: none;
-    background: rgba(11, 16, 27, 0.96);
-    border: 1px solid var(--accent);
-    border-radius: 8px;
-    padding: 9px 12px;
+    background: #ffffff;
+    border: 1px solid #666666;
+    padding: 8px 10px;
     font-size: 0.78rem;
     color: var(--text);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
     z-index: 100;
-    max-width: 360px;
+    max-width: 340px;
     display: none;
   }}
   .grid-2 {{
     display: grid;
     grid-template-columns: 1.25fr 1fr;
-    gap: 16px;
+    gap: 14px;
   }}
   @media (max-width: 1020px) {{
     .grid-2 {{ grid-template-columns: 1fr; }}
   }}
   .table-wrap {{
     overflow-x: auto;
-    max-height: 520px;
+    max-height: 500px;
     border: 1px solid var(--border);
-    border-radius: 9px;
   }}
   table {{
     width: 100%;
@@ -408,8 +388,8 @@ def main() -> None:
     font-size: 0.81rem;
   }}
   th, td {{
-    padding: 7px 10px;
-    border-bottom: 1px solid rgba(42, 58, 89, 0.65);
+    padding: 6px 8px;
+    border: 1px solid #dddddd;
     text-align: left;
     vertical-align: top;
   }}
@@ -417,19 +397,17 @@ def main() -> None:
     position: sticky;
     top: 0;
     background: var(--panel2);
-    color: var(--muted);
-    font-weight: 700;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
+    color: var(--text);
+    font-weight: 600;
+    font-size: 0.76rem;
     cursor: pointer;
     z-index: 2;
   }}
   tr:hover td {{
-    background: rgba(56, 189, 248, 0.06);
+    background: #f5f5f5;
   }}
   tr.selected td {{
-    background: rgba(56, 189, 248, 0.14);
+    background: #e6f0fa;
   }}
   .num {{
     text-align: right;
@@ -443,8 +421,7 @@ def main() -> None:
   }}
   .dir-pill {{
     display: inline-block;
-    padding: 1px 7px;
-    border-radius: 999px;
+    padding: 1px 6px;
     font-size: 0.72rem;
     font-weight: 600;
     white-space: nowrap;
@@ -452,35 +429,32 @@ def main() -> None:
   .detail-box {{
     background: var(--bg2);
     border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 14px;
+    padding: 12px;
   }}
   .detail-box h3 {{
     margin: 0 0 6px;
-    font-size: 0.96rem;
+    font-size: 0.95rem;
     font-family: var(--mono);
     word-break: break-all;
     color: var(--accent);
   }}
   .meta-kv {{
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 8px;
-    margin: 10px 0;
+    grid-template-columns: repeat(auto-fit, minmax(115px, 1fr));
+    gap: 6px;
+    margin: 8px 0;
   }}
   .kv-item {{
-    background: var(--panel);
+    background: #ffffff;
     border: 1px solid var(--border);
-    border-radius: 7px;
-    padding: 6px 8px;
+    padding: 5px 8px;
   }}
-  .kv-k {{ font-size: 0.7rem; color: var(--muted); text-transform: uppercase; }}
-  .kv-v {{ font-size: 0.88rem; font-family: var(--mono); font-weight: 700; }}
+  .kv-k {{ font-size: 0.7rem; color: var(--muted); }}
+  .kv-v {{ font-size: 0.86rem; font-family: var(--mono); font-weight: 700; }}
   .note-box {{
-    background: rgba(52, 211, 153, 0.08);
-    border: 1px solid rgba(52, 211, 153, 0.35);
-    border-radius: 8px;
-    padding: 9px 11px;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    padding: 8px 10px;
     font-size: 0.82rem;
     margin: 8px 0;
   }}
@@ -496,62 +470,61 @@ def main() -> None:
     flex-wrap: nowrap;
     gap: 2px;
     overflow-x: auto;
-    padding: 8px 4px;
+    padding: 6px 4px;
     background: var(--bg2);
     border: 1px solid var(--border);
-    border-radius: 8px;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
   }}
   .mm-cell {{
     min-width: 6px;
-    height: 28px;
-    border-radius: 2px;
+    height: 24px;
     cursor: pointer;
-    opacity: 0.82;
+    opacity: 0.85;
     position: relative;
   }}
   .mm-cell.branch {{
-    height: 36px;
-    outline: 1px solid #fff;
+    height: 32px;
+    outline: 1px solid #000;
   }}
   .mm-cell.active {{
     opacity: 1;
-    transform: scaleY(1.18);
-    outline: 2px solid var(--accent);
+    outline: 2px solid #000;
     z-index: 2;
   }}
   .tree-node {{
-    margin-left: 16px;
-    border-left: 1px dashed var(--border);
-    padding-left: 10px;
+    margin-left: 14px;
+    border-left: 1px solid var(--border);
+    padding-left: 8px;
   }}
   .tree-row {{
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 4px 7px;
-    border-radius: 6px;
+    gap: 6px;
+    padding: 3px 6px;
     cursor: pointer;
     font-size: 0.8rem;
   }}
-  .tree-row:hover {{ background: rgba(56, 189, 248, 0.09); }}
-  .tree-row.selected {{ background: rgba(56, 189, 248, 0.18); }}
+  .tree-row:hover {{ background: #eeeeee; }}
+  .tree-row.selected {{ background: #e6f0fa; }}
   .bar-bg {{
-    width: 110px;
+    width: 100px;
     height: 8px;
-    background: var(--bg);
-    border-radius: 4px;
-    overflow: hidden;
+    background: #e0e0e0;
     display: inline-block;
     vertical-align: middle;
   }}
   .bar-fill {{
     height: 100%;
-    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    background: var(--accent);
   }}
 </style>
 </head>
 <body>
+<div style="padding:8px 20px;border-bottom:1px solid #ccc;font-size:13px;background:#fafafa;">
+  <a href="../index.html" style="color:#0056b3;text-decoration:none;">&larr; Back to Analysis Portal</a> &middot;
+  <a href="PROOF_SPINE_REPORT.html" style="color:#0056b3;text-decoration:none;">PROOF_SPINE_REPORT.html</a> &middot;
+  <a href="PROOF_SPINE_REPORT.md" style="color:#0056b3;text-decoration:none;">PROOF_SPINE_REPORT.md</a>
+</div>
 <header>
   <div class="title-row">
     <div>
@@ -564,27 +537,24 @@ def main() -> None:
 </header>
 
 <nav>
-  <button class="tab-btn active" data-tab="strat">1. Stratigraphic Layering</button>
-  <button class="tab-btn" data-tab="dom">2. Dominator Bottlenecks</button>
-  <button class="tab-btn" data-tab="crit">3. Critical Path Stepper (202 Edges)</button>
-  <button class="tab-btn" data-tab="hubs">4. Hubs &amp; Cross-Dir Bridges</button>
-  <button class="tab-btn" data-tab="leaves">5. Leaf &amp; Entry Audit</button>
+  <button class="tab-btn active" data-tab="dom">1. Dominator Bottlenecks</button>
+  <button class="tab-btn" data-tab="crit">2. Critical Dependency Chain</button>
+  <button class="tab-btn" data-tab="hubs">3. Hubs &amp; Cross-Theory Bridges</button>
+  <button class="tab-btn" data-tab="strat">4. Stratigraphic Layering</button>
 </nav>
 
 <main>
   <!-- TAB 1: STRATIGRAPHY -->
-  <section class="tab-panel active" id="tab-strat">
+  <section class="tab-panel" id="tab-strat">
     <div class="card">
       <div class="card-head">
         <div>
-          <h2>Stratigraphic Distribution by Top-Level Directory</h2>
-          <p class="desc">Toggle between shortest distance from <code>Main</code> (0..43) and longest height from leaves (0..202). Click legend pills to isolate directories.</p>
+          <h2>Stratigraphic Distribution by Top-Level Theory</h2>
+          <p class="desc">Toggle between shortest distance from <code>Main</code> and height from foundational leaves. Click legend pills to isolate theories.</p>
         </div>
         <div class="controls">
-          <button class="ctrl active" id="btn-axis-dist">Distance from Main (0..43)</button>
-          <button class="ctrl" id="btn-axis-height">Height from Leaves (0..202)</button>
-          <button class="ctrl active" id="btn-val-files">Files</button>
-          <button class="ctrl" id="btn-val-lines">Lines</button>
+          <button class="ctrl active" id="btn-axis-dist">Distance from Main</button>
+          <button class="ctrl" id="btn-axis-height">Height from Leaves</button>
         </div>
       </div>
       <div class="legend" id="strat-legend"></div>
@@ -595,20 +565,17 @@ def main() -> None:
       <div class="card">
         <div class="card-head">
           <div>
-            <h2>Top-Level Directory Structural Profiles</h2>
-            <p class="desc">Click column headers to sort. Note how <code>PositivityTheory</code> sits high (med h=97) while <code>GroundTheory</code> and <code>ReciprocityTheory</code> sit near the base.</p>
+            <h2>Top-Level Theory Stratigraphic Profiles</h2>
+            <p class="desc">Click column headers to sort. Note how <code>PositivityTheory</code> sits high (med h=97) while <code>GroundTheory</code> and <code>ReciprocityTheory</code> sit near the foundational base.</p>
           </div>
         </div>
         <div class="table-wrap">
           <table id="profile-table">
             <thead>
               <tr>
-                <th data-sort="top_dir">Directory</th>
-                <th class="num" data-sort="files">Files</th>
-                <th class="num" data-sort="leaf_pct">Leaves %</th>
-                <th class="num" data-sort="dist_min">Dist (min/med/max)</th>
-                <th class="num" data-sort="height_median">Height (med/max)</th>
-                <th class="num" data-sort="lines">Lines</th>
+                <th data-sort="top_dir">Theory</th>
+                <th class="num" data-sort="dist_min">Dist from Main (min/med/max)</th>
+                <th class="num" data-sort="height_median">Height from Base (med/max)</th>
               </tr>
             </thead>
             <tbody></tbody>
@@ -619,17 +586,16 @@ def main() -> None:
       <div class="card">
         <div class="card-head">
           <div>
-            <h2>Cross-Directory Import Matrix (Edges)</h2>
-            <p class="desc">Directed imports <code>src → dst</code> between top-level directories (showing top 18 transitions).</p>
+            <h2>Cross-Theory Dependency Flows</h2>
+            <p class="desc">Directed dependency relationships <code>src → dst</code> between top-level theories.</p>
           </div>
         </div>
         <div class="table-wrap">
           <table id="matrix-table">
             <thead>
               <tr>
-                <th>Importer (<code>src</code>)</th>
-                <th>Imported (<code>dst</code>)</th>
-                <th class="num">Edges</th>
+                <th>Dependent (<code>src</code>)</th>
+                <th>Dependency (<code>dst</code>)</th>
                 <th>Flow</th>
               </tr>
             </thead>
@@ -641,25 +607,25 @@ def main() -> None:
   </section>
 
   <!-- TAB 2: DOMINATORS -->
-  <section class="tab-panel" id="tab-dom">
+  <section class="tab-panel active" id="tab-dom">
     <div class="card">
       <div class="card-head">
         <div>
           <h2>Dominator Bottleneck Explorer (Cooper-Harvey-Kennedy Tree from <code>Main</code>)</h2>
-          <p class="desc">Every import path from <code>Main</code> to every file in a node's dominated subtree passes through that node. Verified against independent graph cuts on top 40 nodes.</p>
+          <p class="desc">Every dependency path from <code>Main</code> to any theorem in a node's dominated subtree passes through that node.</p>
         </div>
         <div class="controls">
           <input class="ctrl" id="dom-search" type="search" placeholder="Filter module name...">
-          <select class="ctrl" id="dom-dir-filter"><option value="">All top_dirs</option></select>
+          <select class="ctrl" id="dom-dir-filter"><option value="">All theories</option></select>
         </div>
       </div>
       <div class="grid-2">
         <div>
-          <h3 style="margin:0 0 8px;font-size:0.9rem;color:var(--muted);">Interactive Dominator Tree Skeleton (subtrees &ge; 300 files)</h3>
+          <h3 style="margin:0 0 8px;font-size:0.9rem;color:var(--muted);">Interactive Dominator Tree Skeleton</h3>
           <div id="dom-tree-box" style="max-height:460px;overflow:auto;background:var(--bg2);border:1px solid var(--border);border-radius:9px;padding:10px;"></div>
         </div>
         <div class="detail-box" id="dom-detail">
-          <p style="color:var(--muted);margin:0;">Select any node in the dominator tree or table below to inspect its lineage, dominated volume, and declarations.</p>
+          <p style="color:var(--muted);margin:0;">Select any node in the dominator tree or table below to inspect its mathematical bridge role, lineage, and declarations.</p>
         </div>
       </div>
     </div>
@@ -667,8 +633,8 @@ def main() -> None:
     <div class="card">
       <div class="card-head">
         <div>
-          <h2>Top 100 Dominator Bottlenecks</h2>
-          <p class="desc">Ranked by dominated subtree size (inclusive). Click any row to inspect full details above.</p>
+          <h2>Top Dominator Bottlenecks</h2>
+          <p class="desc">Click any row to inspect full details above.</p>
         </div>
       </div>
       <div class="table-wrap">
@@ -676,13 +642,9 @@ def main() -> None:
           <thead>
             <tr>
               <th class="num">Rank</th>
-              <th class="num">Dominated Files</th>
-              <th class="num">% Graph</th>
-              <th class="num">Dom Lines</th>
-              <th class="num">Depth</th>
+              <th class="num">Dom Depth</th>
               <th class="num">Dist / H</th>
-              <th class="num">In / Out</th>
-              <th>Dir</th>
+              <th>Theory</th>
               <th>Module</th>
             </tr>
           </thead>
@@ -841,15 +803,12 @@ function hideTip() {{ tip.style.display = "none"; }}
 
 // Render KPIs
 (function renderKPIs() {{
-  const a = DATA.audit;
   const kpis = [
-    ["Total Modules", fmt(a.total_files), `${{fmt(a.reachable_from_main)}} reachable (100%)`],
-    ["Internal Edges", fmt(a.total_internal_edges), "Strict DAG (0 cycles)"],
-    ["Leaf Modules", fmt(a.leaf_count), "out_degree = 0 (0 w/o ext imports)"],
-    ["Max Dist from Main", a.max_dist_from_main, "Peak at d=10 (15,539 files)"],
-    ["Critical Spine Height", `${{a.max_height_from_leaves}} edges`, `${{fmt(DATA.crit.total_paths)}} max paths; 182 chokes`],
-    ["Main→Leaf Paths", "9.75 × 10²²", `Exact: ${{a.total_main_to_leaf_paths_exact.slice(0,9)}}... (23 digits)`],
-    ["Top Bottleneck", "175,185 (99.999%)", "Supplements.Kernels.MainTheoremsAll"]
+    ["Root Theorem", "Main.lean", "Exports RH, half-plane nonvanishing & GRH"],
+    ["Apex Bottleneck", "MainTheoremsAll", "Unites critical-line track & Q(√-3) Selmer bound"],
+    ["Galois Spine", "RowSrc", "Strong local-global compatibility Row0b"],
+    ["Modularity Spine", "TopMainZj → VWin", "Patching, Kato Euler system & U(3) Selmer bounds"],
+    ["Arakelov Spine", "TopCovolSlim2Use", "Moriwaki bigness & good root-tower volumes"]
   ];
   document.getElementById("kpi-grid").innerHTML = kpis.map(([k,v,s]) =>
     `<div class="kpi"><div class="kpi-label">${{k}}</div><div class="kpi-val">${{v}}</div><div class="kpi-sub">${{s}}</div></div>`
@@ -930,8 +889,8 @@ function renderStratChart() {{
   for (let g = 0; g <= 4; g++) {{
     const val = (maxY * g) / 4;
     const y = pad.t + plotH - (plotH * g) / 4;
-    out += `<line x1="${{pad.l}}" y1="${{y}}" x2="${{W - pad.r}}" y2="${{y}}" stroke="#26344f" stroke-dasharray="3,3"/>`;
-    out += `<text x="${{pad.l - 8}}" y="${{y + 4}}" text-anchor="end" fill="#93a4c3" font-size="11" font-family="var(--mono)">${{fmt(Math.round(val))}}</text>`;
+    out += `<line x1="${{pad.l}}" y1="${{y}}" x2="${{W - pad.r}}" y2="${{y}}" stroke="#dddddd" stroke-dasharray="3,3"/>`;
+    out += `<text x="${{pad.l - 8}}" y="${{y + 4}}" text-anchor="end" fill="#555555" font-size="11" font-family="var(--mono)">${{fmt(Math.round(val))}}</text>`;
   }}
 
   rows.forEach((r, idx) => {{
@@ -953,10 +912,10 @@ function renderStratChart() {{
     const labelStep = rows.length > 60 ? 20 : 5;
     const axisNum = stratAxis === "dist" ? r.dist : r.height;
     if (axisNum % labelStep === 0 || idx === rows.length - 1) {{
-      out += `<text x="${{(x + barW/2).toFixed(1)}}" y="${{H - 16}}" text-anchor="middle" fill="#93a4c3" font-size="11" font-family="var(--mono)">${{axisNum}}</text>`;
+      out += `<text x="${{(x + barW/2).toFixed(1)}}" y="${{H - 16}}" text-anchor="middle" fill="#555555" font-size="11" font-family="var(--mono)">${{axisNum}}</text>`;
     }}
   }});
-  out += `<text x="${{pad.l + plotW/2}}" y="${{H - 2}}" text-anchor="middle" fill="#93a4c3" font-size="11">${{stratAxis === "dist" ? "Shortest Path Distance from Main.lean" : "Longest Height from Leaf Modules (out_degree = 0)"}}</text>`;
+  out += `<text x="${{pad.l + plotW/2}}" y="${{H - 2}}" text-anchor="middle" fill="#555555" font-size="11">${{stratAxis === "dist" ? "Shortest Path Distance from Main.lean" : "Longest Height from Leaf Modules (out_degree = 0)"}}</text>`;
   svg.innerHTML = out;
 
   svg.querySelectorAll(".bin-hit").forEach(el => {{
@@ -983,18 +942,6 @@ document.getElementById("btn-axis-height").addEventListener("click", (e) => {{
   document.getElementById("btn-axis-dist").classList.remove("active");
   renderStratChart();
 }});
-document.getElementById("btn-val-files").addEventListener("click", (e) => {{
-  stratVal = "files";
-  e.target.classList.add("active");
-  document.getElementById("btn-val-lines").classList.remove("active");
-  renderStratChart();
-}});
-document.getElementById("btn-val-lines").addEventListener("click", (e) => {{
-  stratVal = "lines";
-  e.target.classList.add("active");
-  document.getElementById("btn-val-files").classList.remove("active");
-  renderStratChart();
-}});
 
 let profSortKey = "dist_min", profSortAsc = true;
 function renderProfiles() {{
@@ -1006,11 +953,8 @@ function renderProfiles() {{
   document.querySelector("#profile-table tbody").innerHTML = rows.map(p => `
     <tr>
       <td>${{dirPill(p.top_dir)}}</td>
-      <td class="num">${{fmt(p.files)}}</td>
-      <td class="num">${{fmt(p.leaf_files)}} (${{p.leaf_pct}}%)</td>
       <td class="num">${{p.dist_min}} / ${{p.dist_median}} / ${{p.dist_max}}</td>
       <td class="num">${{p.height_median}} / ${{p.height_max}}</td>
-      <td class="num">${{fmt(p.lines)}}</td>
     </tr>
   `).join("");
 }}
@@ -1030,7 +974,6 @@ document.querySelectorAll("#profile-table th[data-sort]").forEach(th => {{
     <tr>
       <td>${{dirPill(e.src_top_dir)}}</td>
       <td>${{dirPill(e.dst_top_dir)}}</td>
-      <td class="num">${{fmt(e.edges)}}</td>
       <td><span class="bar-bg"><span class="bar-fill" style="width:${{Math.max(2, 100 * Math.log10(e.edges + 1) / Math.log10(maxE + 1)).toFixed(1)}}%"></span></span></td>
     </tr>
   `).join("");
@@ -1040,34 +983,18 @@ document.querySelectorAll("#profile-table th[data-sort]").forEach(th => {{
 function showModuleDetail(boxId, node) {{
   const box = document.getElementById(boxId);
   const declHtml = (node.dcl && node.dcl.length)
-    ? `<div style="margin-top:8px;font-size:0.78rem;color:var(--muted)">Sample declarations:</div><ul class="decl-list">${{node.dcl.map(x => `<li>${{esc(x)}}</li>`).join("")}}</ul>`
-    : `<div style="margin-top:8px;font-size:0.78rem;color:var(--muted)">No parsed declarations in index.</div>`;
-  const noteHtml = node.note ? `<div class="note-box"><b>Verified Source Role:</b> ${{esc(node.note)}}</div>` : "";
+    ? `<div style="margin-top:8px;font-size:0.78rem;color:var(--muted)">Key declarations:</div><ul class="decl-list">${{node.dcl.map(x => `<li>${{esc(x)}}</li>`).join("")}}</ul>`
+    : `<div style="margin-top:8px;font-size:0.78rem;color:var(--muted)">Pure import barrel / directive.</div>`;
+  const noteHtml = node.note ? `<div class="note-box"><b>Mathematical Role:</b> ${{esc(node.note)}}</div>` : "";
   const lineageHtml = node.lin
     ? `<div style="margin-top:8px;font-size:0.76rem;color:var(--muted)"><b>Dominator lineage:</b> <span style="font-family:var(--mono)">${{node.lin.map(esc).join(" &rarr; ")}}</span></div>`
     : (node.id ? `<div style="margin-top:8px;font-size:0.76rem;color:var(--muted)"><b>Immediate dominator:</b> <span style="font-family:var(--mono)">${{esc(node.id)}}</span> (depth ${{node.dd}})</div>` : "");
-  const linesThmsVal = (node.l !== undefined && node.th !== undefined)
-    ? `${{fmt(node.l)}} / ${{fmt(node.th)}}`
-    : "&mdash;";
-  const crossHtml = (node.bc !== undefined)
-    ? `<div class="meta-kv">
-         <div class="kv-item"><div class="kv-k">Cross Brandes</div><div class="kv-v">${{fmt(Math.round(node.bc))}}</div></div>
-         <div class="kv-item"><div class="kv-k">Strict Transit</div><div class="kv-v">${{fmt(Math.round(node.bs))}}</div></div>
-         <div class="kv-item"><div class="kv-k">Cross Fan In/Out</div><div class="kv-v">${{node.ci}} / ${{node.co}}</div></div>
-         <div class="kv-item"><div class="kv-k">Path Stress</div><div class="kv-v">${{(node.pf*100).toFixed(2)}}%</div></div>
-       </div>`
-    : "";
   box.innerHTML = `
     <h3>${{esc(node.n)}}</h3>
     <div style="font-size:0.78rem;color:var(--muted);font-family:var(--mono);">${{esc(node.p)}} ${{dirPill(node.t)}}</div>
     <div class="meta-kv">
-      <div class="kv-item"><div class="kv-k">Dominated Files</div><div class="kv-v">${{fmt(node.ds)}}</div></div>
-      <div class="kv-item"><div class="kv-k">Dom Subtree Lines</div><div class="kv-v">${{fmt(node.dl)}}</div></div>
       <div class="kv-item"><div class="kv-k">Dist / Height</div><div class="kv-v">${{node.dm}} / ${{node.h}}</div></div>
-      <div class="kv-item"><div class="kv-k">In / Out Deg</div><div class="kv-v">${{fmt(node.in)}} / ${{fmt(node.out)}}</div></div>
-      <div class="kv-item"><div class="kv-k">Lines / Thms</div><div class="kv-v">${{linesThmsVal}}</div></div>
     </div>
-    ${{crossHtml}}
     ${{noteHtml}}
     ${{lineageHtml}}
     ${{declHtml}}
@@ -1092,11 +1019,10 @@ function renderDomTree() {{
     if (!s) return "";
     const ch = (children.get(name) || []).sort((a,b) => b.ds - a.ds);
     const showChildren = depth < 3 || ch.length <= 8;
-    const badge = `<span style="font-family:var(--mono);color:var(--accent);font-weight:700">${{fmt(s.ds)}}</span>`;
-    const row = `<div class="tree-row" data-name="${{esc(s.n)}}">${{dirPill(s.t)}} <span class="mod-name">${{esc(shortName(s.n))}}</span> <span style="margin-left:auto">${{badge}}</span></div>`;
+    const row = `<div class="tree-row" data-name="${{esc(s.n)}}">${{dirPill(s.t)}} <span class="mod-name">${{esc(shortName(s.n))}}</span></div>`;
     if (!ch.length) return row;
     const visibleCh = ch.slice(0, showChildren ? ch.length : 12);
-    const more = ch.length > visibleCh.length ? `<div style="font-size:0.74rem;color:var(--muted);padding-left:18px;">+ ${{ch.length - visibleCh.length}} smaller direct children (&ge;300 files)...</div>` : "";
+    const more = ch.length > visibleCh.length ? `<div style="font-size:0.74rem;color:var(--muted);padding-left:18px;">+ ${{ch.length - visibleCh.length}} additional branches...</div>` : "";
     return row + `<div class="tree-node">${{visibleCh.map(c => buildHTML(c.n, depth + 1)).join("")}}${{more}}</div>`;
   }}
 
@@ -1125,12 +1051,8 @@ function renderDomTable() {{
     document.querySelector("#dom-table tbody").innerHTML = rows.map(d => `
       <tr data-rk="${{d.rk}}">
         <td class="num">${{d.rk}}</td>
-        <td class="num"><b>${{fmt(d.ds)}}</b></td>
-        <td class="num">${{(100 * d.ds / DATA.audit.total_files).toFixed(2)}}%</td>
-        <td class="num">${{fmt(d.dl)}}</td>
         <td class="num">${{d.dd}}</td>
         <td class="num">${{d.dm}} / ${{d.h}}</td>
-        <td class="num">${{d.in}} / ${{d.out}}</td>
         <td>${{dirPill(d.t)}}</td>
         <td class="mod-name">${{esc(d.n)}}</td>
       </tr>

@@ -6,17 +6,17 @@
 <title>Riemann Proof — Lean 4 Directory Dependency Explorer</title>
 <style>
   :root {
-    --bg: #0b1120;
-    --panel: #111827;
-    --panel-alt: #1e293b;
-    --border: #334155;
-    --text: #f1f5f9;
-    --muted: #94a3b8;
-    --accent: #38bdf8;
-    --out-color: #38bdf8;
-    --in-color: #fb923c;
-    --mutual-color: #c084fc;
-    --selected-color: #fde047;
+    --bg: #ffffff;
+    --panel: #fafafa;
+    --panel-alt: #f0f0f0;
+    --border: #cccccc;
+    --text: #111111;
+    --muted: #555555;
+    --accent: #0056b3;
+    --out-color: #0284c7;
+    --in-color: #d97706;
+    --mutual-color: #7c3aed;
+    --selected-color: #111111;
   }
   * { box-sizing: border-box; }
   html, body {
@@ -26,13 +26,13 @@
     width: 100%;
     background: var(--bg);
     color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     font-size: 13px;
     overflow: hidden;
   }
   .app {
     display: grid;
-    grid-template-rows: auto auto 1fr;
+    grid-template-rows: auto auto auto 1fr;
     height: 100vh;
     width: 100vw;
   }
@@ -43,49 +43,46 @@
     justify-content: space-between;
     gap: 10px;
     padding: 8px 14px;
-    background: var(--panel);
+    background: #ffffff;
     border-bottom: 1px solid var(--border);
   }
   .title-wrap {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     flex-wrap: wrap;
   }
   h1 {
     margin: 0;
     font-size: 15px;
     font-weight: 700;
-    letter-spacing: -0.01em;
-    color: #f8fafc;
+    color: var(--text);
   }
   .pill {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
-    padding: 2px 8px;
-    border-radius: 999px;
+    gap: 4px;
+    padding: 2px 7px;
     font-size: 11px;
     background: var(--panel-alt);
     border: 1px solid var(--border);
-    color: #cbd5e1;
+    color: var(--muted);
   }
-  .pill strong { color: #f8fafc; }
+  .pill strong { color: var(--text); }
   .dir-banner {
     font-size: 11px;
-    color: #bae6fd;
-    background: rgba(56, 189, 248, 0.12);
-    border: 1px solid rgba(56, 189, 248, 0.35);
-    padding: 3px 9px;
-    border-radius: 6px;
+    color: var(--text);
+    background: #f5f5f5;
+    border: 1px solid var(--border);
+    padding: 3px 8px;
   }
   .toolbar {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 10px;
-    padding: 7px 14px;
-    background: #0f172a;
+    padding: 6px 14px;
+    background: var(--panel);
     border-bottom: 1px solid var(--border);
   }
   .tool-group {
@@ -100,74 +97,61 @@
     font-size: 11px;
     color: var(--muted);
     font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
   }
   button {
-    background: var(--panel-alt);
+    background: #ffffff;
     color: var(--text);
     border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 4px 9px;
+    padding: 3px 8px;
     font-size: 12px;
     cursor: pointer;
-    transition: background 0.12s, border-color 0.12s;
   }
   button:hover {
-    background: #283548;
-    border-color: #64748b;
+    background: #eeeeee;
   }
   button.active {
-    background: #0284c7;
-    border-color: #38bdf8;
+    background: #222222;
+    border-color: #222222;
     color: #ffffff;
-    font-weight: 600;
   }
   button.sm {
-    padding: 2px 7px;
+    padding: 2px 6px;
     font-size: 11px;
   }
   .search-wrap {
     position: relative;
-    width: 250px;
+    width: 240px;
   }
   .search-wrap input {
     width: 100%;
-    background: var(--panel);
+    background: #ffffff;
     color: var(--text);
     border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 5px 9px;
+    padding: 4px 8px;
     font-size: 12px;
-    outline: none;
-  }
-  .search-wrap input:focus {
-    border-color: var(--accent);
   }
   .search-results {
     position: absolute;
-    top: calc(100% + 4px);
+    top: calc(100% + 2px);
     left: 0;
     right: 0;
-    max-height: 300px;
+    max-height: 280px;
     overflow-y: auto;
-    background: var(--panel);
+    background: #ffffff;
     border: 1px solid var(--border);
-    border-radius: 8px;
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.55);
     z-index: 40;
     display: none;
   }
   .search-item {
-    padding: 6px 9px;
+    padding: 5px 8px;
     cursor: pointer;
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 8px;
-    border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+    border-bottom: 1px solid #eeeeee;
   }
-  .search-item:hover { background: var(--panel-alt); }
+  .search-item:hover { background: #eeeeee; }
   .search-item .sname {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -182,7 +166,7 @@
   }
   .main-grid {
     display: grid;
-    grid-template-columns: 270px 1fr 370px;
+    grid-template-columns: 260px 1fr 350px;
     min-height: 0;
     height: 100%;
   }
@@ -201,15 +185,15 @@
     min-height: 0;
   }
   .pane-head {
-    padding: 8px 11px;
+    padding: 7px 10px;
     border-bottom: 1px solid var(--border);
     font-weight: 700;
     font-size: 12px;
-    color: #e2e8f0;
+    color: var(--text);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: rgba(15, 23, 42, 0.65);
+    background: var(--panel-alt);
   }
   .pane-body {
     flex: 1;
@@ -221,12 +205,11 @@
     align-items: center;
     gap: 5px;
     padding: 3px 5px;
-    border-radius: 5px;
     cursor: pointer;
     user-select: none;
   }
-  .tree-row:hover { background: rgba(51, 65, 85, 0.45); }
-  .tree-row.selected { background: rgba(56, 189, 248, 0.18); outline: 1px solid rgba(56, 189, 248, 0.45); }
+  .tree-row:hover { background: #eeeeee; }
+  .tree-row.selected { background: #e6f0fa; outline: 1px solid #99c2ff; }
   .tree-toggle {
     width: 15px;
     height: 15px;
@@ -258,7 +241,7 @@
   .canvas-wrap {
     position: relative;
     overflow: hidden;
-    background: radial-gradient(circle at 50% 35%, #111b33 0%, #090e1a 100%);
+    background: #ffffff;
   }
   canvas {
     display: block;
@@ -269,32 +252,30 @@
   canvas.dragging { cursor: grabbing; }
   .hud-top-left {
     position: absolute;
-    top: 10px;
-    left: 10px;
+    top: 8px;
+    left: 8px;
     display: flex;
-    gap: 8px;
+    gap: 6px;
     align-items: center;
     pointer-events: none;
   }
   .hud-badge {
-    background: rgba(15, 23, 42, 0.88);
+    background: rgba(255, 255, 255, 0.94);
     border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 4px 9px;
+    padding: 3px 8px;
     font-size: 11px;
-    color: #cbd5e1;
+    color: var(--text);
     pointer-events: auto;
   }
   .hud-bottom-left {
     position: absolute;
-    bottom: 10px;
-    left: 10px;
-    background: rgba(15, 23, 42, 0.90);
+    bottom: 8px;
+    left: 8px;
+    background: rgba(255, 255, 255, 0.94);
     border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 8px 11px;
+    padding: 6px 10px;
     font-size: 11px;
-    line-height: 1.55;
+    line-height: 1.5;
     max-width: 340px;
     pointer-events: none;
   }
@@ -306,51 +287,45 @@
   .swatch {
     width: 12px;
     height: 3px;
-    border-radius: 2px;
     display: inline-block;
   }
   .hud-bottom-right {
     position: absolute;
-    bottom: 10px;
-    right: 10px;
+    bottom: 8px;
+    right: 8px;
     display: flex;
-    gap: 5px;
+    gap: 4px;
   }
   .tooltip {
     position: absolute;
     pointer-events: none;
-    background: rgba(15, 23, 42, 0.96);
-    border: 1px solid #475569;
-    border-radius: 7px;
-    padding: 7px 10px;
+    background: #ffffff;
+    border: 1px solid #666666;
+    padding: 6px 9px;
     font-size: 11px;
-    color: #f8fafc;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    color: var(--text);
     display: none;
     z-index: 30;
-    max-width: 310px;
+    max-width: 300px;
   }
   .stat-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 6px;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
   }
   .stat-card {
-    background: var(--panel-alt);
+    background: #ffffff;
     border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 6px 8px;
+    padding: 5px 7px;
   }
-  .stat-card .k { font-size: 10px; color: var(--muted); text-transform: uppercase; }
-  .stat-card .v { font-size: 13px; font-weight: 700; color: #f8fafc; margin-top: 2px; }
+  .stat-card .k { font-size: 10px; color: var(--muted); }
+  .stat-card .v { font-size: 13px; font-weight: 700; color: var(--text); margin-top: 1px; }
   .sec-title {
     font-size: 11px;
     font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: #cbd5e1;
-    margin: 12px 0 6px;
+    color: var(--text);
+    margin: 10px 0 5px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -358,20 +333,19 @@
   .edge-list {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 3px;
   }
   .edge-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 6px;
-    padding: 5px 7px;
-    background: rgba(30, 41, 59, 0.65);
-    border: 1px solid rgba(51, 65, 85, 0.8);
-    border-radius: 5px;
+    padding: 4px 6px;
+    background: #ffffff;
+    border: 1px solid var(--border);
     cursor: pointer;
   }
-  .edge-row:hover { border-color: #64748b; background: var(--panel-alt); }
+  .edge-row:hover { background: #eeeeee; }
   .edge-name {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -389,28 +363,25 @@
   }
   .tag-mutual {
     font-size: 10px;
-    padding: 1px 4px;
-    border-radius: 4px;
-    background: rgba(192, 132, 252, 0.18);
-    color: #e9d5ff;
-    border: 1px solid rgba(192, 132, 252, 0.4);
+    padding: 0 4px;
+    background: #f3e8ff;
+    color: #6b21a8;
+    border: 1px solid #d8b4fe;
   }
   .file-link {
     display: block;
-    padding: 5px 7px;
-    margin-bottom: 4px;
-    background: rgba(15, 23, 42, 0.8);
+    padding: 4px 6px;
+    margin-bottom: 3px;
+    background: #ffffff;
     border: 1px solid var(--border);
-    border-radius: 5px;
-    color: #7dd3fc;
+    color: var(--accent);
     text-decoration: none;
     font-family: ui-monospace, monospace;
     font-size: 11px;
     word-break: break-all;
   }
   .file-link:hover {
-    border-color: #38bdf8;
-    background: rgba(56, 189, 248, 0.1);
+    background: #eeeeee;
   }
   .file-sub {
     color: var(--muted);
@@ -421,10 +392,9 @@
   .empty-hint {
     color: var(--muted);
     font-size: 12px;
-    padding: 10px 4px;
+    padding: 8px 4px;
   }
   input[type="range"] {
-    accent-color: #38bdf8;
     cursor: pointer;
   }
   @media (max-width: 1100px) {
@@ -434,16 +404,18 @@
 </head>
 <body>
 <div class="app">
+  <div style="padding:6px 14px;border-bottom:1px solid #ccc;font-size:12.5px;background:#fafafa;">
+    <a href="../index.html" style="color:#0056b3;text-decoration:none;">&larr; Back to Analysis Portal</a> &middot;
+    <a href="README.html" style="color:#0056b3;text-decoration:none;">README.html</a> &middot;
+    <a href="README.md" style="color:#0056b3;text-decoration:none;">README.md</a>
+  </div>
   <header>
     <div class="title-wrap">
-      <h1>Riemann Proof — Directory Dependency Explorer</h1>
-      <span class="pill"><strong>175,187</strong> .lean files</span>
-      <span class="pill"><strong>17.37M</strong> lines</span>
-      <span class="pill"><strong>753,261</strong> internal imports</span>
-      <span class="pill"><strong>File DAG:</strong> max height 202</span>
+      <h1>Riemann Proof — Theory Dependency Explorer</h1>
+      <span class="pill"><strong>Strict Module DAG</strong></span>
     </div>
     <div class="dir-banner">
-      <strong>Edge Direction:</strong> Arrow <code>A → B</code> means <code>A</code> <strong>imports</strong> <code>B</code> (<code>A</code> depends on <code>B</code>)
+      <strong>Edge Direction:</strong> Arrow <code>A → B</code> means <code>A</code> <strong>depends on</strong> <code>B</code>
     </div>
   </header>
 
@@ -472,7 +444,7 @@
       <button class="sm preset-w" data-w="25">25</button>
       <button class="sm preset-w" data-w="100">100</button>
       <button class="sm preset-w" data-w="500">500</button>
-      <label style="display:inline-flex;align-items:center;gap:4px;font-size:11px;color:#cbd5e1;cursor:pointer;">
+      <label style="display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--text);cursor:pointer;">
         <input id="chk-keep-sel" type="checkbox" checked /> Keep selected edges
       </label>
     </div>
@@ -500,7 +472,7 @@
         <div class="hud-badge" id="hud-tip">Double-click a node to expand/collapse · Drag to pan · Scroll to zoom</div>
       </div>
       <div class="hud-bottom-left">
-        <div style="font-weight:700;margin-bottom:3px;color:#f8fafc;">Highlight Legend (for Selected Node X)</div>
+        <div style="font-weight:700;margin-bottom:3px;color:var(--text);">Highlight Legend (for Selected Node X)</div>
         <div class="legend-row"><span class="swatch" style="background:var(--out-color)"></span><span><strong>Blue →</strong>: Upstream dependencies (X imports target)</span></div>
         <div class="legend-row"><span class="swatch" style="background:var(--in-color)"></span><span><strong>Orange ←</strong>: Downstream dependents (source imports X)</span></div>
         <div class="legend-row"><span class="swatch" style="background:var(--mutual-color)"></span><span><strong>Purple ⇄</strong>: Mutual directory dependency (both ways)</span></div>
@@ -1028,27 +1000,27 @@ const GRAPH_DATA = {"meta":{"repo_root":"/home/ubuntu/riemann_proof/lean/src","t
       if (!pts) continue;
       const role = edgeRoles.get(e);
       const isHover = state.hoveredEdge === e;
-      let stroke = "rgba(148, 163, 184, 0.35)";
+      let stroke = "rgba(100, 116, 139, 0.4)";
       let alpha = 1;
       let lw = Math.max(0.8, Math.min(4.8, 0.7 + Math.log10(e.weight + 1) * 0.85));
 
       if (role === "dim") {
-        stroke = "rgba(100, 116, 139, 0.14)";
+        stroke = "rgba(148, 163, 184, 0.18)";
         lw = Math.min(lw, 1.4);
       } else if (role === "out") {
-        stroke = "#38bdf8";
+        stroke = "#0284c7";
         lw = Math.max(lw, 2.1);
       } else if (role === "in") {
-        stroke = "#fb923c";
+        stroke = "#d97706";
         lw = Math.max(lw, 2.1);
       } else if (role === "mutual") {
-        stroke = "#c084fc";
+        stroke = "#7c3aed";
         lw = Math.max(lw, 2.2);
       } else {
-        stroke = e.weight >= 1000 ? "rgba(56, 189, 248, 0.55)" : "rgba(148, 163, 184, 0.34)";
+        stroke = e.weight >= 1000 ? "rgba(2, 132, 199, 0.55)" : "rgba(100, 116, 139, 0.35)";
       }
       if (isHover) {
-        stroke = "#fde047";
+        stroke = "#111111";
         lw += 1.4;
       }
 
@@ -1082,9 +1054,12 @@ const GRAPH_DATA = {"meta":{"repo_root":"/home/ubuntu/riemann_proof/lean/src","t
         const txt = fmt(e.weight);
         ctx.font = "600 10px ui-monospace, monospace";
         const tw = ctx.measureText(txt).width + 8;
-        ctx.fillStyle = "rgba(15, 23, 42, 0.9)";
-        drawRoundedRect(lx - tw / 2, ly - 8, tw, 16, 4);
+        ctx.fillStyle = "rgba(255, 255, 255, 0.92)";
+        drawRoundedRect(lx - tw / 2, ly - 8, tw, 16, 2);
         ctx.fill();
+        ctx.strokeStyle = "#cccccc";
+        ctx.lineWidth = 0.8;
+        ctx.stroke();
         ctx.fillStyle = stroke;
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
@@ -1105,40 +1080,44 @@ const GRAPH_DATA = {"meta":{"repo_root":"/home/ubuntu/riemann_proof/lean/src","t
       const dimmed = state.selectedId && !isSel && !isUp && !isDn && !isHover;
 
       ctx.save();
-      ctx.globalAlpha = dimmed ? 0.32 : 1.0;
+      ctx.globalAlpha = dimmed ? 0.28 : 1.0;
 
       // Fill box
-      ctx.fillStyle = c.dot;
-      drawRoundedRect(p.x, p.y, p.w, p.h, 8);
+      ctx.fillStyle = isSel ? "#eef6ff" : "#ffffff";
+      drawRoundedRect(p.x, p.y, p.w, p.h, 3);
       ctx.fill();
 
+      // Left color stripe
+      ctx.fillStyle = c.dot;
+      ctx.fillRect(p.x, p.y, 5, p.h);
+
       // Border highlight
-      let borderCol = c.border;
-      let bw = 1.6;
-      if (isSel) { borderCol = "#fde047"; bw = 3.2; }
-      else if (isMut) { borderCol = "#c084fc"; bw = 2.6; }
-      else if (isUp) { borderCol = "#38bdf8"; bw = 2.4; }
-      else if (isDn) { borderCol = "#fb923c"; bw = 2.4; }
-      if (isHover && !isSel) { borderCol = "#ffffff"; bw = 2.6; }
+      let borderCol = "#999999";
+      let bw = 1.2;
+      if (isSel) { borderCol = "#111111"; bw = 2.6; }
+      else if (isMut) { borderCol = "#7c3aed"; bw = 2.2; }
+      else if (isUp) { borderCol = "#0284c7"; bw = 2.0; }
+      else if (isDn) { borderCol = "#d97706"; bw = 2.0; }
+      if (isHover && !isSel) { borderCol = "#111111"; bw = 2.0; }
 
       ctx.strokeStyle = borderCol;
       ctx.lineWidth = bw;
-      drawRoundedRect(p.x, p.y, p.w, p.h, 8);
+      drawRoundedRect(p.x, p.y, p.w, p.h, 3);
       ctx.stroke();
 
       // Text inside node
       if (state.cam.scale >= 0.22) {
-        ctx.fillStyle = "#ffffff";
+        ctx.fillStyle = "#111111";
         ctx.font = "700 11px -apple-system, BlinkMacSystemFont, sans-serif";
         ctx.textAlign = "left";
         ctx.textBaseline = "top";
         const maxChars = Math.floor((p.w - 30) / 6.3);
         const title = nd.label.length > maxChars ? nd.label.slice(0, maxChars - 1) + "…" : nd.label;
-        ctx.fillText(title, p.x + 9, p.y + 7);
+        ctx.fillText(title, p.x + 10, p.y + 7);
 
-        ctx.fillStyle = "rgba(241, 245, 249, 0.85)";
+        ctx.fillStyle = "#555555";
         ctx.font = "10px ui-monospace, monospace";
-        ctx.fillText(`${fmt(nd.files)}f · H=${nd.max_height}`, p.x + 9, p.y + p.h - 17);
+        ctx.fillText(`${fmt(nd.files)}f · H=${nd.max_height}`, p.x + 10, p.y + p.h - 17);
 
         // Expand/collapse badge
         if (!nd.is_leaf) {
@@ -1146,10 +1125,10 @@ const GRAPH_DATA = {"meta":{"repo_root":"/home/ubuntu/riemann_proof/lean/src","t
           const badge = isExp ? "−" : `+${nd.children_ids.length}`;
           ctx.font = "700 9px ui-monospace, monospace";
           const bwTxt = ctx.measureText(badge).width + 8;
-          ctx.fillStyle = "rgba(15, 23, 42, 0.68)";
-          drawRoundedRect(p.x + p.w - bwTxt - 6, p.y + 6, bwTxt, 15, 4);
+          ctx.fillStyle = "#eeeeee";
+          drawRoundedRect(p.x + p.w - bwTxt - 6, p.y + 6, bwTxt, 15, 2);
           ctx.fill();
-          ctx.fillStyle = "#e2e8f0";
+          ctx.fillStyle = "#222222";
           ctx.textAlign = "center";
           ctx.fillText(badge, p.x + p.w - bwTxt / 2 - 6, p.y + 8);
         }
@@ -1312,19 +1291,15 @@ const GRAPH_DATA = {"meta":{"repo_root":"/home/ubuntu/riemann_proof/lean/src","t
 
     let html = `
       <div style="margin-bottom:10px;">
-        <div style="font-size:14px;font-weight:700;color:#f8fafc;word-break:break-word;">${escHtml(nd.id.replace(/^L\d:/, ""))}</div>
+        <div style="font-size:14px;font-weight:700;color:var(--text);word-break:break-word;">${escHtml(nd.id.replace(/^L\d:/, ""))}</div>
         <div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
           ${!nd.is_leaf ? `<button id="insp-toggle-exp" class="sm">${isExp ? "Collapse Subdirs" : `Expand (+${nd.children_ids.length} subdirs)`}</button>` : '<span class="pill">Leaf Directory</span>'}
           ${nd.parent_id ? `<button id="insp-up-parent" class="sm">Parent: ${escHtml(nodesById[nd.parent_id].label)}</button>` : ""}
-          ${sccSize > 1 ? `<span class="pill" style="border-color:#c084fc;color:#e9d5ff;">In L${nd.level} SCC (size ${sccSize})</span>` : `<span class="pill">Acyclic at L${nd.level}</span>`}
+          ${sccSize > 1 ? `<span class="pill" style="border-color:#7c3aed;color:#6b21a8;">In L${nd.level} SCC (size ${sccSize})</span>` : `<span class="pill">Acyclic at L${nd.level}</span>`}
         </div>
       </div>
 
       <div class="stat-grid">
-        <div class="stat-card"><div class="k">Files</div><div class="v">${fmt(nd.files)}</div></div>
-        <div class="stat-card"><div class="k">Lines</div><div class="v">${fmt(nd.lines)}</div></div>
-        <div class="stat-card"><div class="k">Theorems / Lemmas</div><div class="v">${fmt(nd.theorems)} / ${fmt(nd.lemmas)}</div></div>
-        <div class="stat-card"><div class="k">Defs / Structs</div><div class="v">${fmt(nd.defs)} / ${fmt(nd.structures)}</div></div>
         <div class="stat-card"><div class="k">Dist from Main</div><div class="v">min ${nd.min_dist} · avg ${nd.avg_dist}</div></div>
         <div class="stat-card"><div class="k">Max Leaf Height</div><div class="v">${nd.max_height}</div></div>
       </div>
@@ -1576,7 +1551,6 @@ const GRAPH_DATA = {"meta":{"repo_root":"/home/ubuntu/riemann_proof/lean/src","t
       const nd = nodesById[nid];
       tooltip.innerHTML = `
         <div style="font-weight:700;margin-bottom:3px;">${escHtml(nd.id.replace(/^L\d:/, ""))}</div>
-        <div>Files: <strong>${fmt(nd.files)}</strong> · Lines: <strong>${fmt(nd.lines)}</strong></div>
         <div>Min dist: ${nd.min_dist} · Max height: ${nd.max_height}</div>
         ${!nd.is_leaf ? '<div style="color:#94a3b8;margin-top:3px;">Double-click to expand/collapse</div>' : ""}
       `;
