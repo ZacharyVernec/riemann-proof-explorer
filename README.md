@@ -18,6 +18,7 @@ All contributions are located in the `analysis/` folder:
 - [Cross-Boundary Interface Extraction](analysis/interfaces/INTERFACES_REPORT.md) ([interactive browser](analysis/interfaces/interface_browser.html)) — Isolates the 5.29% of files imported across top-level directory boundaries, with compression ratios and plain-English public API translations for 59 key interface files.
 - [Proof Spine & Dominator Analysis](analysis/proof_spine/PROOF_SPINE_REPORT.md) ([interactive dashboard](analysis/proof_spine/spine_dashboard.html)) — Cooper-Harvey-Kennedy dominator tree rooted at `Main.lean`, exact 202-edge critical path, stratigraphic height layers, and hub/bridge rankings.
 - [Size Treemap & Sunburst](analysis/size_treemap/SIZE_ANALYSIS.md) ([interactive visualizer](analysis/size_treemap/treemap_sunburst.html)) — Zoomable squarified treemap and radial sunburst across all 3,615 nested directory nodes by files, lines, theorems, and definitions.
+- [Top-Down Mathematical Blueprint](analysis/blueprint/BLUEPRINT.md) ([interactive blueprint](analysis/blueprint/blueprint.html)) — Plain-English mathematical roadmap of 45 verified milestones across Stages 0–4 from `Main.lean` down through the major theory pillars, plus static assumptions audit.
 
 ## Contributing
 
