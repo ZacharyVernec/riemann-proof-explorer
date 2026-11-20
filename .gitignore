@@ -10,3 +10,6 @@ __pycache__/
 *.swp
 *.swo
 *~
+
+# Generated SQLite index (regenerable via analysis/build_index.py)
+analysis/data/graph.sqlite
