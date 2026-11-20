@@ -8,6 +8,12 @@ This repository exists to help humans understand the Lean 4 proof of the Riemann
 
 The Lean proof is included in this repository both as the extracted source tree in `lean/` and as an archive in Git LFS (`lean.tar.gz`).
 
+## Main Contributions
+
+All contributions are located in the `analysis/` folder:
+
+- [Inventory of `PublishedTheorems`](analysis/published_theorems/PUBLISHED_THEOREMS_INVENTORY.md) — Complete audit of all six `PublishedTheorems` directories (1,070 Lean files), comparing formalized statements against the peer-reviewed literature and cataloging untraceable scaffolding, helpers, and misnomers.
+
 ## Contributing
 
 Pull requests from **both humans and AI agents** are welcome!
