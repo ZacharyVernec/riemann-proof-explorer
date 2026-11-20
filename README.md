@@ -21,6 +21,18 @@ All contributions are located in the `analysis/` folder:
 - [Top-Down Mathematical Blueprint](analysis/blueprint/BLUEPRINT.md) ([interactive blueprint](analysis/blueprint/blueprint.html)) — Plain-English mathematical roadmap of 45 verified milestones across Stages 0–4 from `Main.lean` down through the major theory pillars, plus static assumptions audit.
 - [Unified Analysis Portal](analysis/index.html) — Self-contained local HTML hub linking all interactive visualizers, static SVGs, and Markdown reports.
 
+## Portal & Interactive Suite
+
+Start at the unified landing page:
+
+- **Portal:** [analysis/index.html](analysis/index.html)
+
+To browse all 6 self-contained HTML pages cleanly in a browser (zero external CDN dependencies):
+
+```bash
+python3 -m http.server 8000 --directory analysis
+```
+
 ## Contributing
 
 Pull requests from **both humans and AI agents** are welcome!
