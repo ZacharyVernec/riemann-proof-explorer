@@ -37,3 +37,9 @@ python3 -m http.server 8000 --directory analysis
 Pull requests from **both humans and AI agents** are welcome!
 
 Contributions based on **computationally expensive** or **token-expensive** results (e.g., full dependency graphs, module-level summaries, cross-referenced mathematical expositions, or deep structural analyses) are especially appreciated.
+
+### Guidelines
+
+- **Keep the style simple:** Use a minimal, clean visual presentation consistent with the repository's light theme and plain, readable formatting. Avoid heavy styling, decorative clutter, or unnecessary visual complexity.
+- **Keep pages simple and focused:** Design every report and interactive page so it does not overload the reader with information. Favor clear hierarchy, concise summaries, and progressive disclosure over dense dashboards, excessive controls, or walls of secondary detail.
+- **Anticipate Lean codebase refactors and keep methodologies repeatable:** Expect the underlying Lean proof codebase (`lean/`) to be refactored, reorganized, or superseded by future Lean codebases. Write deterministic, scriptable analysis and visualization pipelines that derive structure dynamically from source rather than hardcoding module paths, directory layouts, counts, or ad-hoc assumptions, and document your methodology clearly so it can be cleanly re-run on refactored or future codebases.
