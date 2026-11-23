@@ -252,13 +252,473 @@
       "out_degree": 6
     }
   ],
+  "collapsed": {
+    "node_count": 135536,
+    "active_node_count": 135453,
+    "supernode_count": 83,
+    "collapsed_module_count": 39734,
+    "collapsed_pct": 22.68,
+    "frontier_module_count": 420,
+    "interior_module_count": 39314,
+    "edge_count": 593000,
+    "active_edge_count": 586711,
+    "super_edge_count": 6289,
+    "raw_super_edge_count": 7125,
+    "max_edge_weight": 8,
+    "weighted_edges_ge_2": 711,
+    "weight_histogram": {
+      "1": 592289,
+      "2": 637,
+      "3": 48,
+      "4": 14,
+      "5": 6,
+      "6": 1,
+      "7": 3,
+      "8": 2
+    },
+    "num_layers": 177,
+    "layer_dy": 8.9466,
+    "min_intra_layer_gap": 1.0,
+    "bounds": {
+      "xmin": -1456.5,
+      "xmax": 1456.5,
+      "ymin": 0.0,
+      "ymax": 1574.6016
+    },
+    "aspect_ratio": 1.85,
+    "dead_edges_pruned": 54,
+    "layout_metrics": {
+      "is_dag": true,
+      "y_iters_requested": 25,
+      "y_iters_run": 25,
+      "x_sweeps_run": 16,
+      "init_avg_y_span": 18.218,
+      "final_avg_y_span": 16.342,
+      "span_eq_1_edges": 148231,
+      "span_le_5_edges": 273906,
+      "init_avg_x_span": 294.99,
+      "final_avg_x_span": 96.408,
+      "layer_widths": {
+        "min": 1,
+        "median": 752,
+        "p95": 1739,
+        "max": 2914
+      }
+    },
+    "domain_breakdown": [
+      {
+        "name": "Development",
+        "total_modules": 141928,
+        "active_modules": 104931,
+        "collapsed_modules": 36997,
+        "collapsed_pct": 26.1
+      },
+      {
+        "name": "Formalism",
+        "total_modules": 18254,
+        "active_modules": 18168,
+        "collapsed_modules": 86,
+        "collapsed_pct": 0.5
+      },
+      {
+        "name": "GroundTheory",
+        "total_modules": 8507,
+        "active_modules": 6627,
+        "collapsed_modules": 1880,
+        "collapsed_pct": 22.1
+      },
+      {
+        "name": "ReciprocityTheory",
+        "total_modules": 3845,
+        "active_modules": 3780,
+        "collapsed_modules": 65,
+        "collapsed_pct": 1.7
+      },
+      {
+        "name": "CompanionTheory",
+        "total_modules": 2027,
+        "active_modules": 1388,
+        "collapsed_modules": 639,
+        "collapsed_pct": 31.5
+      },
+      {
+        "name": "PositivityTheory",
+        "total_modules": 449,
+        "active_modules": 384,
+        "collapsed_modules": 65,
+        "collapsed_pct": 14.5
+      },
+      {
+        "name": "Lemmata",
+        "total_modules": 167,
+        "active_modules": 167,
+        "collapsed_modules": 0,
+        "collapsed_pct": 0.0
+      },
+      {
+        "name": "BuildAid",
+        "total_modules": 5,
+        "active_modules": 3,
+        "collapsed_modules": 2,
+        "collapsed_pct": 40.0
+      },
+      {
+        "name": "Supplements",
+        "total_modules": 3,
+        "active_modules": 3,
+        "collapsed_modules": 0,
+        "collapsed_pct": 0.0
+      },
+      {
+        "name": "(root)",
+        "total_modules": 2,
+        "active_modules": 2,
+        "collapsed_modules": 0,
+        "collapsed_pct": 0.0
+      }
+    ],
+    "top_supernodes": [
+      {
+        "title": "BLGGT / Caraiani Strong Local\u2013Global Compatibility",
+        "inventory_key": "lit_104",
+        "owned_modules": 13455,
+        "cone_modules": 17230,
+        "frontier_modules": 3,
+        "in_edges": 7,
+        "raw_in_edges": 7,
+        "dominant_domain": "Development",
+        "layer": 98
+      },
+      {
+        "title": "PEL Shimura Toroidal Compactifications & Mumford Degeneration",
+        "inventory_key": "lit_076",
+        "owned_modules": 7036,
+        "cone_modules": 8181,
+        "frontier_modules": 9,
+        "in_edges": 109,
+        "raw_in_edges": 142,
+        "dominant_domain": "Development",
+        "layer": 100
+      },
+      {
+        "title": "Abelian de Rham, Crystalline & Gauss\u2013Manin Comparisons",
+        "inventory_key": "lit_072",
+        "owned_modules": 1276,
+        "cone_modules": 1708,
+        "frontier_modules": 10,
+        "in_edges": 31,
+        "raw_in_edges": 37,
+        "dominant_domain": "Development",
+        "layer": 157
+      },
+      {
+        "title": "Standard Siegel\u2013Weil & Eisenstein Continuation",
+        "inventory_key": "lit_112",
+        "owned_modules": 1131,
+        "cone_modules": 1685,
+        "frontier_modules": 3,
+        "in_edges": 3,
+        "raw_in_edges": 5,
+        "dominant_domain": "Development",
+        "layer": 129
+      },
+      {
+        "title": "Unitary-to-GL\u2099 Isobaric Base Change",
+        "inventory_key": "lit_106",
+        "owned_modules": 967,
+        "cone_modules": 984,
+        "frontier_modules": 6,
+        "in_edges": 21,
+        "raw_in_edges": 25,
+        "dominant_domain": "Development",
+        "layer": 174
+      },
+      {
+        "title": "Ichino / Kudla\u2013Rallis Convergent Siegel\u2013Weil",
+        "inventory_key": "lit_059",
+        "owned_modules": 903,
+        "cone_modules": 1056,
+        "frontier_modules": 4,
+        "in_edges": 6,
+        "raw_in_edges": 9,
+        "dominant_domain": "Development",
+        "layer": 99
+      },
+      {
+        "title": "Arithmetic Hilbert\u2013Samuel, Volume & Absolute Siegel",
+        "inventory_key": "lit_088",
+        "owned_modules": 841,
+        "cone_modules": 879,
+        "frontier_modules": 4,
+        "in_edges": 12,
+        "raw_in_edges": 18,
+        "dominant_domain": "Development",
+        "layer": 131
+      },
+      {
+        "title": "SGA 7 Semistable Reduction, N\u00e9ron Models & Serre\u2013Tate",
+        "inventory_key": "lit_074",
+        "owned_modules": 814,
+        "cone_modules": 1016,
+        "frontier_modules": 7,
+        "in_edges": 11,
+        "raw_in_edges": 17,
+        "dominant_domain": "Development",
+        "layer": 100
+      },
+      {
+        "title": "Grothendieck\u2013Messing Deformation & Dieudonn\u00e9 Crystals",
+        "inventory_key": "lit_073",
+        "owned_modules": 794,
+        "cone_modules": 887,
+        "frontier_modules": 3,
+        "in_edges": 267,
+        "raw_in_edges": 271,
+        "dominant_domain": "Development",
+        "layer": 90
+      },
+      {
+        "title": "Jacquet\u2013Shalika Rigidity & Bounds",
+        "inventory_key": "lit_014",
+        "owned_modules": 772,
+        "cone_modules": 836,
+        "frontier_modules": 6,
+        "in_edges": 80,
+        "raw_in_edges": 84,
+        "dominant_domain": "Development",
+        "layer": 176
+      },
+      {
+        "title": "Kawamata\u2013Viehweg, Nadel Vanishing & Angehrn\u2013Siu",
+        "inventory_key": "lit_082",
+        "owned_modules": 771,
+        "cone_modules": 868,
+        "frontier_modules": 3,
+        "in_edges": 2,
+        "raw_in_edges": 6,
+        "dominant_domain": "Development",
+        "layer": 8
+      },
+      {
+        "title": "Chern\u2013Weil Theory & Mumford Proportionality",
+        "inventory_key": "lit_084",
+        "owned_modules": 766,
+        "cone_modules": 836,
+        "frontier_modules": 7,
+        "in_edges": 5,
+        "raw_in_edges": 10,
+        "dominant_domain": "Development",
+        "layer": 78
+      },
+      {
+        "title": "Poincar\u00e9\u2013Lelong Current Identity",
+        "inventory_key": "lit_085",
+        "owned_modules": 674,
+        "cone_modules": 696,
+        "frontier_modules": 1,
+        "in_edges": 2,
+        "raw_in_edges": 2,
+        "dominant_domain": "GroundTheory",
+        "layer": 8
+      },
+      {
+        "title": "Fargues\u2013Tate Exactness & Hodge\u2013Tate Map",
+        "inventory_key": "lit_066",
+        "owned_modules": 617,
+        "cone_modules": 618,
+        "frontier_modules": 2,
+        "in_edges": 4,
+        "raw_in_edges": 4,
+        "dominant_domain": "Development",
+        "layer": 46
+      },
+      {
+        "title": "Bhatt\u2013Scholze Prismatic F-Crystals",
+        "inventory_key": "lit_065",
+        "owned_modules": 579,
+        "cone_modules": 596,
+        "frontier_modules": 3,
+        "in_edges": 5,
+        "raw_in_edges": 7,
+        "dominant_domain": "Development",
+        "layer": 143
+      },
+      {
+        "title": "Berger p-adic Monodromy Theorem",
+        "inventory_key": "lit_064",
+        "owned_modules": 563,
+        "cone_modules": 582,
+        "frontier_modules": 1,
+        "in_edges": 3,
+        "raw_in_edges": 3,
+        "dominant_domain": "Development",
+        "layer": 70
+      },
+      {
+        "title": "Hironaka Resolution of Singularities (Char. 0)",
+        "inventory_key": "lit_078",
+        "owned_modules": 540,
+        "cone_modules": 545,
+        "frontier_modules": 3,
+        "in_edges": 2,
+        "raw_in_edges": 6,
+        "dominant_domain": "Development",
+        "layer": 8
+      },
+      {
+        "title": "Harish-Chandra Discrete Series Classification",
+        "inventory_key": "lit_047",
+        "owned_modules": 494,
+        "cone_modules": 507,
+        "frontier_modules": 13,
+        "in_edges": 1179,
+        "raw_in_edges": 1325,
+        "dominant_domain": "CompanionTheory",
+        "layer": 142
+      },
+      {
+        "title": "Convergent Siegel\u2013Weil Formula (Weil 1965)",
+        "inventory_key": "lit_058",
+        "owned_modules": 492,
+        "cone_modules": 527,
+        "frontier_modules": 3,
+        "in_edges": 2,
+        "raw_in_edges": 3,
+        "dominant_domain": "Development",
+        "layer": 95
+      },
+      {
+        "title": "Global Galois Euler Characteristic & Cohomological Dimension",
+        "inventory_key": "lit_091",
+        "owned_modules": 471,
+        "cone_modules": 589,
+        "frontier_modules": 3,
+        "in_edges": 82,
+        "raw_in_edges": 84,
+        "dominant_domain": "GroundTheory",
+        "layer": 170
+      },
+      {
+        "title": "Moriwaki Arithmetic Bigness & Hilbert\u2013Samuel",
+        "inventory_key": "lit_108",
+        "owned_modules": 446,
+        "cone_modules": 754,
+        "frontier_modules": 3,
+        "in_edges": 3,
+        "raw_in_edges": 4,
+        "dominant_domain": "GroundTheory",
+        "layer": 140
+      },
+      {
+        "title": "Bernstein\u2013Zelevinsky Smooth GL\u2099(k) Theory",
+        "inventory_key": "lit_039",
+        "owned_modules": 350,
+        "cone_modules": 573,
+        "frontier_modules": 36,
+        "in_edges": 126,
+        "raw_in_edges": 197,
+        "dominant_domain": "Development",
+        "layer": 133
+      },
+      {
+        "title": "Harish-Chandra Automorphic Finiteness",
+        "inventory_key": "lit_009",
+        "owned_modules": 334,
+        "cone_modules": 426,
+        "frontier_modules": 6,
+        "in_edges": 37,
+        "raw_in_edges": 39,
+        "dominant_domain": "Development",
+        "layer": 137
+      },
+      {
+        "title": "Algebraic Hecke Characters & \u2113-adic Reps",
+        "inventory_key": "lit_034",
+        "owned_modules": 304,
+        "cone_modules": 309,
+        "frontier_modules": 10,
+        "in_edges": 39,
+        "raw_in_edges": 47,
+        "dominant_domain": "Development",
+        "layer": 152
+      },
+      {
+        "title": "Zelevinsky\u2013Langlands Segment Classification",
+        "inventory_key": "lit_040",
+        "owned_modules": 283,
+        "cone_modules": 343,
+        "frontier_modules": 11,
+        "in_edges": 22,
+        "raw_in_edges": 32,
+        "dominant_domain": "Development",
+        "layer": 128
+      },
+      {
+        "title": "p-adic Howe Duality, M\u00ednguez & Kudla Splitting",
+        "inventory_key": "lit_045",
+        "owned_modules": 244,
+        "cone_modules": 249,
+        "frontier_modules": 5,
+        "in_edges": 15,
+        "raw_in_edges": 15,
+        "dominant_domain": "Development",
+        "layer": 132
+      },
+      {
+        "title": "Unitary Tamagawa Numbers, Prasad Volume & Strong Approximation",
+        "inventory_key": "lit_102",
+        "owned_modules": 239,
+        "cone_modules": 244,
+        "frontier_modules": 5,
+        "in_edges": 11,
+        "raw_in_edges": 11,
+        "dominant_domain": "Development",
+        "layer": 161
+      },
+      {
+        "title": "Gillet\u2013Soul\u00e9 Arithmetic Intersection & Chow Heights",
+        "inventory_key": "lit_086",
+        "owned_modules": 221,
+        "cone_modules": 231,
+        "frontier_modules": 7,
+        "in_edges": 419,
+        "raw_in_edges": 510,
+        "dominant_domain": "Development",
+        "layer": 176
+      },
+      {
+        "title": "Complex Multiplication & Class Fields via j-Invariants",
+        "inventory_key": "lit_095",
+        "owned_modules": 212,
+        "cone_modules": 394,
+        "frontier_modules": 9,
+        "in_edges": 65,
+        "raw_in_edges": 74,
+        "dominant_domain": "Development",
+        "layer": 158
+      },
+      {
+        "title": "Real Howe Duality & Metaplectic Representation",
+        "inventory_key": "lit_055",
+        "owned_modules": 192,
+        "cone_modules": 193,
+        "frontier_modules": 5,
+        "in_edges": 10,
+        "raw_in_edges": 14,
+        "dominant_domain": "Development",
+        "layer": 176
+      }
+    ]
+  },
   "payload": {
-    "raw_binary_bytes": 9465261,
-    "gzip_bytes": 3602795,
-    "js_file_bytes": 4803761,
+    "format_version": 2,
+    "raw_binary_bytes": 10715720,
+    "gzip_bytes": 4084854,
+    "js_file_bytes": 5446505,
     "edge_varint_bytes": 1809565,
+    "c_super_edges_bytes": 159866,
     "name_blob_bytes": 5117809,
     "dir_blob_bytes": 258320
   },
-  "elapsed_seconds": 30.22
+  "elapsed_seconds": 91.04
 }

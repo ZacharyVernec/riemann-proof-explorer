@@ -210,11 +210,11 @@
     </div>
 
     <div class="section-item">
-      <h2>5. Inventory of <code>PublishedTheorems</code></h2>
-      <p>Audits all 6 <code>PublishedTheorems</code> directories, comparing formalized mathematical statements against peer-reviewed literature across 11 topical tables.</p>
+      <h2>5. Inventory of Existing Published &amp; Background Theory</h2>
+      <p>Audits all 6 <code>PublishedTheorems</code> directories and companion background-theory formalizations across 12 topical tables, comparing Lean statements against peer-reviewed literature and documenting the proof-subtree identification methodology.</p>
       <ul>
-        <li><strong>Literature Comparison:</strong> Documents bespoke CM host restrictions (<code>D7</code>, <code>Host E</code>), domain/characteristic specializations, and weakened equivalences.</li>
-        <li><strong>Scaffolding Catalog:</strong> Separates literature-derived theorems from internal proof-decomposition predicates and non-vacuity checks.</li>
+        <li><strong>Literature Comparison:</strong> Documents bespoke CM host restrictions (<code>D7</code>, <code>Host E</code>), domain/characteristic specializations, weakened equivalences, and companion formalized theorems (BLGGT/Caraiani, Local Langlands, Hironaka resolution, Moriwaki bigness, Poitou–Tate).</li>
+        <li><strong>Scaffolding &amp; Identification:</strong> Separates literature-derived theorems from internal proof-decomposition predicates and defines the frontier-cut rules used to collapse existing-theory proofs in the full DAG.</li>
       </ul>
       <div class="links">
         <a class="btn primary" href="published_theorems/PUBLISHED_THEOREMS_INVENTORY.html">PUBLISHED_THEOREMS_INVENTORY.html</a>
@@ -227,6 +227,7 @@
       <p>Interactive WebGL pan-and-zoom visualization of the complete Lean module import DAG, built via a repeatable, refactor-resilient layout pipeline.</p>
       <ul>
         <li><strong>Deterministic Sugiyama Layout:</strong> Bottom-aligned longest-path layering, feasible <i>L</i><sub>1</sub> rank tightening, two-sided weighted barycenter ordering, and <i>O</i>(<i>k</i>) Pool-Adjacent-Violators isotonic horizontal placement.</li>
+        <li><strong>Collapse Existing Theory Toggle:</strong> Contracts existing peer-reviewed proof subtrees into labeled literature supernodes showing collapsed module counts, weighted contracted import edges, and a compacted Sugiyama layout.</li>
         <li><strong>Pure Navigation View:</strong> Full-viewport WebGL rendering of every module and import edge with smooth zooming, panning, and progressive labels.</li>
       </ul>
       <div class="links">
