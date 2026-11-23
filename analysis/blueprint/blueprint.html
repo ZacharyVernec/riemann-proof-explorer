@@ -17,9 +17,10 @@
     --accent: #0056b3;
     --upstream: #b45309;
     --upstream-bg: #fef3c7;
-    --downstream: #0369a1;
-    --downstream-bg: #e0f2fe;
-    --selected: #111111;
+    --downstream: #0284c7;
+    --downstream-bg: #dbeafe;
+    --selected: #111827;
+    --selected-bg: #111827;
     --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
     --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     --math: Georgia, "Times New Roman", serif;
@@ -75,26 +76,6 @@
     color: var(--text);
   }
   .stat-pill strong { font-weight: 700; }
-
-  .audit-details {
-    margin-top: 10px;
-    background: #fafafa;
-    border: 1px solid var(--border);
-    padding: 8px 12px;
-    font-size: 13px;
-    color: var(--text);
-  }
-  .audit-details summary {
-    cursor: pointer;
-    font-weight: 600;
-  }
-  .audit-details p { margin: 6px 0; }
-  .audit-details code {
-    font-family: var(--mono);
-    font-size: 12px;
-    background: #eeeeee;
-    padding: 1px 4px;
-  }
 
   /* Controls toolbar */
   .toolbar-wrap {
@@ -203,8 +184,8 @@
     flex-wrap: wrap;
     gap: 10px;
     padding: 6px 10px;
-    background: #eef6ff;
-    border: 1px solid #b3d4fc;
+    background: #f3f4f6;
+    border: 1px solid #9ca3af;
     font-size: 12.5px;
   }
   .inspector-bar.visible { display: flex; }
@@ -297,9 +278,56 @@
     height: 10px;
     border: 1px solid #666;
   }
-  .legend-swatch.sel { background: #ffffff; border: 2px solid #000000; }
+  .legend-swatch.sel { background: #111827; border: 2px solid #000000; }
   .legend-swatch.up { background: var(--upstream-bg); border-color: var(--upstream); }
   .legend-swatch.down { background: var(--downstream-bg); border-color: var(--downstream); }
+
+  .group-legend-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 10px;
+    padding: 8px 12px;
+    background: #fafafa;
+    border: 1px solid var(--border);
+    margin-bottom: 16px;
+    font-size: 11.5px;
+    color: var(--text-muted);
+  }
+  .group-legend-label {
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+  }
+  .group-legend-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 8px;
+    align-items: center;
+  }
+  .group-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 1px 6px;
+    border: 1px solid #dddddd;
+    background: #ffffff;
+    color: var(--text);
+    cursor: help;
+    line-height: 1.4;
+  }
+  .group-legend-item:hover,
+  .group-legend-item:focus {
+    border-color: #666666;
+    background: #f3f4f6;
+    outline: none;
+  }
+  .group-swatch {
+    width: 5px;
+    height: 11px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
 
   .dag-controls {
     display: flex;
@@ -398,7 +426,7 @@
   .dag-node.is-selected .node-box {
     stroke: #000000;
     stroke-width: 2.5;
-    fill: #f0f4f8;
+    fill: #111827;
   }
   .dag-node.is-upstream .node-box {
     stroke: var(--upstream);
@@ -414,11 +442,20 @@
     fill: none;
     stroke: transparent;
   }
+  .dag-node.is-selected .node-halo {
+    stroke: #111827;
+    stroke-width: 2;
+    stroke-opacity: 0.35;
+  }
   .node-title {
     font-family: var(--sans);
     font-size: 11px;
     font-weight: 600;
     fill: #111111;
+  }
+  .dag-node.is-selected .node-title {
+    fill: #ffffff;
+    font-weight: 700;
   }
   .node-dom-bg {
     fill: #eeeeee;
@@ -435,13 +472,60 @@
     font-size: 9px;
     fill: #555555;
   }
+  .dag-node.is-selected .node-stage-txt {
+    fill: #cbd5e1;
+  }
+  .node-target-btn {
+    cursor: pointer;
+  }
+  .node-target-btn .target-hit {
+    fill: transparent;
+  }
+  .node-target-btn .target-ring,
+  .node-target-btn .target-tick {
+    fill: none;
+    stroke: #4b5563;
+    stroke-width: 1.25;
+    stroke-linecap: round;
+  }
+  .node-target-btn .target-dot {
+    fill: #4b5563;
+  }
+  .node-target-btn:hover .target-hit {
+    fill: rgba(17, 24, 39, 0.12);
+  }
+  .node-target-btn:hover .target-ring,
+  .node-target-btn:hover .target-tick {
+    stroke: #111827;
+    stroke-width: 1.5;
+  }
+  .node-target-btn:hover .target-dot {
+    fill: #111827;
+  }
+  .dag-node.is-selected .node-target-btn .target-ring,
+  .dag-node.is-selected .node-target-btn .target-tick {
+    stroke: #e5e7eb;
+  }
+  .dag-node.is-selected .node-target-btn .target-dot {
+    fill: #e5e7eb;
+  }
+  .dag-node.is-selected .node-target-btn:hover .target-hit {
+    fill: rgba(255, 255, 255, 0.22);
+  }
+  .dag-node.is-selected .node-target-btn:hover .target-ring,
+  .dag-node.is-selected .node-target-btn:hover .target-tick {
+    stroke: #ffffff;
+  }
+  .dag-node.is-selected .node-target-btn:hover .target-dot {
+    fill: #ffffff;
+  }
 
   /* Tooltip */
   .dag-tooltip {
     position: fixed;
     z-index: 80;
     pointer-events: none;
-    max-width: 340px;
+    max-width: 380px;
     background: #ffffff;
     color: #111111;
     padding: 8px 10px;
@@ -454,6 +538,15 @@
   .dag-tooltip .tt-meta { color: #555555; font-size: 11px; margin-bottom: 2px; }
   .dag-tooltip .tt-sym { font-family: var(--mono); font-size: 11px; color: #0056b3; word-break: break-all; }
   .dag-tooltip .tt-deps { margin-top: 4px; font-size: 11px; color: #333333; }
+  .dag-tooltip .tt-overview { margin-top: 4px; font-size: 12px; line-height: 1.45; color: #222222; }
+  .dag-tooltip .tt-swatch {
+    display: inline-block;
+    width: 6px;
+    height: 11px;
+    border-radius: 2px;
+    margin-right: 6px;
+    vertical-align: -1px;
+  }
 
   /* Stage Cards Sections */
   .stage-section {
@@ -509,16 +602,18 @@
     gap: 8px;
   }
   .milestone-card.is-selected {
-    border-color: #000000;
-    background: #f9fbfd;
+    border: 2px solid #111827;
+    border-left-width: 6px;
+    background: #f3f4f6;
+    box-shadow: 0 2px 8px rgba(17, 24, 39, 0.12);
   }
   .milestone-card.is-upstream {
     border-color: var(--upstream);
-    background: #fffdf7;
+    background: #fffbeb;
   }
   .milestone-card.is-downstream {
     border-color: var(--downstream);
-    background: #f7fbff;
+    background: #eff6ff;
   }
 
   .card-top {
@@ -555,8 +650,12 @@
     color: #ffffff;
     border-color: #222222;
   }
-  .card-focus-btn {
+  .card-actions {
     margin-left: auto;
+    display: flex;
+    gap: 6px;
+  }
+  .card-focus-btn {
     padding: 2px 8px;
     border: 1px solid var(--border);
     background: #ffffff;
@@ -672,14 +771,29 @@
     color: var(--text-faint);
   }
 
-  .empty-state {
+  .cards-hint {
     display: none;
     text-align: center;
-    padding: 24px;
-    border: 1px solid var(--border);
-    color: var(--text-muted);
+    padding: 14px 12px;
+    color: var(--text-faint);
+    font-size: 13px;
   }
-  .empty-state.visible { display: block; }
+  .cards-hint.visible { display: block; }
+  .revealed-header {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .revealed-header.visible { display: flex; }
+  .revealed-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+  }
 </style>
 </head>
 <body>
@@ -695,20 +809,12 @@
     <div class="hero-kicker">Interactive Mathematical Proof Blueprint · Stage 0 to Stage 4</div>
     <h1 id="page-title">Mathematical Proof Blueprint: Riemann Hypothesis &amp; Generalized Riemann Hypothesis</h1>
     <p class="hero-sub">
-      Top-down architectural map of the proof establishing Mathlib's <code>RiemannHypothesis</code>,
-      Dirichlet <em>L</em>-function half-plane nonvanishing (Re(<em>s</em>) &gt; 1/2), and GRH on the critical line via
-      windowed Landau–Chebyshev character boxes, local-global Galois compatibility, Selmer/modularity bounds, unitary theta lifts, and Arakelov geometry.
+      This Directed Acyclic Graph (DAG) distills the formalized Lean proof's dependency structure into 45 key mathematical milestones arranged top-down across five stages (from Stage 0 final theorems at the top to Stage 4 foundational machinery at the bottom).
+      <strong>Boxes</strong> represent major theorems, assembly bridges, or specification contracts anchored to concrete Lean declarations, collapsing internal helper modules between them.
+      <strong>Wires</strong> point downward from a milestone to its direct prerequisite milestones (<code>depends_on</code>); reading bottom-up traces how foundational machinery combines to prove the main theorems.
+      Click boxes to select one or more milestones, highlight their dependency chains, and reveal their cards below (click a selected box again to undo); click a box's target icon to jump directly to its card.
     </p>
     <div class="stat-strip" id="stat-strip"></div>
-    <details class="audit-details">
-      <summary>How Literature &amp; Hypothesis Bundles Are Discharged (Click to expand)</summary>
-      <p>
-        <strong><code>OpenLiteratureStatements</code> &amp; <code>OpenImageCondition</code> Discharged Unconditionally:</strong>
-        Despite names like <code>PublishedTheorems</code> or <code>OpenLiteratureStatements</code>, <code>MainConclusion.lean</code> unconditionally
-        instantiates all fields via <code>⟨galoisLocalGlobalStrong_recParameter, recTExists, galoisLocalGlobalStrong_recParameter⟩</code> and
-        <code>VwinOfRow.lean</code> discharges <code>OpenImageCondition.mk h</code>; the remaining auxiliary fields are proved theorems taking a dummy parameter for modular wiring.
-      </p>
-    </details>
   </div>
 </header>
 
@@ -722,14 +828,8 @@
       <div class="filter-group" id="stage-filters">
         <span class="filter-label">Stage</span>
       </div>
-      <span class="match-counter" id="match-counter">Showing 45 / 45 milestones</span>
+      <span class="match-counter" id="match-counter">Matching 45 / 45 milestones in DAG</span>
       <button id="reset-filters-btn" class="btn-reset" type="button">Reset Filters</button>
-    </div>
-
-    <div class="toolbar-row">
-      <div class="filter-group" id="group-filters">
-        <span class="filter-label">Theory Group</span>
-      </div>
     </div>
 
     <div class="inspector-bar" id="inspector-bar">
@@ -747,6 +847,11 @@
 </div>
 
 <main class="main">
+  <section class="group-legend-bar" id="group-legend-bar" aria-label="Theory Group Color Legend">
+    <span class="group-legend-label">Theory Group Colors (hover for overview):</span>
+    <div class="group-legend-items" id="group-legend-items"></div>
+  </section>
+
   <section class="dag-panel" aria-label="Interactive Dependency Graph">
     <div class="dag-header">
       <div class="dag-header-left">
@@ -755,6 +860,17 @@
           <span class="legend-item"><span class="legend-swatch sel"></span>Selected</span>
           <span class="legend-item"><span class="legend-swatch up"></span>Prerequisites / Upstream (<code>depends_on</code>)</span>
           <span class="legend-item"><span class="legend-swatch down"></span>Dependents / Downstream (uses selected)</span>
+          <span class="legend-item">
+            <svg width="14" height="14" viewBox="-9 -9 18 18" aria-hidden="true">
+              <circle cx="0" cy="0" r="5.5" fill="none" stroke="#4b5563" stroke-width="1.25"></circle>
+              <circle cx="0" cy="0" r="1.6" fill="#4b5563"></circle>
+              <line x1="0" y1="-7.5" x2="0" y2="-4.2" stroke="#4b5563" stroke-width="1.25" stroke-linecap="round"></line>
+              <line x1="0" y1="4.2" x2="0" y2="7.5" stroke="#4b5563" stroke-width="1.25" stroke-linecap="round"></line>
+              <line x1="-7.5" y1="0" x2="-4.2" y2="0" stroke="#4b5563" stroke-width="1.25" stroke-linecap="round"></line>
+              <line x1="4.2" y1="0" x2="7.5" y2="0" stroke="#4b5563" stroke-width="1.25" stroke-linecap="round"></line>
+            </svg>
+            Jump to card
+          </span>
         </div>
       </div>
       <div class="dag-controls">
@@ -773,11 +889,14 @@
     </div>
   </section>
 
-  <section id="cards-container" aria-label="Milestone Cards"></section>
-  <div class="empty-state" id="empty-state">
-    <p><strong>No milestones match the active filters.</strong></p>
-    <button class="btn-reset" id="empty-reset-btn" type="button">Show All 45 Milestones</button>
+  <p class="cards-hint visible" id="cards-hint">
+    Click any box in the DAG above to select it and reveal its milestone card (click multiple boxes to select several at once, or click a target icon to jump directly to a card).
+  </p>
+  <div class="revealed-header" id="revealed-header">
+    <span class="revealed-title" id="revealed-title">Revealed Milestone Cards (0)</span>
+    <button class="btn-mini" id="hide-all-cards-btn" type="button">Hide All Cards</button>
   </div>
+  <section id="cards-container" aria-label="Milestone Cards"></section>
 </main>
 
 <div class="dag-tooltip" id="dag-tooltip" role="tooltip"></div>
@@ -814,9 +933,8 @@ const BLUEPRINT_DATA = {"meta":{"title":"Formalized Proof Blueprint: Riemann Hyp
 
   const state = {
     stage: "all",
-    group: "all",
     search: "",
-    selectedId: null,
+    selectedIds: new Set(),
     zoom: 1,
     suppressBgClick: false
   };
@@ -864,7 +982,6 @@ const BLUEPRINT_DATA = {"meta":{"title":"Formalized Proof Blueprint: Riemann Hyp
 
   function nodeMatchesFilter(n) {
     if (state.stage !== "all" && n.stage !== Number(state.stage)) return false;
-    if (state.group !== "all" && n.theory_group !== state.group) return false;
     const q = state.search.trim().toLowerCase();
     if (!q) return true;
     const hay = [
@@ -877,12 +994,12 @@ const BLUEPRINT_DATA = {"meta":{"title":"Formalized Proof Blueprint: Riemann Hyp
   /* Populate Header Stats */
   function renderHeroStats() {
     const m = BLUEPRINT_DATA.meta;
+    const totalEdges = nodes.reduce((sum, n) => sum + (n.depends_on ? n.depends_on.length : 0), 0);
     const strip = document.getElementById("stat-strip");
     strip.innerHTML = [
       `<span class="stat-pill"><strong>5</strong> Architectural Stages (Stages 0–4)</span>`,
-      `<span class="stat-pill"><strong>${m.node_count}</strong> Mathematical Milestones</span>`,
-      `<span class="stat-pill"><strong>8</strong> Core Theory Domains</span>`,
-      `<span class="stat-pill audit-ok"><strong>Unconditional</strong> RH &amp; GRH Synthesis</span>`
+      `<span class="stat-pill"><strong>${m.node_count}</strong> Mathematical Milestones (Boxes)</span>`,
+      `<span class="stat-pill"><strong>${totalEdges}</strong> Dependency Links (Wires)</span>`
     ].join("");
   }
 
@@ -902,31 +1019,10 @@ const BLUEPRINT_DATA = {"meta":{"title":"Formalized Proof Blueprint: Riemann Hyp
     }
     stageWrap.innerHTML = `<span class="filter-label">Stage</span>` + stageBtns.join("");
 
-    const groupWrap = document.getElementById("group-filters");
-    const groupBtns = [
-      `<button class="chip-btn active" data-group="all" type="button">All Groups</button>`
-    ];
-    for (const g of BLUEPRINT_DATA.meta.theory_groups) {
-      groupBtns.push(
-        `<button class="chip-btn" data-group="${g.id}" type="button">` +
-        `<span class="chip-dot" style="background:${g.color}"></span>` +
-        `${escapeHtml(g.label)}</button>`
-      );
-    }
-    groupWrap.innerHTML = `<span class="filter-label">Theory Group</span>` + groupBtns.join("");
-
     stageWrap.addEventListener("click", (e) => {
       const btn = e.target.closest("button[data-stage]");
       if (!btn) return;
       state.stage = btn.dataset.stage;
-      syncFilterButtons();
-      applyFiltersAndSelection();
-    });
-
-    groupWrap.addEventListener("click", (e) => {
-      const btn = e.target.closest("button[data-group]");
-      if (!btn) return;
-      state.group = btn.dataset.group;
       syncFilterButtons();
       applyFiltersAndSelection();
     });
@@ -936,12 +1032,46 @@ const BLUEPRINT_DATA = {"meta":{"title":"Formalized Proof Blueprint: Riemann Hyp
     document.querySelectorAll("#stage-filters button[data-stage]").forEach((b) => {
       b.classList.toggle("active", b.dataset.stage === String(state.stage));
     });
-    document.querySelectorAll("#group-filters button[data-group]").forEach((b) => {
-      b.classList.toggle("active", b.dataset.group === state.group);
-    });
     const searchInput = document.getElementById("search-input");
     if (searchInput.value !== state.search) searchInput.value = state.search;
     document.getElementById("search-clear").classList.toggle("visible", state.search.length > 0);
+  }
+
+  const THEORY_GROUP_OVERVIEWS = {
+    apex: "The final exported theorems and standalone target statements at the top of the proof. It states the Riemann Hypothesis for ζ(s), half-plane nonvanishing for all Dirichlet L-functions on Re(s) > 1/2, and the Generalized Riemann Hypothesis using standard definitions, and unites the main proof branch with the explicit Selmer bound over ℚ(√−3).",
+    analytic: "Classical complex-analytic and prime-number machinery that reduces RH and GRH to prime-power growth estimates. Using functional equations (reflecting zeros across s ↦ 1 − s) and nonvanishing of Euler and Gamma factors, it shows that bounding smoothed Chebyshev-type sums of primes along logarithmic scale windows forbids any zero of L(χ, s) in Re(s) > 1/2.",
+    galois_theta: "Connects automorphic forms to ℓ-adic representations of absolute Galois groups, matching Frobenius eigenvalues with Hecke/Satake parameters at almost all primes. To construct these representations and prove local-global compatibility, it combines weight-one geometric realizations, a holomorphic Lefschetz fixed-point trace formula, and global unitary theta lifts (integral transforms transferring automorphic forms between dual groups).",
+    modularity_selmer: "Controls the size of arithmetic cohomology groups—specifically Bloch-Kato Selmer and Tate-Shafarevich (Sha) groups, which generalize ideal class groups to Galois representations. Using automorphy lifting, Taylor-Wiles patching, unitary U(3) counting, Poitou-Tate global-local duality, and Kato's Euler system of cohomology classes, it proves polynomial upper bounds on Selmer lengths needed for the analytic windows.",
+    local_langlands: "Studies infinite-dimensional representations of matrix groups like GLₙ and unitary groups over local fields (ℝ, ℂ, and p-adic fields) and the ring of adeles. It constructs local reciprocity matching smooth representations to Weil-Deligne parameters (preserving tame inertia types), proves restricted tensor-product factorization across all places (Flath), Whittaker multiplicity one, and Lie-algebra infinitesimal character formulas for discrete series.",
+    arakelov: "Arakelov geometry equips algebraic varieties over number rings with Hermitian metrics at archimedean places so intersection theory and heights work uniformly across all places. Using Hermitian vector bundles (Bost-Zhang slope bounds), arithmetic Hilbert-Samuel and Moriwaki bigness theorems, and self-intersection estimates, it proves global volume and lattice covolume lower bounds controlling the proof's parameter families.",
+    algebraic_geometry: "Core algebro-geometric infrastructure underlying the Shimura varieties and Galois realizations used higher up. It develops split algebraic tori and polarized abelian schemes (Riemann-Roch, Theorem of the Cube, Weil pairings), toroidal compactifications with Mumford semiabelian boundary uniformisations, functorial resolution of singularities in characteristic zero, and finiteness of twisted étale cohomology.",
+    formalism: "Shared mathematical interface packages coordinating data across separate branches of the proof. It specifies local p-adic Galois representation properties (de Rham criteria and Bloch-Kato orthogonality under the Tate cup-product pairing) alongside the central coordination record D7 bundling CM fields, Hermitian lattices, period rings, and Galois types."
+  };
+
+  function renderGroupLegend() {
+    const wrap = document.getElementById("group-legend-items");
+    if (!wrap) return;
+    wrap.innerHTML = "";
+    const counts = new Map();
+    for (const n of nodes) {
+      counts.set(n.theory_group, (counts.get(n.theory_group) || 0) + 1);
+    }
+    for (const g of BLUEPRINT_DATA.meta.theory_groups) {
+      const count = counts.get(g.id) || 0;
+      const item = document.createElement("span");
+      item.className = "group-legend-item";
+      item.setAttribute("tabindex", "0");
+      item.setAttribute("data-group-legend", g.id);
+      item.innerHTML =
+        `<span class="group-swatch" style="background:${g.color}"></span>` +
+        `<span>${escapeHtml(g.label)}</span>`;
+      item.addEventListener("mouseenter", (ev) => showGroupTooltip(ev, g, count));
+      item.addEventListener("mousemove", (ev) => moveTooltip(ev));
+      item.addEventListener("mouseleave", hideTooltip);
+      item.addEventListener("focus", () => showGroupTooltipAtEl(item, g, count));
+      item.addEventListener("blur", hideTooltip);
+      wrap.appendChild(item);
+    }
   }
 
   /* Compute Layered SVG DAG Layout */
@@ -1247,9 +1377,29 @@ const BLUEPRINT_DATA = {"meta":{"title":"Formalized Proof Blueprint: Riemann Hyp
       });
       g.appendChild(textEl);
 
-      g.addEventListener("click", (ev) => {
+      // Small target button (jumps to card without toggling off)
+      const targetBtn = svgEl("g", {
+        class: "node-target-btn",
+        "data-target-id": n.id,
+        transform: `translate(${NODE_W - 14}, 12)`
+      });
+      targetBtn.appendChild(svgEl("title", null, "Jump to milestone card"));
+      targetBtn.appendChild(svgEl("circle", { class: "target-hit", cx: 0, cy: 0, r: 9.5 }));
+      targetBtn.appendChild(svgEl("circle", { class: "target-ring", cx: 0, cy: 0, r: 5.5 }));
+      targetBtn.appendChild(svgEl("circle", { class: "target-dot", cx: 0, cy: 0, r: 1.6 }));
+      targetBtn.appendChild(svgEl("line", { class: "target-tick", x1: 0, y1: -7.5, x2: 0, y2: -4.2 }));
+      targetBtn.appendChild(svgEl("line", { class: "target-tick", x1: 0, y1: 4.2, x2: 0, y2: 7.5 }));
+      targetBtn.appendChild(svgEl("line", { class: "target-tick", x1: -7.5, y1: 0, x2: -4.2, y2: 0 }));
+      targetBtn.appendChild(svgEl("line", { class: "target-tick", x1: 4.2, y1: 0, x2: 7.5, y2: 0 }));
+      targetBtn.addEventListener("click", (ev) => {
         ev.stopPropagation();
         selectNode(n.id, { scrollToCard: true });
+      });
+      g.appendChild(targetBtn);
+
+      g.addEventListener("click", (ev) => {
+        ev.stopPropagation();
+        toggleNodeSelection(n.id);
       });
       g.addEventListener("mouseenter", (ev) => showTooltip(ev, n));
       g.addEventListener("mousemove", (ev) => moveTooltip(ev));
@@ -1267,8 +1417,8 @@ const BLUEPRINT_DATA = {"meta":{"title":"Formalized Proof Blueprint: Riemann Hyp
         return;
       }
       if (ev.target === svg || ev.target.classList.contains("stage-band")) {
-        if (state.selectedId) {
-          state.selectedId = null;
+        if (state.selectedIds.size > 0) {
+          state.selectedIds.clear();
           applyFiltersAndSelection();
         }
       }
@@ -1282,11 +1432,14 @@ const BLUEPRINT_DATA = {"meta":{"title":"Formalized Proof Blueprint: Riemann Hyp
     const deps = n.depends_on.length;
     const revs = (dependentsMap.get(n.id) || []).length;
     const domStr = n.dom_subtree_size != null ? ` · Dom: ${n.dom_subtree_size.toLocaleString()}` : "";
+    const actionHint = state.selectedIds.has(n.id)
+      ? "click box to deselect &amp; hide card · click target to jump to card"
+      : "click box to add to selection &amp; reveal card · click target to jump to card";
     tooltipEl.innerHTML =
       `<div class="tt-title">${escapeHtml(n.title)}</div>` +
       `<div class="tt-meta">Stage ${n.stage} · ${escapeHtml(grp ? grp.label : n.theory_group)}${domStr}</div>` +
       `<div class="tt-sym">${escapeHtml(n.lean_symbol)}</div>` +
-      `<div class="tt-deps">${escapeHtml(n.lean_file)}#L${n.line_no}<br>Uses ${deps} prerequisite${deps === 1 ? "" : "s"} · Used by ${revs} dependent${revs === 1 ? "" : "s"} (click to trace &amp; jump)</div>`;
+      `<div class="tt-deps">${escapeHtml(n.lean_file)}#L${n.line_no}<br>Uses ${deps} prerequisite${deps === 1 ? "" : "s"} · Used by ${revs} dependent${revs === 1 ? "" : "s"} (${actionHint})</div>`;
     tooltipEl.style.display = "block";
     moveTooltip(ev);
   }
@@ -1305,6 +1458,32 @@ const BLUEPRINT_DATA = {"meta":{"title":"Formalized Proof Blueprint: Riemann Hyp
   }
   function hideTooltip() {
     tooltipEl.style.display = "none";
+  }
+  function renderGroupTooltipContent(g, count) {
+    const overview = THEORY_GROUP_OVERVIEWS[g.id] || "";
+    tooltipEl.innerHTML =
+      `<div class="tt-title"><span class="tt-swatch" style="background:${g.color}"></span>${escapeHtml(g.label)}</div>` +
+      `<div class="tt-meta">${count} milestone${count === 1 ? "" : "s"} in DAG</div>` +
+      `<div class="tt-overview">${escapeHtml(overview)}</div>`;
+  }
+  function showGroupTooltip(ev, g, count) {
+    renderGroupTooltipContent(g, count);
+    tooltipEl.style.display = "block";
+    moveTooltip(ev);
+  }
+  function showGroupTooltipAtEl(el, g, count) {
+    renderGroupTooltipContent(g, count);
+    tooltipEl.style.display = "block";
+    const r = el.getBoundingClientRect();
+    const tt = tooltipEl.getBoundingClientRect();
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    let x = r.left;
+    let y = r.bottom + 6;
+    if (x + tt.width > vw - 10) x = Math.max(10, vw - tt.width - 10);
+    if (y + tt.height > vh - 10) y = Math.max(10, r.top - tt.height - 6);
+    tooltipEl.style.left = x + "px";
+    tooltipEl.style.top = y + "px";
   }
 
   /* Zoom & Pan */
@@ -1435,7 +1614,10 @@ const BLUEPRINT_DATA = {"meta":{"title":"Formalized Proof Blueprint: Riemann Hyp
             `<span class="tag-badge"><span class="chip-dot" style="background:${grp.color}"></span>${escapeHtml(grp.label)}</span>` +
             domBadge +
             `<span class="tag-badge" data-rel-badge="${n.id}" style="display:none"></span>` +
-            `<button class="card-focus-btn" data-focus-dag="${n.id}" type="button" title="Highlight this node and its dependency cones in the DAG above">Focus in DAG ↑</button>` +
+            `<div class="card-actions">` +
+              `<button class="card-focus-btn" data-focus-dag="${n.id}" type="button" title="Highlight this node and its dependency cones in the DAG above">Focus in DAG ↑</button>` +
+              `<button class="card-focus-btn" data-hide-card="${n.id}" type="button" title="Hide this milestone card">Hide ✕</button>` +
+            `</div>` +
           `</div>` +
           `<div class="card-title-row">` +
             `<h3>${escapeHtml(n.title)}</h3>` +
@@ -1465,13 +1647,20 @@ const BLUEPRINT_DATA = {"meta":{"title":"Formalized Proof Blueprint: Riemann Hyp
       const jumpBtn = e.target.closest("button[data-jump-id]");
       if (jumpBtn) {
         const targetId = jumpBtn.dataset.jumpId;
-        selectNode(targetId, { scrollToCard: true, ensureVisible: true });
+        selectNode(targetId, { scrollToCard: true });
         return;
       }
       const focusBtn = e.target.closest("button[data-focus-dag]");
       if (focusBtn) {
         const targetId = focusBtn.dataset.focusDag;
         selectNode(targetId, { scrollToDag: true });
+        return;
+      }
+      const hideBtn = e.target.closest("button[data-hide-card]");
+      if (hideBtn) {
+        const targetId = hideBtn.dataset.hideCard;
+        state.selectedIds.delete(targetId);
+        applyFiltersAndSelection();
       }
     });
   }
@@ -1491,18 +1680,7 @@ const BLUEPRINT_DATA = {"meta":{"title":"Formalized Proof Blueprint: Riemann Hyp
 
   function selectNode(id, opts) {
     const options = opts || {};
-    state.selectedId = id;
-
-    // Ensure card isn't hidden when explicitly jumping to it
-    if (options.ensureVisible || options.scrollToCard) {
-      const target = nodeMap.get(id);
-      if (target && !nodeMatchesFilter(target)) {
-        state.stage = "all";
-        state.group = "all";
-        state.search = "";
-        syncFilterButtons();
-      }
-    }
+    if (nodeMap.has(id)) state.selectedIds.add(id);
 
     applyFiltersAndSelection();
 
@@ -1521,18 +1699,29 @@ const BLUEPRINT_DATA = {"meta":{"title":"Formalized Proof Blueprint: Riemann Hyp
     }
   }
 
+  function toggleNodeSelection(id) {
+    if (state.selectedIds.has(id)) {
+      state.selectedIds.delete(id);
+      applyFiltersAndSelection();
+    } else {
+      selectNode(id, { scrollToCard: false });
+    }
+  }
+
   function applyFiltersAndSelection() {
     const matchingSet = new Set();
     for (const n of nodes) {
       if (nodeMatchesFilter(n)) matchingSet.add(n.id);
     }
 
-    let upSet = new Set();
-    let downSet = new Set();
-    const selId = state.selectedId;
-    if (selId && nodeMap.has(selId)) {
-      upSet = collectTransitive(selId, (id) => (nodeMap.get(id) || {}).depends_on || []);
-      downSet = collectTransitive(selId, (id) => dependentsMap.get(id) || []);
+    const selIds = state.selectedIds;
+    const hasSelection = selIds.size > 0;
+    const upAll = new Set();
+    const downAll = new Set();
+    for (const sid of selIds) {
+      if (!nodeMap.has(sid)) continue;
+      for (const u of collectTransitive(sid, (id) => (nodeMap.get(id) || {}).depends_on || [])) upAll.add(u);
+      for (const d of collectTransitive(sid, (id) => dependentsMap.get(id) || [])) downAll.add(d);
     }
 
     // Update DAG nodes
@@ -1543,10 +1732,10 @@ const BLUEPRINT_DATA = {"meta":{"title":"Formalized Proof Blueprint: Riemann Hyp
       g.classList.toggle("filtered-out", !isMatch);
       g.classList.remove("is-selected", "is-upstream", "is-downstream", "dimmed");
 
-      if (selId) {
-        if (n.id === selId) g.classList.add("is-selected");
-        else if (upSet.has(n.id)) g.classList.add("is-upstream");
-        else if (downSet.has(n.id)) g.classList.add("is-downstream");
+      if (hasSelection) {
+        if (selIds.has(n.id)) g.classList.add("is-selected");
+        else if (upAll.has(n.id)) g.classList.add("is-upstream");
+        else if (downAll.has(n.id)) g.classList.add("is-downstream");
         else g.classList.add("dimmed");
       }
     }
@@ -1559,10 +1748,10 @@ const BLUEPRINT_DATA = {"meta":{"title":"Formalized Proof Blueprint: Riemann Hyp
       const el = rec.el;
       el.classList.remove("edge-up", "edge-down", "dimmed");
       el.setAttribute("marker-end", "url(#arr-default)");
-      if (!selId) continue;
+      if (!hasSelection) continue;
 
-      const inUp = (rec.from === selId || upSet.has(rec.from)) && upSet.has(rec.to);
-      const inDown = downSet.has(rec.from) && (rec.to === selId || downSet.has(rec.to));
+      const inUp = (selIds.has(rec.from) || upAll.has(rec.from)) && upAll.has(rec.to);
+      const inDown = downAll.has(rec.from) && (selIds.has(rec.to) || downAll.has(rec.to));
 
       if (inUp) {
         el.classList.add("edge-up");
@@ -1580,15 +1769,15 @@ const BLUEPRINT_DATA = {"meta":{"title":"Formalized Proof Blueprint: Riemann Hyp
     for (const p of downPaths) edgesLayer.appendChild(p);
 
     // Update Cards visibility and relation styling
-    let visibleCount = 0;
+    let revealedCount = 0;
     const stageCounts = new Map([[0, 0], [1, 0], [2, 0], [3, 0], [4, 0]]);
     for (const n of nodes) {
       const card = cardDom.get(n.id);
       if (!card) continue;
-      const isMatch = matchingSet.has(n.id);
-      card.style.display = isMatch ? "flex" : "none";
-      if (isMatch) {
-        visibleCount++;
+      const isSelected = selIds.has(n.id);
+      card.style.display = isSelected ? "flex" : "none";
+      if (isSelected) {
+        revealedCount++;
         stageCounts.set(n.stage, stageCounts.get(n.stage) + 1);
       }
       card.classList.remove("is-selected", "is-upstream", "is-downstream");
@@ -1597,22 +1786,22 @@ const BLUEPRINT_DATA = {"meta":{"title":"Formalized Proof Blueprint: Riemann Hyp
         relBadge.style.display = "none";
         relBadge.className = "tag-badge";
       }
-      if (selId) {
-        if (n.id === selId) {
+      if (hasSelection) {
+        if (isSelected) {
           card.classList.add("is-selected");
           if (relBadge) {
             relBadge.textContent = "Selected";
             relBadge.classList.add("rel-sel");
             relBadge.style.display = "inline-flex";
           }
-        } else if (upSet.has(n.id)) {
+        } else if (upAll.has(n.id)) {
           card.classList.add("is-upstream");
           if (relBadge) {
             relBadge.textContent = "Prerequisite";
             relBadge.classList.add("rel-up");
             relBadge.style.display = "inline-flex";
           }
-        } else if (downSet.has(n.id)) {
+        } else if (downAll.has(n.id)) {
           card.classList.add("is-downstream");
           if (relBadge) {
             relBadge.textContent = "Dependent";
@@ -1631,18 +1820,38 @@ const BLUEPRINT_DATA = {"meta":{"title":"Formalized Proof Blueprint: Riemann Hyp
       if (cntEl) cntEl.textContent = `${cnt} milestone${cnt === 1 ? "" : "s"}`;
     });
 
-    document.getElementById("match-counter").textContent = `Showing ${visibleCount} / ${nodes.length} milestones`;
-    document.getElementById("empty-state").classList.toggle("visible", visibleCount === 0);
+    document.getElementById("match-counter").textContent = `Matching ${matchingSet.size} / ${nodes.length} milestones in DAG`;
+    document.getElementById("cards-hint").classList.toggle("visible", revealedCount === 0);
+    document.getElementById("revealed-header").classList.toggle("visible", revealedCount > 0);
+    document.getElementById("revealed-title").textContent = `Revealed Milestone Cards (${revealedCount})`;
 
     // Inspector bar
     const inspBar = document.getElementById("inspector-bar");
-    if (selId && nodeMap.has(selId)) {
-      const sn = nodeMap.get(selId);
-      const dUp = (sn.depends_on || []).length;
-      const dDown = (dependentsMap.get(selId) || []).length;
-      document.getElementById("inspector-title").textContent = `Selected (Stage ${sn.stage}): ${sn.title}`;
-      document.getElementById("inspector-up").textContent = `${dUp} direct / ${upSet.size} total prerequisites`;
-      document.getElementById("inspector-down").textContent = `${dDown} direct / ${downSet.size} total dependents`;
+    let upOnlyCount = 0;
+    for (const id of upAll) if (!selIds.has(id)) upOnlyCount++;
+    let downOnlyCount = 0;
+    for (const id of downAll) if (!selIds.has(id)) downOnlyCount++;
+
+    const jumpBtn = document.getElementById("inspector-jump-btn");
+    if (selIds.size === 1) {
+      const [onlyId] = selIds;
+      const sn = nodeMap.get(onlyId);
+      if (sn) {
+        const dUp = (sn.depends_on || []).length;
+        const dDown = (dependentsMap.get(onlyId) || []).length;
+        document.getElementById("inspector-title").textContent = `Selected (Stage ${sn.stage}): ${sn.title}`;
+        document.getElementById("inspector-up").textContent = `${dUp} direct / ${upOnlyCount} total prerequisites`;
+        document.getElementById("inspector-down").textContent = `${dDown} direct / ${downOnlyCount} total dependents`;
+        jumpBtn.textContent = "Scroll to Card ↓";
+        inspBar.classList.add("visible");
+      } else {
+        inspBar.classList.remove("visible");
+      }
+    } else if (selIds.size > 1) {
+      document.getElementById("inspector-title").textContent = `Selected: ${selIds.size} milestones`;
+      document.getElementById("inspector-up").textContent = `${upOnlyCount} prerequisite${upOnlyCount === 1 ? "" : "s"}`;
+      document.getElementById("inspector-down").textContent = `${downOnlyCount} dependent${downOnlyCount === 1 ? "" : "s"}`;
+      jumpBtn.textContent = "Scroll to Cards ↓";
       inspBar.classList.add("visible");
     } else {
       inspBar.classList.remove("visible");
@@ -1651,7 +1860,6 @@ const BLUEPRINT_DATA = {"meta":{"title":"Formalized Proof Blueprint: Riemann Hyp
 
   function resetAllFilters() {
     state.stage = "all";
-    state.group = "all";
     state.search = "";
     syncFilterButtons();
     applyFiltersAndSelection();
@@ -1660,6 +1868,7 @@ const BLUEPRINT_DATA = {"meta":{"title":"Formalized Proof Blueprint: Riemann Hyp
   /* Init */
   renderHeroStats();
   renderFilterControls();
+  renderGroupLegend();
   renderDagSvg();
   renderCards();
   setupZoomAndPan();
@@ -1679,15 +1888,23 @@ const BLUEPRINT_DATA = {"meta":{"title":"Formalized Proof Blueprint: Riemann Hyp
     searchInput.focus();
   });
   document.getElementById("reset-filters-btn").addEventListener("click", resetAllFilters);
-  document.getElementById("empty-reset-btn").addEventListener("click", resetAllFilters);
+  document.getElementById("hide-all-cards-btn").addEventListener("click", () => {
+    state.selectedIds.clear();
+    applyFiltersAndSelection();
+  });
 
   document.getElementById("inspector-clear-btn").addEventListener("click", () => {
-    state.selectedId = null;
+    state.selectedIds.clear();
     applyFiltersAndSelection();
   });
   document.getElementById("inspector-jump-btn").addEventListener("click", () => {
-    if (!state.selectedId) return;
-    selectNode(state.selectedId, { scrollToCard: true, ensureVisible: true });
+    if (state.selectedIds.size === 0) return;
+    if (state.selectedIds.size === 1) {
+      const [onlyId] = state.selectedIds;
+      selectNode(onlyId, { scrollToCard: true });
+    } else {
+      document.getElementById("revealed-header").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   });
 })();
 </script>
