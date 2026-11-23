@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Full Lean Module Import DAG</title>
+<link rel="icon" href="data:,">
+<style>
+  :root {
+    --bg: #ffffff;
+    --text: #111111;
+    --muted: #555555;
+    --border: #cccccc;
+    --pill-bg: rgba(255, 255, 255, 0.92);
+    --btn-hover: #eeeeee;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  #gl-canvas, #overlay-canvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  #gl-canvas {
+    cursor: grab;
+    touch-action: none;
+    z-index: 1;
+    visibility: hidden;
+  }
+  #gl-canvas.grabbing {
+    cursor: grabbing;
+  }
+  #overlay-canvas {
+    pointer-events: none;
+    z-index: 2;
+  }
+  .nav-pill {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 10;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 10px;
+    background: var(--pill-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 12.5px;
+    line-height: 1.2;
+    backdrop-filter: blur(4px);
+  }
+  .nav-pill a {
+    color: #0056b3;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .nav-pill a:hover {
+    text-decoration: underline;
+  }
+  .nav-sep {
+    color: #999999;
+  }
+  .zoom-pill {
+    position: fixed;
+    right: 14px;
+    bottom: 14px;
+    z-index: 10;
+    display: inline-flex;
+    align-items: center;
+    background: var(--pill-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    backdrop-filter: blur(4px);
+  }
+  .zoom-pill button {
+    appearance: none;
+    border: none;
+    border-right: 1px solid var(--border);
+    background: transparent;
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1;
+    padding: 7px 11px;
+    cursor: pointer;
+  }
+  .zoom-pill button:last-child {
+    border-right: none;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .zoom-pill button:hover {
+    background: var(--btn-hover);
+  }
+  .zoom-pill button:active {
+    background: #e2e2e2;
+  }
+  #loading {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 20;
+    padding: 8px 14px;
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 13px;
+    color: var(--muted);
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+<canvas id="gl-canvas"></canvas>
+<canvas id="overlay-canvas"></canvas>
+
+<nav class="nav-pill" aria-label="Navigation">
+  <a href="../index.html">&larr; Portal</a>
+  <span class="nav-sep">&middot;</span>
+  <a href="FULL_DAG.html">Methodology</a>
+</nav>
+
+<div class="zoom-pill" aria-label="Zoom controls">
+  <button id="btn-zoom-in" type="button" title="Zoom in (+)">+</button>
+  <button id="btn-zoom-out" type="button" title="Zoom out (-)">&minus;</button>
+  <button id="btn-reset" type="button" title="Reset view (0)">Reset</button>
+</div>
+
+<div id="loading">Decoding Lean module DAG&hellip;</div>
+
+<script src="full_dag_data.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  const glCanvas = document.getElementById("gl-canvas");
+  const ovCanvas = document.getElementById("overlay-canvas");
+  const ovCtx = ovCanvas.getContext("2d");
+  const loadingEl = document.getElementById("loading");
+  const btnZoomIn = document.getElementById("btn-zoom-in");
+  const btnZoomOut = document.getElementById("btn-zoom-out");
+  const btnReset = document.getElementById("btn-reset");
+
+  function showLoadError(msg) {
+    loadingEl.textContent = msg;
+    loadingEl.style.color = "#b91c1c";
+    loadingEl.style.borderColor = "#fca5a5";
+  }
+
+  function base64ToUint8Array(b64) {
+    const bin = atob(b64);
+    const len = bin.length;
+    const out = new Uint8Array(len);
+    for (let i = 0; i < len; i++) {
+      out[i] = bin.charCodeAt(i);
+    }
+    return out;
+  }
+
+  async function gunzipBuffer(gzBytes) {
+    if (typeof DecompressionStream === "function") {
+      const ds = new DecompressionStream("gzip");
+      const stream = new Blob([gzBytes]).stream().pipeThrough(ds);
+      return await new Response(stream).arrayBuffer();
+    }
+    throw new Error("DecompressionStream('gzip') is unavailable in this browser.");
+  }
+
+  function align4(pos) {
+    return (pos + 3) & ~3;
+  }
+
+  function lowerBound(arr, lo, hi, val) {
+    let l = lo, r = hi;
+    while (l < r) {
+      const m = (l + r) >>> 1;
+      if (arr[m] < val) l = m + 1;
+      else r = m;
+    }
+    return l;
+  }
+
+  function upperBound(arr, lo, hi, val) {
+    let l = lo, r = hi;
+    while (l < r) {
+      const m = (l + r) >>> 1;
+      if (arr[m] <= val) l = m + 1;
+      else r = m;
+    }
+    return l;
+  }
+
+  function compileShader(gl, type, src) {
+    const sh = gl.createShader(type);
+    gl.shaderSource(sh, src);
+    gl.compileShader(sh);
+    if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) {
+      const log = gl.getShaderInfoLog(sh);
+      gl.deleteShader(sh);
+      throw new Error("Shader compile error: " + log);
+    }
+    return sh;
+  }
+
+  function linkProgram(gl, vsSrc, fsSrc) {
+    const vs = compileShader(gl, gl.VERTEX_SHADER, vsSrc);
+    const fs = compileShader(gl, gl.FRAGMENT_SHADER, fsSrc);
+    const prog = gl.createProgram();
+    gl.attachShader(prog, vs);
+    gl.attachShader(prog, fs);
+    gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+      const log = gl.getProgramInfoLog(prog);
+      gl.deleteProgram(prog);
+      throw new Error("Program link error: " + log);
+    }
+    gl.deleteShader(vs);
+    gl.deleteShader(fs);
+    return prog;
+  }
+
+  async function init() {
+    const b64 = window.__FULL_DAG_GZ_B64__;
+    if (!b64 || typeof b64 !== "string") {
+      showLoadError("Missing full_dag_data.js dataset.");
+      return;
+    }
+
+    let rawBuf;
+    try {
+      const gzBytes = base64ToUint8Array(b64);
+      rawBuf = await gunzipBuffer(gzBytes);
+      delete window.__FULL_DAG_GZ_B64__;
+    } catch (err) {
+      showLoadError("Failed to decompress DAG data: " + (err && err.message ? err.message : err));
+      return;
+    }
+
+    const view = new DataView(rawBuf);
+    const u8 = new Uint8Array(rawBuf);
+    const td = new TextDecoder("utf-8");
+
+    if (
+      u8[0] !== 76 || // 'L'
+      u8[1] !== 68 || // 'D'
+      u8[2] !== 65 || // 'A'
+      u8[3] !== 71    // 'G'
+    ) {
+      showLoadError("Invalid binary DAG container magic.");
+      return;
+    }
+
+    const version = view.getUint32(4, true);
+    if (version !== 1) {
+      showLoadError("Unsupported binary DAG version: " + version);
+      return;
+    }
+
+    const headerLen = view.getUint32(8, true);
+    let pos = 12;
+    const header = JSON.parse(td.decode(u8.subarray(pos, pos + headerLen)));
+    pos = align4(pos + headerLen);
+
+    const N = header.node_count;
+    const M = header.edge_count;
+    const numLayers = header.num_layers;
+    const layerDy = header.layer_dy;
+    const bounds = header.bounds;
+    const groups = header.groups;
+
+    const layerOffsets = new Uint32Array(rawBuf, pos, numLayers + 1);
+    pos += (numLayers + 1) * 4;
+
+    const nodeX = new Float32Array(rawBuf, pos, N);
+    pos += N * 4;
+
+    const nodeGroup = new Uint8Array(rawBuf, pos, N);
+    pos = align4(pos + N);
+
+    const nodeInDeg = new Uint16Array(rawBuf, pos, N);
+    pos = align4(pos + N * 2);
+
+    const nodeOutDeg = new Uint16Array(rawBuf, pos, N);
+    pos = align4(pos + N * 2);
+
+    const nodeDirId = new Uint32Array(rawBuf, pos, N);
+    pos += N * 4;
+
+    const dirBlobLen = view.getUint32(pos, true);
+    pos += 4;
+    const dirList = td.decode(u8.subarray(pos, pos + dirBlobLen)).split("\n");
+    pos = align4(pos + dirBlobLen);
+
+    const nameBlobLen = view.getUint32(pos, true);
+    pos += 4;
+    const shortNames = td.decode(u8.subarray(pos, pos + nameBlobLen)).split("\n");
+    pos = align4(pos + nameBlobLen);
+
+    const edgesBlobLen = view.getUint32(pos, true);
+    pos += 4;
+    const edgeStream = u8.subarray(pos, pos + edgesBlobLen);
+
+    // Derive dense nodeLayer array from layerOffsets
+    const nodeLayer = new Uint16Array(N);
+    for (let ly = 0; ly < numLayers; ly++) {
+      const a = layerOffsets[ly];
+      const b = layerOffsets[ly + 1];
+      for (let i = a; i < b; i++) {
+        nodeLayer[i] = ly;
+      }
+    }
+
+    // Decode LEB128 CSR edges, count reverse in-degrees and 8 stratified edge buckets
+    const edgeOffsets = new Uint32Array(N + 1);
+    const edgeTargets = new Uint32Array(M);
+    const revCounts = new Uint32Array(N);
+    const bucketCounts = new Uint32Array(8);
+
+    let ePtr = 0;
+    let tIdx = 0;
+    for (let u = 0; u < N; u++) {
+      edgeOffsets[u] = tIdx;
+      let deg = 0;
+      let shift = 0;
+      while (true) {
+        const b = edgeStream[ePtr++];
+        deg |= (b & 0x7f) << shift;
+        if ((b & 0x80) === 0) break;
+        shift += 7;
+      }
+      let prevV = 0;
+      for (let k = 0; k < deg; k++) {
+        let delta = 0;
+        shift = 0;
+        while (true) {
+          const b = edgeStream[ePtr++];
+          delta |= (b & 0x7f) << shift;
+          if ((b & 0x80) === 0) break;
+          shift += 7;
+        }
+        const v = prevV + delta;
+        prevV = v;
+        edgeTargets[tIdx++] = v;
+        revCounts[v]++;
+        const bkt = ((Math.imul(u, 2654435761) ^ Math.imul(v, 2246822519)) >>> 29) & 7;
+        bucketCounts[bkt]++;
+      }
+    }
+    edgeOffsets[N] = tIdx;
+
+    // Build reverse CSR for deep-zoom incoming arrowheads
+    const revOffsets = new Uint32Array(N + 1);
+    let rAcc = 0;
+    for (let i = 0; i < N; i++) {
+      revOffsets[i] = rAcc;
+      rAcc += revCounts[i];
+    }
+    revOffsets[N] = rAcc;
+    const revSources = new Uint32Array(M);
+    const revWrite = new Uint32Array(revOffsets);
+    for (let u = 0; u < N; u++) {
+      const a = edgeOffsets[u];
+      const b = edgeOffsets[u + 1];
+      for (let k = a; k < b; k++) {
+        const v = edgeTargets[k];
+        revSources[revWrite[v]++] = u;
+      }
+    }
+
+    // Group RGB lookup
+    const numGroups = groups.length;
+    const groupR = new Uint8Array(numGroups);
+    const groupG = new Uint8Array(numGroups);
+    const groupB = new Uint8Array(numGroups);
+    const groupCss = new Array(numGroups);
+    for (let g = 0; g < numGroups; g++) {
+      groupR[g] = groups[g].rgb[0];
+      groupG[g] = groups[g].rgb[1];
+      groupB[g] = groups[g].rgb[2];
+      groupCss[g] = groups[g].color;
+    }
+
+    // Landmark list for fast overview/mid-zoom progressive labels
+    const roots = [];
+    const nonRoots = [];
+    for (let i = 0; i < N; i++) {
+      if (nodeInDeg[i] === 0) roots.push(i);
+      else if (nodeInDeg[i] >= 12 || nodeLayer[i] <= 12) nonRoots.push(i);
+    }
+    nonRoots.sort((a, b) => {
+      const da = nodeInDeg[a];
+      const db = nodeInDeg[b];
+      if (da !== db) return db - da;
+      return a - b;
+    });
+    const maxLandmarks = Math.min(1800, nonRoots.length);
+    const landmarkIds = new Uint32Array(roots.length + maxLandmarks);
+    for (let i = 0; i < roots.length; i++) landmarkIds[i] = roots[i];
+    for (let i = 0; i < maxLandmarks; i++) landmarkIds[roots.length + i] = nonRoots[i];
+
+    // Build stratified Edge VBO (12 bytes/vertex: f32 x, f32 y, u8 r,g,b,a)
+    const bucketEdgeEnd = new Uint32Array(8);
+    const bucketWriteVert = new Uint32Array(8);
+    let eAcc = 0;
+    for (let b = 0; b < 8; b++) {
+      bucketWriteVert[b] = eAcc * 2;
+      eAcc += bucketCounts[b];
+      bucketEdgeEnd[b] = eAcc;
+    }
+
+    const edgeBuf = new ArrayBuffer(M * 24);
+    const edgeF32 = new Float32Array(edgeBuf);
+    const edgeU8 = new Uint8Array(edgeBuf);
+
+    for (let u = 0; u < N; u++) {
+      const ux = nodeX[u];
+      const uy = nodeLayer[u] * layerDy;
+      const ug = nodeGroup[u];
+      const ur = groupR[ug], ugr = groupG[ug], ub = groupB[ug];
+      const a = edgeOffsets[u];
+      const b = edgeOffsets[u + 1];
+      for (let k = a; k < b; k++) {
+        const v = edgeTargets[k];
+        const bkt = ((Math.imul(u, 2654435761) ^ Math.imul(v, 2246822519)) >>> 29) & 7;
+        const vIdx = bucketWriteVert[bkt];
+        bucketWriteVert[bkt] = vIdx + 2;
+
+        const fOff0 = vIdx * 3;
+        const bOff0 = vIdx * 12;
+        edgeF32[fOff0] = ux;
+        edgeF32[fOff0 + 1] = uy;
+        edgeU8[bOff0 + 8] = ur;
+        edgeU8[bOff0 + 9] = ugr;
+        edgeU8[bOff0 + 10] = ub;
+        edgeU8[bOff0 + 11] = 255;
+
+        const vg = nodeGroup[v];
+        const fOff1 = fOff0 + 3;
+        const bOff1 = bOff0 + 12;
+        edgeF32[fOff1] = nodeX[v];
+        edgeF32[fOff1 + 1] = nodeLayer[v] * layerDy;
+        edgeU8[bOff1 + 8] = groupR[vg];
+        edgeU8[bOff1 + 9] = groupG[vg];
+        edgeU8[bOff1 + 10] = groupB[vg];
+        edgeU8[bOff1 + 11] = 255;
+      }
+    }
+
+    // Build Node VBO (16 bytes/vertex: f32 x, f32 y, f32 sizeWeight, u8 r,g,b,a)
+    const nodeBuf = new ArrayBuffer(N * 16);
+    const nodeF32 = new Float32Array(nodeBuf);
+    const nodeU8 = new Uint8Array(nodeBuf);
+    for (let i = 0; i < N; i++) {
+      const fOff = i * 4;
+      const bOff = i * 16;
+      const inD = nodeInDeg[i];
+      const weight = inD === 0 ? 2.4 : (1.0 + 0.32 * Math.log1p(inD));
+      nodeF32[fOff] = nodeX[i];
+      nodeF32[fOff + 1] = nodeLayer[i] * layerDy;
+      nodeF32[fOff + 2] = weight;
+      const g = nodeGroup[i];
+      nodeU8[bOff + 12] = groupR[g];
+      nodeU8[bOff + 13] = groupG[g];
+      nodeU8[bOff + 14] = groupB[g];
+      nodeU8[bOff + 15] = 255;
+    }
+
+    // Initialize WebGL1 (or fallback to 2D Canvas if unavailable)
+    const gl =
+      glCanvas.getContext("webgl", {
+        antialias: true,
+        alpha: false,
+        preserveDrawingBuffer: true,
+        powerPreference: "high-performance",
+      }) ||
+      glCanvas.getContext("experimental-webgl", {
+        antialias: true,
+        alpha: false,
+        preserveDrawingBuffer: true,
+      });
+
+    let edgeProg = null;
+    let nodeProg = null;
+    let edgeVbo = null;
+    let nodeVbo = null;
+    let edgeLocs = null;
+    let nodeLocs = null;
+    let maxPointSize = 64.0;
+
+    if (gl) {
+      const edgeVs = [
+        "attribute vec2 a_pos;",
+        "attribute vec4 a_color;",
+        "uniform vec2 u_scale;",
+        "uniform vec2 u_offset;",
+        "varying vec4 v_color;",
+        "void main() {",
+        "  gl_Position = vec4(a_pos * u_scale + u_offset, 0.0, 1.0);",
+        "  v_color = a_color;",
+        "}",
+      ].join("\n");
+
+      const edgeFs = [
+        "precision mediump float;",
+        "uniform float u_alpha;",
+        "varying vec4 v_color;",
+        "void main() {",
+        "  gl_FragColor = vec4(v_color.rgb, u_alpha);",
+        "}",
+      ].join("\n");
+
+      const nodeVs = [
+        "attribute vec2 a_pos;",
+        "attribute float a_weight;",
+        "attribute vec4 a_color;",
+        "uniform vec2 u_scale;",
+        "uniform vec2 u_offset;",
+        "uniform float u_zoom;",
+        "uniform float u_dpr;",
+        "uniform float u_maxPointSize;",
+        "varying vec4 v_color;",
+        "varying float v_pointSize;",
+        "varying float v_rimStrength;",
+        "void main() {",
+        "  gl_Position = vec4(a_pos * u_scale + u_offset, 0.0, 1.0);",
+        "  float sz = (1.25 + 0.55 * a_weight) * (0.72 + 0.38 * sqrt(max(u_zoom, 0.05))) * u_dpr;",
+        "  if (u_zoom >= 4.0) {",
+        "    sz = min(sz, 0.76 * u_zoom * u_dpr);",
+        "  }",
+        "  sz = clamp(sz, 1.5 * u_dpr, u_maxPointSize);",
+        "  gl_PointSize = sz;",
+        "  v_pointSize = sz;",
+        "  v_rimStrength = clamp((sz - 5.5 * u_dpr) / (3.0 * u_dpr), 0.0, 1.0);",
+        "  v_color = a_color;",
+        "}",
+      ].join("\n");
+
+      const nodeFs = [
+        "precision mediump float;",
+        "varying vec4 v_color;",
+        "varying float v_pointSize;",
+        "varying float v_rimStrength;",
+        "void main() {",
+        "  float dist = length(gl_PointCoord - vec2(0.5)) * 2.0;",
+        "  float edgeW = min(0.45, 1.75 / max(v_pointSize, 2.0));",
+        "  float alpha = 1.0 - smoothstep(1.0 - edgeW, 1.0, dist);",
+        "  if (alpha < 0.02) discard;",
+        "  vec3 col = v_color.rgb;",
+        "  if (v_rimStrength > 0.01) {",
+        "    float rim = smoothstep(0.70, 0.86, dist);",
+        "    col = mix(col, col * 0.55, rim * 0.75 * v_rimStrength);",
+        "  }",
+        "  gl_FragColor = vec4(col, alpha);",
+        "}",
+      ].join("\n");
+
+      edgeProg = linkProgram(gl, edgeVs, edgeFs);
+      nodeProg = linkProgram(gl, nodeVs, nodeFs);
+
+      edgeLocs = {
+        a_pos: gl.getAttribLocation(edgeProg, "a_pos"),
+        a_color: gl.getAttribLocation(edgeProg, "a_color"),
+        u_scale: gl.getUniformLocation(edgeProg, "u_scale"),
+        u_offset: gl.getUniformLocation(edgeProg, "u_offset"),
+        u_alpha: gl.getUniformLocation(edgeProg, "u_alpha"),
+      };
+      nodeLocs = {
+        a_pos: gl.getAttribLocation(nodeProg, "a_pos"),
+        a_weight: gl.getAttribLocation(nodeProg, "a_weight"),
+        a_color: gl.getAttribLocation(nodeProg, "a_color"),
+        u_scale: gl.getUniformLocation(nodeProg, "u_scale"),
+        u_offset: gl.getUniformLocation(nodeProg, "u_offset"),
+        u_zoom: gl.getUniformLocation(nodeProg, "u_zoom"),
+        u_dpr: gl.getUniformLocation(nodeProg, "u_dpr"),
+        u_maxPointSize: gl.getUniformLocation(nodeProg, "u_maxPointSize"),
+      };
+
+      const ptRange = gl.getParameter(gl.ALIASED_POINT_SIZE_RANGE);
+      if (ptRange && ptRange.length >= 2) {
+        maxPointSize = Math.min(128.0, ptRange[1]);
+      }
+
+      edgeVbo = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, edgeVbo);
+      gl.bufferData(gl.ARRAY_BUFFER, edgeBuf, gl.STATIC_DRAW);
+
+      nodeVbo = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, nodeVbo);
+      gl.bufferData(gl.ARRAY_BUFFER, nodeBuf, gl.STATIC_DRAW);
+    }
+
+    // Viewport state
+    let cssW = window.innerWidth || 1280;
+    let cssH = window.innerHeight || 720;
+    let dpr = Math.min(window.devicePixelRatio || 1, 2);
+    let zoom = 1.0;
+    let panX = 0.0;
+    let panY = 0.0;
+    let fitZoom = 0.35;
+
+    function computeFitTransform() {
+      const worldW = Math.max(1, bounds.xmax - bounds.xmin);
+      const worldH = Math.max(1, bounds.ymax - bounds.ymin);
+      const padX = Math.max(40, cssW * 0.04);
+      const padY = Math.max(40, cssH * 0.05);
+      const z = Math.min((cssW - 2 * padX) / worldW, (cssH - 2 * padY) / worldH);
+      fitZoom = Math.max(0.05, z);
+      const cx = 0.5 * (bounds.xmin + bounds.xmax);
+      const cy = 0.5 * (bounds.ymin + bounds.ymax);
+      return {
+        zoom: fitZoom,
+        panX: cssW * 0.5 - cx * fitZoom,
+        panY: cssH * 0.5 - cy * fitZoom,
+      };
+    }
+
+    function fitToView() {
+      const t = computeFitTransform();
+      zoom = t.zoom;
+      panX = t.panX;
+      panY = t.panY;
+    }
+
+    function resizeCanvases(preserveCenter) {
+      const prevW = cssW;
+      const prevH = cssH;
+      const worldCx = (prevW * 0.5 - panX) / zoom;
+      const worldCy = (prevH * 0.5 - panY) / zoom;
+
+      cssW = Math.max(1, window.innerWidth || document.documentElement.clientWidth || 1280);
+      cssH = Math.max(1, window.innerHeight || document.documentElement.clientHeight || 720);
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+      const pixW = Math.max(1, Math.round(cssW * dpr));
+      const pixH = Math.max(1, Math.round(cssH * dpr));
+
+      glCanvas.width = pixW;
+      glCanvas.height = pixH;
+      ovCanvas.width = pixW;
+      ovCanvas.height = pixH;
+      if (gl) {
+        gl.viewport(0, 0, pixW, pixH);
+      }
+
+      if (preserveCenter) {
+        const t = computeFitTransform();
+        fitZoom = t.zoom;
+        panX = cssW * 0.5 - worldCx * zoom;
+        panY = cssH * 0.5 - worldCy * zoom;
+      } else {
+        fitToView();
+      }
+    }
+
+    // Adaptive rendering & LOD state
+    let rafPending = false;
+    let isInteracting = false;
+    let idleTimer = 0;
+    let lastFullDrawMs = 0;
+
+    function nodeRadiusCss(idx) {
+      const inD = nodeInDeg[idx];
+      const weight = inD === 0 ? 2.4 : (1.0 + 0.32 * Math.log1p(inD));
+      let sz = (1.25 + 0.55 * weight) * (0.72 + 0.38 * Math.sqrt(Math.max(zoom, 0.05)));
+      if (zoom >= 4.0) {
+        sz = Math.min(sz, 0.76 * zoom);
+      }
+      sz = Math.max(1.5, Math.min(maxPointSize / dpr, sz));
+      return 0.5 * sz;
+    }
+
+    function drawOverlay() {
+      ovCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ovCtx.clearRect(0, 0, cssW, cssH);
+
+      const wxMin = -panX / zoom;
+      const wxMax = (cssW - panX) / zoom;
+      const wyMin = -panY / zoom;
+      const wyMax = (cssH - panY) / zoom;
+
+      const marginWorldX = 16 / zoom;
+      const marginWorldY = 16 / zoom;
+
+      const minLy = Math.max(0, Math.floor((wyMin - marginWorldY) / layerDy));
+      const maxLy = Math.min(numLayers - 1, Math.ceil((wyMax + marginWorldY) / layerDy));
+
+      const slices = [];
+      let visibleCount = 0;
+      for (let ly = minLy; ly <= maxLy; ly++) {
+        const lStart = layerOffsets[ly];
+        const lEnd = layerOffsets[ly + 1];
+        if (lStart >= lEnd) continue;
+        const a = lowerBound(nodeX, lStart, lEnd, wxMin - marginWorldX);
+        const b = upperBound(nodeX, a, lEnd, wxMax + marginWorldX);
+        if (a < b) {
+          slices.push(a, b);
+          visibleCount += (b - a);
+        }
+      }
+
+      // Deep-zoom directional arrowheads
+      if (visibleCount > 0 && visibleCount <= 300 && zoom >= 12) {
+        ovCtx.save();
+        ovCtx.fillStyle = "rgba(51, 65, 85, 0.78)";
+        let drawnArrows = 0;
+        const maxArrows = 2000;
+        const arrowLen = Math.min(9.5, Math.max(4.5, 4.0 + 0.08 * zoom));
+        const arrowHalfW = arrowLen * 0.44;
+
+        for (let s = 0; s < slices.length && drawnArrows < maxArrows; s += 2) {
+          const a = slices[s];
+          const b = slices[s + 1];
+          for (let v = a; v < b && drawnArrows < maxArrows; v++) {
+            const vx = nodeX[v] * zoom + panX;
+            const vy = nodeLayer[v] * layerDy * zoom + panY;
+            const padR = nodeRadiusCss(v) + 2.0;
+            const rA = revOffsets[v];
+            const rB = revOffsets[v + 1];
+            const rLim = Math.min(rB, rA + 24);
+            for (let k = rA; k < rLim && drawnArrows < maxArrows; k++) {
+              const u = revSources[k];
+              const ux = nodeX[u] * zoom + panX;
+              const uy = nodeLayer[u] * layerDy * zoom + panY;
+              const dx = vx - ux;
+              const dy = vy - uy;
+              const dist = Math.hypot(dx, dy);
+              if (dist <= padR + arrowLen + 1.0) continue;
+              const inv = 1.0 / dist;
+              const nx = dx * inv;
+              const ny = dy * inv;
+              const tipX = vx - nx * padR;
+              const tipY = vy - ny * padR;
+              const baseX = tipX - nx * arrowLen;
+              const baseY = tipY - ny * arrowLen;
+              const px = -ny * arrowHalfW;
+              const py = nx * arrowHalfW;
+              ovCtx.beginPath();
+              ovCtx.moveTo(tipX, tipY);
+              ovCtx.lineTo(baseX + px, baseY + py);
+              ovCtx.lineTo(baseX - px, baseY - py);
+              ovCtx.closePath();
+              ovCtx.fill();
+              drawnArrows++;
+            }
+          }
+        }
+        ovCtx.restore();
+      }
+
+      // Progressive collision-free node labels
+      let candidates = null;
+      if (visibleCount > 1200) {
+        candidates = [];
+        for (let i = 0; i < landmarkIds.length; i++) {
+          const id = landmarkIds[i];
+          const wx = nodeX[id];
+          const wy = nodeLayer[id] * layerDy;
+          if (wx >= wxMin && wx <= wxMax && wy >= wyMin && wy <= wyMax) {
+            candidates.push(id);
+          }
+        }
+      } else if (visibleCount > 0) {
+        candidates = [];
+        for (let s = 0; s < slices.length; s += 2) {
+          const a = slices[s];
+          const b = slices[s + 1];
+          for (let i = a; i < b; i++) {
+            candidates.push(i);
+          }
+        }
+        candidates.sort((a, b) => {
+          const pa = nodeInDeg[a] === 0 ? 1e9 : (nodeInDeg[a] * 10 + nodeOutDeg[a]);
+          const pb = nodeInDeg[b] === 0 ? 1e9 : (nodeInDeg[b] * 10 + nodeOutDeg[b]);
+          if (pa !== pb) return pb - pa;
+          return a - b;
+        });
+      }
+
+      if (!candidates || candidates.length === 0) return;
+
+      const showDir = zoom >= 55;
+      const fontSize = zoom >= 30 ? 12 : 11;
+      ovCtx.save();
+      ovCtx.font = `600 ${fontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
+      ovCtx.textBaseline = "middle";
+      ovCtx.textAlign = "left";
+      ovCtx.lineJoin = "round";
+      ovCtx.lineWidth = 3.5;
+
+      // Reserve corner pill zones so labels never clash with UI chrome
+      const placed = [
+        [0, 0, 210, 44],
+        [cssW - 140, cssH - 46, cssW, cssH],
+      ];
+      let labelCount = 0;
+      const maxLabels = zoom < fitZoom * 1.6 ? 18 : (zoom < fitZoom * 6.0 ? 45 : 85);
+
+      for (let i = 0; i < candidates.length && labelCount < maxLabels; i++) {
+        const id = candidates[i];
+        const sx = nodeX[id] * zoom + panX;
+        const sy = nodeLayer[id] * layerDy * zoom + panY;
+        if (sx < -20 || sx > cssW + 20 || sy < -20 || sy > cssH + 20) continue;
+
+        const label = shortNames[id];
+        if (!label) continue;
+
+        const rPx = nodeRadiusCss(id);
+        const tx = sx + rPx + 4;
+        const ty = sy;
+
+        const tw = ovCtx.measureText(label).width;
+        const boxH = showDir ? 26 : 14;
+        let boxW = tw;
+
+        let dirLabel = "";
+        if (showDir) {
+          dirLabel = dirList[nodeDirId[id]] || "";
+          if (dirLabel && dirLabel !== "(root)") {
+            ovCtx.font = `400 10px ui-monospace, SFMono-Regular, Menlo, monospace`;
+            const dw = ovCtx.measureText(dirLabel).width;
+            if (dw > boxW) boxW = dw;
+            ovCtx.font = `600 ${fontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
+          } else {
+            dirLabel = "";
+          }
+        }
+
+        const x0 = tx - 3;
+        const y0 = ty - 7;
+        const x1 = tx + boxW + 5;
+        const y1 = y0 + boxH;
+        if (x0 < 4 || x1 > cssW - 4 || y0 < 4 || y1 > cssH - 4) continue;
+
+        let overlaps = false;
+        for (let j = 0; j < placed.length; j++) {
+          const p = placed[j];
+          if (x0 < p[2] && x1 > p[0] && y0 < p[3] && y1 > p[1]) {
+            overlaps = true;
+            break;
+          }
+        }
+        if (overlaps) continue;
+
+        placed.push([x0, y0, x1, y1]);
+        labelCount++;
+
+        ovCtx.strokeStyle = "rgba(255, 255, 255, 0.94)";
+        ovCtx.fillStyle = "#111827";
+        ovCtx.strokeText(label, tx, ty);
+        ovCtx.fillText(label, tx, ty);
+
+        if (dirLabel) {
+          ovCtx.font = `400 10px ui-monospace, SFMono-Regular, Menlo, monospace`;
+          ovCtx.fillStyle = "#64748b";
+          ovCtx.strokeText(dirLabel, tx, ty + 12);
+          ovCtx.fillText(dirLabel, tx, ty + 12);
+          ovCtx.font = `600 ${fontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
+        }
+      }
+      ovCtx.restore();
+    }
+
+    function drawFallback2D() {
+      const ctx = glCanvas.getContext("2d");
+      if (!ctx) return;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, cssW, cssH);
+
+      const wxMin = -panX / zoom;
+      const wxMax = (cssW - panX) / zoom;
+      const wyMin = -panY / zoom;
+      const wyMax = (cssH - panY) / zoom;
+
+      const baseAlpha = Math.max(0.03, Math.min(0.55, 0.036 * Math.pow(zoom / fitZoom, 0.55)));
+      ctx.lineWidth = 1;
+      for (let u = 0; u < N; u++) {
+        const ux = nodeX[u];
+        const uy = nodeLayer[u] * layerDy;
+        const sx0 = ux * zoom + panX;
+        const sy0 = uy * zoom + panY;
+        const a = edgeOffsets[u];
+        const b = edgeOffsets[u + 1];
+        ctx.strokeStyle = groupCss[nodeGroup[u]];
+        ctx.globalAlpha = baseAlpha;
+        ctx.beginPath();
+        for (let k = a; k < b; k++) {
+          const v = edgeTargets[k];
+          const vx = nodeX[v];
+          const vy = nodeLayer[v] * layerDy;
+          if ((ux < wxMin && vx < wxMin) || (ux > wxMax && vx > wxMax)) continue;
+          if ((uy < wyMin && vy < wyMin) || (uy > wyMax && vy > wyMax)) continue;
+          ctx.moveTo(sx0, sy0);
+          ctx.lineTo(vx * zoom + panX, vy * zoom + panY);
+        }
+        ctx.stroke();
+      }
+      ctx.globalAlpha = 1.0;
+      for (let i = 0; i < N; i++) {
+        const sx = nodeX[i] * zoom + panX;
+        const sy = nodeLayer[i] * layerDy * zoom + panY;
+        if (sx < -6 || sx > cssW + 6 || sy < -6 || sy > cssH + 6) continue;
+        const r = nodeRadiusCss(i);
+        ctx.fillStyle = groupCss[nodeGroup[i]];
+        ctx.beginPath();
+        ctx.arc(sx, sy, r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      drawOverlay();
+    }
+
+    function renderFrame() {
+      rafPending = false;
+
+      if (!gl) {
+        drawFallback2D();
+        return;
+      }
+
+      const t0 = performance.now();
+      gl.clearColor(1.0, 1.0, 1.0, 1.0);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+      gl.enable(gl.BLEND);
+      gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
+      const scaleX = (2.0 * zoom) / cssW;
+      const scaleY = (-2.0 * zoom) / cssH;
+      const offX = (2.0 * panX) / cssW - 1.0;
+      const offY = 1.0 - (2.0 * panY) / cssH;
+
+      const baseAlpha = Math.max(0.020, Math.min(0.60, 0.024 * Math.pow(zoom / fitZoom, 0.62)));
+
+      // Determine how many stratified edge buckets to draw
+      let useBuckets = 8;
+      if (isInteracting && lastFullDrawMs > 20) {
+        useBuckets = lastFullDrawMs > 60 ? 2 : 4;
+      }
+      const drawVerts = bucketEdgeEnd[useBuckets - 1] * 2;
+      const edgeAlpha = useBuckets === 8 ? baseAlpha : Math.min(0.85, baseAlpha * (8.0 / useBuckets));
+
+      // Pass 1: Edges
+      gl.useProgram(edgeProg);
+      gl.bindBuffer(gl.ARRAY_BUFFER, edgeVbo);
+      gl.enableVertexAttribArray(edgeLocs.a_pos);
+      gl.vertexAttribPointer(edgeLocs.a_pos, 2, gl.FLOAT, false, 12, 0);
+      gl.enableVertexAttribArray(edgeLocs.a_color);
+      gl.vertexAttribPointer(edgeLocs.a_color, 4, gl.UNSIGNED_BYTE, true, 12, 8);
+      if (nodeLocs.a_weight >= 0) gl.disableVertexAttribArray(nodeLocs.a_weight);
+
+      gl.uniform2f(edgeLocs.u_scale, scaleX, scaleY);
+      gl.uniform2f(edgeLocs.u_offset, offX, offY);
+      gl.uniform1f(edgeLocs.u_alpha, edgeAlpha);
+      gl.drawArrays(gl.LINES, 0, drawVerts);
+
+      // Pass 2: Nodes (always 100%)
+      gl.useProgram(nodeProg);
+      gl.bindBuffer(gl.ARRAY_BUFFER, nodeVbo);
+      gl.enableVertexAttribArray(nodeLocs.a_pos);
+      gl.vertexAttribPointer(nodeLocs.a_pos, 2, gl.FLOAT, false, 16, 0);
+      gl.enableVertexAttribArray(nodeLocs.a_weight);
+      gl.vertexAttribPointer(nodeLocs.a_weight, 1, gl.FLOAT, false, 16, 8);
+      gl.enableVertexAttribArray(nodeLocs.a_color);
+      gl.vertexAttribPointer(nodeLocs.a_color, 4, gl.UNSIGNED_BYTE, true, 16, 12);
+
+      gl.uniform2f(nodeLocs.u_scale, scaleX, scaleY);
+      gl.uniform2f(nodeLocs.u_offset, offX, offY);
+      gl.uniform1f(nodeLocs.u_zoom, zoom);
+      gl.uniform1f(nodeLocs.u_dpr, dpr);
+      gl.uniform1f(nodeLocs.u_maxPointSize, maxPointSize);
+      gl.drawArrays(gl.POINTS, 0, N);
+
+      if (useBuckets === 8) {
+        lastFullDrawMs = performance.now() - t0;
+      }
+
+      drawOverlay();
+    }
+
+    function scheduleRender() {
+      if (!rafPending) {
+        rafPending = true;
+        requestAnimationFrame(renderFrame);
+      }
+    }
+
+    function markInteracting() {
+      isInteracting = true;
+      if (idleTimer) clearTimeout(idleTimer);
+      idleTimer = setTimeout(() => {
+        isInteracting = false;
+        scheduleRender();
+      }, 90);
+    }
+
+    function zoomAt(screenX, screenY, factor) {
+      const minZoom = fitZoom * 0.4;
+      const maxZoom = 380.0;
+      const nextZoom = Math.max(minZoom, Math.min(maxZoom, zoom * factor));
+      if (Math.abs(nextZoom - zoom) < 1e-9) return;
+      const wx = (screenX - panX) / zoom;
+      const wy = (screenY - panY) / zoom;
+      zoom = nextZoom;
+      panX = screenX - wx * zoom;
+      panY = screenY - wy * zoom;
+      markInteracting();
+      scheduleRender();
+    }
+
+    // Initial sizing & first draw
+    resizeCanvases(false);
+    loadingEl.remove();
+    glCanvas.style.visibility = "visible";
+    renderFrame();
+    window.__FULL_DAG_READY__ = true;
+
+    // Mouse wheel / trackpad zoom
+    glCanvas.addEventListener(
+      "wheel",
+      (ev) => {
+        ev.preventDefault();
+        let dy = ev.deltaY;
+        if (ev.deltaMode === 1) dy *= 16;
+        else if (ev.deltaMode === 2) dy *= cssH;
+        const clamped = Math.max(-180, Math.min(180, dy));
+        const factor = Math.exp(-clamped * 0.0018);
+        zoomAt(ev.clientX, ev.clientY, factor);
+      },
+      { passive: false }
+    );
+
+    // Pointer pan + multi-touch pinch-zoom (strictly no node clicking or tooltips)
+    const pointers = new Map();
+    let dragLastX = 0;
+    let dragLastY = 0;
+    let pinchLastDist = 0;
+    let pinchLastMidX = 0;
+    let pinchLastMidY = 0;
+
+    glCanvas.addEventListener("pointerdown", (ev) => {
+      if (ev.button !== 0 && ev.pointerType === "mouse") return;
+      glCanvas.setPointerCapture(ev.pointerId);
+      pointers.set(ev.pointerId, { x: ev.clientX, y: ev.clientY });
+      if (pointers.size === 1) {
+        dragLastX = ev.clientX;
+        dragLastY = ev.clientY;
+        glCanvas.classList.add("grabbing");
+      } else if (pointers.size === 2) {
+        const pts = Array.from(pointers.values());
+        pinchLastDist = Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y);
+        pinchLastMidX = 0.5 * (pts[0].x + pts[1].x);
+        pinchLastMidY = 0.5 * (pts[0].y + pts[1].y);
+      }
+    });
+
+    glCanvas.addEventListener("pointermove", (ev) => {
+      if (!pointers.has(ev.pointerId)) return;
+      pointers.set(ev.pointerId, { x: ev.clientX, y: ev.clientY });
+
+      if (pointers.size === 1) {
+        const dx = ev.clientX - dragLastX;
+        const dy = ev.clientY - dragLastY;
+        if (dx === 0 && dy === 0) return;
+        dragLastX = ev.clientX;
+        dragLastY = ev.clientY;
+        panX += dx;
+        panY += dy;
+        markInteracting();
+        scheduleRender();
+      } else if (pointers.size >= 2) {
+        const pts = Array.from(pointers.values());
+        const dist = Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y);
+        const midX = 0.5 * (pts[0].x + pts[1].x);
+        const midY = 0.5 * (pts[0].y + pts[1].y);
+        panX += midX - pinchLastMidX;
+        panY += midY - pinchLastMidY;
+        if (pinchLastDist > 1 && dist > 1) {
+          zoomAt(midX, midY, dist / pinchLastDist);
+        } else {
+          markInteracting();
+          scheduleRender();
+        }
+        pinchLastDist = dist;
+        pinchLastMidX = midX;
+        pinchLastMidY = midY;
+      }
+    });
+
+    function endPointer(ev) {
+      if (!pointers.has(ev.pointerId)) return;
+      pointers.delete(ev.pointerId);
+      if (pointers.size === 1) {
+        const rem = Array.from(pointers.values())[0];
+        dragLastX = rem.x;
+        dragLastY = rem.y;
+      } else if (pointers.size === 0) {
+        glCanvas.classList.remove("grabbing");
+      }
+    }
+
+    glCanvas.addEventListener("pointerup", endPointer);
+    glCanvas.addEventListener("pointercancel", endPointer);
+
+    // Corner zoom pill controls
+    btnZoomIn.addEventListener("click", () => {
+      zoomAt(cssW * 0.5, cssH * 0.5, 1.45);
+    });
+    btnZoomOut.addEventListener("click", () => {
+      zoomAt(cssW * 0.5, cssH * 0.5, 1.0 / 1.45);
+    });
+    btnReset.addEventListener("click", () => {
+      fitToView();
+      isInteracting = false;
+      scheduleRender();
+    });
+
+    // Keyboard pan/zoom
+    window.addEventListener("keydown", (ev) => {
+      if (ev.metaKey || ev.ctrlKey || ev.altKey) return;
+      const step = Math.round(Math.min(cssW, cssH) * 0.14);
+      if (ev.key === "+" || ev.key === "=") {
+        ev.preventDefault();
+        zoomAt(cssW * 0.5, cssH * 0.5, 1.35);
+      } else if (ev.key === "-" || ev.key === "_") {
+        ev.preventDefault();
+        zoomAt(cssW * 0.5, cssH * 0.5, 1.0 / 1.35);
+      } else if (ev.key === "0" || ev.key === "r" || ev.key === "R") {
+        ev.preventDefault();
+        fitToView();
+        isInteracting = false;
+        scheduleRender();
+      } else if (ev.key === "ArrowLeft") {
+        ev.preventDefault();
+        panX += step;
+        markInteracting();
+        scheduleRender();
+      } else if (ev.key === "ArrowRight") {
+        ev.preventDefault();
+        panX -= step;
+        markInteracting();
+        scheduleRender();
+      } else if (ev.key === "ArrowUp") {
+        ev.preventDefault();
+        panY += step;
+        markInteracting();
+        scheduleRender();
+      } else if (ev.key === "ArrowDown") {
+        ev.preventDefault();
+        panY -= step;
+        markInteracting();
+        scheduleRender();
+      }
+    });
+
+    window.addEventListener("resize", () => {
+      resizeCanvases(true);
+      scheduleRender();
+    });
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,264 @@
+{
+  "node_count": 175187,
+  "edge_count": 753261,
+  "num_layers": 203,
+  "layer_dy": 9.3166,
+  "min_intra_layer_gap": 1.0,
+  "bounds": {
+    "xmin": -1740.808837890625,
+    "xmax": 1740.808837890625,
+    "ymin": 0.0,
+    "ymax": 1881.9532
+  },
+  "aspect_ratio": 1.85,
+  "layout_metrics": {
+    "is_dag": true,
+    "y_iters_requested": 25,
+    "y_iters_run": 25,
+    "x_sweeps_run": 16,
+    "init_avg_y_span": 18.926,
+    "final_avg_y_span": 17.288,
+    "span_eq_1_edges": 190823,
+    "span_le_5_edges": 352622,
+    "init_avg_x_span": 363.32,
+    "final_avg_x_span": 121.839,
+    "layer_widths": {
+      "min": 1,
+      "median": 712,
+      "p95": 2042,
+      "max": 3480
+    }
+  },
+  "domains": [
+    {
+      "name": "Development",
+      "color": "#2563eb",
+      "modules": 141928,
+      "min_layer": 4,
+      "median_layer": 151,
+      "max_layer": 202,
+      "mean_x": -161.56
+    },
+    {
+      "name": "Formalism",
+      "color": "#ea580c",
+      "modules": 18254,
+      "min_layer": 98,
+      "median_layer": 177,
+      "max_layer": 202,
+      "mean_x": 603.79
+    },
+    {
+      "name": "GroundTheory",
+      "color": "#ca8a04",
+      "modules": 8507,
+      "min_layer": 34,
+      "median_layer": 192,
+      "max_layer": 202,
+      "mean_x": 1018.81
+    },
+    {
+      "name": "ReciprocityTheory",
+      "color": "#0d9488",
+      "modules": 3845,
+      "min_layer": 86,
+      "median_layer": 189,
+      "max_layer": 202,
+      "mean_x": 780.37
+    },
+    {
+      "name": "CompanionTheory",
+      "color": "#059669",
+      "modules": 2027,
+      "min_layer": 88,
+      "median_layer": 167,
+      "max_layer": 202,
+      "mean_x": -518.52
+    },
+    {
+      "name": "PositivityTheory",
+      "color": "#c026d3",
+      "modules": 449,
+      "min_layer": 67,
+      "median_layer": 105,
+      "max_layer": 202,
+      "mean_x": 643.54
+    },
+    {
+      "name": "Lemmata",
+      "color": "#7c3aed",
+      "modules": 167,
+      "min_layer": 141,
+      "median_layer": 195,
+      "max_layer": 202,
+      "mean_x": 651.02
+    },
+    {
+      "name": "BuildAid",
+      "color": "#64748b",
+      "modules": 5,
+      "min_layer": 143,
+      "median_layer": 157,
+      "max_layer": 185,
+      "mean_x": 171.43
+    },
+    {
+      "name": "Supplements",
+      "color": "#4f46e5",
+      "modules": 3,
+      "min_layer": 1,
+      "median_layer": 2,
+      "max_layer": 3,
+      "mean_x": 24.93
+    },
+    {
+      "name": "(root)",
+      "color": "#111827",
+      "modules": 2,
+      "min_layer": 0,
+      "median_layer": 1,
+      "max_layer": 1,
+      "mean_x": 20.19
+    }
+  ],
+  "roots": [
+    {
+      "module": "Main",
+      "rel_path": "Main.lean",
+      "layer": 0,
+      "in_degree": 0,
+      "out_degree": 2
+    }
+  ],
+  "top_in_degree_hubs": [
+    {
+      "module": "Development.AbelianVarietyTheory.Definitions.Divisors.CTSmallCone",
+      "rel_path": "Development/AbelianVarietyTheory/Definitions/Divisors/CTSmallCone.lean",
+      "top_dir": "Development",
+      "layer": 160,
+      "in_degree": 3088,
+      "out_degree": 2
+    },
+    {
+      "module": "Development.AbelianVarietyTheory.Definitions.Divisors.SiegelWeilAnisotropicHermitian",
+      "rel_path": "Development/AbelianVarietyTheory/Definitions/Divisors/SiegelWeilAnisotropicHermitian.lean",
+      "top_dir": "Development",
+      "layer": 149,
+      "in_degree": 2972,
+      "out_degree": 23
+    },
+    {
+      "module": "Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique",
+      "rel_path": "Development/AbelianVarietyTheory/Definitions/Divisors/DiscreteSeriesHermitianUnique.lean",
+      "top_dir": "Development",
+      "layer": 152,
+      "in_degree": 2518,
+      "out_degree": 62
+    },
+    {
+      "module": "Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms\u2082.ExistsNormLeHeightPow",
+      "rel_path": "Development/AbelianVarietyTheory/PublishedTheorems/AutomorphicForms\u2082/ExistsNormLeHeightPow.lean",
+      "top_dir": "Development",
+      "layer": 160,
+      "in_degree": 2426,
+      "out_degree": 4
+    },
+    {
+      "module": "ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.UniformisationConclusion",
+      "rel_path": "ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/BirationalGeometry/ToroidalCompactification/UniformisationConclusion.lean",
+      "top_dir": "ReciprocityTheory",
+      "layer": 193,
+      "in_degree": 2390,
+      "out_degree": 5
+    },
+    {
+      "module": "ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.UnifUniqSt",
+      "rel_path": "ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/ExtensionDescent/UnifUniqSt.lean",
+      "top_dir": "ReciprocityTheory",
+      "layer": 187,
+      "in_degree": 2284,
+      "out_degree": 1
+    },
+    {
+      "module": "Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.CohomologicalCsdTempered",
+      "rel_path": "Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/CohomologicalCsdTempered.lean",
+      "top_dir": "Development",
+      "layer": 171,
+      "in_degree": 2242,
+      "out_degree": 0
+    },
+    {
+      "module": "Development.AbelianVarietyTheory.Definitions.Divisors.ToKnownTheoremsOf",
+      "rel_path": "Development/AbelianVarietyTheory/Definitions/Divisors/ToKnownTheoremsOf.lean",
+      "top_dir": "Development",
+      "layer": 115,
+      "in_degree": 1838,
+      "out_degree": 20
+    },
+    {
+      "module": "Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.HarishChandraModulesOn",
+      "rel_path": "Development/AbelianVarietyTheory/PublishedTheorems/TwistedTraceFormula/HarishChandraModulesOn.lean",
+      "top_dir": "Development",
+      "layer": 168,
+      "in_degree": 1653,
+      "out_degree": 4
+    },
+    {
+      "module": "ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.HeckeKer",
+      "rel_path": "ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/BirationalGeometry/ToroidalCompactification/HeckeKer.lean",
+      "top_dir": "ReciprocityTheory",
+      "layer": 196,
+      "in_degree": 1429,
+      "out_degree": 1
+    },
+    {
+      "module": "ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.SecBaseChangeAnySt",
+      "rel_path": "ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/ExtensionDescent/SecBaseChangeAnySt.lean",
+      "top_dir": "ReciprocityTheory",
+      "layer": 191,
+      "in_degree": 1340,
+      "out_degree": 1
+    },
+    {
+      "module": "Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.AdmissibleDiscreteSeriesOfHasParam",
+      "rel_path": "Development/AbelianVarietyTheory/PublishedTheorems/TwistedTraceFormula/AdmissibleDiscreteSeriesOfHasParam.lean",
+      "top_dir": "Development",
+      "layer": 166,
+      "in_degree": 1323,
+      "out_degree": 5
+    },
+    {
+      "module": "Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels",
+      "rel_path": "Development/AbelianVarietyTheory/BlockTheory/DivisorBase/WeilTensorModels.lean",
+      "top_dir": "Development",
+      "layer": 162,
+      "in_degree": 1307,
+      "out_degree": 5
+    },
+    {
+      "module": "ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsHolPeriods",
+      "rel_path": "ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/BirationalGeometry/ToroidalCompactification/IsHolPeriods.lean",
+      "top_dir": "ReciprocityTheory",
+      "layer": 195,
+      "in_degree": 1206,
+      "out_degree": 2
+    },
+    {
+      "module": "Development.AbelianVarietyTheory.Definitions.Degenerations.AdmissibleBaseOfCompleteDvr",
+      "rel_path": "Development/AbelianVarietyTheory/Definitions/Degenerations/AdmissibleBaseOfCompleteDvr.lean",
+      "top_dir": "Development",
+      "layer": 168,
+      "in_degree": 1063,
+      "out_degree": 6
+    }
+  ],
+  "payload": {
+    "raw_binary_bytes": 9465261,
+    "gzip_bytes": 3602795,
+    "js_file_bytes": 4803761,
+    "edge_varint_bytes": 1809565,
+    "name_blob_bytes": 5117809,
+    "dir_blob_bytes": 258320
+  },
+  "elapsed_seconds": 30.22
+}

@@ -521,6 +521,7 @@
       "proof_spine/PROOF_SPINE_REPORT.md",
       "size_treemap/SIZE_ANALYSIS.md",
       "published_theorems/PUBLISHED_THEOREMS_INVENTORY.md",
+      "full_dag/FULL_DAG.md",
     ];
 
     const stageMode = process.argv.includes("--stage");
