@@ -34,25 +34,53 @@ All **175,187** modules reachable from [Main.lean](https://github.com/ZacharyVer
 | `Lemmata` | 167 | 9,232 | 8 | 17 | Standalone linear-algebraic and matrix-determinant lemma units |
 | `BuildAid` | 5 | 20 | 8 | 0 | Library-suggestion namespace configuration leaves |
 
+### Key Structural Observations
+1. **The Entry Chain:** [Main.lean](https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/Main.lean) depends on [Statements.lean](https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/Statements.lean) and `Supplements/Kernels/MainTheoremsAll.lean`. From there, `Supplements/Kernels` draws on the main proof synthesis in `Development/AutomorphicArithmetic` and the functional-equation reflection theorem in `Formalism/GammaFactorNonvanishing`.
+2. **Synthesis vs. Foundation Split:** `Development` serves as the central consumer and synthesis engine, drawing heavily on the specification contracts and foundational theorems in `Formalism`, `ReciprocityTheory`, and `GroundTheory`, while co-evolving with `CompanionTheory` and `PositivityTheory`.
+
 ---
 
-## 3. Major Cross-Theory Mathematical Flows (Depth 2)
+## 3. Topical Directory Cycles vs. Strict Module-Level DAG
 
-| Source Sub-Theory (`depends on →`) | Target Sub-Theory (`← supplies`) | Import Edges | Source Files → Target Files |
-|:---|:---|---:|---|
-| `Development/AbelianVarietyTheory` | `ReciprocityTheory/ReductiveGroups` | 28,406 | 10,269 → 775 |
-| `Development/AbelianVarietyTheory` | `Formalism/LocalToGlobal` | 20,139 | 10,287 → 1,515 |
-| `Development/AutomorphicArithmetic` | `Development/AbelianVarietyTheory` | 11,790 | 5,995 → 6,616 |
-| `Development/AbelianVarietyTheory` | `Formalism/SharpRestriction` | 10,065 | 6,573 → 588 |
-| `Development/AutomorphicSpectrum` | `Development/AbelianVarietyTheory` | 7,076 | 3,133 → 1,720 |
-| `Development/WeilBound` | `Development/AutomorphicSpectrum` | 6,183 | 1,731 → 3,457 |
-| `Development/AutomorphicSpectrum` | `Development/WeilBound` | 6,148 | 4,804 → 1,005 |
-| `Development/WeilBound` | `Development/AbelianVarietyTheory` | 5,157 | 1,750 → 2,214 |
-| `Development/AutomorphicSpectrum` | `ReciprocityTheory/ReductiveGroups` | 4,336 | 2,298 → 202 |
-| `Development/AutomorphicSpectrum` | `GroundTheory/HeightsAndTheta` | 3,325 | 1,332 → 1,023 |
-| `Development/AbelianVarietyTheory` | `Formalism/LocalRingCardinality` | 3,205 | 2,601 → 81 |
-| `Development/AutomorphicArithmetic` | `Development/WeilBound` | 1,444 | 991 → 903 |
-| `Development/AbelianVarietyTheory` | `ReciprocityTheory/AnalyticForms` | 1,151 | 1,004 → 67 |
-| `Development/WeilBound` | `GroundTheory/HeightsAndTheta` | 1,087 | 250 → 740 |
-| `Development/AutomorphicSpectrum` | `CompanionTheory/SpectralGeometry` | 954 | 368 → 212 |
+Even though the underlying module-level dependency graph has **zero cycles** (`is_dag = True`), aggregating dependencies by topical folder produces bidirectional couplings (strongly connected components) between directories: Depth 1 contains **1** top-level SCC (spanning 7 domains), and Depth 2 contains **4** nontrivial sub-theory SCCs (largest spanning **99** sub-theories; **124** mutual bidirectional pairs).
+
+### Why Directory Cycles Coexist with a Module-Level DAG
+Directories organize the proof by **mathematical topic** rather than strict topological build height. Low-height specification or definition modules inside a high-level directory are referenced by higher-height proof modules in a foundational directory, while high-height synthesis modules in the first directory depend on the foundational directory:
+
+- **Specification-to-Realization Back-Flows:** `Development` depends heavily on `Formalism` and `ReciprocityTheory`, while a small number of modules in `Formalism` reference low-height parameter/character helpers inside `Development`.
+- **Co-Evolving Mathematical Pillars:** At Depth 1, `Development <-> CompanionTheory` and `Development <-> PositivityTheory` exhibit two-way interplay; at Depth 2, **`Development/WeilBound <-> Development/AutomorphicSpectrum`** are tightly coupled, as spectral decomposition and Weil-bound / Moriwaki-bigness arguments alternate across inductive stages.
+
+---
+
+## 4. Major Cross-Theory Mathematical Flows (Depth 2)
+
+| Source Sub-Theory (`depends on →`) | Target Sub-Theory (`← supplies`) | Import Edges | Source → Target Files | Mathematical Connection |
+|:---|:---|---:|---|:---|
+| `Development/AbelianVarietyTheory` | `ReciprocityTheory/ReductiveGroups` | 28,406 | 10,269 → 775 | PEL Shimura toroidal compactifications, Mumford semiabelian uniformisations, and polarized abelian scheme laws |
+| `Development/AbelianVarietyTheory` | `Formalism/LocalToGlobal` | 20,139 | 10,287 → 1,515 | Indefinite/definite unitary theta-lift stages, Siegel lattice theory, and seesaw/doubling identities |
+| `Development/AutomorphicArithmetic` | `Development/AbelianVarietyTheory` | 11,790 | 5,995 → 6,616 | Covolume bounds, literature packages (`LitN`), local Langlands axioms, and CM period comparisons |
+| `Development/AbelianVarietyTheory` | `Formalism/SharpRestriction` | 10,065 | 6,573 → 588 | Formal differential theta-expression chart independence, local Bloch–Kato cohomology (`LocCoh`), and Schur norm bounds |
+| `Development/AutomorphicSpectrum` | `Development/AbelianVarietyTheory` | 7,076 | 3,133 → 1,720 | Polarized abelian scheme realizations, divisor proofs, and discrete series branching |
+| `Development/WeilBound` | `Development/AutomorphicSpectrum` | 6,183 | 1,731 → 3,457 | Mutual interplay between spectral geometry / good root towers and Moriwaki arithmetic bigness / regularized Siegel–Weil |
+| `Development/AutomorphicSpectrum` | `Development/WeilBound` | 6,148 | 4,804 → 1,005 | Regularized Siegel–Weil inputs feeding back into automorphic spectral & geometric tower stages |
+| `Development/WeilBound` | `Development/AbelianVarietyTheory` | 5,157 | 1,750 → 2,214 | De Rham/crystalline comparisons, Nef Riemann–Roch, and Nadel vanishing pairs |
+| `Development/AutomorphicSpectrum` | `ReciprocityTheory/ReductiveGroups` | 4,336 | 2,298 → 202 | Boundary charts on toroidal compactifications and semiabelian scheme models |
+| `Development/AutomorphicSpectrum` | `GroundTheory/HeightsAndTheta` | 3,325 | 1,332 → 1,023 | Arakelov Hermitian vector bundles, Bost–Zhang slope inequalities, and DVR pairing flag independence |
+| `Development/AbelianVarietyTheory` | `Formalism/LocalRingCardinality` | 3,205 | 2,601 → 81 | Master CM host and self-dual Hermitian lattice package (`D7`) and Fontaine period-ring identifications (`LocTied`) |
+| `Development/AutomorphicArithmetic` | `Development/WeilBound` | 1,444 | 991 → 903 | Moriwaki bigness, étale finiteness, and resolution inputs feeding automorphic-arithmetic thresholds |
+| `Development/AbelianVarietyTheory` | `ReciprocityTheory/AnalyticForms` | 1,151 | 1,004 → 67 | Cross-theory module dependency flow |
+| `Development/WeilBound` | `GroundTheory/HeightsAndTheta` | 1,087 | 250 → 740 | Cross-theory module dependency flow |
+| `Development/AutomorphicSpectrum` | `CompanionTheory/SpectralGeometry` | 954 | 368 → 212 | Cross-theory module dependency flow |
+
+---
+
+## 5. Regenerating & Validating
+
+```bash
+# Rebuild dependency graphs for this Lean version via the orchestrator
+python3 analysis/build_all.py --version original-2026-11-20 --steps dep_graphs
+
+# Or run standalone against specific SQLite/source paths:
+python3 analysis/dependency_graph/build_dep_graphs.py --help
+```
 

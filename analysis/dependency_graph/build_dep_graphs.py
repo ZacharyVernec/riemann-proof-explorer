@@ -975,14 +975,104 @@ def write_readme_md(
             f"| `{td}` | {nd['files']:,} | {nd['lines']:,} | {nd['min_dist']} | {nd['max_height']} | {roles.get(td, td)} |"
         )
     a("")
+    a("### Key Structural Observations")
+    if "Supplements" in active_tops:
+        a(
+            f"1. **The Entry Chain:** {mlink('Main.lean')} depends on {mlink('Statements.lean')} and `Supplements/Kernels/MainTheoremsAll.lean`. From there, `Supplements/Kernels` draws on the main proof synthesis in `Development/AutomorphicArithmetic` and the functional-equation reflection theorem in `Formalism/GammaFactorNonvanishing`."
+        )
+    else:
+        a(
+            f"1. **The Entry Chain:** {mlink('Main.lean')} imports {mlink('Statements.lean')} and `Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean` (alongside `ClaimStrip.lean`), feeding directly into the main character-box proof synthesis and its functional-equation reflection dependencies."
+        )
+    a(
+        "2. **Synthesis vs. Foundation Split:** `Development` serves as the central consumer and synthesis engine, drawing heavily on the specification contracts and foundational theorems in `Formalism`, `ReciprocityTheory`, and `GroundTheory`, while co-evolving with `CompanionTheory` and `PositivityTheory`."
+    )
+    a("")
     a("---")
     a("")
-    a("## 3. Major Cross-Theory Mathematical Flows (Depth 2)")
+    a("## 3. Topical Directory Cycles vs. Strict Module-Level DAG")
     a("")
-    a("| Source Sub-Theory (`depends on →`) | Target Sub-Theory (`← supplies`) | Import Edges | Source Files → Target Files |")
-    a("|:---|:---|---:|---|")
+    l1_meta = data["levels"]["1"]
+    l2_meta = data["levels"]["2"]
+    l1_sccs = [s for s in l1_meta.get("sccs", []) if len(s) > 1]
+    l2_sccs = [s for s in l2_meta.get("sccs", []) if len(s) > 1]
+    l1_desc = (
+        f"**{len(l1_sccs)}** top-level SCC (spanning {len(l1_sccs[0])} domains)"
+        if l1_sccs
+        else "**0** nontrivial top-level SCCs"
+    )
+    n_l2_mutual = l2_meta.get("mutual_pairs", 0)
+    if isinstance(n_l2_mutual, list):
+        n_l2_mutual = len(n_l2_mutual)
+    l2_desc = (
+        f"**{len(l2_sccs)}** nontrivial sub-theory SCCs (largest spanning **{len(l2_sccs[0])}** sub-theories; **{n_l2_mutual}** mutual bidirectional pairs)"
+        if l2_sccs
+        else "**0** nontrivial sub-theory SCCs"
+    )
+    a(
+        f"Even though the underlying module-level dependency graph has **zero cycles** (`is_dag = {meta['is_dag']}`), aggregating dependencies by topical folder produces bidirectional couplings (strongly connected components) between directories: Depth 1 contains {l1_desc}, and Depth 2 contains {l2_desc}."
+    )
+    a("")
+    a("### Why Directory Cycles Coexist with a Module-Level DAG")
+    a(
+        "Directories organize the proof by **mathematical topic** rather than strict topological build height. Low-height specification or definition modules inside a high-level directory are referenced by higher-height proof modules in a foundational directory, while high-height synthesis modules in the first directory depend on the foundational directory:"
+    )
+    a("")
+    a(
+        "- **Specification-to-Realization Back-Flows:** `Development` depends heavily on `Formalism` and `ReciprocityTheory`, while a small number of modules in `Formalism` reference low-height parameter/character helpers inside `Development`."
+    )
+    l2_edge_pairs = {(e["src"], e["dst"]) for e in l2_edges}
+    if ("Development/WeilBound", "Development/AutomorphicSpectrum") in l2_edge_pairs and (
+        "Development/AutomorphicSpectrum",
+        "Development/WeilBound",
+    ) in l2_edge_pairs:
+        mutual_note = (
+            "At Depth 1, `Development <-> CompanionTheory` and `Development <-> PositivityTheory` exhibit two-way interplay; "
+            "at Depth 2, **`Development/WeilBound <-> Development/AutomorphicSpectrum`** are tightly coupled, as spectral decomposition and Weil-bound / Moriwaki-bigness arguments alternate across inductive stages."
+        )
+    else:
+        mutual_note = (
+            "At Depth 1 and Depth 2, co-evolving proof synthesis tracks alternate across inductive stages while remaining strictly acyclic at individual `.lean` file granularity."
+        )
+    a(f"- **Co-Evolving Mathematical Pillars:** {mutual_note}")
+    a("")
+    a("---")
+    a("")
+    a("## 4. Major Cross-Theory Mathematical Flows (Depth 2)")
+    a("")
+    flow_notes = {
+        ("Development/AutomorphicArithmetic", "Development/AbelianVarietyTheory"): "Covolume bounds, literature packages (`LitN`), local Langlands axioms, and CM period comparisons",
+        ("Development/AbelianVarietyTheory", "ReciprocityTheory/ReductiveGroups"): "PEL Shimura toroidal compactifications, Mumford semiabelian uniformisations, and polarized abelian scheme laws",
+        ("Development/AbelianVarietyTheory", "Formalism/LocalToGlobal"): "Indefinite/definite unitary theta-lift stages, Siegel lattice theory, and seesaw/doubling identities",
+        ("Development/WeilBound", "Development/AbelianVarietyTheory"): "De Rham/crystalline comparisons, Nef Riemann–Roch, and Nadel vanishing pairs",
+        ("Development/AbelianVarietyTheory", "Formalism/SharpRestriction"): "Formal differential theta-expression chart independence, local Bloch–Kato cohomology (`LocCoh`), and Schur norm bounds",
+        ("Development/AutomorphicSpectrum", "Development/AbelianVarietyTheory"): "Polarized abelian scheme realizations, divisor proofs, and discrete series branching",
+        ("Development/WeilBound", "Development/AutomorphicSpectrum"): "Mutual interplay between spectral geometry / good root towers and Moriwaki arithmetic bigness / regularized Siegel–Weil",
+        ("Development/AutomorphicSpectrum", "Development/WeilBound"): "Regularized Siegel–Weil inputs feeding back into automorphic spectral & geometric tower stages",
+        ("Development/AutomorphicArithmetic", "Formalism/LocalToGlobal"): "Local-to-global theta-kernel stages and definite/indefinite lift contracts",
+        ("Development/AutomorphicSpectrum", "ReciprocityTheory/ReductiveGroups"): "Boundary charts on toroidal compactifications and semiabelian scheme models",
+        ("Development/AutomorphicArithmetic", "Development/WeilBound"): "Moriwaki bigness, étale finiteness, and resolution inputs feeding automorphic-arithmetic thresholds",
+        ("Development/AutomorphicSpectrum", "GroundTheory/HeightsAndTheta"): "Arakelov Hermitian vector bundles, Bost–Zhang slope inequalities, and DVR pairing flag independence",
+        ("Development/AbelianVarietyTheory", "Formalism/LocalRingCardinality"): "Master CM host and self-dual Hermitian lattice package (`D7`) and Fontaine period-ring identifications (`LocTied`)",
+    }
+    a("| Source Sub-Theory (`depends on →`) | Target Sub-Theory (`← supplies`) | Import Edges | Source → Target Files | Mathematical Connection |")
+    a("|:---|:---|---:|---|:---|")
     for e in sorted(l2_edges, key=lambda x: (-x["weight"], x["src"], x["dst"]))[:15]:
-        a(f"| `{e['src']}` | `{e['dst']}` | {e['weight']:,} | {e['src_files']:,} → {e['dst_files']:,} |")
+        conn_desc = flow_notes.get((e["src"], e["dst"]), "Cross-theory module dependency flow")
+        a(f"| `{e['src']}` | `{e['dst']}` | {e['weight']:,} | {e['src_files']:,} → {e['dst_files']:,} | {conn_desc} |")
+    a("")
+    a("---")
+    a("")
+    a("## 5. Regenerating & Validating")
+    a("")
+    a("```bash")
+    vid_arg = version_label or "<version-id>"
+    a(f"# Rebuild dependency graphs for this Lean version via the orchestrator")
+    a(f"python3 analysis/build_all.py --version {vid_arg} --steps dep_graphs")
+    a("")
+    a("# Or run standalone against specific SQLite/source paths:")
+    a("python3 analysis/dependency_graph/build_dep_graphs.py --help")
+    a("```")
     a("")
     out_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 

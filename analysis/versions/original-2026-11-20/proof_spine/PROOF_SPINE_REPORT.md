@@ -76,6 +76,14 @@ There are **5,927** foundational leaf modules (`615,171` lines, `21,610` theorem
 
 ## 2. Stratigraphic Layering Across Top-Level Theories
 
+The mathematical domains stratify naturally into five functional layers from the apex down to the base:
+
+1. **Apex & Analytic Reflection Layer (`(root)`, `Supplements`, `Formalism/GammaFactorNonvanishing`):** Converts universal right half-plane nonvanishing (`EveryCharacter`) into RH and GRH via Euler-factor stripping (`ClaimStrip`) and functional-equation reflection (`CritLine`, `RhOfRight`).
+2. **Upper Automorphic & Positivity Synthesis (`PositivityTheory`, upper `Development`):** Constructs parallel weight-one Hilbert Eisenstein series, Rankin–Selberg zeta integrals, local–global Galois representations, modularity-lifting patching reductions, and windowed Chebyshev character boxes.
+3. **Core Geometric & Representation-Theoretic Engine (`Development/AbelianVarietyTheory`, `Development/AutomorphicSpectrum`, `Development/WeilBound`, `CompanionTheory`):** Develops polarized abelian schemes, de Rham and crystalline comparisons, Moriwaki arithmetic bigness, Harish-Chandra discrete series characters (`DSInfCharCap`), and Flath factorizations.
+4. **Specification & Harmonic-Analytic Infrastructure (`Formalism`):** Provides local-to-global theta-lift stage contracts (`LinksStage`), differential operator chart-independence, the master CM host package (`D7`), local Bloch–Kato orthogonality (`LocCoh`), and local Tate duality.
+5. **Algebraic-Geometric, Cohomological & Arakelov Bedrock (`ReciprocityTheory`, `GroundTheory`, `Lemmata`):** Supplies PEL Shimura toroidal compactifications (`UniformisationConclusion`), uniqueness of Mumford uniformisations (`UnifUniqSt`), polarized abelian scheme laws, Arakelov Bost–Zhang slope bounds (`KernelsLattice`), Whittaker multiplicity one, and Poitou–Tate duality.
+
 | Top Directory | Files | Lines | Leaves | Dist (min/med/max) | Height (med/max) |
 |---|---:|---:|---:|---|---|
 | `Development` | 141,928 | 12,232,663 | 4,265 | 2 / 14.0 / 43 | 48.0 / 198 |
@@ -113,7 +121,7 @@ There are **5,927** foundational leaf modules (`615,171` lines, `21,610` theorem
 
 ## 3. Dominator Bottleneck Spine (Cooper–Harvey–Kennedy)
 
-Every dependency path from `Main.lean` to a module passes through its dominators (`242` skeleton nodes with dominated subtree size `≥ 300`). Top mandatory bottlenecks:
+In the dependency DAG rooted at `Main.lean`, a module $d$ **dominates** a module $u$ if *every* dependency path from `Main.lean` to $u$ must pass through $d$ (242 skeleton nodes with dominated subtree size `≥ 300`). Top mandatory bottlenecks:
 
 | Rank | Dom Subtree | Depth | Dist / H | Top Dir | Module |
 |---:|---:|---:|---:|---|---|
@@ -170,6 +178,8 @@ The longest dependency chain spans **202 edges (203 modules)** across **1,008** 
 ---
 
 ## 5. Top Cross-Theory Bridges & Path-Stress Hubs
+
+Modules ranked by **Brandes weighted cross-directory betweenness** (`brandes_weighted_cross_top`) alongside cross-directory fan-in × fan-out (`Cross Fan`), identifying high-stress interfaces connecting distinct top-level mathematical theories:
 
 | Rank | Brandes Cross-Dir | Cross Fan (In×Out) | In / Out | Top Dir | Module |
 |---:|---:|---:|---:|---|---|

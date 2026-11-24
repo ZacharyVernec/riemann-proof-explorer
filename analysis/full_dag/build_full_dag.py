@@ -12,6 +12,7 @@ import math
 import re
 import shutil
 import sqlite3
+import statistics
 import struct
 import subprocess
 import sys
@@ -42,6 +43,19 @@ BASE_PALETTE = [
     "#4f46e5",
     "#111827",
 ]
+
+PALETTE_NAMES = {
+    "#2563eb": "Blue",
+    "#ea580c": "Orange",
+    "#ca8a04": "Gold / Amber",
+    "#0d9488": "Teal",
+    "#059669": "Emerald green",
+    "#c026d3": "Fuchsia / Magenta",
+    "#7c3aed": "Violet / Purple",
+    "#64748b": "Slate gray",
+    "#4f46e5": "Indigo",
+    "#111827": "Charcoal / Near-black",
+}
 
 NOVEL_HEADS = {
     "RiemannHypothesis",
@@ -1620,68 +1634,462 @@ def build_simplified_view(
     }
 
 
+def compute_decl_stats(db_path: Path) -> dict[str, Any]:
+    """Compute reachable declaration totals, median/mean per module, and sample dist=1 entry module from SQLite."""
+    conn = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
+    rows = conn.execute(
+        """
+        SELECT rel_path,
+               n_theorems + n_lemmas + n_defs + n_structures + n_other_decls AS n_decls,
+               dist_from_main
+        FROM modules
+        WHERE reachable_from_main = 1
+        ORDER BY dist_from_main ASC, rel_path ASC
+        """
+    ).fetchall()
+    conn.close()
+    decls = [int(r[1]) for r in rows]
+    n = len(decls)
+    total_decls = sum(decls)
+    single_decls = sum(1 for d in decls if d == 1)
+    ex_mod = None
+    for rel, _, dist_m in rows:
+        if dist_m == 1 and rel != "Statements.lean":
+            ex_mod = rel
+            break
+    if ex_mod is None:
+        ex_mod = rows[1][0] if len(rows) > 1 else (rows[0][0] if rows else "Main.lean")
+    med_raw = statistics.median(decls) if n else 0
+    med_val: int | float = int(med_raw) if float(med_raw).is_integer() else round(float(med_raw), 1)
+    return {
+        "total_decls": total_decls,
+        "median_decls": med_val,
+        "mean_decls": round(total_decls / n, 2) if n else 0.0,
+        "single_decl_modules": single_decls,
+        "single_decl_pct": round(100.0 * single_decls / n, 1) if n else 0.0,
+        "example_second_module": ex_mod,
+    }
+
+
+def _short_mod_name(rel_path: str) -> str:
+    p = rel_path[:-5] if rel_path.endswith(".lean") else rel_path
+    parts = p.split("/")
+    return "/".join(parts[-2:]) if len(parts) >= 2 else p
+
+
+def _stem_name(rel_path: str) -> str:
+    return Path(rel_path).stem
+
+
 def render_full_dag_md(
     summary: dict[str, Any],
     meta: dict[str, Any],
+    decl_stats: dict[str, Any] | None = None,
     version_label: str = "",
     rel_src_label: str = "src/",
 ) -> str:
-    """Render FULL_DAG.md dynamically from layout_summary and meta.json."""
-    decl_total = sum(meta.get("reachable_decl_counts", meta.get("decl_counts", {})).values())
+    """Render FULL_DAG.md with full methodology, derivations, and live metrics."""
+    meta_decls = sum(meta.get("reachable_decl_counts", meta.get("decl_counts", {})).values())
+    ds = decl_stats or {}
+    decl_total = ds.get("total_decls") or meta_decls
     n_mod = summary["node_count"]
     n_edges = summary["edge_count"]
     n_layers = summary["num_layers"]
+    h_max = max(0, n_layers - 1)
+    lm = summary["layout_metrics"]
+    lw = lm["layer_widths"]
+
     col = summary["collapsed"]
+    clm = col["layout_metrics"]
+    clw = clm["layer_widths"]
     fh = summary["full_hasse"]
     eh = summary["existing_hasse"]
     simp = summary["simplified"]
     payload = summary["payload"]
 
+    med_decls = ds.get("median_decls", "—")
+    mean_decls = ds.get("mean_decls", round(decl_total / max(1, n_mod), 2))
+    single_mods = ds.get("single_decl_modules", 0)
+    single_pct = ds.get("single_decl_pct", 0.0)
+    ex_second = ds.get("example_second_module", "Statements.lean")
+    ex_second_mod = ex_second[:-5].replace("/", ".") if ex_second.endswith(".lean") else ex_second.replace("/", ".")
+    decl_ratio = round(decl_total / max(1, n_mod), 1)
+
+    fh_red_pct = 100.0 * fh["redundant_edge_count"] / max(1, n_edges)
+    eh_red_pct = 100.0 * eh["redundant_edge_count"] / max(1, col["edge_count"])
+
+    fs_sm = simp.get("full_simp", {})
+    fhs_sm = simp.get("full_hasse_simp", {})
+    top_sup = col["top_supernodes"][0] if col.get("top_supernodes") else None
+    top_fhs_node = fhs_sm.get("top_weighted_nodes", [None])[0]
+
     ver_note = f" (`{version_label}`)" if version_label else ""
+    vid_cmd = version_label or "<version-id>"
+    src_no_slash = rel_src_label.rstrip("/")
+
     lines: list[str] = []
     a = lines.append
     a(f"# Full Lean Module Dependency DAG{ver_note}")
     a("")
-    a(
-        f"This document summarizes the deterministic Sugiyama layout, binary data packaging, graph-simplification modes, and WebGL visualization for `{rel_src_label}` (**{n_mod:,} reachable modules**, **{n_edges:,} internal import edges**, **{n_layers} layers**) in [full_dag.html](full_dag.html)."
-    )
+    a("This document describes the repeatable layout pipeline, binary data packaging, graph-simplification modes, and WebGL visualization behind the interactive full-graph viewer:")
     a("")
-    a("> **Direction Convention:** Every node represents a `.lean` module under the source tree. A directed edge **`A -> B`** means **`A` imports `B`** (`A` depends on `B`). Top-level theorem modules sit at the top (`layer 0`), and foundational leaves sit below.")
+    a("- **Interactive Viewer:** [full_dag.html](full_dag.html) (pan and zoom across all modules and import edges, with three composable simplification switches: **Collapse existing theory** `C`, **Hide redundant imports** `H`, and **Collapse chains & leaves** `L`, plus the **Max depth** BFS filter `[` / `]`)")
+    a("- **Layout Generator:** [build_full_dag.py](build_full_dag.py)")
+    a("- **Layout Summary:** [layout_summary.json](layout_summary.json)")
+    a("- **SQLite Indexer:** [build_index.py](../build_index.py)")
+    a("- **Existing-Theory Inventory & Methodology:** [PUBLISHED_THEOREMS_INVENTORY.html](../published_theorems/PUBLISHED_THEOREMS_INVENTORY.html) ([Markdown](../published_theorems/PUBLISHED_THEOREMS_INVENTORY.md))")
+    a("")
+    a(
+        f"> **Direction Convention:** Every node represents a `.lean` module under `{src_no_slash}`. A directed edge **`A -> B`** means **`A` imports `B`** (`A` depends on `B`). Top-level theorem modules sit at the top (`layer 0`), and foundational definitions and leaf modules sit below (`layer 1..{h_max}`)."
+    )
     a("")
     a("---")
     a("")
-    a("## 1. Scale & Simplification Modes")
-    a("")
-    a("| View Mode | Active Controls | Nodes | Edges | Layers |")
-    a("|---|---|---:|---:|---:|")
-    a(f"| **Full DAG** | Default (`C=off, H=off, L=off`) | {n_mod:,} | {n_edges:,} | {n_layers} |")
-    a(f"| **Full Hasse** | `H` (Transitive reduction) | {n_mod:,} | {fh['edge_count']:,} | {n_layers} |")
-    a(f"| **Existing-Theory Collapse** | `C` ({col['supernode_count']} literature supernodes) | {col['node_count']:,} | {col['edge_count']:,} | {col['num_layers']} |")
-    a(f"| **Existing-Theory Hasse** | `C + H` | {col['node_count']:,} | {eh['edge_count']:,} | {col['num_layers']} |")
-    for skey, sinfo in simp.items():
-        a(f"| **Chain/Leaf Simplified (`{skey}`)** | `L` | {sinfo['node_count']:,} | {sinfo['edge_count']:,} | {sinfo['num_layers']} |")
+    a("## 1. Why Modules Rather Than Individual Statements?")
     a("")
     a(
-        f"- **Existing-Theory Contraction:** Collapses **{col['collapsed_module_count']:,}** modules ({100.0 * col['collapsed_module_count'] / max(1, n_mod):.1f}% of reachable codebase, anchored at **{col['frontier_module_count']:,}** proof-root frontier modules) into **{col['supernode_count']} Literature Supernodes**, leaving **{col['active_node_count']:,}** novel/shared interface modules."
+        f"In Lean 4, a **module** corresponds 1-to-1 with a single `.lean` source file under `{rel_src_label}` (the compilation unit that produces one `.olean` binary). For instance, `{rel_src_label}Main.lean` is module `Main`, and `{rel_src_label}{ex_second}` is module `{ex_second_mod}`. Each module begins with explicit `import` headers declaring its dependencies, and because Lean forbids circular imports, the module import graph is guaranteed to be a strict DAG."
     )
-    a(f"- **Declarations Indexed (Reachable):** **{decl_total:,}** Lean declarations across `{rel_src_label}`.")
+    a("")
+    a("Inside those modules live individual **declarations** (`theorem`, `lemma`, `def`, `structure`, `class`, `inductive`, `abbrev`, `instance`). A finer-grained **declaration-level DAG**—linking every declaration to the exact constants referenced in its type and proof term—is not tracked here for three reasons:")
+    a("")
     a(
-        f"- **Binary Packaging (`LDAG` v{payload['format_version']}):** `{payload['raw_binary_bytes']:,}` raw bytes → `{payload['gzip_bytes']:,}` gzip bytes → `{payload['js_file_bytes']:,}` JS bytes (`full_dag_data.js`)."
+        f"1. **Accurate extraction requires full compilation:** Lean 4 proofs rely heavily on tactics (`simp`, `linarith`, `ring`, `aesop`, etc.), typeclass synthesis, coercions, and `open`ed namespaces, so many dependencies never appear explicitly by name in raw `.lean` source text. Recovering true declaration-level edges requires compiling the entire codebase to `.olean` files and inspecting Lean's elaborated `Environment` (for example, `Expr.getUsedConstants` on each `ConstantInfo`). By contrast, module `import` statements are explicit syntax at the top of every file, allowing [build_index.py](../build_index.py) to extract the exact module DAG deterministically from `{rel_src_label}` using only Python."
+    )
+    a(
+        f"2. **Scale and architectural clarity:** Across reachable modules, the codebase contains **{decl_total:,}** declarations ({decl_ratio}× the **{n_mod:,}** modules). Including tactic-elaborated and typeclass-synthesized edges would expand the graph to millions of edges, dramatically increasing layout and browser rendering cost while obscuring macro-level mathematical structure under low-level algebraic and tactic plumbing."
+    )
+    a(
+        f"3. **Modules here are fine-grained:** Across the **{n_mod:,}** reachable modules in `{rel_src_label}`, the median module contains **{med_decls}** declarations (mean `{mean_decls:.2f}`), and **{single_mods:,} modules ({single_pct:.1f}%)** contain a single declaration. The module DAG therefore closely tracks theorem-level architecture while grouping small local helper lemmas together."
     )
     a("")
-    a("## 2. Domain Breakdown & Top Imported Hubs")
+    a("---")
     a("")
-    a("| Top-Level Directory | Modules |")
-    a("|---|---:|")
+    a("## 2. End-to-End Repeatable Pipeline")
+    a("")
+    a("The visualization is generated deterministically from the Lean source tree with zero hardcoded module paths, directory names, layer counts, or fixed directory-to-color mappings. Rebuilding this version runs a single orchestrator command:")
+    a("")
+    a("```bash")
+    a(f"python3 analysis/build_all.py --version {vid_cmd} --steps full_dag")
+    a("```")
+    a("")
+    a("Or directly via `build_full_dag.py` against SQLite:")
+    a("")
+    a("```bash")
+    a(f"python3 analysis/full_dag/build_full_dag.py --db-path analysis/versions/{vid_cmd}/data/graph.sqlite --out-dir analysis/versions/{vid_cmd}/full_dag")
+    a("```")
+    a("")
+    a("The pipeline executes five stages:")
+    a("")
+    a(f"1. **Source Indexing (`analysis/build_index.py`):** Walks `{rel_src_label}` in sorted relative-path order, parses `import` statements, builds the deduplicated internal module import graph, and writes `graph.sqlite` and `meta.json`.")
+    a("2. **Acyclicity Verification (`load_graph` + Kahn's topological sort):** Loads all reachable modules ordered deterministically by `(rel_path, id)` and runs Kahn's topological algorithm from roots ($\\text{in\\_degree} = 0$). If any import cycle exists, the pipeline aborts immediately with an error.")
+    a("3. **Deterministic 3-Stage Sugiyama Layout (`compute_layout`):** Assigns integer layer coordinates $y(u)$ and continuous non-overlapping horizontal coordinates $x(u)$, then scales vertical spacing dynamically to preserve a readable widescreen aspect ratio.")
+    a("4. **Graph Simplification & Multi-View Weighted Layouts (`build_collapsed_dag`, `compute_transitive_reduction`, `simplify_chains_and_leaves`):**")
+    a(f"   - Applies the inventory-driven proof-frontier cut to contract peer-reviewed background proofs into **{col['supernode_count']} Literature Supernodes** (`existing`).")
+    a("   - Computes exact transitive reduction (Hasse diagrams) on both the full DAG (`full_hasse`) and existing-theory DAG (`existing_hasse`), packing 1-bit-per-edge masks for zero-jump in-place toggling.")
+    a("   - Runs a 2-phase fixed-point chain/leaf collapse (`simplify_chains_and_leaves`) across all four `(existing, hasse)` combinations (`full_simp`, `full_hasse_simp`, `existing_simp`, `existing_hasse_simp`), computing weighted Sugiyama layouts using edge weights $w_E = \\text{mult} + \\text{chain}$.")
+    a(
+        f"5. **Canonical Re-Indexing & `LDAG` v{payload['format_version']} Packaging:** Re-indexes every node-bearing layout in `(y, x, sort_key)` order, packs typed arrays, LEB128 delta-varint CSR adjacency lists, 1-bit Hasse masks, sparse weighted-anchor records, and 1-bit-flagged weighted edge streams into a 4-byte-aligned `LDAG` v{payload['format_version']} binary buffer, compresses deterministically (`gzip` with `mtime=0`), and emits [full_dag_data.js](full_dag_data.js) alongside [layout_summary.json](layout_summary.json)."
+    )
+    a("")
+    a("---")
+    a("")
+    a("## 3. Layout Algorithm")
+    a("")
+    a(f"Drawing the complete import graph of **{n_mod:,}** modules and **{n_edges:,}** edges requires strict topological orientation (every edge pointing downward) while minimizing vertical edge spans and horizontal edge crossings.")
+    a("")
+    a("### Stage 1: Bottom-Aligned Longest-Path Layering")
+    a("")
+    a("First, module heights $h(u)$ from leaf modules ($\\text{out\\_degree} = 0$) are computed in reverse topological order:")
+    a("")
+    a("$$h(u) = \\begin{cases} 0 & \\text{if } \\text{out}(u) = \\emptyset, \\\\ 1 + \\max_{(u, v) \\in E} h(v) & \\text{otherwise.} \\end{cases}$$")
+    a("")
+    a(f"Setting initial vertical rank $y_0(u) = H_{{\\max}} - h(u)$ places the root entry module (`Main`, $h = {h_max}$) at $y = 0$ and guarantees $y_0(v) \\ge y_0(u) + 1$ for every edge $(u, v) \\in E$.")
+    a("")
+    a("### Stage 2: Feasible $L_1$ Vertical Rank Tightening")
+    a("")
+    a("Bottom-aligned layering leaves intermediate modules with fewer outgoing than incoming dependencies sitting deeper than necessary. To reduce total vertical edge length $\\sum_{(u,v)\\in E} (y(v) - y(u))$ while strictly preserving the DAG invariant $y(v) \\ge y(u) + 1$, the generator runs up to 25 alternating topological and reverse-topological coordinate-descent sweeps.")
+    a("")
+    a("At each node $u$, the feasible integer interval imposed by its neighbors is:")
+    a("")
+    a("$$\\ell(u) = \\begin{cases} 0 & \\text{if } \\text{in}(u) = \\emptyset, \\\\ \\max_{(p, u) \\in E} y(p) + 1 & \\text{otherwise,} \\end{cases} \\qquad r(u) = \\begin{cases} H_{\\max} & \\text{if } \\text{out}(u) = \\emptyset, \\\\ \\min_{(u, c) \\in E} y(c) - 1 & \\text{otherwise.} \\end{cases}$$")
+    a("")
+    a("Since the local derivative of total edge span with respect to $y(u)$ is $|\\text{in}(u)| - |\\text{out}(u)|$:")
+    a("- If $|\\text{in}(u)| > |\\text{out}(u)|$, $u$ moves to $\\ell(u)$ (pulled upward toward its importers).")
+    a("- If $|\\text{out}(u)| > |\\text{in}(u)|$, $u$ moves to $r(u)$ (pulled downward toward its dependencies).")
+    a("- If $|\\text{in}(u)| = |\\text{out}(u)|$, $u$ moves to the rounded mean of its neighbors clamped to $[\\ell(u), r(u)]$.")
+    a("")
+    a(
+        f"Across the full graph, these sweeps reduce mean vertical edge span from **{lm['init_avg_y_span']:.3f}** layers to **{lm['final_avg_y_span']:.3f}** layers, placing **{lm['span_eq_1_edges']:,}** edges on adjacent layers ($\\Delta y = 1$) and **{lm['span_le_5_edges']:,}** edges within $\\Delta y \\le 5$."
+    )
+    a("")
+    a("### Stage 3: Weighted Barycenter Ordering & Isotonic $L_2$ Placement")
+    a("")
+    a(f"Nodes are grouped into layers $L_0, \\dots, L_{{{h_max}}}$, initially sorted by `rel_path` and centered with unit spacing. The generator then executes {lm['x_sweeps_run']} alternating top-down and bottom-up sweeps:")
+    a("")
+    a("1. **Inverse-Span Weighted Barycenter:** For every node $u \\in L_k$, its target horizontal position $\\bar{x}(u)$ averages both incoming and outgoing neighbors weighted by $w(u, v) = |y(u) - y(v)|^{-1}$ so short-span edges pull more strongly than long-span cross-layer edges:")
+    a("")
+    a("$$\\bar{x}(u) = \\frac{\\sum_{v \\in \\text{in}(u) \\cup \\text{out}(u)} \\frac{x(v)}{|y(u) - y(v)|}}{\\sum_{v \\in \\text{in}(u) \\cup \\text{out}(u)} \\frac{1}{|y(u) - y(v)|}}.$$")
+    a("")
+    a("2. **Permutation & Relaxation:** During the first 10 sweeps, each layer is re-sorted by $(\\bar{x}(u), \\text{rel\\_path}(u))$ to eliminate crossings; during the final sweeps, the layer ordering is held fixed while coordinates relax smoothly.")
+    a("3. **Pool-Adjacent-Violators (PAV) Isotonic Projection:** Within each ordered layer $u_0, \\dots, u_{m-1}$, coordinates are projected onto the non-overlap polytope $x(u_{i+1}) - x(u_i) \\ge 1.0$ by solving the exact $O(m)$ isotonic $L_2$ regression problem $\\min \\sum_{i=0}^{m-1} (x_i - \\bar{x}(u_i))^2$ via the Pool-Adjacent-Violators algorithm on $z_i = x_i - i$ with target $t_i = \\bar{x}(u_i) - i$.")
+    a("")
+    a(
+        f"This stage reduces mean horizontal edge span $|\\Delta x|$ from **{lm['init_avg_x_span']:.3f}** units to **{lm['final_avg_x_span']:.3f}** units, while enforcing a strict minimum horizontal gap of **{summary['min_intra_layer_gap'] or 1.0:.1f}** world unit between adjacent nodes in every layer."
+    )
+    a("")
+    a(
+        f"Finally, layer vertical spacing $\\Delta y$ is computed dynamically from total horizontal span $W_x = x_{{\\max}} - x_{{\\min}}$ and layer count $K$ as $\\Delta y = \\text{{clamp}}\\!\\left(\\frac{{W_x}}{{1.85 \\cdot (K - 1)}},\\, 4.0,\\, 12.0\\right)$, yielding $\\Delta y = {summary['layer_dy']:.4f}$ and an overall aspect ratio of **{summary['aspect_ratio']:.2f} : 1**."
+    )
+    a("")
+    a("---")
+    a("")
+    a("## 4. Refactor-Resilience Guarantees")
+    a("")
+    a("- **Zero Hardcoded Names or Counts:** Every top-level directory (`top_dir`) is discovered dynamically from `graph.sqlite`, sorted deterministically by `(-module_count, top_dir)`, and colored from a fixed high-contrast light-theme categorical palette (with a deterministic golden-angle HSL fallback beyond 10 directories).")
+    a("- **Deterministic Tie-Breaking & Bit-Exact Output:** Node ordering ties break on `rel_path`, canonical IDs are sorted by `(layer, x, rel_path)`, and gzip compression uses `mtime=0`, ensuring repeated runs on unchanged sources emit byte-identical outputs.")
+    a(
+        f"- **Invariant Checks:** Across all 8 composable views, the generator verifies zero self-loops, exact topological completeness (`len(topo) == N`), strict downward edge monotonicity ($y(u) < y(v)$ and $\\text{{id}}(u) < \\text{{id}}(v)$), intra-layer non-overlap ($\\Delta x \\ge 1.0$), exact Hasse bitmask counts (`{fh['edge_count']:,}` for `full_hasse`, `{eh['edge_count']:,}` for `existing_hasse`), zero remaining unprotected simple leaves or `(1,1)` pass-through nodes after fixed-point simplification, and exact module conservation ($\\sum_{{v \\in V}} w(v) + \\sum_{{e \\in E}} \\text{{chain}}(e) = {n_mod:,}$) before writing output."
+    )
+    a("")
+    a("---")
+    a("")
+    a("## 5. Simplification Modes, Weights & `LDAG` v3 Architecture")
+    a("")
+    a("The viewer provides three orthogonal, composable toggles that switch smoothly between **8 pre-verified graph views**:")
+    a("")
+    a(f"1. **Collapse existing theory (`C`):** Contracts established peer-reviewed mathematical proofs into **{col['supernode_count']} Literature Supernodes**.")
+    a("2. **Hide redundant imports (`H`):** Applies exact transitive reduction (the Hasse diagram), hiding shortcut import edges that are already implied by longer dependency paths.")
+    a("3. **Collapse chains & leaves (`L`):** Folds private simple-leaf subtrees upward into weighted parent anchor nodes (`Anchor [w]`) and contracts pass-through `(1,1)` chains onto weighted dependency edges.")
+    a("")
+    a("### 5.1 Existing-Theory Proof-Frontier Cut (\"Collapse existing theory\")")
+    a("")
+    a("The **\"Collapse existing theory\"** toggle in [full_dag.html](full_dag.html) (keyboard shortcut `C`) lets readers hide subtrees of the Lean codebase proving already-established peer-reviewed mathematics while preserving every novel theorem, shared interface specification, and statement contract.")
+    a("")
+    a("Following the identification methodology in [PUBLISHED_THEOREMS_INVENTORY.md](../published_theorems/PUBLISHED_THEOREMS_INVENTORY.md#methodology-identifying-collapsible-existing-theory-proof-subtrees), `build_full_dag.py`:")
+    a("")
+    a("1. Parses audited peer-reviewed `Prop` identifiers and bold canonical literature titles from Sections 1–11 of the active inventory (excluding Section 12 project-specific statements and internal scaffolding).")
+    a("2. Enforces the SQLite defining-module ancestor guard and scans final conclusion heads of `theorem`/`lemma` declarations while excluding `*/Definitions/*`, assumed hypothesis-bundle projections/dispatchers (`OpenImageCondition`, `OpenLiteratureStatements`, etc.), novel headline modules, and multi-topic re-export barrels.")
+    if col["dead_edges_pruned"] > 0:
+        a(
+            f"3. Performs reachability from `Main` without crossing outgoing edges of detected proof roots while pruning **{col['dead_edges_pruned']}** provably dead bridge imports whose targets lie strictly below the baseline published-theorem frontier."
+        )
+    else:
+        a("3. Performs reachability from `Main` without crossing outgoing edges of detected proof roots so proof-only interiors are isolated without disconnecting active mathematical interfaces.")
+    a("")
+    a(
+        f"Modules unreachable from `Main` past the proof-frontier cut form the **proof-only interior** $C$ (`{col['interior_module_count']:,}` modules), while reached proof-root modules form the **frontier** $F$ (`{col['frontier_module_count']:,}` modules). Grouping frontier roots into **{col['supernode_count']} Literature Supernodes** $S_T$ rendered as **diamond axiom sinks** ($\\text{{out\\_degree}} = 0$) and assigning every $v \\in C$ via deterministic multi-source BFS yields a complete disjoint partition:"
+    )
+    a("")
+    a(f"$$|A| + \\sum_{{T}} |S_T| = {col['active_node_count']:,} + {col['collapsed_module_count']:,} = {n_mod:,}.$$")
+    a("")
+    ex_sup_str = f" (for example, `{top_sup['title']} [{top_sup['owned_modules']:,}]`)" if top_sup else ""
+    a(
+        f"Each supernode displays its canonical literature title and collapsed module count in brackets{ex_sup_str}. Contracting parallel frontier imports from an active module $u \\in A$ to $S_T$ induces edge multiplicity weights (**{col['super_edge_count']:,}** contracted supernode edges from **{col['raw_super_edge_count']:,}** raw frontier imports, with **{col['weighted_edges_ge_2']:,}** edges having $w \\ge 2$, up to $w_{{\\max}} = {col['max_edge_weight']}$)."
+    )
+    a("")
+    a("### 5.2 Transitive Reduction (\"Hide redundant imports\" / Hasse Diagram)")
+    a("")
+    a("Lean modules frequently `import` both a downstream module $B$ and an ancestor $C$ that $B$ already imports (`A -> B -> C` alongside shortcut `A -> C`).")
+    a("")
+    a("The **\"Hide redundant imports\"** toggle (`H` hotkey) displays the DAG's **exact transitive reduction** (its Hasse diagram), keeping an edge $(u, v)$ if and only if no indirect directed path $u \\to \\dots \\to v$ of length $\\ge 2$ exists:")
+    a("")
+    a("- **Algorithm (`compute_transitive_reduction`):** Processes nodes in topological order using striped arbitrary-precision integer bitsets (stripe width $B = 16{,}384$) to compute 1-step reachability $R_1(u)$ and $\\ge 2$-step reachability $R_2(u) = \\bigvee_{(u, v) \\in E} R_1(v)$; edge $(u, v)$ is redundant iff $v \\in R_2(u)$.")
+    a(f"- **Edge Reduction (Full DAG):** Removes **{fh['redundant_edge_count']:,}** redundant edges (`{fh_red_pct:.2f}%`), leaving **{fh['edge_count']:,}** covering edges (`full_hasse`).")
+    a(f"- **Edge Reduction (Existing-Theory DAG):** Removes **{eh['redundant_edge_count']:,}** redundant edges (`{eh_red_pct:.2f}%`), leaving **{eh['edge_count']:,}** covering edges (`existing_hasse`).")
+    a(f"- **In-Place Zero-Jump Filtering:** When *Collapse chains & leaves* is off, toggling `H` keeps node coordinates fixed and swaps CSR edges using compact 1-bit masks (`full_hasse_mask` = `{payload['full_hasse_mask_bytes']:,}` B; `existing_hasse_mask` = `{payload['existing_hasse_mask_bytes']:,}` B).")
+    a("")
+    a("### 5.3 Chain & Simple-Leaf Collapse (\"Collapse chains & leaves\")")
+    a("")
+    a(
+        f"The **\"Collapse chains & leaves\"** toggle (`L` hotkey) runs `simplify_chains_and_leaves`, a deterministic 2-phase fixed-point contraction loop (on the base DAG removing **{fs_sm.get('leaves_removed', 0):,}** leaves and **{fs_sm.get('chains_removed', 0):,}** chain nodes; after transitive reduction removing **{fhs_sm.get('leaves_removed', 0):,}** leaves and **{fhs_sm.get('chains_removed', 0):,}** chain nodes):"
+    )
+    a("")
+    a("1. **Phase 1 — Simple-Leaf Folding into Node Weight (`in = 1, out = 0`):** Iteratively peels every unprotected node $u$ with a single importer $p$ and zero internal dependencies upward into $p$, transferring node weight and any edge chain weight:")
+    a("")
+    a("$$w(p) \\leftarrow w(p) + w(u) + \\text{chain}(p, u).$$")
+    a("")
+    ex_anchor_txt = (
+        f" (for instance, `{_stem_name(top_fhs_node['rel_path'])}` absorbs `{top_fhs_node['absorbed_leaves']}` leaves and `{top_fhs_node['absorbed_chains']}` chain modules to reach weight `{top_fhs_node['weight']}`)"
+        if top_fhs_node
+        else ""
+    )
+    a(f"Private leaf-trees collapse into weighted anchor nodes{ex_anchor_txt}. When *Collapse existing theory* is also active, all **{col['supernode_count']} Literature Supernodes** are protected from absorption so diamond landmarks remain visible.")
+    a("2. **Phase 2 — Pass-Through `(1,1)` Chain Contraction into Edge Weight:** Iteratively contracts every unprotected `(1, 1)` node $u$ along $p \\to u \\to c$ into a direct edge $(p, c)$, merging parallel paths:")
+    a("")
+    a("$$\\text{mult}(p, c) \\mathrel{+}= \\max\\!\\big(\\text{mult}(p, u),\\, \\text{mult}(u, c)\\big), \\qquad \\text{chain}(p, c) \\mathrel{+}= \\text{chain}(p, u) + \\text{chain}(u, c) + w(u).$$")
+    a("")
+    a("The combined edge weight used for layout attraction and stroke rendering is $w_E(e) = \\text{mult}(e) + \\text{chain}(e)$.")
+    a("3. **Fixed-Point Iteration & Module Conservation:** Phases 1 and 2 repeat until convergence (running *after* Hasse reduction when both `H` and `L` are active), preserving exact module conservation across every surviving view:")
+    a("")
+    a(f"$$\\sum_{{v \\in V}} w(v) + \\sum_{{e \\in E}} \\text{{chain}}(e) = {n_mod:,}.$$")
+    a("")
+    a("### 5.4 Node Labeling & Weight Encoding (Option A)")
+    a("")
+    a("- **Weighted Anchor Nodes (`Anchor [w]`):** Any active module with weight $w > 1$ renders with increased disc diameter ($w_{\\text{base}} + 0.55 \\ln(w)$) and an **inner white halo ring** (`alphaByte = 128`), labeled with its bold domain-colored `[w]` suffix.")
+    a("- **Deep-Zoom Breakdown Subtitles (`zoom >= 55`):** Single-leaf absorption ($k = 1$) names the absorbed module directly; multi-module absorption summarizes `+k collapsed (L leaves, C chain)` alongside its directory path.")
+    a("- **Weighted Edges & Badges:** Contracted edges scale in WebGL opacity, 2D stroke width ($\\log_2 w_E$), deep-zoom arrowheads, and collision-free `×m` / `+c` / `×m +c` badges at `zoom >= 6`.")
+    a("")
+    a("### 5.5 Compact Offline Payload (`LDAG` v3 in `full_dag_data.js`)")
+    a("")
+    a("Because browser `fetch()` fails under `file://` CORS restrictions, `build_full_dag.py` embeds the gzipped 4-byte-aligned little-endian `LDAG` binary container as `window.__FULL_DAG_GZ_B64__` in `full_dag_data.js` and decompresses it client-side via `DecompressionStream(\"gzip\")`:")
+    a("")
+    a(f"- **Container Sizes:** `{payload['raw_binary_bytes']:,}` raw bytes → `{payload['gzip_bytes']:,}` B gzipped (`mtime=0`) → `{payload['js_file_bytes']:,}` B JS payload (`format_version = {payload['format_version']}`).")
+    a(f"- **Base & Collapsed Sections (`v1 + v2`):** Header JSON, full-graph typed arrays & delta-varint CSR `edge_buf` (`{payload['edge_varint_bytes']:,}` B), collapsed supernode metadata (`c_super_edges_buf` = `{payload['c_super_edges_bytes']:,}` B), and `{col['dead_edges_pruned']}` pruned dead-edge pairs.")
+    a(f"- **Hasse Bitmasks & 4 Simplified Views (`v3`):** `full_hasse_mask` (`{payload['full_hasse_mask_bytes']:,}` B), `existing_hasse_mask` (`{payload['existing_hasse_mask_bytes']:,}` B), and 1-bit-flagged LEB128 CSR edge streams (`{payload['simplified_edge_varint_bytes']:,}` B across all 4 simplified views).")
+    a("")
+    a("---")
+    a("")
+    a("## 6. Viewer Legend and Visual Encoding")
+    a("")
+    a("The interactive viewer ([full_dag.html](full_dag.html)) displays a collapsible corner legend populated dynamically from `header.groups` (sorted by descending module count) and a **Max depth** BFS filter bar:")
+    a("")
+    a("| Top-Level Directory | Modules | Hex | Color |")
+    a("| :--- | ---: | :--- | :--- |")
     for dom in summary["domains"]:
-        a(f"| `{dom['name']}` | {dom['modules']:,} |")
+        cname = PALETTE_NAMES.get(dom["color"], "Golden-angle HSL")
+        a(f"| `{dom['name']}` | {dom['modules']:,} | `{dom['color']}` | {cname} |")
+    a("")
+    a("- **Future Refactor Fallback:** Beyond 10 top-level directories, `group_color()` assigns deterministic golden-angle HSL colors.")
+    a("- **Top-Right Toggle Bar & Controls:** **Collapse existing theory (`C`)**, **Hide redundant imports (`H`)**, **Collapse chains & leaves (`L`)**, plus the **Max depth** shortest-path BFS depth control (`[` / `]` hotkeys and `All` toggle) filtering nodes and edges by distance from `Main` without altering coordinates.")
+    a("")
+    a("---")
+    a("")
+    a("## 7. Current Graph & Layout Summary")
+    a("")
+    a("### 8-View Summary Matrix")
+    a("")
+    a("| View (`Existing`, `Hasse`, `Chains/Leaves`) | Nodes | Edges | Layers | Layer Spacing | Avg $\\Delta y$ | Avg $\\lvert\\Delta x\\rvert$ | Weighted Anchors ($w > 1$) | Weighted Edges ($w_E \\ge 2$) | Module Conservation |")
+    a("| :--- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |")
+    a(
+        f"| **Full DAG** (`F, F, F`) | {n_mod:,} | {n_edges:,} | {n_layers} | {summary['layer_dy']:.4f} | {lm['final_avg_y_span']:.3f} | {lm['final_avg_x_span']:.3f} | — | — | `{n_mod:,} + 0 = {n_mod:,}` |"
+    )
+    a(
+        f"| **Full + Hide redundant imports** (`F, T, F`) | {n_mod:,} | {fh['edge_count']:,} | {n_layers} | {summary['layer_dy']:.4f} | *(in-place)* | *(in-place)* | — | — | `{n_mod:,} + 0 = {n_mod:,}` |"
+    )
+    a(
+        f"| **Existing Theory** (`T, F, F`) | {col['node_count']:,} | {col['edge_count']:,} | {col['num_layers']} | {col['layer_dy']:.4f} | {clm['final_avg_y_span']:.3f} | {clm['final_avg_x_span']:.3f} | {col['supernode_count']} supernodes | {col['weighted_edges_ge_2']:,} | `{n_mod:,} + 0 = {n_mod:,}` |"
+    )
+    a(
+        f"| **Existing + Hide redundant imports** (`T, T, F`) | {col['node_count']:,} | {eh['edge_count']:,} | {col['num_layers']} | {col['layer_dy']:.4f} | *(in-place)* | *(in-place)* | {col['supernode_count']} supernodes | *(in-place)* | `{n_mod:,} + 0 = {n_mod:,}` |"
+    )
+    simp_labels = [
+        ("full_simp", "**Full + Chains & Leaves** (`F, F, T`)", False),
+        ("full_hasse_simp", "**Full + Hasse + Chains & Leaves** (`F, T, T`)", False),
+        ("existing_simp", "**Existing + Chains & Leaves** (`T, F, T`)", True),
+        ("existing_hasse_simp", "**Existing + Hasse + Chains & Leaves** (`T, T, T`)", True),
+    ]
+    for skey, slabel, has_super in simp_labels:
+        sm = simp[skey]
+        slm = sm["layout_metrics"]
+        w_node_str = (
+            f"{sm['weighted_node_count']:,} + {col['supernode_count']} super"
+            if has_super
+            else f"{sm['weighted_node_count']:,} (`max w={sm['max_node_weight']}`)"
+        )
+        cons_str = f"`{sm['total_node_weight']:,} + {sm['total_edge_chain_weight']:,} = {n_mod:,}`"
+        a(
+            f"| {slabel} | {sm['node_count']:,} | {sm['edge_count']:,} | {sm['num_layers']} | {sm['layer_dy']:.4f} | {slm['final_avg_y_span']:.3f} | {slm['final_avg_x_span']:.3f} | {w_node_str} | {sm['weighted_edge_count']:,} (`max={sm['max_edge_weight']}`) | {cons_str} |"
+        )
+    a("")
+    if fhs_sm.get("top_weighted_nodes") or fhs_sm.get("top_weighted_edges"):
+        a("### Top Weighted Anchor Nodes & Contracted Edges (`full_hasse_simp`)")
+        a("")
+        if fhs_sm.get("top_weighted_nodes"):
+            a("| Top Weighted Anchor Node (`Anchor [w]`) | Weight $w$ | Breakdown (`leaves` / `chains`) | Representative Absorbed Leaf |")
+            a("| :--- | ---: | :---: | :--- |")
+            for wn in fhs_sm["top_weighted_nodes"][:5]:
+                a(
+                    f"| `{_short_mod_name(wn['rel_path'])}` | {wn['weight']} | {wn['absorbed_leaves']} / {wn['absorbed_chains']} | `{_stem_name(wn['rep_rel_path'])}` |"
+                )
+            a("")
+        if fhs_sm.get("top_weighted_edges"):
+            a("| Top Contracted Edge (`src → dst`) | Combined Weight $w_E$ | Multiplicity (`×mult`) | Contracted Chain (`+chain`) |")
+            a("| :--- | ---: | ---: | ---: |")
+            for we in fhs_sm["top_weighted_edges"][:5]:
+                a(
+                    f"| `{_stem_name(we['src'])} → {_stem_name(we['dst'])}` | {we['weight']} | ×{we['mult']} | +{we['chain']} |"
+                )
+            a("")
+
+    a("### Full DAG Summary")
+    a("")
+    a("| Metric | Value |")
+    a("| :--- | ---: |")
+    a(f"| Total Lean Modules (Nodes) | {n_mod:,} |")
+    a(f"| Total Internal Import Edges | {n_edges:,} |")
+    a(f"| Declarations Indexed (Reachable) | {decl_total:,} |")
+    a(f"| Acyclic DAG Verified (`is_dag`) | `{str(lm['is_dag']).lower()}` |")
+    a(f"| Topological Layers | {n_layers} (`layer 0`..`{h_max}`) |")
+    a(f"| Layer Width (min / median / p95 / max) | {lw['min']:,} / {lw['median']:,} / {lw['p95']:,} / {lw['max']:,} |")
+    a(f"| Vertical Layer Spacing (`layer_dy`) | {summary['layer_dy']:.4f} |")
+    a(f"| Mean Vertical Span ($\\Delta y$ before $\\to$ after) | {lm['init_avg_y_span']:.3f} $\\to$ {lm['final_avg_y_span']:.3f} |")
+    a(f"| Mean Horizontal Span ($\\lvert\\Delta x\\rvert$ before $\\to$ after) | {lm['init_avg_x_span']:.3f} $\\to$ {lm['final_avg_x_span']:.3f} |")
+    a(f"| Adjacent / Short-Span Edges ($\\Delta y = 1$ / $\\Delta y \\le 5$) | {lm['span_eq_1_edges']:,} / {lm['span_le_5_edges']:,} |")
+    a(f"| World Aspect Ratio | {summary['aspect_ratio']:.2f} : 1 |")
+    a(f"| `LDAG` v{payload['format_version']} Payload (`full_dag_data.js`) | {payload['js_file_bytes']:,} bytes (`{payload['gzip_bytes']:,}` B gzip / `{payload['raw_binary_bytes']:,}` B raw) |")
+    a("")
+    a("### Collapsed DAG Summary (\"Collapse Existing Theory\")")
+    a("")
+    a("| Metric | Value |")
+    a("| :--- | ---: |")
+    a(f"| Collapsed View Nodes (`active + supernodes`) | {col['node_count']:,} (`{col['active_node_count']:,}` active + `{col['supernode_count']}` literature supernodes) |")
+    a(f"| Collapsed Modules Total (`frontier + interior`) | {col['collapsed_module_count']:,} (`{col['collapsed_pct']:.2f}%`: `{col['frontier_module_count']:,}` frontier + `{col['interior_module_count']:,}` interior) |")
+    a(f"| Collapsed View Edges (`active + supernode`) | {col['edge_count']:,} (`{col['active_edge_count']:,}` active + `{col['super_edge_count']:,}` supernode edges) |")
+    a(f"| Raw Frontier Imports Contracted / Max Weight | {col['raw_super_edge_count']:,} raw imports / $w_{{\\max}} = {col['max_edge_weight']}$ (`{col['weighted_edges_ge_2']:,}` edges with $w \\ge 2$) |")
+    a(f"| Targeted Dead Bridge Imports Pruned | {col['dead_edges_pruned']:,} |")
+    a(f"| Acyclic DAG Verified (`is_dag`) | `{str(clm['is_dag']).lower()}` |")
+    a(f"| Topological Layers (`c_num_layers`) | {col['num_layers']} (`layer 0`..`{max(0, col['num_layers'] - 1)}`) |")
+    a(f"| Collapsed Layer Width (min / median / p95 / max) | {clw['min']:,} / {clw['median']:,} / {clw['p95']:,} / {clw['max']:,} |")
+    a(f"| Vertical Layer Spacing (`c_layer_dy`) | {col['layer_dy']:.4f} |")
+    a(f"| Mean Vertical Span ($\\Delta y$ before $\\to$ after) | {clm['init_avg_y_span']:.3f} $\\to$ {clm['final_avg_y_span']:.3f} (`{clm['span_eq_1_edges']:,}` at $\\Delta y = 1$) |")
+    a(f"| Mean Horizontal Span ($\\lvert\\Delta x\\rvert$ before $\\to$ after) | {clm['init_avg_x_span']:.3f} $\\to$ {clm['final_avg_x_span']:.3f} |")
+    a(f"| Min Intra-Layer Gap / World Aspect Ratio | {col['min_intra_layer_gap'] or 1.0} / {col['aspect_ratio']:.2f} : 1 |")
+    a("")
+    a("### Discovered Top-Level Domains & Collapse Breakdown")
+    a("")
+    dom_col_map = {d["name"]: d for d in col.get("domain_breakdown", [])}
+    a("| Top-Level Directory | Total Modules | Active | Collapsed | Collapsed % | Palette Color | Layer Range (min / med / max) | Mean $x$ |")
+    a("| :--- | ---: | ---: | ---: | ---: | :---: | :---: | ---: |")
+    for dom in summary["domains"]:
+        cd = dom_col_map.get(dom["name"], {})
+        a(
+            f"| `{dom['name']}` | {dom['modules']:,} | {cd.get('active_modules', dom['modules']):,} | {cd.get('collapsed_modules', 0):,} | {cd.get('collapsed_pct', 0.0):.1f}% | `{dom['color']}` | {dom['min_layer']} / {dom['median_layer']} / {dom['max_layer']} | {dom['mean_x']:.2f} |"
+        )
+    a("")
+    a(f"### Top {min(20, len(col.get('top_supernodes', [])))} Collapsed Literature Supernodes")
+    a("")
+    a("| Literature Supernode Title | Owned Collapsed Modules | Full Cone Modules | Frontier Roots | Contracted In-Edges | Raw Imports |")
+    a("| :--- | ---: | ---: | ---: | ---: | ---: |")
+    for ts in col.get("top_supernodes", [])[:20]:
+        a(
+            f"| {ts['title']} | {ts['owned_modules']:,} | {ts['cone_modules']:,} | {ts['frontier_modules']} | {ts['in_edges']:,} | {ts['raw_in_edges']:,} |"
+        )
+    a("")
+    a("### Top 15 Most Imported Hub Modules")
     a("")
     a("| Top Imported Hub Module | In-Degree | Out-Degree | Layer |")
     a("|---|---:|---:|---:|")
     for hub in summary["top_in_degree_hubs"][:15]:
         a(f"| `{hub['rel_path']}` | {hub['in_degree']:,} | {hub['out_degree']:,} | {hub['layer']} |")
     a("")
-    return "\n".join(lines) + "\n"
+    a("---")
+    a("")
+    a("## 8. Regenerating After a Lean Refactor")
+    a("")
+    a("```bash")
+    a(f"# 1. Rebuild only this version's full DAG payload & sync portal reports")
+    a(f"python3 analysis/build_all.py --version {vid_cmd} --steps index,inventory,full_dag")
+    a("")
+    a(f"# 2. Or re-run build_full_dag.py standalone and regenerate HTML reports")
+    a(f"python3 analysis/full_dag/build_full_dag.py --db-path analysis/versions/{vid_cmd}/data/graph.sqlite --out-dir analysis/versions/{vid_cmd}/full_dag --version-label {vid_cmd}")
+    a("node analysis/render_reports.js")
+    a("")
+    a("# 3. Open the local analysis portal or viewer")
+    a("python3 -m http.server 8000 --directory analysis")
+    a("```")
+    a("")
+    return "\n".join(lines)
 
 
 def main() -> None:
@@ -1699,10 +2107,29 @@ def main() -> None:
     parser.add_argument("--rel-src-label", type=str, default="src/")
     parser.add_argument("--y-iters", type=int, default=25, help="Max L1 vertical rank-tightening sweeps")
     parser.add_argument("--x-sweeps", type=int, default=16, help="Horizontal barycenter + PAV sweeps")
+    parser.add_argument("--render-md-only", action="store_true", help="Regenerate FULL_DAG.md from existing layout_summary.json, meta.json, and graph.sqlite")
     args = parser.parse_args()
     SRC_DIR = args.src_dir
     meta_path = args.meta_path or (args.db_path.parent / "meta.json")
     meta_json = json.loads(meta_path.read_text(encoding="utf-8")) if meta_path.exists() else {}
+
+    if args.render_md_only:
+        summary_path = args.out_dir / "layout_summary.json"
+        summary = json.loads(summary_path.read_text(encoding="utf-8"))
+        decl_stats = compute_decl_stats(args.db_path) if args.db_path.exists() else None
+        md_path = args.out_dir / "FULL_DAG.md"
+        md_path.write_text(
+            render_full_dag_md(
+                summary,
+                meta_json,
+                decl_stats=decl_stats,
+                version_label=args.version_label,
+                rel_src_label=args.rel_src_label,
+            ),
+            encoding="utf-8",
+        )
+        print(f"Wrote {md_path} ({md_path.stat().st_size:,} bytes) via --render-md-only")
+        return
 
     t0 = time.time()
     if args.rebuild_index or not args.db_path.exists():
@@ -2292,8 +2719,15 @@ def main() -> None:
     summary_path.write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
 
     md_path = args.out_dir / "FULL_DAG.md"
+    decl_stats = compute_decl_stats(args.db_path)
     md_path.write_text(
-        render_full_dag_md(summary, meta_json, version_label=args.version_label, rel_src_label=args.rel_src_label),
+        render_full_dag_md(
+            summary,
+            meta_json,
+            decl_stats=decl_stats,
+            version_label=args.version_label,
+            rel_src_label=args.rel_src_label,
+        ),
         encoding="utf-8",
     )
 

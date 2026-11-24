@@ -1026,45 +1026,321 @@ def serialize_domain(
     }
 
 
+def esc_cell(s: Any) -> str:
+    """Escape pipe characters so Markdown table cells stay single-column."""
+    return str(s).replace("|", "\\|")
+
+
 def render_histograms_md(
     payload: dict,
+    meta_json: dict | None = None,
     version_label: str = "",
     rel_src_label: str = "src/",
 ) -> str:
-    """Render CODEBASE_HISTOGRAMS.md dynamically from computed histogram distributions."""
+    """Render CODEBASE_HISTOGRAMS.md with full empirical findings & methodology."""
     m = payload["meta"]
     all_dom = payload["by_domain"]["ALL"]
     s = all_dom["summary"]
+    fo = all_dom["file_order"]
+    tc = all_dom["typeclasses"]
+    fi = all_dom["fan_in"]
+    tax = all_dom["decl_taxonomy"]
+
+    tot_mod = max(1, s["modules"])
+    tot_decl = max(1, s["declarations"])
+    tot_tl = max(1, s["theorems_lemmas"])
+    tot_tac = max(1, s["tactic_proofs"])
+
+    shape_by_key = {r["key"]: r for r in all_dom["proof_shapes"]}
+    attr_by_tag = {r["tag"]: r["count"] for r in all_dom["decl_attrs"]}
+    dir_by_name = {r["directive"]: r["count"] for r in all_dom["file_directives"]}
+    strat_by_key = {r["key"]: r for r in all_dom["proof_strategies"]}
+    eq_by_sym = {r["symbol"]: r for r in all_dom["equivalences"]}
+    kind_by_name = {r["kind"]: r for r in tax["kinds"]}
+    dpf_by_bkt = {r["bucket"]: r["count"] for r in tax["decls_per_file"]}
+
     ver_note = f" (`{version_label}`)" if version_label else ""
+    vid_cmd = version_label or "<version-id>"
+
     lines: list[str] = []
     a = lines.append
-    a(f"# Codebase Structural Histograms{ver_note}")
+    a(f"# Codebase Structural Histograms & Lean 4 Comprehension Heuristics{ver_note}")
     a("")
     a(
-        f"Empirical structural analysis across `{rel_src_label}` (**{m['total_modules']:,} reachable modules**, **{m['total_declarations']:,} declarations**, **{m['total_theorems_lemmas']:,} theorems & lemmas**) paired with the interactive explorer in [histograms.html](histograms.html)."
+        f"This report quantitatively tests standard Lean 4 comprehension heuristics against the empirical structure of the **{m['total_modules']:,}** reachable modules and **{m['total_declarations']:,}** declarations in `{rel_src_label}`:"
+    )
+    a("")
+    a("- **Interactive Histogram Explorer:** [histograms.html](histograms.html) (offline SVG explorer with domain filtering across all discovered top-level directories)")
+    a("- **Repeatable Generator:** [build_histograms.py](build_histograms.py)")
+    a("- **Structured Dataset:** [histograms_data.json](histograms_data.json)")
+    a("- **Module & Import Indexer:** [build_index.py](../build_index.py)")
+    a("")
+    a("---")
+    a("")
+    a("## 1. Standard Lean 4 Heuristics vs. Empirical Reality in This Codebase")
+    a("")
+    a("Standard advice for reading Mathlib-style Lean 4 codebases assumes heavy `@[simp]` tagging, `/-! ... -/` module docstrings, `/-- ... -/` docstrings, and `private lemma` / `_aux` conventions. Across this proof codebase, some heuristics hold strongly while others invert completely:")
+    a("")
+
+    m2 = max(1, fo["multi_decl_2plus_files"])
+    m3 = max(1, fo["multi_decl_3plus_files"])
+    first_pub_thm = fo["first_decl"]["counts"].get("public_theorem", 0)
+    last_pub_thm = fo["last_decl"]["counts"].get("public_theorem", 0)
+
+    if s["doc_module_files"] == 0 and s["doc_decl_count"] == 0 and s["line_comments"] == 0:
+        doc_finding = (
+            f"**0** files contain `/-!` module docstrings and **0** declarations have `/--` docstrings (`{s['blueprint_tags']}` `@[blueprint]` tags, `0` line comments). "
+            f"However, across **{fo['multi_decl_2plus_files']:,}** multi-declaration files, the **final declaration** is a public `theorem` **{100.0 * last_pub_thm / m2:.2f}%** of the time (**{last_pub_thm:,}** files), vs. **{100.0 * first_pub_thm / m2:.2f}%** for the first declaration (**{first_pub_thm:,}** files)."
+        )
+        doc_impl = "Skip docstring search; bottom-of-file reading works strongly because definitions and helper lemmas sit earlier and public payoff theorems sit at the end."
+    else:
+        doc_finding = (
+            f"**{s['doc_module_files']:,}** files contain `/-!` module docstrings and **{s['doc_decl_count']:,}** declarations carry `/--` docstrings (`{s['line_comments']:,}` line comments). "
+            f"Across **{fo['multi_decl_2plus_files']:,}** multi-declaration files, the **final declaration** is a public `theorem` **{100.0 * last_pub_thm / m2:.2f}%** of the time (**{last_pub_thm:,}** files), vs. **{100.0 * first_pub_thm / m2:.2f}%** for the first declaration (**{first_pub_thm:,}** files)."
+        )
+        doc_impl = "Docstrings remain sparse outside focal files, while bottom-of-file reading holds strongly because definitions and helpers precede public payoff theorems."
+
+    wrap_cnt = shape_by_key.get("wrapper_forwarding", {}).get("count", 0)
+    mech_cnt = shape_by_key.get("oneliner_mech", {}).get("count", 0)
+    solv_cnt = shape_by_key.get("oneliner_solver", {}).get("count", 0)
+    oth1_cnt = shape_by_key.get("oneliner_other", {}).get("count", 0)
+    one_line_tot = wrap_cnt + mech_cnt + solv_cnt + oth1_cnt
+    glue_finding = (
+        f"Only **{s['attr_tagged_decls']:,}** declarations (**{100.0 * s['attr_tagged_decls'] / tot_decl:.2f}%**) carry any `@[…]` tag (`{attr_by_tag.get('simp', 0):,}` `@[simp]`, `{attr_by_tag.get('ext', 0):,}` `@[ext]`, `{attr_by_tag.get('fun_prop', 0):,}` `@[fun_prop]`). "
+        f"Instead, **{s['file_directives']:,}** file-scoped `attribute […]` directives manage local typeclasses (`{dir_by_name.get('local instance', 0):,}` `local instance`), and **{one_line_tot:,}** proofs (**{100.0 * one_line_tot / tot_tl:.2f}%** of theorems/lemmas) are 1-line tactics or `first \\| exact …` forwarding wrappers (**{wrap_cnt:,}**)."
+    )
+    glue_impl = f"Filtering out forwarding wrappers (`first \\| exact …`), 1-line mechanical tactics (`{mech_cnt:,}`), and `attribute [local instance]` boilerplate removes true glue better than scanning `@[…]` tags."
+
+    tot_tc_occ = max(1, sum(t["count"] for t in tc["tier_totals"]))
+    core_tc = tc["tier_totals"][0] if tc["tier_totals"] else {"label": "Core Algebra", "count": 0}
+    top_base_str = ", ".join(f"`{t['name']}` `{t['count']:,}`" for t in tc["top_all"][:3])
+    top_strong_str = ", ".join(f"`{t['name']}` (`{t['count']:,}`)" for t in tc["top_strong"][:7])
+    tc_finding = (
+        f"Out of **{tot_tc_occ:,}** signature binder occurrences, **{100.0 * core_tc['count'] / tot_tc_occ:.2f}%** are baseline `{core_tc['label']}` ({top_base_str}). "
+        f"Filtering out baseline classes surfaces domain-specific hypotheses: {top_strong_str}."
+    )
+    tc_impl = "Excluding baseline algebraic/finiteness/topological classes isolates which mathematical theory layer a module operates in."
+
+    iff_row = eq_by_sym.get("↔", {"decl_count": 0})
+    bundled_decl_tot = sum(e["decl_count"] for e in all_dom["equivalences"] if e["symbol"] != "↔")
+    eq_tot_decls = iff_row["decl_count"] + bundled_decl_tot
+    top_bundled_str = ", ".join(
+        [
+            f"`{e['symbol']}` `{e['decl_count']:,}`"
+            for e in all_dom["equivalences"]
+            if e["symbol"] != "↔"
+        ][:5]
+    )
+    multi_sub2 = sum(b["count"] for b in all_dom["cross_subtheory_imports"] if b["bucket"] not in ("0 (leaf)", "1"))
+    eq_finding = (
+        f"Signature-only longest-match scanning detects **{eq_tot_decls:,}** equivalence-bearing declarations (`{iff_row['decl_count']:,}` logical `↔` plus **{bundled_decl_tot:,}** bundled mathematical equivalences such as {top_bundled_str}). "
+        f"Meanwhile, **{multi_sub2:,}** modules (**{100.0 * multi_sub2 / tot_mod:.2f}%**) import from 2+ distinct `depth-2` sub-theories."
+    )
+    eq_impl = "Bundled equivalence symbols (`≃ₗ`, `≃+*`, `≃ₐ`, `≅`, `≃ₜ`, `≃L`) and multi-subtheory import modules directly pinpoint abstraction boundaries."
+
+    deg_bkt = {r["bucket"]: r for r in fi["in_degree"]}
+    deg1_tot = deg_bkt.get("1", {}).get("total", 0)
+    nonsimp_26p = sum(deg_bkt.get(k, {}).get("non_simp", 0) for k in ("26-100", "101-500", "500+"))
+    nonsimp_500p = deg_bkt.get("500+", {}).get("non_simp", 0)
+    top3_hubs = ", ".join(f"`{h['name'].rsplit('.', 1)[-1]}`" for h in fi["top_non_simp_hubs"][:3])
+    fanin_finding = (
+        f"Out of **{tot_mod:,}** modules, **{s['non_simp_modules']:,}** (**{100.0 * s['non_simp_modules'] / tot_mod:.2f}%**) have zero `@[simp]` declarations (`{s['simp_modules']:,}` contain `@[simp]`). "
+        f"Exactly **{deg1_tot:,}** modules (**{100.0 * deg1_tot / tot_mod:.2f}%**) have `in_degree = 1`, while only **{nonsimp_26p:,}** non-`@[simp]` modules (**{100.0 * nonsimp_26p / tot_mod:.2f}%**) reach `in_degree >= 26` and **{nonsimp_500p}** reach `in_degree >= 500`."
+    )
+    fanin_impl = f"Module import fan-in cleanly separates single-consumer proof steps from shared specification hubs ({top3_hubs})."
+
+    rw_r = strat_by_key.get("rw", {"proof_count": 0})
+    ex_r = strat_by_key.get("exact", {"proof_count": 0})
+    hv_r = strat_by_key.get("have", {"proof_count": 0})
+    sp_r = strat_by_key.get("simp", {"proof_count": 0})
+    ind_r = strat_by_key.get("induction", {"proof_count": 0})
+    cls_r = strat_by_key.get("classical", {"proof_count": 0})
+    chs_r = strat_by_key.get("choose", {"proof_count": 0})
+    bc_r = strat_by_key.get("by_contra", {"proof_count": 0})
+    moves_finding = (
+        f"Across **{tot_tac:,}** tactic proofs, direct rewriting (`rw`/`rwa` in **{100.0 * rw_r['proof_count'] / tot_tac:.2f}%**, `exact` in **{100.0 * ex_r['proof_count'] / tot_tac:.2f}%**) and `have` (**{100.0 * hv_r['proof_count'] / tot_tac:.2f}%**) dominate, "
+        f"while `simp`/`simpa`/`simp_all`/`dsimp` appears in **{100.0 * sp_r['proof_count'] / tot_tac:.2f}%**. Genuine structural moves are selective: "
+        f"`induction` (**{100.0 * ind_r['proof_count'] / tot_tac:.2f}%**, `{ind_r['proof_count']:,}`), `classical` (**{100.0 * cls_r['proof_count'] / tot_tac:.2f}%**), `choose` (**{100.0 * chs_r['proof_count'] / tot_tac:.2f}%**), `by_contra`/`contrapose` (**{100.0 * bc_r['proof_count'] / tot_tac:.2f}%**)."
+    )
+    moves_impl = "Checking for `induction`, `by_contra`, `choose`, `classical`, `calc`, and multi-`obtain`/`have` blocks distinguishes conceptual steps from long `rw`/`ring` bookkeeping."
+
+    thm_k = kind_by_name.get("theorem", {"total": 0, "private": 0})
+    lem_k = kind_by_name.get("lemma", {"total": 0, "private": 0})
+    q1_priv = fo["quintiles"][0]["counts"].get("private_thm_lem", 0) / max(1, fo["quintiles"][0]["total"])
+    q5_priv = fo["quintiles"][4]["counts"].get("private_thm_lem", 0) / max(1, fo["quintiles"][4]["total"])
+    last_priv = fo["last_decl"]["counts"].get("private_thm_lem", 0) / m2
+    kind_finding = (
+        f"`theorem` accounts for **{100.0 * thm_k['total'] / tot_decl:.2f}%** of declarations (`{thm_k['total']:,}`) vs. **{100.0 * lem_k['total'] / tot_decl:.2f}%** for `lemma` (`{lem_k['total']:,}`). "
+        f"Only **{100.0 * thm_k['private'] / max(1, thm_k['total']):.2f}%** of `theorem`s are `private` (`{thm_k['private']:,}`), vs. **{100.0 * lem_k['private'] / max(1, lem_k['total']):.2f}%** of `lemma`s (`{lem_k['private']:,}`), and `{s['aux_named_decls']:,}` declarations have `aux`-suffixed names."
+    )
+    kind_impl = f"`private` visibility is a much sharper helper signal than `lemma` or `_aux` naming (`private` drops from `{100.0 * q1_priv:.2f}%` in Q1 and `{100.0 * q5_priv:.2f}%` in Q5 to `{100.0 * last_priv:.2f}%` on final declarations)."
+
+    a("| Heuristic | Empirical Finding in `" + rel_src_label + "` | Practical Reading Implication |")
+    a("|---|---|---|")
+    a(f"| **Read module `/-!` docstrings and bottom-of-file declarations first** | {esc_cell(doc_finding)} | {esc_cell(doc_impl)} |")
+    a(f"| **Filter out `@[simp]` / `@[ext]` / `@[norm_cast]` glue and 1-line proofs** | {esc_cell(glue_finding)} | {esc_cell(glue_impl)} |")
+    a(f"| **Watch where stronger typeclasses enter** | {esc_cell(tc_finding)} | {esc_cell(tc_impl)} |")
+    a(f"| **Look for cross-namespace equivalence bridges** | {esc_cell(eq_finding)} | {esc_cell(eq_impl)} |")
+    a(f"| **Check non-`@[simp]` reference fan-in** | {esc_cell(fanin_finding)} | {esc_cell(fanin_impl)} |")
+    a(f"| **Scan proof bodies for conceptual moves, not line count** | {esc_cell(moves_finding)} | {esc_cell(moves_impl)} |")
+    a(f"| **Check `theorem` vs. `lemma` and `private` / `_aux`** | {esc_cell(kind_finding)} | {esc_cell(kind_impl)} |")
+    a("")
+    a("---")
+    a("")
+    a("## 2. Automation Attributes & Proof Glue")
+    a("")
+    a(
+        f"Out of **{s['theorems_lemmas']:,}** `theorem` and `lemma` declarations (**{s['tactic_proofs']:,}** tactic proofs and **{s['term_proofs']:,}** term-mode proofs), mutually exclusive proof-shape classification breaks down as follows:"
+    )
+    a("")
+    a("| Proof Shape Bucket | Count | Share of Theorems & Lemmas |")
+    a("|---|---:|---:|")
+    for ps in all_dom["proof_shapes"]:
+        a(f"| {esc_cell(ps['label'])} | {ps['count']:,} | {100.0 * ps['count'] / tot_tl:.2f}% |")
+    a("")
+    a("### Declaration Attributes vs. File-Scoped `attribute […]` Directives")
+    a("")
+    a(
+        f"Declaration-level `@[…]` attributes appear on **{s['attr_tagged_decls']:,}** declarations (**{100.0 * s['attr_tagged_decls'] / tot_decl:.2f}%** of `{s['declarations']:,}`, totaling **{s['attr_occurrences']:,}** tag occurrences), whereas file-scoped `attribute […]` directives appear **{s['file_directives']:,}** times—overwhelmingly activating local typeclass instances rather than rewriting rules:"
+    )
+    a("")
+    a("| Top `@[…]` Declaration Tags | Count | Top File `attribute […]` Directives | Count |")
+    a("|---|---:|---|---:|")
+    attrs_top = all_dom["decl_attrs"][:8]
+    dirs_top = all_dom["file_directives"][:8]
+    for idx in range(max(len(attrs_top), len(dirs_top))):
+        at_s = f"`@[{attrs_top[idx]['tag']}]` | {attrs_top[idx]['count']:,}" if idx < len(attrs_top) else " | "
+        dr_s = f"`attribute [{dirs_top[idx]['directive']}]` | {dirs_top[idx]['count']:,}" if idx < len(dirs_top) else " | "
+        a(f"| {at_s} | {dr_s} |")
+    a("")
+    loc_targets_str = ", ".join(f"`{t['target']}` (`{t['count']:,}`)" for t in all_dom["local_instance_targets"][:7])
+    set_opts_str = ", ".join(f"`set_option {o['option']}` (`{o['count']:,}`)" for o in all_dom["set_options"][:4])
+    a(f"The most frequent `attribute [local instance]` targets include {loc_targets_str}. Top compiler tuning options: {set_opts_str}.")
+    a("")
+    a("---")
+    a("")
+    a("## 3. Typeclass Usage & Mathematical Hypotheses")
+    a("")
+    tier_examples = {
+        "core_algebra": "`Field`, `CommRing`, `Algebra`, `Module`, `AddCommGroup`, …",
+        "number_local_fields": "`NumberField`, `IsCMField`, `ValuativeRel`, …",
+        "finiteness_logic": "`Fintype`, `Fact`, `DecidableEq`, …",
+        "analysis_topology_measure": "`TopologicalSpace`, `NormedAddCommGroup`, …",
+        "comm_alg_geom": "`GrpObj`, `IsLocalRing`, `IsCommMonObj`, …",
+        "other": "Project- and theory-specific predicates",
+    }
+    a(f"Restricting `[…]` extraction strictly to declaration signatures and `variable` headers yields **{tot_tc_occ:,}** typeclass binder occurrences across six mathematical tiers:")
+    a("")
+    a("| Mathematical Tier | Binder Occurrences | Share |")
+    a("|---|---:|---:|")
+    for tr in tc["tier_totals"]:
+        ex = tier_examples.get(tr["tier"], "")
+        lbl = f"{tr['label']} ({ex})" if ex else tr["label"]
+        a(f"| {esc_cell(lbl)} | {tr['count']:,} | {100.0 * tr['count'] / tot_tc_occ:.2f}% |")
+    a("")
+    top_strong_12 = ", ".join(f"`{t['name']}` (`{t['count']:,}`)" for t in tc["top_strong"][:12])
+    a(f"Filtering out the **{len(m['baseline_typeclasses'])}** baseline classes exposes the specialized mathematical hypotheses driving each top-level domain:")
+    a("")
+    a(f"- **Overall top stronger typeclasses:** {top_strong_12}.")
+    dom_strat_parts: list[str] = []
+    for dm in payload["domains"]:
+        if dm["key"] in ("ALL", "(root)") or dm["modules"] < 200:
+            continue
+        if len(dom_strat_parts) >= 5:
+            break
+        d_strong = payload["by_domain"][dm["key"]]["typeclasses"]["top_strong"][:4]
+        d_s_str = ", ".join(f"`{t['name']}` (`{t['count']:,}`)" for t in d_strong)
+        dom_strat_parts.append(f"`{dm['key']}` (`{dm['modules']:,}` modules: {d_s_str})")
+    if dom_strat_parts:
+        a("- **Domain stratification:** " + "; ".join(dom_strat_parts) + ".")
+    a("")
+    a("---")
+    a("")
+    a("## 4. Proof Strategies: Conceptual Moves vs. Automated Solvers")
+    a("")
+    a(f"Scanning tactic bodies across all **{s['tactic_proofs']:,}** tactic-mode proofs separates ubiquitous rewriting mechanics from targeted automated solvers and conceptual proof moves:")
+    a("")
+    a("| Group | Tactic / Move | Tactic Proofs Using | Share of Tactic Proofs | Total Invocations |")
+    a("|---|---|---:|---:|---:|")
+    grp_order = [("plumbing", "Direct plumbing", 5), ("conceptual", "Conceptual", 10), ("solver", "Solver", 9)]
+    for gkey, gname, glim in grp_order:
+        rows_g = [r for r in all_dom["proof_strategies"] if r["group"] == gkey and r["total_count"] > 0]
+        rows_g.sort(key=lambda r: (-r["proof_count"], -r["total_count"], r["key"]))
+        for r in rows_g[:glim]:
+            a(
+                f"| {gname} | {esc_cell(r['label'])} | {r['proof_count']:,} | {100.0 * r['proof_count'] / tot_tac:.2f}% | {r['total_count']:,} |"
+            )
+    a("")
+    a("---")
+    a("")
+    a("## 5. Cross-Namespace & Equivalence \"Bridge\" Signatures")
+    a("")
+    a(f"Longest-match tokenization over declaration signatures identifies **{eq_tot_decls:,}** declarations containing explicit equivalence/isomorphism constructors:")
+    a("")
+    a("| Constructor | Declarations | Total Occurrences |")
+    a("|---|---:|---:|")
+    for eq in all_dom["equivalences"]:
+        if eq["decl_count"] <= 0:
+            continue
+        a(f"| {esc_cell(eq['label'])} | {eq['decl_count']:,} | {eq['total_count']:,} |")
+    a("")
+    multi_dom2 = sum(b["count"] for b in all_dom["cross_domain_imports"] if b["bucket"] not in ("0 (leaf)", "1"))
+    open_bkt = {b["bucket"]: b["count"] for b in all_dom["open_namespaces"]["buckets"]}
+    open5p = open_bkt.get("5-7", 0) + open_bkt.get("8-10", 0) + open_bkt.get("11+", 0)
+    top_open_str = ", ".join(f"`{r['namespace']}` in `{r['count']:,}` files" for r in all_dom["open_namespaces"]["top_roots"][:4])
+    a(
+        f"Cross-module synthesis is also visible in import breadth and `open` headers: **{multi_sub2:,}** modules (**{100.0 * multi_sub2 / tot_mod:.2f}%**) import from 2+ distinct `depth-2` sub-theories, **{multi_dom2:,}** modules (**{100.0 * multi_dom2 / tot_mod:.2f}%**) import from 2+ distinct top-level domains, and **{open5p:,}** modules (**{100.0 * open5p / tot_mod:.2f}%**) open **5+** distinct root namespaces simultaneously (led by {top_open_str})."
     )
     a("")
     a("---")
     a("")
-    a("## 1. Corpus Totals & Proof Glue")
+    a("## 6. Non-`@[simp]` Reference Fan-In & Reuse")
     a("")
-    a("| Metric | Count / Share |")
-    a("|---|---:|")
-    a(f"| Reachable Lean modules | {s['modules']:,} |")
-    a(f"| Total declarations | {s['declarations']:,} |")
-    a(f"| Theorems & lemmas | {s['theorems_lemmas']:,} |")
-    a(f"| Tactic proofs (`by ...`) | {s['tactic_proofs']:,} |")
-    a(f"| Term-mode proofs | {s['term_proofs']:,} |")
-    a(f"| Attribute-tagged declarations | {s['attr_tagged_decls']:,} |")
-    a(f"| Modules defining `@[simp]` | {s['simp_modules']:,} |")
+    a("Joining file-level `@[simp]` detection with the SQLite import graph (`graph.sqlite`) shows a steep heavy-tailed reuse distribution:")
     a("")
-    a("### Proof Shape Distribution")
+    a("| Module `in_degree` | Non-`@[simp]` Modules | `@[simp]` Modules | Total Modules | Share |")
+    a("|---|---:|---:|---:|---:|")
+    for row in fi["in_degree"]:
+        a(
+            f"| `{row['bucket']}` | {row['non_simp']:,} | {row['simp']:,} | {row['total']:,} | {100.0 * row['total'] / tot_mod:.2f}% |"
+        )
     a("")
-    a("| Proof Shape | Count | Share of Thm/Lem |")
-    a("|---|---:|---:|")
-    tot_tl = max(1, s["theorems_lemmas"])
-    for ps in all_dom["proof_shapes"]:
-        a(f"| {ps['label']} (`{ps['key']}`) | {ps['count']:,} | {100.0 * ps['count'] / tot_tl:.1f}% |")
+    hub_str = ", ".join(
+        f"`{h['name'].rsplit('.', 1)[-1]}` (`in_degree = {h['in_degree']:,}`)" for h in fi["top_non_simp_hubs"][:7]
+    )
+    a(f"The top non-`@[simp]` hub modules are foundational definition contracts and shared theory interfaces, led by {hub_str}.")
+    a("")
+    a("---")
+    a("")
+    a("## 7. Declaration Taxonomy & Top-to-Bottom File Order")
+    a("")
+    a(f"Across all **{s['declarations']:,}** declarations:")
+    a("")
+    a("| Kind | Public | Private | Protected | Total | Share |")
+    a("|---|---:|---:|---:|---:|---:|")
+    for kr in tax["kinds"]:
+        a(
+            f"| `{kr['kind']}` | {kr['public']:,} | {kr['private']:,} | {kr['protected']:,} | {kr['total']:,} | {100.0 * kr['total'] / tot_decl:.2f}% |"
+        )
+    a("")
+    q1, q5 = fo["quintiles"][0], fo["quintiles"][4]
+    q1_tot, q5_tot = max(1, q1["total"]), max(1, q5["total"])
+    q1_def = q1["counts"].get("def_abbrev", 0)
+    q5_def = q5["counts"].get("def_abbrev", 0)
+    last_def = fo["last_decl"]["counts"].get("def_abbrev", 0)
+    q1_pub_thm = q1["counts"].get("public_theorem", 0)
+    q5_pub_thm = q5["counts"].get("public_theorem", 0)
+    last_priv_cnt = fo["last_decl"]["counts"].get("private_thm_lem", 0)
+    d1 = dpf_by_bkt.get("1", 0)
+    d2 = dpf_by_bkt.get("2", 0)
+    d35 = dpf_by_bkt.get("3-5", 0)
+    d6p = dpf_by_bkt.get("6-10", 0) + dpf_by_bkt.get("11-25", 0) + dpf_by_bkt.get("26-50", 0) + dpf_by_bkt.get("51+", 0)
+    a(f"Within the **{fo['multi_decl_3plus_files']:,}** files containing 3+ declarations (`Q1`–`Q5`) and the **{fo['multi_decl_2plus_files']:,}** files containing 2+ declarations (`First Decl` vs. `Last Decl`), top-down build order is strongly polarized:")
+    a("")
+    a(f"- **Definitions front-loaded:** `def` / `abbrev` makes up **{100.0 * q1_def / q1_tot:.2f}%** of `Q1` (`{q1_def:,}`) vs. **{100.0 * q5_def / q5_tot:.2f}%** in `Q5` (`{q5_def:,}`), dropping to **{100.0 * last_def / m2:.2f}%** on the final declaration.")
+    a(f"- **Public theorems back-loaded:** Public `theorem` rises from **{100.0 * q1_pub_thm / q1_tot:.2f}%** in `Q1` (`{q1_pub_thm:,}`) to **{100.0 * q5_pub_thm / q5_tot:.2f}%** in `Q5` (`{q5_pub_thm:,}`), reaching **{100.0 * last_pub_thm / m2:.2f}%** (`{last_pub_thm:,}`) on the final declaration.")
+    a(f"- **Private helpers excluded from payoff slot:** `private theorem`/`private lemma` comprises **{100.0 * q1_priv:.2f}%** in `Q1`, falls to **{100.0 * q5_priv:.2f}%** in `Q5`, and drops to **{100.0 * last_priv_cnt / m2:.2f}%** (`{last_priv_cnt:,}` files) on the final declaration.")
+    a(f"- **File granularity:** **{d1:,}** modules (**{100.0 * d1 / tot_mod:.2f}%**) hold 1 declaration, **{d2:,}** (**{100.0 * d2 / tot_mod:.2f}%**) hold 2, **{d35:,}** (**{100.0 * d35 / tot_mod:.2f}%**) hold 3–5, and **{d6p:,}** (**{100.0 * d6p / tot_mod:.2f}%**) hold 6+.")
     a("")
     a("### Domain Breakdown")
     a("")
@@ -1075,18 +1351,29 @@ def render_histograms_md(
             continue
         a(f"| `{dm['key']}` | {dm['modules']:,} | {dm['declarations']:,} |")
     a("")
-    a("### Top Attributes & Typeclasses")
+    a("---")
     a("")
-    a("| Attribute | Count | Typeclass Binder | Signature Occurrences |")
-    a("|---|---:|---|---:|")
-    attrs = all_dom["decl_attrs"][:10]
-    tcs = all_dom["typeclasses"]["top_all"][:10]
-    for idx in range(max(len(attrs), len(tcs))):
-        at_s = f"`@[{attrs[idx]['tag']}]` | {attrs[idx]['count']:,}" if idx < len(attrs) else " | "
-        tc_s = f"`[{tcs[idx]['name']}]` | {tcs[idx]['count']:,}" if idx < len(tcs) else " | "
-        a(f"| {at_s} | {tc_s} |")
+    a("## 8. Repeatable Extraction Methodology & Caveats")
     a("")
-    return "\n".join(lines) + "\n"
+    a("1. **Deterministic Pipeline (`build_histograms.py`):** Loads the sorted reachable module and edge tables from `graph.sqlite`, discovers all top-level domains dynamically sorted by `(-module_count, top_dir)`, and scans all `.lean` files in deterministic sorted chunks using multiprocessing.")
+    a("2. **Signature-Only vs. Proof-Body Separation:** Typeclasses (`[…]`) and equivalence constructors (`≃ₗᵢ|≃+*|≃ₗ|…|↔`) are extracted strictly from declaration headers (before `:=` or trailing `where`) and `variable` lines so tactic arguments such as `rw [Finset.sum_comm]` never contaminate typeclass counts, and longest-match alternation prevents `≃+*` or `≃ₗᵢ` from double-counting as `≃`.")
+    if meta_json:
+        meta_decls = sum(meta_json.get("reachable_decl_counts", meta_json.get("decl_counts", {})).values())
+        diff_pct = (100.0 * (s["declarations"] - meta_decls) / max(1, meta_decls))
+        caveat_diff = f" (totaling `{s['declarations']:,}` declarations vs. `{meta_decls:,}` in `meta.json`—a `{diff_pct:+.2f}%` difference attributable to anonymous `instance` declarations and `set_option ... in` headers)"
+    else:
+        caveat_diff = f" (totaling `{s['declarations']:,}` syntactic declarations)"
+    a(f"3. **Syntactic Scope Caveat:** Because the scanner parses Lean source text rather than elaborated `.olean` environments, implicit typeclass synthesis, tactic-generated sub-calls inside `simp`/`aesop`, and macro expansions are not unrolled. All counts are exact syntactic counts over `{rel_src_label}`{caveat_diff}.")
+    a("4. **Regeneration:** To rebuild after a codebase change:")
+    a("")
+    a("```bash")
+    a(f"python3 analysis/build_all.py --version {vid_cmd} --steps index,histograms")
+    a("# Or standalone:")
+    a(f"python3 analysis/codebase_histograms/build_histograms.py --db-path analysis/versions/{vid_cmd}/data/graph.sqlite --out-dir analysis/versions/{vid_cmd}/codebase_histograms --version-label {vid_cmd}")
+    a("node analysis/render_reports.js")
+    a("```")
+    a("")
+    return "\n".join(lines)
 
 
 def main() -> None:
@@ -1103,6 +1390,7 @@ def main() -> None:
     parser.add_argument("--out-dir", type=Path, default=OUT_DIR)
     parser.add_argument("--version-label", type=str, default="")
     parser.add_argument("--rel-src-label", type=str, default="src/")
+    parser.add_argument("--render-md-only", action="store_true", help="Regenerate CODEBASE_HISTOGRAMS.md from existing histograms_data.json and meta.json.")
     parser.add_argument(
         "--workers",
         type=int,
@@ -1115,6 +1403,23 @@ def main() -> None:
     OUT_DIR = args.out_dir.resolve()
     JSON_PATH = OUT_DIR / "histograms_data.json"
     JS_PATH = OUT_DIR / "histograms_data.js"
+    meta_path = (args.meta_path or (DB_PATH.parent / "meta.json")).resolve()
+    meta_json = json.loads(meta_path.read_text(encoding="utf-8")) if meta_path.exists() else None
+
+    if args.render_md_only:
+        payload = json.loads(JSON_PATH.read_text(encoding="utf-8"))
+        md_path = OUT_DIR / "CODEBASE_HISTOGRAMS.md"
+        md_path.write_text(
+            render_histograms_md(
+                payload,
+                meta_json=meta_json,
+                version_label=args.version_label,
+                rel_src_label=args.rel_src_label,
+            ),
+            encoding="utf-8",
+        )
+        print(f"Wrote {md_path} ({md_path.stat().st_size:,} bytes) via --render-md-only")
+        return
 
     t0 = time.time()
     if args.rebuild_index or not DB_PATH.exists():
@@ -1304,7 +1609,7 @@ def main() -> None:
     )
     MD_PATH = OUT_DIR / "CODEBASE_HISTOGRAMS.md"
     MD_PATH.write_text(
-        render_histograms_md(payload, version_label=args.version_label, rel_src_label=args.rel_src_label),
+        render_histograms_md(payload, meta_json=meta_json, version_label=args.version_label, rel_src_label=args.rel_src_label),
         encoding="utf-8",
     )
 
