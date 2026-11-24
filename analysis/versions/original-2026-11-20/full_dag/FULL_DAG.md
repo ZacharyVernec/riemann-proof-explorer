@@ -2,7 +2,7 @@
 
 This document describes the repeatable layout pipeline, binary data packaging, graph-simplification modes, and WebGL visualization behind the interactive full-graph viewer:
 
-- **Interactive Viewer:** [full_dag.html](full_dag.html) (pan and zoom across all modules and import edges, with three composable simplification switches: **Collapse existing theory** `C`, **Hide redundant imports** `H`, and **Collapse chains & leaves** `L`, plus the **Max depth** BFS filter `[` / `]`)
+- **Interactive Viewer:** [full_dag.html](full_dag.html) (pan and zoom across all modules and import edges, with a **Layout** picker switching between Sugiyama and depth-based layouts, three composable simplification switches: **Collapse existing theory** `C`, **Hide redundant imports** `H`, and **Collapse chains & leaves** `L`, plus the **Max depth** BFS filter `[` / `]`)
 - **Layout Generator:** [build_full_dag.py](build_full_dag.py)
 - **Layout Summary:** [layout_summary.json](layout_summary.json)
 - **SQLite Indexer:** [build_index.py](../build_index.py)
@@ -92,6 +92,22 @@ $$\bar{x}(u) = \frac{\sum_{v \in \text{in}(u) \cup \text{out}(u)} \frac{x(v)}{|y
 This stage reduces mean horizontal edge span $|\Delta x|$ from **363.320** units to **121.839** units, while enforcing a strict minimum horizontal gap of **1.0** world unit between adjacent nodes in every layer.
 
 Finally, layer vertical spacing $\Delta y$ is computed dynamically from total horizontal span $W_x = x_{\max} - x_{\min}$ and layer count $K$ as $\Delta y = \text{clamp}\!\left(\frac{W_x}{1.85 \cdot (K - 1)},\, 4.0,\, 12.0\right)$, yielding $\Delta y = 9.3166$ and an overall aspect ratio of **1.85 : 1**.
+
+### Alternative Depth-Based Layouts (Client-Side Layout Picker)
+
+Because the default Sugiyama layout bottom-aligns nodes to leaves and then tightens vertical ranks by $L_1$ edge length, modules at the same distance from `Main` can appear at different heights. The viewer's **Layout** picker in [full_dag.html](full_dag.html) lets readers switch on demand between three layout mechanisms across any active simplification mode:
+
+1. **Sugiyama (L1 tightened)** *(default)*: The precomputed 3-stage layout described above, minimizing vertical edge span and horizontal crossings.
+2. **Depth (BFS from root):** Assigns every module $u$ to the horizontal row equal to its shortest-path BFS distance $d_{\text{BFS}}(u)$ from root modules ($\text{in\_degree} = 0$, i.e., `Main` at row `0`, direct imports at row `1`, etc.). All modules at the same BFS depth sit at the exact same vertical height, aligning 1-to-1 with the **Max depth** filter slider (so filtering to depth $\le k$ displays rows `0..k`). Note that shared low-level utilities imported near the root may have edges connecting to the same or shallower BFS rows.
+3. **Depth (longest path):** Assigns every module $u$ to its topological longest-path depth from roots:
+
+$$d_{\text{LP}}(u) = \begin{cases} 0 & \text{if } \text{in}(u) = \emptyset, \\ 1 + \max_{(p, u) \in E} d_{\text{LP}}(p) & \text{otherwise.} \end{cases}$$
+
+All modules at the same DAG depth sit at the exact same vertical height while preserving strict downward orientation ($d_{\text{LP}}(v) \ge d_{\text{LP}}(u) + 1$) on every edge.
+
+For both depth layouts, horizontal coordinates $x(u)$ are computed on demand in the browser and cached per `(view, layout)` for visual clarity:
+- **Warm-Started Barycenter Sweeps:** Each depth row is initialized from the Sugiyama $x$-ordering and refined with alternating top-down and bottom-up inverse-span weighted barycenter sweeps (using denominator $\max(1, |y(u) - y(v)|)$ so same-depth edges in BFS mode pull neighbors together cleanly, and weighting by $1 + \log_2 w_E$ on weighted/collapsed views).
+- **Non-Overlapping PAV Projection & Aspect Ratio:** After each sweep, every depth row is projected onto $x(u_{i+1}) - x(u_i) \ge 1.0$ via the exact $O(m)$ Pool-Adjacent-Violators (PAV) isotonic $L_2$ solver, centered around $x = 0$, and assigned dynamic vertical row spacing $\Delta y = \text{clamp}\!\left(\frac{W_x}{1.85 \cdot (K - 1)},\, 4.0,\, \max(12.0,\, 0.45\, W_x)\right)$ so even shallow BFS-depth layouts retain a readable `1.85 : 1` aspect ratio.
 
 ---
 
@@ -190,7 +206,7 @@ The interactive viewer ([full_dag.html](full_dag.html)) displays a collapsible c
 | `(root)` | 2 | `#111827` | Charcoal / Near-black |
 
 - **Future Refactor Fallback:** Beyond 10 top-level directories, `group_color()` assigns deterministic golden-angle HSL colors.
-- **Top-Right Toggle Bar & Controls:** **Collapse existing theory (`C`)**, **Hide redundant imports (`H`)**, **Collapse chains & leaves (`L`)**, plus the **Max depth** shortest-path BFS depth control (`[` / `]` hotkeys and `All` toggle) filtering nodes and edges by distance from `Main` without altering coordinates.
+- **Top-Right Control Stack:** **Layout** picker (**Sugiyama (L1 tightened)**, **Depth (BFS from root)**, **Depth (longest path)**), simplification toggles (**Collapse existing theory (`C`)**, **Hide redundant imports (`H`)**, **Collapse chains & leaves (`L`)**), and the **Max depth** shortest-path BFS depth control (`[` / `]` hotkeys and `All` toggle) filtering nodes and edges by distance from `Main` without altering coordinates.
 
 ---
 
