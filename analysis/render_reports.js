@@ -180,9 +180,23 @@
     text = text.replace(/\$\$(.+?)\$\$/g, (m) => saveToken(escapeHtml(m, false)));
     text = text.replace(/\$([^$\n]+?)\$/g, (m) => saveToken(escapeHtml(m, false)));
 
+    const LOCAL_PREFIX = "file:///home/ubuntu/riemann_proof/";
+    const GITHUB_BLOB_BASE =
+      "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/";
+
+    function rewriteUrl(url) {
+      if (url.startsWith(LOCAL_PREFIX + "analysis/")) {
+        return "../" + url.slice((LOCAL_PREFIX + "analysis/").length);
+      }
+      if (url.startsWith(LOCAL_PREFIX)) {
+        return GITHUB_BLOB_BASE + url.slice(LOCAL_PREFIX.length);
+      }
+      return url;
+    }
+
     // 2. Links [label](url)
     text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, labelRaw, urlRaw) => {
-      const url = urlRaw.trim();
+      const url = rewriteUrl(urlRaw.trim());
       const labelRendered = formatEmphasis(labelRaw);
       return saveToken(
         `<a href="${escapeHtml(url, true)}">${labelRendered}</a>`

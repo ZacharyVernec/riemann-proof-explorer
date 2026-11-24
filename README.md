@@ -23,9 +23,10 @@ All contributions are located in the `analysis/` folder:
 
 ## Portal & Interactive Suite
 
-Start at the unified landing page:
+Browse the live site directly on GitHub Pages:
 
-- **Portal:** [analysis/index.html](analysis/index.html)
+- **Live Portal:** [https://zacharyvernec.github.io/riemann-proof-explorer/](https://zacharyvernec.github.io/riemann-proof-explorer/)
+- **Local Portal:** [analysis/index.html](analysis/index.html)
 
 To browse all self-contained HTML pages cleanly in a browser (zero external CDN dependencies):
 

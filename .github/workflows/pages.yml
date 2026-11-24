@@ -1,0 +1,45 @@
+name: Deploy Analysis Portal to GitHub Pages
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "analysis/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository (without Git LFS)
+        uses: actions/checkout@v4
+        with:
+          lfs: false
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Disable Jekyll processing
+        run: touch analysis/.nojekyll
+
+      - name: Upload analysis directory as Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "analysis"
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

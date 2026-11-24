@@ -635,7 +635,7 @@
     const str = String(s || "");
     return str.length <= maxLen ? str : str.slice(0, maxLen - 1) + "\u2026";
   };
-  const fileUrl = (rel, line) => "file:///home/ubuntu/riemann_proof/lean/src/" + encodeURI(rel) + (line ? "#L" + line : "");
+  const fileUrl = (rel, line) => "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/" + encodeURI(rel) + (line ? "#L" + line : "");
 
   // Header stats
   document.getElementById("cntTop").textContent = DATA.top_dirs.length;
