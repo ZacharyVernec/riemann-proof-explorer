@@ -3,10 +3,12 @@
 
 from __future__ import annotations
 
+import argparse
 import json
 from pathlib import Path
 
-DIR = Path("/home/ubuntu/riemann_proof/analysis/proof_spine")
+ROOT = Path(__file__).resolve().parents[2]
+DIR = Path(__file__).resolve().parent
 METRICS_PATH = DIR / "spine_metrics.json"
 HTML_PATH = DIR / "spine_dashboard.html"
 
@@ -89,8 +91,162 @@ def compact_node(d: dict) -> dict:
     return out
 
 
+def render_spine_report_md(m: dict, source_blob_base: str = "", version_label: str = "") -> str:
+    """Render PROOF_SPINE_REPORT.md dynamically from spine_metrics.json."""
+    audit = m["audit"]
+    la = m["leaf_and_entry_audit"]
+    profiles = sorted(m["stratigraphy"]["top_dir_profiles"], key=lambda p: (-p["files"], p["top_dir"]))
+    doms = m["dominators"]["top_100_bottlenecks"]
+    skeleton = m["dominators"]["skeleton_ge_300"]
+    skel_thresh = m["dominators"].get("skeleton_threshold", 300)
+    crit = m["critical_path"]
+    hubs = m["hubs_and_bridges"]
+    edge_mat = m["stratigraphy"]["top_dir_edge_matrix"]
+
+    def mlink(rel_path: str, label: str | None = None) -> str:
+        text = label or Path(rel_path).name
+        if source_blob_base:
+            return f"[{text}]({source_blob_base.rstrip('/')}/{rel_path})"
+        return f"`{rel_path}`"
+
+    ver_suffix = f" ({version_label})" if version_label else ""
+    lines: list[str] = []
+    lines.append(f"# Proof Spine, Bottlenecks & Critical Dependency Chain{ver_suffix}")
+    lines.append("")
+    lines.append(
+        f"This report analyzes the logical dependency DAG of the proof—tracing its mandatory mathematical bottlenecks (dominator tree rooted at {mlink('Main.lean')}), its deepest critical dependency chain from the final RH/GRH theorems down to foundational leaves, and the key bridge modules connecting the major theories (interactive explorer in [spine_dashboard.html](spine_dashboard.html))."
+    )
+    lines.append("")
+    lines.append(
+        "> **Edge Orientation Convention:** Throughout this report, a directed edge `(u, v)` means module `u` **depends on** `v` (`u` imports `v`). Hence `Main.lean` is the unique root/source at the apex of the proof, and foundational leaf modules sit at the base (`height = 0`)."
+    )
+    lines.append("")
+    lines.append("---")
+    lines.append("")
+    lines.append("## Executive Audit Summary")
+    lines.append("")
+    lines.append("| Metric | Value |")
+    lines.append("|---|---:|")
+    lines.append(f"| Total Lean modules in codebase | {audit['total_files']:,} |")
+    lines.append(f"| Modules reachable from `Main.lean` | {audit['reachable_from_main']:,} |")
+    lines.append(f"| Unreachable / standalone modules excluded | {audit['unreachable_from_main']:,} |")
+    lines.append(f"| Internal dependency edges (reachable DAG) | {audit['total_internal_edges']:,} |")
+    lines.append(f"| Strict DAG verified (`is_dag`) | {'Yes' if audit['is_dag'] else 'No'} |")
+    lines.append(f"| Shortest distance span from `Main.lean` | 0 – {audit['max_dist_from_main']} |")
+    lines.append(f"| Critical dependency chain length | {crit['max_edges']} edges / {crit['max_nodes']} modules |")
+    lines.append(f"| Critical max-length paths | {crit['total_max_length_paths']:,} |")
+    lines.append(f"| Foundational leaf modules (`out_degree = 0`) | {la['leaf_count']:,} ({la['leaf_lines']:,} lines) |")
+    lines.append(f"| Log10 total `Main → Leaf` dependency paths | {audit['total_main_to_leaf_paths_log10']} |")
+    lines.append("")
+    lines.append("---")
+    lines.append("")
+    lines.append("## 1. Entry Funnel & Foundational Base")
+    lines.append("")
+    lines.append("### 1.1 Entry Funnel Near `Main.lean` (`dist ≤ 3`)")
+    lines.append("")
+    lines.append("| Dist | Module | Dom Subtree | Out-Deg | Mathematical Role |")
+    lines.append("|---:|---|---:|---:|---|")
+    for e in la["entry_layers_dist_le_3"][:25]:
+        role = VERIFIED_NOTES.get(e["name"], "")
+        if not role and e.get("sample_decls"):
+            role = ", ".join(f"`{d['name'].rsplit('.', 1)[-1]}`" for d in e["sample_decls"][:4])
+        lines.append(
+            f"| {e['dist_from_main']} | {mlink(e['rel_path'], e['name'])} | {e['dom_subtree_size']:,} | {e['out_degree']} | {role} |"
+        )
+    lines.append("")
+    lines.append("### 1.2 Top Foundational Leaves (`out_degree = 0`)")
+    lines.append("")
+    lines.append(
+        f"There are **{la['leaf_count']:,}** foundational leaf modules (`{la['leaf_lines']:,}` lines, `{la['leaf_theorems']:,}` theorems, `{la['leaf_defs']:,}` definitions). Modules with zero external imports: `{la['leaf_no_external_imports']}`."
+    )
+    lines.append("")
+    lines.append("| In-Deg | Lines | Top Directory | Module |")
+    lines.append("|---:|---:|---|---|")
+    for x in la["top_20_most_imported_leaves"][:15]:
+        lines.append(f"| {x['in_degree']:,} | {x['lines']:,} | `{x['top_dir']}` | {mlink(x['rel_path'], x['name'])} |")
+    if la["build_aid_modules"]:
+        lines.append("")
+        lines.append(f"### 1.3 `BuildAid` Modules ({len(la['build_aid_modules'])})")
+        lines.append("")
+        for b in la["build_aid_modules"]:
+            lines.append(f"- {mlink(b['rel_path'], b['name'])} (dist {b['dist_from_main']}, in-degree {b['in_degree']})")
+    lines.append("")
+    lines.append("---")
+    lines.append("")
+    lines.append("## 2. Stratigraphic Layering Across Top-Level Theories")
+    lines.append("")
+    lines.append("| Top Directory | Files | Lines | Leaves | Dist (min/med/max) | Height (med/max) |")
+    lines.append("|---|---:|---:|---:|---|---|")
+    for p in profiles:
+        lines.append(
+            f"| `{p['top_dir']}` | {p['files']:,} | {p['lines']:,} | {p['leaf_files']:,} | "
+            f"{p['dist_min']} / {p['dist_median']} / {p['dist_max']} | {p['height_median']} / {p['height_max']} |"
+        )
+    lines.append("")
+    lines.append("### Major Cross-Theory Edge Flows")
+    lines.append("")
+    lines.append("| Dependent (`src`) | Dependency (`dst`) | Edges |")
+    lines.append("|---|---|---:|")
+    for e in edge_mat[:15]:
+        lines.append(f"| `{e['src_top_dir']}` | `{e['dst_top_dir']}` | {e['edges']:,} |")
+    lines.append("")
+    lines.append("---")
+    lines.append("")
+    lines.append("## 3. Dominator Bottleneck Spine (Cooper–Harvey–Kennedy)")
+    lines.append("")
+    lines.append(
+        f"Every dependency path from `Main.lean` to a module passes through its dominators (`{len(skeleton)}` skeleton nodes with dominated subtree size `≥ {skel_thresh}`). Top mandatory bottlenecks:"
+    )
+    lines.append("")
+    lines.append("| Rank | Dom Subtree | Depth | Dist / H | Top Dir | Module |")
+    lines.append("|---:|---:|---:|---:|---|---|")
+    for d in doms[:30]:
+        lines.append(
+            f"| {d['rank']} | {d['dom_subtree_size']:,} ({d['dom_subtree_pct']}%) | {d['dom_depth']} | "
+            f"{d['dist_from_main']} / {d['height_from_leaves']} | `{d['top_dir']}` | {mlink(d['rel_path'], d['name'])} |"
+        )
+    lines.append("")
+    lines.append("---")
+    lines.append("")
+    lines.append("## 4. Critical Dependency Chain & Longest Intra-Directory Chains")
+    lines.append("")
+    lines.append(
+        f"The longest dependency chain spans **{crit['max_edges']} edges ({crit['max_nodes']} modules)** across **{crit['total_max_length_paths']:,}** total max-length paths, with **{crit['mandatory_single_node_heights']}** single-node chokes and **{len(crit['branching_heights'])}** branching heights."
+    )
+    lines.append("")
+    lines.append("| Top Directory | Max Intra-Dir Edges | Start → End |")
+    lines.append("|---|---:|---|")
+    for td, info in sorted(crit["intra_dir_longest"].items(), key=lambda x: -x[1]["max_intra_edges"]):
+        lines.append(
+            f"| `{td}` | {info['max_intra_edges']} | `{info['start_module'].rsplit('.', 1)[-1]}` → `{info['end_module'].rsplit('.', 1)[-1]}` |"
+        )
+    lines.append("")
+    lines.append("---")
+    lines.append("")
+    lines.append("## 5. Top Cross-Theory Bridges & Path-Stress Hubs")
+    lines.append("")
+    lines.append("| Rank | Brandes Cross-Dir | Cross Fan (In×Out) | In / Out | Top Dir | Module |")
+    lines.append("|---:|---:|---:|---:|---|---|")
+    for x in hubs["top_30_cross_dir_brandes"][:15]:
+        lines.append(
+            f"| {x['rank']} | {x['brandes_weighted_cross_top']:,.1f} | {x['cross_top_prod']:,} | "
+            f"{x['in_degree']:,} / {x['out_degree']:,} | `{x['top_dir']}` | {mlink(x['rel_path'], x['name'])} |"
+        )
+    lines.append("")
+    return "\n".join(lines) + "\n"
+
+
 def main() -> None:
-    m = json.loads(METRICS_PATH.read_text())
+    parser = argparse.ArgumentParser(description="Build proof spine JS data, report, and HTML explorer")
+    parser.add_argument("--metrics-path", type=Path, default=METRICS_PATH)
+    parser.add_argument("--out-dir", type=Path, default=DIR)
+    parser.add_argument("--write-html", action="store_true", help="Write canonical spine_dashboard.html")
+    parser.add_argument("--version-label", type=str, default="")
+    parser.add_argument("--source-blob-base", type=str, default="")
+    args = parser.parse_args()
+
+    args.out_dir.mkdir(parents=True, exist_ok=True)
+    m = json.loads(args.metrics_path.read_text())
 
     # Build compact data payload for UI
     payload = {
@@ -161,6 +317,17 @@ def main() -> None:
     }
 
     safe_json = json.dumps(payload, separators=(",", ":")).replace("</", "<\\/")
+    data_js_path = args.out_dir / "spine_dashboard_data.js"
+    data_js_path.write_text(f"window.__SPINE_DATA__ = {safe_json};\n", encoding="utf-8")
+    print(f"Wrote {data_js_path} ({data_js_path.stat().st_size:,} bytes)")
+
+    report_md = render_spine_report_md(m, source_blob_base=args.source_blob_base, version_label=args.version_label)
+    report_md_path = args.out_dir / "PROOF_SPINE_REPORT.md"
+    report_md_path.write_text(report_md, encoding="utf-8")
+    print(f"Wrote {report_md_path} ({report_md_path.stat().st_size:,} bytes)")
+
+    if not args.write_html:
+        return
 
     html = f"""<!DOCTYPE html>
 <html lang="en">
@@ -520,18 +687,22 @@ def main() -> None:
 </style>
 </head>
 <body>
-<div style="padding:8px 20px;border-bottom:1px solid #ccc;font-size:13px;background:#fafafa;">
-  <a href="../index.html" style="color:#0056b3;text-decoration:none;">&larr; Back to Analysis Portal</a> &middot;
-  <a href="PROOF_SPINE_REPORT.html" style="color:#0056b3;text-decoration:none;">PROOF_SPINE_REPORT.html</a> &middot;
-  <a href="PROOF_SPINE_REPORT.md" style="color:#0056b3;text-decoration:none;">PROOF_SPINE_REPORT.md</a>
+<div style="padding:8px 20px;border-bottom:1px solid #ccc;font-size:13px;background:#fafafa;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+  <div>
+    <a href="../index.html" style="color:#0056b3;text-decoration:none;">&larr; Back to Analysis Portal</a> &middot;
+    <a href="PROOF_SPINE_REPORT.html" style="color:#0056b3;text-decoration:none;">PROOF_SPINE_REPORT.html</a> &middot;
+    <a href="PROOF_SPINE_REPORT.md" data-version-href="proof_spine/PROOF_SPINE_REPORT.md" style="color:#0056b3;text-decoration:none;">PROOF_SPINE_REPORT.md</a>
+  </div>
+  <span data-version-picker></span>
 </div>
+<script src="../version_picker.js"></script>
 <header>
   <div class="title-row">
     <div>
       <h1>Proof Spine &amp; Structural DAG Explorer</h1>
-      <div class="subtitle">Lean 4 Riemann Hypothesis Formalization — Exact Reachability, Stratigraphy, Dominator Tree, Critical Spine &amp; Cross-Directory Bridges</div>
+      <div class="subtitle" id="page-subtitle">Lean 4 Riemann Hypothesis Formalization — Exact Reachability, Stratigraphy, Dominator Tree, Critical Spine &amp; Cross-Directory Bridges</div>
     </div>
-    <span class="badge">100% Self-Contained Offline Dashboard</span>
+    <span class="badge" id="version-badge">Multi-Version Offline Dashboard</span>
   </div>
   <div class="kpi-grid" id="kpi-grid"></div>
 </header>
@@ -566,7 +737,7 @@ def main() -> None:
         <div class="card-head">
           <div>
             <h2>Top-Level Theory Stratigraphic Profiles</h2>
-            <p class="desc">Click column headers to sort. Note how <code>PositivityTheory</code> sits high (med h=97) while <code>GroundTheory</code> and <code>ReciprocityTheory</code> sit near the foundational base.</p>
+            <p class="desc" id="strat-profile-desc">Click column headers to sort by distance from Main or height from leaves.</p>
           </div>
         </div>
         <div class="table-wrap">
@@ -659,8 +830,8 @@ def main() -> None:
     <div class="card">
       <div class="card-head">
         <div>
-          <h2>Exact Critical Path Stepper (202 Edges / 203 Modules)</h2>
-          <p class="desc">White-outlined bars on the minimap denote the 21 heights with branching diamonds (width 2&ndash;3 across 1,008 total max-length paths); all other 182 levels are single-module chokes.</p>
+          <h2 id="crit-card-title">Exact Critical Path Stepper</h2>
+          <p class="desc" id="crit-card-desc">White-outlined bars on the minimap denote branching diamonds along longest paths; single-node levels are mandatory chokes.</p>
         </div>
         <div class="controls">
           <button class="ctrl" id="crit-prev">&larr; Prev</button>
@@ -726,7 +897,7 @@ def main() -> None:
         <div class="card-head">
           <div>
             <h2>Leaf Module Audit (<code>out_degree = 0</code>)</h2>
-            <p class="desc">5,927 foundational leaf modules (615,171 lines; 21,610 theorems; 13,624 defs). Every single leaf imports at least one external library.</p>
+            <p class="desc" id="leaf-card-desc">Foundational leaf modules with no internal project imports.</p>
           </div>
         </div>
         <div id="leaf-bars"></div>
@@ -740,17 +911,19 @@ def main() -> None:
       </div>
 
       <div class="card">
-        <div class="card-head">
-          <div>
-            <h2><code>BuildAid</code> Library-Suggestion Denylist Leaves</h2>
-            <p class="desc">5 meta-programming modules (4 lines each, 0 declarations) registering namespaces into <code>Lean.LibrarySuggestions.nameDenyListExt</code>.</p>
+        <div id="buildaid-section">
+          <div class="card-head">
+            <div>
+              <h2><code>BuildAid</code> Library-Suggestion Denylist Leaves</h2>
+              <p class="desc" id="buildaid-desc">Meta-programming modules registering namespaces into <code>Lean.LibrarySuggestions.nameDenyListExt</code>.</p>
+            </div>
           </div>
-        </div>
-        <div class="table-wrap" style="max-height:220px;margin-bottom:14px;">
-          <table id="buildaid-table">
-            <thead><tr><th>Module</th><th class="num">Dist</th><th class="num">In-Deg</th><th>Sample Importers</th></tr></thead>
-            <tbody></tbody>
-          </table>
+          <div class="table-wrap" style="max-height:220px;margin-bottom:14px;">
+            <table id="buildaid-table">
+              <thead><tr><th>Module</th><th class="num">Dist</th><th class="num">In-Deg</th><th>Sample Importers</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
         </div>
         <h3 style="margin:10px 0 8px;font-size:0.9rem;">Top Leaf External Imports</h3>
         <div class="table-wrap" style="max-height:220px;">
@@ -767,7 +940,7 @@ def main() -> None:
 <div class="tooltip" id="tooltip"></div>
 
 <script>
-const DATA = {safe_json};
+let DATA = null;
 
 const DIR_COLORS = {{
   "(root)": "#f43f5e",
@@ -788,7 +961,8 @@ const shortName = (n) => {{
   const parts = n.split(".");
   return parts.length > 3 ? parts.slice(-3).join(".") : n;
 }};
-const dirPill = (td) => `<span class="dir-pill" style="background:${{DIR_COLORS[td]||'#64748b'}}22;color:${{DIR_COLORS[td]||'#cbd5e1'}};border:1px solid ${{DIR_COLORS[td]||'#64748b'}}55">${{esc(td)}}</span>`;
+const dirColor = (td) => DIR_COLORS[td] || "#64748b";
+const dirPill = (td) => `<span class="dir-pill" style="background:${{dirColor(td)}}22;color:${{DIR_COLORS[td]||'#334155'}};border:1px solid ${{dirColor(td)}}55">${{esc(td)}}</span>`;
 
 const tip = document.getElementById("tooltip");
 function showTip(evt, html) {{
@@ -801,19 +975,21 @@ function showTip(evt, html) {{
 }}
 function hideTip() {{ tip.style.display = "none"; }}
 
-// Render KPIs
-(function renderKPIs() {{
+function renderKPIs() {{
+  const topDoms = DATA.dom_top100 || [];
+  const apex = topDoms[1] ? topDoms[1].n.split(".").pop() : "Main";
+  const hasNode = (s) => topDoms.some(x => x.n.endsWith("." + s) || x.n === s) || (DATA.skeleton || []).some(x => x.n.endsWith("." + s) || x.n === s);
   const kpis = [
-    ["Root Theorem", "Main.lean", "Exports RH, half-plane nonvanishing & GRH"],
-    ["Apex Bottleneck", "MainTheoremsAll", "Unites critical-line track & Q(√-3) Selmer bound"],
-    ["Galois Spine", "RowSrc", "Strong local-global compatibility Row0b"],
-    ["Modularity Spine", "TopMainZj → VWin", "Patching, Kato Euler system & U(3) Selmer bounds"],
-    ["Arakelov Spine", "TopCovolSlim2Use", "Moriwaki bigness & good root-tower volumes"]
+    ["Root Theorem", "Main.lean", `${{fmt(DATA.audit.reachable_from_main)}} modules · ${{fmt(DATA.audit.total_internal_edges)}} edges`],
+    ["Apex Bottleneck", apex, topDoms[1] ? `Dominates ${{fmt(topDoms[1].ds)}} modules` : "Root dominator"],
+    ["Galois Spine", hasNode("RowSrc") ? "RowSrc" : "MainConclusion", "Strong local-global compatibility Row0b"],
+    ["Modularity Spine", hasNode("TopMainZj") ? "TopMainZj → VWin" : "ClaimStrip", "Patching, Kato Euler system & Selmer bounds"],
+    ["Critical Chain", `${{DATA.crit.max_edges}} edges`, `${{fmt(DATA.crit.total_paths)}} max-length paths · ${{fmt(DATA.leaf_audit.leaf_count)}} leaves`]
   ];
   document.getElementById("kpi-grid").innerHTML = kpis.map(([k,v,s]) =>
-    `<div class="kpi"><div class="kpi-label">${{k}}</div><div class="kpi-val">${{v}}</div><div class="kpi-sub">${{s}}</div></div>`
+    `<div class="kpi"><div class="kpi-label">${{k}}</div><div class="kpi-val">${{esc(v)}}</div><div class="kpi-sub">${{esc(s)}}</div></div>`
   ).join("");
-}})();
+}}
 
 // Tab switching
 document.querySelectorAll(".tab-btn").forEach(btn => {{
@@ -828,14 +1004,14 @@ document.querySelectorAll(".tab-btn").forEach(btn => {{
 // ================= TAB 1: STRATIGRAPHY =================
 let stratAxis = "dist";
 let stratVal = "files";
-const activeDirs = new Set(Object.keys(DIR_COLORS));
+const activeDirs = new Set();
 
 function renderStratLegend() {{
   const dirs = DATA.profiles.map(p => p.top_dir);
   const el = document.getElementById("strat-legend");
   el.innerHTML = dirs.map(td => {{
     const dim = activeDirs.has(td) ? "" : "dim";
-    return `<span class="legend-item ${{dim}}" data-dir="${{esc(td)}}"><span class="swatch" style="background:${{DIR_COLORS[td]}}"></span>${{esc(td)}}</span>`;
+    return `<span class="legend-item ${{dim}}" data-dir="${{esc(td)}}"><span class="swatch" style="background:${{dirColor(td)}}"></span>${{esc(td)}}</span>`;
   }}).join("") + `<span class="legend-item" id="legend-reset" style="color:var(--accent)">Show All</span>`;
 
   el.querySelectorAll("[data-dir]").forEach(item => {{
@@ -905,7 +1081,7 @@ function renderStratChart() {{
       const val = stratVal === "files" ? c : (r.lines * (c / totalFilesInBin));
       const bh = (val / maxY) * plotH;
       yAcc -= bh;
-      out += `<rect x="${{x.toFixed(1)}}" y="${{yAcc.toFixed(1)}}" width="${{bw.toFixed(1)}}" height="${{Math.max(0.6, bh).toFixed(1)}}" fill="${{DIR_COLORS[d]}}"/>`;
+      out += `<rect x="${{x.toFixed(1)}}" y="${{yAcc.toFixed(1)}}" width="${{bw.toFixed(1)}}" height="${{Math.max(0.6, bh).toFixed(1)}}" fill="${{dirColor(d)}}"/>`;
     }});
     // Hover target rect
     out += `<rect class="bin-hit" data-idx="${{idx}}" x="${{x.toFixed(1)}}" y="${{pad.t}}" width="${{barW.toFixed(1)}}" height="${{plotH}}" fill="transparent"/>`;
@@ -967,7 +1143,7 @@ document.querySelectorAll("#profile-table th[data-sort]").forEach(th => {{
   }});
 }});
 
-(function renderEdgeMatrix() {{
+function renderEdgeMatrix() {{
   const topEdges = DATA.edge_matrix.slice(0, 18);
   const maxE = Math.max(1, ...topEdges.map(x => x.edges));
   document.querySelector("#matrix-table tbody").innerHTML = topEdges.map(e => `
@@ -977,7 +1153,7 @@ document.querySelectorAll("#profile-table th[data-sort]").forEach(th => {{
       <td><span class="bar-bg"><span class="bar-fill" style="width:${{Math.max(2, 100 * Math.log10(e.edges + 1) / Math.log10(maxE + 1)).toFixed(1)}}%"></span></span></td>
     </tr>
   `).join("");
-}})();
+}}
 
 // ================= TAB 2: DOMINATORS =================
 function showModuleDetail(boxId, node) {{
@@ -989,11 +1165,17 @@ function showModuleDetail(boxId, node) {{
   const lineageHtml = node.lin
     ? `<div style="margin-top:8px;font-size:0.76rem;color:var(--muted)"><b>Dominator lineage:</b> <span style="font-family:var(--mono)">${{node.lin.map(esc).join(" &rarr; ")}}</span></div>`
     : (node.id ? `<div style="margin-top:8px;font-size:0.76rem;color:var(--muted)"><b>Immediate dominator:</b> <span style="font-family:var(--mono)">${{esc(node.id)}}</span> (depth ${{node.dd}})</div>` : "");
+  const srcUrl = (window.RHVersion && RHVersion.sourceUrl) ? RHVersion.sourceUrl(node.p) : "";
+  const pathHtml = srcUrl
+    ? `<a href="${{esc(srcUrl)}}" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:none;">${{esc(node.p)}}</a>`
+    : esc(node.p);
   box.innerHTML = `
     <h3>${{esc(node.n)}}</h3>
-    <div style="font-size:0.78rem;color:var(--muted);font-family:var(--mono);">${{esc(node.p)}} ${{dirPill(node.t)}}</div>
+    <div style="font-size:0.78rem;color:var(--muted);font-family:var(--mono);">${{pathHtml}} ${{dirPill(node.t)}}</div>
     <div class="meta-kv">
       <div class="kv-item"><div class="kv-k">Dist / Height</div><div class="kv-v">${{node.dm}} / ${{node.h}}</div></div>
+      <div class="kv-item"><div class="kv-k">Dom Subtree</div><div class="kv-v">${{fmt(node.ds)}}</div></div>
+      <div class="kv-item"><div class="kv-k">In / Out Deg</div><div class="kv-v">${{fmt(node.in)}} / ${{fmt(node.out)}}</div></div>
     </div>
     ${{noteHtml}}
     ${{lineageHtml}}
@@ -1099,7 +1281,7 @@ function renderCriticalPath() {{
     const brInfo = DATA.crit.branches.find(b => b.height === n.h);
     const brHtml = brInfo
       ? `<div class="note-box" style="background:rgba(251,191,36,0.1);border-color:rgba(251,191,36,0.45)"><b>Branching Diamond at h=${{n.h}} (width ${{brInfo.count}}):</b> ${{brInfo.modules.map(m => `<code>${{esc(m)}}</code>`).join(", ")}}</div>`
-      : `<div style="font-size:0.78rem;color:var(--good);margin-top:6px;">Mandatory single-node choke at h=${{n.h}} (100% of 1,008 critical paths pass here)</div>`;
+      : `<div style="font-size:0.78rem;color:var(--good);margin-top:6px;">Mandatory single-node choke at h=${{n.h}} (100% of ${{fmt(DATA.crit.total_paths)}} critical paths pass here)</div>`;
     showModuleDetail("crit-detail", n);
     document.getElementById("crit-detail").insertAdjacentHTML("beforeend",
       `<div style="margin-top:8px;font-size:0.8rem;color:var(--muted)"><b>Step ${{critStep}} / ${{chain.length - 1}}</b> &middot; Remaining longest paths to leaf: <b>${{fmt(n.cw)}}</b></div>${{brHtml}}`
@@ -1198,15 +1380,34 @@ document.querySelectorAll(".hub-mode").forEach(btn => {{
 document.getElementById("hub-search").addEventListener("input", renderHubs);
 
 // ================= TAB 5: LEAVES & BUILDAID =================
-(function renderLeavesTab() {{
+function renderLeavesTab() {{
   const la = DATA.leaf_audit;
+  document.getElementById("leaf-card-desc").textContent =
+    `${{fmt(la.leaf_count)}} foundational leaf modules (${{fmt(la.leaf_lines)}} lines; ${{fmt(la.leaf_theorems)}} theorems; ${{fmt(la.leaf_defs)}} defs). Modules without external imports: ${{fmt(la.leaf_no_ext)}}.`;
+  const baSec = document.getElementById("buildaid-section");
+  if (la.build_aid && la.build_aid.length) {{
+    baSec.style.display = "";
+    document.getElementById("buildaid-desc").textContent =
+      `${{la.build_aid.length}} meta-programming modules registering namespaces into Lean.LibrarySuggestions.nameDenyListExt.`;
+    document.querySelector("#buildaid-table tbody").innerHTML = la.build_aid.map(b => `
+      <tr>
+        <td class="mod-name"><b>${{esc(b.n)}}</b></td>
+        <td class="num">${{b.dm}}</td>
+        <td class="num">${{b.in}}</td>
+        <td class="mod-name" style="color:var(--muted)">${{esc(b.imp.slice(0,2).map(shortName).join(", "))}}</td>
+      </tr>
+    `).join("");
+  }} else {{
+    baSec.style.display = "none";
+  }}
+
   const entries = Object.entries(la.by_top).sort((a,b) => b[1]-a[1]);
   const maxL = Math.max(1, ...entries.map(e => e[1]));
   document.getElementById("leaf-bars").innerHTML = entries.map(([td, cnt]) => `
     <div style="display:flex;align-items:center;gap:10px;margin:5px 0;font-size:0.82rem;">
       <div style="width:155px">${{dirPill(td)}}</div>
       <div style="flex:1;background:var(--bg2);height:12px;border-radius:6px;overflow:hidden;">
-        <div style="width:${{(100*cnt/maxL).toFixed(1)}}%;height:100%;background:${{DIR_COLORS[td]||'#64748b'}}"></div>
+        <div style="width:${{(100*cnt/maxL).toFixed(1)}}%;height:100%;background:${{dirColor(td)}}"></div>
       </div>
       <div class="num" style="width:70px">${{fmt(cnt)}}</div>
     </div>
@@ -1222,28 +1423,45 @@ document.getElementById("hub-search").addEventListener("input", renderHubs);
     </tr>
   `).join("");
 
-  document.querySelector("#buildaid-table tbody").innerHTML = la.build_aid.map(b => `
-    <tr>
-      <td class="mod-name"><b>${{esc(b.n)}}</b></td>
-      <td class="num">${{b.dm}}</td>
-      <td class="num">${{b.in}}</td>
-      <td class="mod-name" style="color:var(--muted)">${{esc(b.imp.slice(0,2).map(shortName).join(", "))}}</td>
-    </tr>
-  `).join("");
-
   document.querySelector("#leaf-ext-table tbody").innerHTML = la.top_ext.map(x => `
     <tr><td class="mod-name">${{esc(x.import)}}</td><td class="num">${{fmt(x.count)}}</td></tr>
   `).join("");
-}})();
+}}
 
-// Initial render
-renderStratLegend();
-renderStratChart();
-renderProfiles();
-renderDomTree();
-renderDomTable();
-renderCriticalPath();
-renderHubs();
+function initSpine(data) {{
+  DATA = data;
+  DATA.profiles.forEach(p => activeDirs.add(p.top_dir));
+  if (window.RHVersion && RHVersion.current) {{
+    document.getElementById("version-badge").textContent = RHVersion.current.short_label || RHVersion.current.label || RHVersion.current.id;
+    document.getElementById("page-subtitle").textContent =
+      `Lean 4 Riemann Hypothesis (${{RHVersion.current.label}}) — Exact Reachability, Stratigraphy, Dominator Tree, Critical Spine & Cross-Directory Bridges`;
+  }}
+  document.getElementById("crit-card-title").textContent =
+    `Exact Critical Path Stepper (${{DATA.crit.max_edges}} Edges / ${{DATA.crit.max_nodes}} Modules)`;
+  document.getElementById("crit-card-desc").textContent =
+    `White-outlined bars on the minimap denote the ${{DATA.crit.branches.length}} heights with branching diamonds (${{fmt(DATA.crit.total_paths)}} total max-length paths); all other ${{DATA.crit.mandatory}} levels are single-module chokes.`;
+  const pos = DATA.profiles.find(p => p.top_dir === "PositivityTheory");
+  const sortedH = [...DATA.profiles].sort((a,b) => b.height_median - a.height_median);
+  if (sortedH.length >= 2) {{
+    const topP = pos || sortedH[0];
+    const botP = sortedH[sortedH.length - 1];
+    document.getElementById("strat-profile-desc").textContent =
+      `Click column headers to sort. ${{topP.top_dir}} sits high (med h=${{topP.height_median}}) while ${{botP.top_dir}} sits near the base (med h=${{botP.height_median}}).`;
+  }}
+
+  renderKPIs();
+  renderStratLegend();
+  renderStratChart();
+  renderProfiles();
+  renderEdgeMatrix();
+  renderDomTree();
+  renderDomTable();
+  renderCriticalPath();
+  renderHubs();
+  renderLeavesTab();
+}}
+
+RHVersion.loadDataScript("proof_spine/spine_dashboard_data.js", "__SPINE_DATA__", initSpine);
 </script>
 </body>
 </html>

@@ -1,0 +1,65 @@
+digraph TopLevelDependencies {
+  graph [
+    label="Riemann Proof — Top-Level Mathematical Domain Dependency Graph\nEdge A -> B means A depends on B (A imports from B)\nBlue: primary cross-theory dependency | Slate: secondary | Indigo: Main entry chain | Dashed Amber: reverse coupling"
+    labelloc=t
+    fontsize=15
+    fontname="Helvetica"
+    rankdir=TB
+    splines=true
+    nodesep=0.95
+    ranksep=0.95
+    bgcolor="#0f172a"
+    fontcolor="#f8fafc"
+    pad=0.45
+  ];
+  node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=11, penwidth=2, margin="0.18,0.10"];
+  edge [fontname="Helvetica", fontsize=9];
+
+  _root_ [label="(root)\ndist>=0 | maxH=93", fillcolor="#334155", color="#94a3b8", fontcolor="#ffffff"];
+  Development [label="Development\ndist>=1 | maxH=92", fillcolor="#1d4ed8", color="#60a5fa", fontcolor="#ffffff"];
+  CompanionTheory [label="CompanionTheory\ndist>=3 | maxH=69", fillcolor="#047857", color="#34d399", fontcolor="#ffffff"];
+  PositivityTheory [label="PositivityTheory\ndist>=3 | maxH=45", fillcolor="#86198f", color="#e879f9", fontcolor="#ffffff"];
+  Formalism [label="Formalism\ndist>=3 | maxH=56", fillcolor="#c2410c", color="#fb923c", fontcolor="#ffffff"];
+  ReciprocityTheory [label="ReciprocityTheory\ndist>=2 | maxH=47", fillcolor="#0f766e", color="#2dd4bf", fontcolor="#ffffff"];
+  GroundTheory [label="GroundTheory\ndist>=2 | maxH=41", fillcolor="#a16207", color="#facc15", fontcolor="#ffffff"];
+  Lemmata [label="Lemmata\ndist>=4 | maxH=10", fillcolor="#6b21a8", color="#c084fc", fontcolor="#ffffff"];
+
+  { rank=same; _root_; }
+  { rank=same; Development; }
+  { rank=same; CompanionTheory; PositivityTheory; }
+  { rank=same; Formalism; GroundTheory; ReciprocityTheory; }
+  { rank=same; Lemmata; }
+
+  Development -> Formalism [label=" 32,714 ", penwidth=6.00, color="#38bdf8", style=solid, fontcolor="#bae6fd", constraint=true];
+  Development -> ReciprocityTheory [label=" 22,116 ", penwidth=6.00, color="#38bdf8", style=solid, fontcolor="#bae6fd", constraint=true];
+  Development -> GroundTheory [label=" 6,514 ", penwidth=5.39, color="#38bdf8", style=solid, fontcolor="#bae6fd", constraint=true];
+  GroundTheory -> ReciprocityTheory [label=" 1,774 ", penwidth=4.74, color="#38bdf8", style=solid, fontcolor="#bae6fd", constraint=true];
+  Development -> CompanionTheory [label=" 1,423 ", penwidth=4.63, color="#38bdf8", style=solid, fontcolor="#bae6fd", constraint=true];
+  CompanionTheory -> Formalism [label=" 1,143 ", penwidth=4.52, color="#38bdf8", style=solid, fontcolor="#bae6fd", constraint=true];
+  CompanionTheory -> Development [label=" 1,034 (rev) ", penwidth=4.47, color="#f59e0b", style=dashed, fontcolor="#fbbf24", constraint=false];
+  ReciprocityTheory -> Formalism [label=" 614 ", penwidth=4.21, color="#94a3b8", style=solid, fontcolor="#cbd5e1", constraint=true];
+  PositivityTheory -> Development [label=" 597 ", penwidth=4.19, color="#94a3b8", style=solid, fontcolor="#cbd5e1", constraint=false];
+  Formalism -> ReciprocityTheory [label=" 474 (rev) ", penwidth=4.08, color="#f59e0b", style=dashed, fontcolor="#fbbf24", constraint=true];
+  Formalism -> Development [label=" 267 (rev) ", penwidth=3.79, color="#f59e0b", style=dashed, fontcolor="#fbbf24", constraint=false];
+  Development -> PositivityTheory [label=" 259 (rev) ", penwidth=3.78, color="#f59e0b", style=dashed, fontcolor="#fbbf24", constraint=true];
+  CompanionTheory -> ReciprocityTheory [label=" 207 ", penwidth=3.66, color="#94a3b8", style=solid, fontcolor="#cbd5e1", constraint=true];
+  CompanionTheory -> GroundTheory [label=" 123 ", penwidth=3.40, color="#94a3b8", style=solid, fontcolor="#cbd5e1", constraint=true];
+  Formalism -> Lemmata [label=" 114 ", penwidth=3.37, color="#94a3b8", style=solid, fontcolor="#cbd5e1", constraint=true];
+  PositivityTheory -> GroundTheory [label=" 104 ", penwidth=3.32, color="#94a3b8", style=solid, fontcolor="#cbd5e1", constraint=true];
+  PositivityTheory -> Formalism [label=" 65 ", penwidth=3.08, color="#94a3b8", style=solid, fontcolor="#cbd5e1", constraint=true];
+  GroundTheory -> Development [label=" 62 (rev) ", penwidth=3.06, color="#f59e0b", style=dashed, fontcolor="#fbbf24", constraint=false];
+  ReciprocityTheory -> Lemmata [label=" 38 ", penwidth=2.82, color="#64748b", style=dotted, fontcolor="#94a3b8", constraint=true];
+  Development -> Lemmata [label=" 34 ", penwidth=2.76, color="#64748b", style=dotted, fontcolor="#94a3b8", constraint=true];
+  ReciprocityTheory -> Development [label=" 30 (rev) ", penwidth=2.70, color="#f59e0b", style=dashed, fontcolor="#fbbf24", constraint=false];
+  Lemmata -> Formalism [label=" 21 (rev) ", penwidth=2.52, color="#f59e0b", style=dashed, fontcolor="#fbbf24", constraint=false];
+  PositivityTheory -> ReciprocityTheory [label=" 18 ", penwidth=2.44, color="#64748b", style=dotted, fontcolor="#94a3b8", constraint=true];
+  GroundTheory -> Formalism [label=" 10 ", penwidth=2.15, color="#64748b", style=dotted, fontcolor="#94a3b8", constraint=true];
+  Formalism -> CompanionTheory [label=" 8 (rev) ", penwidth=2.04, color="#f59e0b", style=dashed, fontcolor="#fbbf24", constraint=false];
+  Lemmata -> ReciprocityTheory [label=" 5 (rev) ", penwidth=1.80, color="#f59e0b", style=dashed, fontcolor="#fbbf24", constraint=false];
+  ReciprocityTheory -> GroundTheory [label=" 5 (rev) ", penwidth=1.80, color="#f59e0b", style=dashed, fontcolor="#fbbf24", constraint=true];
+  Lemmata -> Development [label=" 4 (rev) ", penwidth=1.69, color="#f59e0b", style=dashed, fontcolor="#fbbf24", constraint=false];
+  GroundTheory -> CompanionTheory [label=" 3 (rev) ", penwidth=1.55, color="#f59e0b", style=dashed, fontcolor="#fbbf24", constraint=false];
+  _root_ -> Development [label=" 2 (entry) ", penwidth=2.40, color="#a5b4fc", style=bold, fontcolor="#c7d2fe", constraint=true];
+  Development -> _root_ [label=" 2 ", penwidth=1.35, color="#64748b", style=dotted, fontcolor="#94a3b8", constraint=false];
+  Formalism -> GroundTheory [label=" 2 (rev) ", penwidth=1.35, color="#f59e0b", style=dashed, fontcolor="#fbbf24", constraint=true];
+}

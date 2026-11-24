@@ -1,0 +1,32 @@
+[
+  {
+    "id": "community-307cef33",
+    "label": "Community simplified (307cef33 · 2026-11-24)",
+    "short_label": "307cef33 (2026-11-24)",
+    "date": "2026-11-24",
+    "repo_name": "leanprover-community/riemann-hypothesis",
+    "repo_url": "https://github.com/leanprover-community/riemann-hypothesis",
+    "commit": "307cef33f046955ee79dba47e0d828d06496d75f",
+    "tarball_url": "https://codeload.github.com/leanprover-community/riemann-hypothesis/tar.gz/307cef33f046955ee79dba47e0d828d06496d75f",
+    "local_repo_dir": "lean_versions/community-307cef33",
+    "local_src_dir": "lean_versions/community-307cef33/src",
+    "source_blob_base": "https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/",
+    "source_tree_base": "https://github.com/leanprover-community/riemann-hypothesis/tree/307cef33f046955ee79dba47e0d828d06496d75f/src/",
+    "is_default": true
+  },
+  {
+    "id": "original-2026-11-20",
+    "label": "Original submission (2026-11-20)",
+    "short_label": "Original (2026-11-20)",
+    "date": "2026-11-20",
+    "repo_name": "Original proof (alpo.ge/remark.pdf)",
+    "repo_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/tree/main/lean",
+    "commit": "original",
+    "tarball_url": null,
+    "local_repo_dir": "lean",
+    "local_src_dir": "lean/src",
+    "source_blob_base": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/",
+    "source_tree_base": "https://github.com/ZacharyVernec/riemann-proof-explorer/tree/main/lean/src/",
+    "is_default": false
+  }
+]

@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Build canonical SQLite graph index and meta.json for lean/src."""
+"""Build canonical SQLite graph index and meta.json for a Lean src tree."""
 
 from __future__ import annotations
 
+import argparse
 import json
 import os
 import re
@@ -11,17 +12,31 @@ import time
 from collections import Counter, defaultdict, deque
 from pathlib import Path
 
-ROOT = Path("/home/ubuntu/riemann_proof")
-SRC_DIR = ROOT / "lean" / "src"
-OUT_DIR = ROOT / "analysis" / "data"
-DB_PATH = OUT_DIR / "graph.sqlite"
-META_PATH = OUT_DIR / "meta.json"
+ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_SRC_DIR = ROOT / "lean" / "src"
+DEFAULT_OUT_DIR = ROOT / "analysis" / "data"
 
-EXTERNAL_PREFIXES = {"Mathlib", "Batteries", "Lean"}
+EXTERNAL_PREFIXES = {
+    "Mathlib",
+    "Batteries",
+    "Lean",
+    "Std",
+    "Init",
+    "Qq",
+    "Aesop",
+    "Lake",
+    "ImportGraph",
+    "ProofWidgets",
+    "Plausible",
+}
+
+IMPORT_RE = re.compile(rb"^(?:(?:public|meta)\s+)*import\s+(?:all\s+)?([^\s]+)")
 
 DECL_RE = re.compile(
-    rb'^(?:@\[.*?\]\s*)?(?:(?:private|protected|noncomputable|partial|unsafe|scoped|local)\s+)*'
-    rb'(theorem|lemma|def|structure|class|inductive|abbrev|axiom|opaque|instance)\s+([^\s:(\[{]+)'
+    rb"^(?:@\[.*?\]\s*)*"
+    rb"(?:set_option\s+[^\n]*?\s+in\s+)?"
+    rb"(?:(?:private|protected|public|meta|noncomputable|partial|unsafe|scoped|local)\s+)*"
+    rb"(theorem|lemma|def|structure|class|inductive|abbrev|axiom|opaque|instance)\s+([^\s:(\[{]+)"
 )
 
 
@@ -36,14 +51,24 @@ def dir_levels(dir_path: str) -> tuple[str, str, str]:
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(description="Build SQLite graph index and meta.json from Lean src.")
+    parser.add_argument("--src-dir", type=Path, default=DEFAULT_SRC_DIR, help="Path to Lean src root")
+    parser.add_argument("--out-dir", type=Path, default=DEFAULT_OUT_DIR, help="Output directory for graph.sqlite and meta.json")
+    args = parser.parse_args()
+
+    src_dir = args.src_dir.resolve()
+    out_dir = args.out_dir.resolve()
+    db_path = out_dir / "graph.sqlite"
+    meta_path = out_dir / "meta.json"
+
     t0 = time.time()
-    OUT_DIR.mkdir(parents=True, exist_ok=True)
-    if DB_PATH.exists():
-        DB_PATH.unlink()
+    out_dir.mkdir(parents=True, exist_ok=True)
+    if db_path.exists():
+        db_path.unlink()
 
     # Phase 1: Discover all .lean files deterministically
     rel_paths: list[str] = []
-    src_str = str(SRC_DIR)
+    src_str = str(src_dir)
     for dirpath, _, filenames in os.walk(src_str):
         for fn in filenames:
             if fn.endswith(".lean"):
@@ -100,25 +125,43 @@ def main() -> None:
 
         seen_dst: set[int] = set()
         exts: list[str] = []
+        comment_depth = 0
         for lineno, line in enumerate(split_lines, 1):
-            if line.startswith(b"import "):
-                parts = line.decode("utf-8", errors="replace").strip().split()
-                if len(parts) >= 2:
-                    imp_name = parts[1]
-                    dst_id = name_to_id.get(imp_name)
-                    if dst_id is not None:
-                        if dst_id not in seen_dst:
-                            seen_dst.add(dst_id)
-                            edges_list.append((mod_id, dst_id))
-                            adj_out[idx].append(dst_id - 1)
-                            adj_in[dst_id - 1].append(idx)
+            stripped = line.lstrip()
+            if comment_depth > 0:
+                comment_depth = max(0, comment_depth + stripped.count(b"/-") - stripped.count(b"-/"))
+                continue
+            if stripped.startswith(b"--"):
+                continue
+            if stripped.startswith(b"/-"):
+                opens = stripped.count(b"/-")
+                closes = stripped.count(b"-/")
+                if opens > closes:
+                    comment_depth = opens - closes
+                    continue
+                # Single-line block comment: strip up to the closing '-/' if code follows on the same line
+                tail = stripped.rsplit(b"-/", 1)[1].lstrip()
+                if not tail:
+                    continue
+                line = tail
+
+            m_imp = IMPORT_RE.match(line)
+            if m_imp:
+                imp_name = m_imp.group(1).decode("utf-8", errors="replace")
+                dst_id = name_to_id.get(imp_name)
+                if dst_id is not None:
+                    if dst_id not in seen_dst:
+                        seen_dst.add(dst_id)
+                        edges_list.append((mod_id, dst_id))
+                        adj_out[idx].append(dst_id - 1)
+                        adj_in[dst_id - 1].append(idx)
+                else:
+                    top_prefix = imp_name.split(".")[0]
+                    if top_prefix in EXTERNAL_PREFIXES:
+                        exts.append(imp_name)
+                        ext_counts[imp_name] += 1
                     else:
-                        top_prefix = imp_name.split(".")[0]
-                        if top_prefix in EXTERNAL_PREFIXES:
-                            exts.append(imp_name)
-                            ext_counts[imp_name] += 1
-                        else:
-                            unresolved_imports.append({"module": mod_names[idx], "import": imp_name})
+                        unresolved_imports.append({"module": mod_names[idx], "import": imp_name})
             else:
                 m = DECL_RE.match(line)
                 if m:
@@ -238,7 +281,7 @@ def main() -> None:
 
     # Phase 5: Write SQLite database
     t3 = time.time()
-    conn = sqlite3.connect(str(DB_PATH))
+    conn = sqlite3.connect(str(db_path))
     conn.execute("PRAGMA synchronous = OFF")
     conn.execute("PRAGMA journal_mode = MEMORY")
     conn.execute("PRAGMA temp_store = MEMORY")
@@ -374,17 +417,27 @@ def main() -> None:
     # Phase 6: Write meta.json
     reachable_files = sum(reachable)
     unreachable_files = n_mod - reachable_files
+    unreachable_modules = [rel_paths[i] for i in range(n_mod) if not reachable[i]][:50]
     total_lines = sum(lines_arr)
     reachable_lines = sum(lines_arr[i] for i in range(n_mod) if reachable[i])
     total_bytes = sum(bytes_arr)
-    reachable_edges = sum(1 for u_id, _ in edges_list if reachable[u_id - 1])
+    reachable_edges = sum(1 for u_id, v_id in edges_list if reachable[u_id - 1] and reachable[v_id - 1])
     max_dist = max((d for d in dist_main if d is not None), default=0)
     max_height = max(height, default=0)
+    reachable_heights = [height[i] for i in range(n_mod) if reachable[i]]
+    max_reachable_height = max(reachable_heights, default=0)
+
+    reachable_decl_counts: Counter[str] = Counter()
+    for mod_id, kind, _, _ in decl_rows:
+        if reachable[mod_id - 1]:
+            reachable_decl_counts[kind] += 1
 
     meta = {
+        "src_dir": str(src_dir),
         "total_files": n_mod,
         "reachable_files": reachable_files,
         "unreachable_files": unreachable_files,
+        "unreachable_modules": unreachable_modules,
         "total_lines": total_lines,
         "reachable_lines": reachable_lines,
         "total_bytes": total_bytes,
@@ -392,13 +445,15 @@ def main() -> None:
         "reachable_internal_edges": reachable_edges,
         "max_dist_from_main": max_dist,
         "max_height_from_leaves": max_height,
+        "max_reachable_height_from_leaves": max_reachable_height,
         "is_dag": is_dag,
         "unresolved_imports": unresolved_imports,
         "external_import_counts": dict(ext_counts.most_common()),
         "decl_counts": dict(decl_counts.most_common()),
+        "reachable_decl_counts": dict(reachable_decl_counts.most_common()),
         "elapsed_seconds": round(time.time() - t0, 2),
     }
-    META_PATH.write_text(json.dumps(meta, indent=2))
+    meta_path.write_text(json.dumps(meta, indent=2))
     print(json.dumps(meta, indent=2))
 
 

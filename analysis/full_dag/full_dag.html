@@ -440,6 +440,10 @@
   <a href="../index.html">&larr; Portal</a>
   <span class="nav-sep">&middot;</span>
   <a href="FULL_DAG.html">Methodology</a>
+  <span class="nav-sep">&middot;</span>
+  <a href="FULL_DAG.md" data-version-href="full_dag/FULL_DAG.md">Raw .md</a>
+  <span class="nav-sep">&middot;</span>
+  <span data-version-picker="compact"></span>
 </nav>
 
 <div class="controls-stack" id="controls-stack">
@@ -520,7 +524,7 @@
 
 <div id="loading">Decoding Lean module DAG&hellip;</div>
 
-<script src="full_dag_data.js"></script>
+<script src="../version_picker.js"></script>
 <script>
 (function () {
   "use strict";
@@ -2835,6 +2839,7 @@
 
     // Keyboard pan/zoom + collapse toggle
     window.addEventListener("keydown", (ev) => {
+      if (ev.target && /^(INPUT|SELECT|TEXTAREA)$/.test(ev.target.tagName)) return;
       if (ev.metaKey || ev.ctrlKey || ev.altKey) return;
       const step = Math.round(Math.min(cssW, cssH) * 0.14);
       if (ev.key === "c" || ev.key === "C") {
@@ -2886,7 +2891,7 @@
     });
   }
 
-  init();
+  RHVersion.loadDataScript("full_dag/full_dag_data.js", "__FULL_DAG_GZ_B64__", () => init());
 })();
 </script>
 </body>

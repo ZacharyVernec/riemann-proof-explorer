@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import argparse
 import json
 import math
 import sqlite3
@@ -13,11 +14,12 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
-ROOT = Path("/home/ubuntu/riemann_proof")
+ROOT = Path(__file__).resolve().parents[2]
+SCRIPT_DIR = Path(__file__).resolve().parent
 SRC_DIR = ROOT / "lean" / "src"
 DB_PATH = ROOT / "analysis" / "data" / "graph.sqlite"
 META_PATH = ROOT / "analysis" / "data" / "meta.json"
-OUT_DIR = ROOT / "analysis" / "dependency_graph"
+OUT_DIR = SCRIPT_DIR
 
 TOP_ORDER = [
     "(root)",
@@ -179,16 +181,19 @@ def load_graph_data() -> dict[str, Any]:
     mod_height = [0] * (n_max + 1)
 
     all_ids: list[int] = []
+    reach_set: set[int] = set()
     for row in cur.execute(
         """
         SELECT id, rel_path, top_dir, depth2_dir, depth3_dir,
                lines, bytes, n_theorems, n_lemmas, n_defs, n_structures,
                COALESCE(dist_from_main, 0), height_from_leaves
         FROM modules
+        WHERE reachable_from_main = 1
         """
     ):
         mid = row[0]
         all_ids.append(mid)
+        reach_set.add(mid)
         mod_rel[mid] = row[1]
         mod_top[mid] = row[2]
         mod_d2[mid] = row[3]
@@ -360,7 +365,11 @@ def load_graph_data() -> dict[str, Any]:
     cross_in_l3 = [0] * (n_max + 1)
 
     total_edges_read = 0
+    reach_edges: list[tuple[int, int]] = []
     for s_id, d_id in cur.execute("SELECT src_id, dst_id FROM edges"):
+        if s_id not in reach_set or d_id not in reach_set:
+            continue
+        reach_edges.append((s_id, d_id))
         total_edges_read += 1
         st, dt = mod_top[s_id], mod_top[d_id]
         if st != dt:
@@ -398,8 +407,8 @@ def load_graph_data() -> dict[str, Any]:
 
     conn.close()
 
-    assert total_edges_read == meta["total_internal_edges"], (
-        f"Edge mismatch: {total_edges_read} vs {meta['total_internal_edges']}"
+    assert total_edges_read == meta["reachable_internal_edges"], (
+        f"Edge mismatch: {total_edges_read} vs {meta['reachable_internal_edges']}"
     )
 
     # Compute top cross-boundary files for every tree node
@@ -494,11 +503,26 @@ def load_graph_data() -> dict[str, Any]:
 
     # Validate leaf partition
     leaf_nodes = [nd for nd in tree_nodes.values() if nd["is_leaf"]]
-    assert sum(nd["files"] for nd in leaf_nodes) == meta["total_files"]
+    assert sum(nd["files"] for nd in leaf_nodes) == meta["reachable_files"]
     assert len(leaf_nodes) == len(l3_keys)
     assert len(leaf_edges) == levels_data["3"]["edge_count"]
 
-    root_ids = [f"L1:{t}" for t in TOP_ORDER if f"L1:{t}" in tree_nodes]
+    present_top = {mod_top[mid] for mid in all_ids}
+    active_top_order = [t for t in TOP_ORDER if t in present_top] + sorted(present_top - set(TOP_ORDER))
+    root_ids = [f"L1:{t}" for t in active_top_order if f"L1:{t}" in tree_nodes]
+
+    # Count minor subdirs per top dir dynamically for major_bucket labels
+    minor_counts: dict[str, set[str]] = defaultdict(set)
+    for mid in all_ids:
+        t, d2 = mod_top[mid], mod_d2[mid]
+        if t == "Formalism" and d2 not in MAJOR_FORMALISM_HUBS:
+            minor_counts[t].add(d2)
+        elif t == "PositivityTheory" and d2 != "PositivityTheory/AutomorphicForms":
+            minor_counts[t].add(d2)
+        elif t == "GroundTheory" and d2 not in MAJOR_GROUND_KEEP:
+            minor_counts[t].add(d2)
+        elif t == "ReciprocityTheory" and d2 not in MAJOR_RECIPROCITY_KEEP:
+            minor_counts[t].add(d2)
 
     # Build projected Depth-2 major architectural dataset
     def major_bucket(mid: int) -> str:
@@ -508,13 +532,13 @@ def load_graph_data() -> dict[str, Any]:
         if t == "Lemmata":
             return "Lemmata/*"
         if t == "Formalism":
-            return d2 if d2 in MAJOR_FORMALISM_HUBS else "Formalism/(other 99)"
+            return d2 if d2 in MAJOR_FORMALISM_HUBS else f"Formalism/(other {len(minor_counts['Formalism'])})"
         if t == "PositivityTheory":
-            return d2 if d2 == "PositivityTheory/AutomorphicForms" else "PositivityTheory/(other 2)"
+            return d2 if d2 == "PositivityTheory/AutomorphicForms" else f"PositivityTheory/(other {len(minor_counts['PositivityTheory'])})"
         if t == "GroundTheory":
-            return d2 if d2 in MAJOR_GROUND_KEEP else "GroundTheory/(minor 5)"
+            return d2 if d2 in MAJOR_GROUND_KEEP else f"GroundTheory/(minor {len(minor_counts['GroundTheory'])})"
         if t == "ReciprocityTheory":
-            return d2 if d2 in MAJOR_RECIPROCITY_KEEP else "ReciprocityTheory/(minor 15)"
+            return d2 if d2 in MAJOR_RECIPROCITY_KEEP else f"ReciprocityTheory/(minor {len(minor_counts['ReciprocityTheory'])})"
         return d2
 
     major_nodes: dict[str, dict[str, Any]] = {}
@@ -541,26 +565,26 @@ def load_graph_data() -> dict[str, Any]:
             mn["min_dist"] = dm
 
     major_edge_w: dict[tuple[str, str], int] = defaultdict(int)
-    conn2 = sqlite3.connect(f"file:{DB_PATH}?mode=ro", uri=True)
-    for s_id, d_id in conn2.execute("SELECT src_id, dst_id FROM edges"):
+    for s_id, d_id in reach_edges:
         bs, bd = mod_major[s_id], mod_major[d_id]
         if bs != bd:
             major_edge_w[(bs, bd)] += 1
-    conn2.close()
 
     print(
-        f"Loaded & aggregated {meta['total_files']:,} modules and {total_edges_read:,} edges "
+        f"Loaded & aggregated {len(all_ids):,} reachable modules and {total_edges_read:,} edges "
         f"into {len(tree_nodes)} tree nodes in {time.time() - t0:.2f}s"
     )
 
     return {
+        "top_order": active_top_order,
         "meta": {
             "repo_root": str(SRC_DIR),
             "total_files": meta["total_files"],
             "reachable_files": meta["reachable_files"],
-            "total_lines": meta["total_lines"],
+            "unreachable_files": meta.get("unreachable_files", 0),
+            "total_lines": meta.get("reachable_lines", meta["total_lines"]),
             "total_bytes": meta["total_bytes"],
-            "total_internal_edges": meta["total_internal_edges"],
+            "total_internal_edges": meta["reachable_internal_edges"],
             "is_dag": meta["is_dag"],
             "max_dist_from_main": meta["max_dist_from_main"],
             "max_height_from_leaves": meta["max_height_from_leaves"],
@@ -583,6 +607,7 @@ def write_top_level_mermaid(data: dict[str, Any], out_path: Path) -> None:
     """Write top_level_graph.mmd (Mermaid flowchart TD)."""
     tree_nodes = data["tree"]["nodes"]
     l1_edges = data["levels"]["1"]["edges"]
+    active_tops = data.get("top_order") or [t for t in TOP_ORDER if f"L1:{t}" in tree_nodes]
 
     lines: list[str] = [
         "%%{init: {'theme': 'base', 'themeVariables': {'fontFamily': 'Inter, system-ui, sans-serif'}}}%%",
@@ -599,7 +624,7 @@ def write_top_level_mermaid(data: dict[str, Any], out_path: Path) -> None:
         "",
     ]
 
-    for top in TOP_ORDER:
+    for top in active_tops:
         nid = f"L1:{top}"
         nd = tree_nodes[nid]
         sid = sanitize_id(top)
@@ -626,9 +651,9 @@ def write_top_level_mermaid(data: dict[str, Any], out_path: Path) -> None:
         lines.append(f'  {s_id} {arrow}|"{tag}"| {d_id}')
 
     lines.append("")
-    for top in TOP_ORDER:
+    for top in active_tops:
         sid = sanitize_id(top)
-        c = TOP_COLORS[top]
+        c = TOP_COLORS.get(top, TOP_COLORS["BuildAid"])
         lines.append(
             f"  style {sid} fill:{c['dot']},stroke:{c['border']},stroke-width:2px,color:#ffffff"
         )
@@ -647,8 +672,8 @@ def write_top_level_dot(data: dict[str, Any], out_path: Path) -> None:
     """Write top_level_graph.dot for Graphviz rendering."""
     tree_nodes = data["tree"]["nodes"]
     l1_edges = data["levels"]["1"]["edges"]
-    meta = data["meta"]
-    tot_cross = data["levels"]["1"]["total_cross_edges"]
+    active_tops = data.get("top_order") or [t for t in TOP_ORDER if f"L1:{t}" in tree_nodes]
+    active_set = set(active_tops)
 
     lines: list[str] = [
         "digraph TopLevelDependencies {",
@@ -674,11 +699,11 @@ def write_top_level_dot(data: dict[str, Any], out_path: Path) -> None:
         "",
     ]
 
-    for top in TOP_ORDER:
+    for top in active_tops:
         nid = f"L1:{top}"
         nd = tree_nodes[nid]
         sid = sanitize_id(top)
-        c = TOP_COLORS[top]
+        c = TOP_COLORS.get(top, TOP_COLORS["BuildAid"])
         label = (
             f"{top}\\n"
             f"dist>={nd['min_dist']} | maxH={nd['max_height']}"
@@ -687,18 +712,20 @@ def write_top_level_dot(data: dict[str, Any], out_path: Path) -> None:
             f'  {sid} [label="{label}", fillcolor="{c["dot"]}", color="{c["border"]}", fontcolor="#ffffff"];'
         )
 
-    lines.extend(
-        [
-            "",
-            "  { rank=same; _root_; }",
-            "  { rank=same; Supplements; }",
-            "  { rank=same; Development; }",
-            "  { rank=same; CompanionTheory; PositivityTheory; }",
-            "  { rank=same; Formalism; GroundTheory; ReciprocityTheory; }",
-            "  { rank=same; Lemmata; BuildAid; }",
-            "",
-        ]
-    )
+    rank_groups = [
+        ["(root)"],
+        ["Supplements"],
+        ["Development"],
+        ["CompanionTheory", "PositivityTheory"],
+        ["Formalism", "GroundTheory", "ReciprocityTheory"],
+        ["Lemmata", "BuildAid"],
+    ]
+    lines.append("")
+    for grp in rank_groups:
+        present_grp = [sanitize_id(t) for t in grp if t in active_set]
+        if present_grp:
+            lines.append(f"  {{ rank=same; {'; '.join(present_grp)}; }}")
+    lines.append("")
 
     rank_idx = {
         "(root)": 0,
@@ -720,7 +747,7 @@ def write_top_level_dot(data: dict[str, Any], out_path: Path) -> None:
         pw = max(1.2, min(6.0, 1.0 + math.log10(max(1, w)) * 1.15))
         is_entry = e["src"] in ("(root)", "Supplements")
         is_back = e["has_reverse"] and w < e["reverse_weight"]
-        goes_up = rank_idx[e["dst"]] < rank_idx[e["src"]]
+        goes_up = rank_idx.get(e["dst"], 4) < rank_idx.get(e["src"], 4)
         if is_entry:
             color = "#a5b4fc"
             style = "bold"
@@ -806,9 +833,17 @@ def write_depth2_major_dot(data: dict[str, Any], out_path: Path) -> None:
         "",
     ]
 
-    for key in sorted(nodes.keys(), key=lambda k: (-nodes[k]["max_height"], TOP_ORDER.index(nodes[k]["top_dir"]), -nodes[k]["files"])):
+    active_tops = data.get("top_order") or TOP_ORDER
+    for key in sorted(
+        nodes.keys(),
+        key=lambda k: (
+            -nodes[k]["max_height"],
+            active_tops.index(nodes[k]["top_dir"]) if nodes[k]["top_dir"] in active_tops else 99,
+            -nodes[k]["files"],
+        ),
+    ):
         nd = nodes[key]
-        c = TOP_COLORS[nd["top_dir"]]
+        c = TOP_COLORS.get(nd["top_dir"], TOP_COLORS["BuildAid"])
         sid = sanitize_id(key)
         lbl = f"{key}\\nH={nd['max_height']}"
         lines.append(
@@ -867,40 +902,101 @@ def render_svg_with_dot(dot_path: Path, svg_path: Path) -> None:
     )
 
 
-def write_explorer_html(data: dict[str, Any], out_path: Path) -> None:
-    """Write self-contained dependency_explorer.html with embedded compact graph data."""
-    # Omit duplicated levels["3"]["edges"] and _major_projection inside embedded HTML payload
-    # since tree.leaf_edges already holds the exact 4,818 Level-3 edges.
-    embedded_payload = {
-        "meta": data["meta"],
-        "colors": TOP_COLORS,
-        "top_order": TOP_ORDER,
-        "levels": {
-            "1": data["levels"]["1"],
-            "2": data["levels"]["2"],
-            "3": {
-                "node_count": data["levels"]["3"]["node_count"],
-                "edge_count": data["levels"]["3"]["edge_count"],
-                "total_cross_edges": data["levels"]["3"]["total_cross_edges"],
-                "mutual_pairs": data["levels"]["3"]["mutual_pairs"],
-                "nontrivial_scc_count": data["levels"]["3"]["nontrivial_scc_count"],
-                "sccs": data["levels"]["3"]["sccs"],
-            },
-        },
-        "tree": data["tree"],
-    }
-    json_str = json.dumps(embedded_payload, separators=(",", ":"), ensure_ascii=True)
-    # Prevent any accidental </script> sequence inside JSON strings
-    json_str = json_str.replace("<", "\\u003c")
+def write_readme_md(
+    data: dict[str, Any],
+    out_path: Path,
+    source_blob_base: str = "",
+    version_label: str = "",
+    rel_src_label: str = "src/",
+) -> None:
+    """Write version-aware README.md for dependency_graph."""
+    meta = data["meta"]
+    tree_nodes = data["tree"]["nodes"]
+    l2_edges = data["levels"]["2"]["edges"]
+    active_tops = data.get("top_order") or []
+    n_major = len(data["_major_projection"]["nodes"])
 
-    html_doc = f"""<!DOCTYPE html>
+    def mlink(rel_path: str, label: str | None = None) -> str:
+        t = label or Path(rel_path).name
+        if source_blob_base:
+            return f"[{t}]({source_blob_base.rstrip('/')}/{rel_path})"
+        return f"`{rel_path}`"
+
+    roles = {
+        "(root)": f"Top-level theorem statements and entry point ({mlink('Main.lean')}, {mlink('Statements.lean')})",
+        "Supplements": "Theorem-assembly kernel (`Supplements/Kernels/*`) bridging `Main.lean` into the main proof tracks",
+        "Development": "Primary proof synthesis engine: abelian varieties, automorphic arithmetic, automorphic spectrum, Weil bound, étale cohomology, discrete groups, and resolution of singularities",
+        "CompanionTheory": "Spectral geometry, real reductive groups, Harish-Chandra modules, and automorphic companion results",
+        "PositivityTheory": "Automorphic positivity estimates, Rankin-Selberg integrals, and weight-1 Hilbert Eisenstein series",
+        "Formalism": "Foundational analytic and algebraic specification contracts: local-to-global theta lifts, sharp restriction, period integrals, Hermitian curvature, and local Bloch-Kato cohomology",
+        "ReciprocityTheory": "Reductive groups, PEL Shimura toroidal compactifications, Mumford semiabelian uniformisations, $L^2$ $\\bar\\partial$-estimates, and reciprocity laws",
+        "GroundTheory": "Arakelov heights, theta functions, global/local fields, Whittaker multiplicity one, profinite Poitou-Tate cohomology, and $p$-adic Hodge theory",
+        "Lemmata": "Standalone linear-algebraic and matrix-determinant lemma units",
+        "BuildAid": "Library-suggestion namespace configuration leaves",
+    }
+
+    ver_note = f" ({version_label})" if version_label else ""
+    lines: list[str] = []
+    a = lines.append
+    a(f"# Theory-Level Dependency Graph Analysis{ver_note}")
+    a("")
+    a(
+        f"This directory contains aggregated dependency graphs, static diagrams, and an interactive explorer mapping the logical relationships across the mathematical domains and sub-theories of `{rel_src_label}` (**{meta['reachable_files']:,} reachable modules**, **{meta['total_internal_edges']:,} edges**)."
+    )
+    a("")
+    a(
+        "> **Direction Convention:** Throughout all data files, diagrams, and tools in this directory, a directed edge **`A -> B`** means **`A` depends on `B`** (`A` imports mathematical definitions or theorems from `B`). Conversely, `B` supplies results to `A`."
+    )
+    a("")
+    a("---")
+    a("")
+    a("## 1. Deliverables & Quick Links")
+    a("")
+    a("| Artifact | Description |")
+    a("| :--- | :--- |")
+    a("| `dir_graph_data.js` / `dir_graph.json` | Aggregated dependency graph across Depth 1 (top-level theories), Depth 2 (sub-theories), Depth 3 (topic modules), and the hierarchical tree. |")
+    a("| `top_level_graph.mmd` / `top_level_graph.dot` / [top_level_graph.svg](top_level_graph.svg) | Mermaid and Graphviz diagrams of the top-level mathematical domains and cross-domain flows. |")
+    a(f"| `depth2_major_graph.dot` / [depth2_major_graph.svg](depth2_major_graph.svg) | Readable {n_major}-node Depth-2 architectural projection across sub-theories and major hubs. |")
+    a("| [dependency_explorer.html](dependency_explorer.html) | Self-contained offline interactive explorer with Depth 1→2→3 expand/collapse, height-stratified pan/zoom layout, upstream/downstream/mutual highlighting, and search. |")
+    a("")
+    a("---")
+    a("")
+    a("## 2. Macro-Dependency Structure (Top-Level Theories)")
+    a("")
+    a(
+        f"All **{meta['reachable_files']:,}** modules reachable from {mlink('Main.lean')} form a **strict acyclic DAG** (`is_dag = {meta['is_dag']}`), organized across **{len(active_tops)}** active top-level directories:"
+    )
+    a("")
+    a("| Top-Level Domain | Files | Lines | Dist Min | Max Height | Mathematical & Architectural Role |")
+    a("| :--- |---:|---:|---:|---:|:---|")
+    for td in active_tops:
+        nd = tree_nodes[f"L1:{td}"]
+        a(
+            f"| `{td}` | {nd['files']:,} | {nd['lines']:,} | {nd['min_dist']} | {nd['max_height']} | {roles.get(td, td)} |"
+        )
+    a("")
+    a("---")
+    a("")
+    a("## 3. Major Cross-Theory Mathematical Flows (Depth 2)")
+    a("")
+    a("| Source Sub-Theory (`depends on →`) | Target Sub-Theory (`← supplies`) | Import Edges | Source Files → Target Files |")
+    a("|:---|:---|---:|---|")
+    for e in sorted(l2_edges, key=lambda x: (-x["weight"], x["src"], x["dst"]))[:15]:
+        a(f"| `{e['src']}` | `{e['dst']}` | {e['weight']:,} | {e['src_files']:,} → {e['dst_files']:,} |")
+    a("")
+    out_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def write_explorer_html(data: dict[str, Any], out_path: Path) -> None:
+    """Write self-contained dependency_explorer.html shell loading versioned dir_graph_data.js."""
+    html_doc = r"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Riemann Proof — Lean 4 Directory Dependency Explorer</title>
 <style>
-  :root {{
+  :root {
     --bg: #ffffff;
     --panel: #fafafa;
     --panel-alt: #f0f0f0;
@@ -912,9 +1008,9 @@ def write_explorer_html(data: dict[str, Any], out_path: Path) -> None:
     --in-color: #d97706;
     --mutual-color: #7c3aed;
     --selected-color: #111111;
-  }}
-  * {{ box-sizing: border-box; }}
-  html, body {{
+  }
+  * { box-sizing: border-box; }
+  html, body {
     margin: 0;
     padding: 0;
     height: 100%;
@@ -924,14 +1020,14 @@ def write_explorer_html(data: dict[str, Any], out_path: Path) -> None:
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     font-size: 13px;
     overflow: hidden;
-  }}
-  .app {{
+  }
+  .app {
     display: grid;
     grid-template-rows: auto auto auto 1fr;
     height: 100vh;
     width: 100vw;
-  }}
-  header {{
+  }
+  header {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -940,20 +1036,20 @@ def write_explorer_html(data: dict[str, Any], out_path: Path) -> None:
     padding: 8px 14px;
     background: #ffffff;
     border-bottom: 1px solid var(--border);
-  }}
-  .title-wrap {{
+  }
+  .title-wrap {
     display: flex;
     align-items: center;
     gap: 10px;
     flex-wrap: wrap;
-  }}
-  h1 {{
+  }
+  h1 {
     margin: 0;
     font-size: 15px;
     font-weight: 700;
     color: var(--text);
-  }}
-  .pill {{
+  }
+  .pill {
     display: inline-flex;
     align-items: center;
     gap: 4px;
@@ -962,16 +1058,16 @@ def write_explorer_html(data: dict[str, Any], out_path: Path) -> None:
     background: var(--panel-alt);
     border: 1px solid var(--border);
     color: var(--muted);
-  }}
-  .pill strong {{ color: var(--text); }}
-  .dir-banner {{
+  }
+  .pill strong { color: var(--text); }
+  .dir-banner {
     font-size: 11px;
     color: var(--text);
     background: #f5f5f5;
     border: 1px solid var(--border);
     padding: 3px 8px;
-  }}
-  .toolbar {{
+  }
+  .toolbar {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -979,53 +1075,53 @@ def write_explorer_html(data: dict[str, Any], out_path: Path) -> None:
     padding: 6px 14px;
     background: var(--panel);
     border-bottom: 1px solid var(--border);
-  }}
-  .tool-group {{
+  }
+  .tool-group {
     display: flex;
     align-items: center;
     gap: 6px;
     padding-right: 10px;
     border-right: 1px solid var(--border);
-  }}
-  .tool-group:last-child {{ border-right: none; }}
-  .tool-label {{
+  }
+  .tool-group:last-child { border-right: none; }
+  .tool-label {
     font-size: 11px;
     color: var(--muted);
     font-weight: 600;
-  }}
-  button {{
+  }
+  button {
     background: #ffffff;
     color: var(--text);
     border: 1px solid var(--border);
     padding: 3px 8px;
     font-size: 12px;
     cursor: pointer;
-  }}
-  button:hover {{
+  }
+  button:hover {
     background: #eeeeee;
-  }}
-  button.active {{
+  }
+  button.active {
     background: #222222;
     border-color: #222222;
     color: #ffffff;
-  }}
-  button.sm {{
+  }
+  button.sm {
     padding: 2px 6px;
     font-size: 11px;
-  }}
-  .search-wrap {{
+  }
+  .search-wrap {
     position: relative;
     width: 240px;
-  }}
-  .search-wrap input {{
+  }
+  .search-wrap input {
     width: 100%;
     background: #ffffff;
     color: var(--text);
     border: 1px solid var(--border);
     padding: 4px 8px;
     font-size: 12px;
-  }}
-  .search-results {{
+  }
+  .search-results {
     position: absolute;
     top: calc(100% + 2px);
     left: 0;
@@ -1036,8 +1132,8 @@ def write_explorer_html(data: dict[str, Any], out_path: Path) -> None:
     border: 1px solid var(--border);
     z-index: 40;
     display: none;
-  }}
-  .search-item {{
+  }
+  .search-item {
     padding: 5px 8px;
     cursor: pointer;
     display: flex;
@@ -1045,41 +1141,41 @@ def write_explorer_html(data: dict[str, Any], out_path: Path) -> None:
     align-items: center;
     gap: 8px;
     border-bottom: 1px solid #eeeeee;
-  }}
-  .search-item:hover {{ background: #eeeeee; }}
-  .search-item .sname {{
+  }
+  .search-item:hover { background: #eeeeee; }
+  .search-item .sname {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 11px;
-  }}
-  .search-item .smeta {{
+  }
+  .search-item .smeta {
     font-size: 10px;
     color: var(--muted);
     flex-shrink: 0;
-  }}
-  .main-grid {{
+  }
+  .main-grid {
     display: grid;
     grid-template-columns: 260px 1fr 350px;
     min-height: 0;
     height: 100%;
-  }}
-  .sidebar {{
+  }
+  .sidebar {
     background: var(--panel);
     border-right: 1px solid var(--border);
     display: flex;
     flex-direction: column;
     min-height: 0;
-  }}
-  .inspector {{
+  }
+  .inspector {
     background: var(--panel);
     border-left: 1px solid var(--border);
     display: flex;
     flex-direction: column;
     min-height: 0;
-  }}
-  .pane-head {{
+  }
+  .pane-head {
     padding: 7px 10px;
     border-bottom: 1px solid var(--border);
     font-weight: 700;
@@ -1089,23 +1185,23 @@ def write_explorer_html(data: dict[str, Any], out_path: Path) -> None:
     justify-content: space-between;
     align-items: center;
     background: var(--panel-alt);
-  }}
-  .pane-body {{
+  }
+  .pane-body {
     flex: 1;
     overflow-y: auto;
     padding: 8px;
-  }}
-  .tree-row {{
+  }
+  .tree-row {
     display: flex;
     align-items: center;
     gap: 5px;
     padding: 3px 5px;
     cursor: pointer;
     user-select: none;
-  }}
-  .tree-row:hover {{ background: #eeeeee; }}
-  .tree-row.selected {{ background: #e6f0fa; outline: 1px solid #99c2ff; }}
-  .tree-toggle {{
+  }
+  .tree-row:hover { background: #eeeeee; }
+  .tree-row.selected { background: #e6f0fa; outline: 1px solid #99c2ff; }
+  .tree-toggle {
     width: 15px;
     height: 15px;
     display: inline-flex;
@@ -1114,38 +1210,38 @@ def write_explorer_html(data: dict[str, Any], out_path: Path) -> None:
     font-size: 10px;
     color: var(--muted);
     flex-shrink: 0;
-  }}
-  .tree-dot {{
+  }
+  .tree-dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
     flex-shrink: 0;
-  }}
-  .tree-label {{
+  }
+  .tree-label {
     flex: 1;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     font-size: 12px;
-  }}
-  .tree-count {{
+  }
+  .tree-count {
     font-size: 10px;
     color: var(--muted);
     font-family: ui-monospace, monospace;
-  }}
-  .canvas-wrap {{
+  }
+  .canvas-wrap {
     position: relative;
     overflow: hidden;
     background: #ffffff;
-  }}
-  canvas {{
+  }
+  canvas {
     display: block;
     width: 100%;
     height: 100%;
     cursor: grab;
-  }}
-  canvas.dragging {{ cursor: grabbing; }}
-  .hud-top-left {{
+  }
+  canvas.dragging { cursor: grabbing; }
+  .hud-top-left {
     position: absolute;
     top: 8px;
     left: 8px;
@@ -1153,16 +1249,16 @@ def write_explorer_html(data: dict[str, Any], out_path: Path) -> None:
     gap: 6px;
     align-items: center;
     pointer-events: none;
-  }}
-  .hud-badge {{
+  }
+  .hud-badge {
     background: rgba(255, 255, 255, 0.94);
     border: 1px solid var(--border);
     padding: 3px 8px;
     font-size: 11px;
     color: var(--text);
     pointer-events: auto;
-  }}
-  .hud-bottom-left {{
+  }
+  .hud-bottom-left {
     position: absolute;
     bottom: 8px;
     left: 8px;
@@ -1173,25 +1269,25 @@ def write_explorer_html(data: dict[str, Any], out_path: Path) -> None:
     line-height: 1.5;
     max-width: 340px;
     pointer-events: none;
-  }}
-  .legend-row {{
+  }
+  .legend-row {
     display: flex;
     align-items: center;
     gap: 7px;
-  }}
-  .swatch {{
+  }
+  .swatch {
     width: 12px;
     height: 3px;
     display: inline-block;
-  }}
-  .hud-bottom-right {{
+  }
+  .hud-bottom-right {
     position: absolute;
     bottom: 8px;
     right: 8px;
     display: flex;
     gap: 4px;
-  }}
-  .tooltip {{
+  }
+  .tooltip {
     position: absolute;
     pointer-events: none;
     background: #ffffff;
@@ -1202,21 +1298,21 @@ def write_explorer_html(data: dict[str, Any], out_path: Path) -> None:
     display: none;
     z-index: 30;
     max-width: 300px;
-  }}
-  .stat-grid {{
+  }
+  .stat-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 6px;
     margin-bottom: 10px;
-  }}
-  .stat-card {{
+  }
+  .stat-card {
     background: #ffffff;
     border: 1px solid var(--border);
     padding: 5px 7px;
-  }}
-  .stat-card .k {{ font-size: 10px; color: var(--muted); }}
-  .stat-card .v {{ font-size: 13px; font-weight: 700; color: var(--text); margin-top: 1px; }}
-  .sec-title {{
+  }
+  .stat-card .k { font-size: 10px; color: var(--muted); }
+  .stat-card .v { font-size: 13px; font-weight: 700; color: var(--text); margin-top: 1px; }
+  .sec-title {
     font-size: 11px;
     font-weight: 700;
     color: var(--text);
@@ -1224,13 +1320,13 @@ def write_explorer_html(data: dict[str, Any], out_path: Path) -> None:
     display: flex;
     justify-content: space-between;
     align-items: center;
-  }}
-  .edge-list {{
+  }
+  .edge-list {
     display: flex;
     flex-direction: column;
     gap: 3px;
-  }}
-  .edge-row {{
+  }
+  .edge-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -1239,31 +1335,31 @@ def write_explorer_html(data: dict[str, Any], out_path: Path) -> None:
     background: #ffffff;
     border: 1px solid var(--border);
     cursor: pointer;
-  }}
-  .edge-row:hover {{ background: #eeeeee; }}
-  .edge-name {{
+  }
+  .edge-row:hover { background: #eeeeee; }
+  .edge-name {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     font-size: 11px;
     font-family: ui-monospace, monospace;
-  }}
-  .edge-meta {{
+  }
+  .edge-meta {
     display: flex;
     align-items: center;
     gap: 5px;
     flex-shrink: 0;
     font-size: 11px;
     font-family: ui-monospace, monospace;
-  }}
-  .tag-mutual {{
+  }
+  .tag-mutual {
     font-size: 10px;
     padding: 0 4px;
     background: #f3e8ff;
     color: #6b21a8;
     border: 1px solid #d8b4fe;
-  }}
-  .file-link {{
+  }
+  .file-link {
     display: block;
     padding: 4px 6px;
     margin-bottom: 3px;
@@ -1274,40 +1370,44 @@ def write_explorer_html(data: dict[str, Any], out_path: Path) -> None:
     font-family: ui-monospace, monospace;
     font-size: 11px;
     word-break: break-all;
-  }}
-  .file-link:hover {{
+  }
+  .file-link:hover {
     background: #eeeeee;
-  }}
-  .file-sub {{
+  }
+  .file-sub {
     color: var(--muted);
     font-size: 10px;
     margin-top: 2px;
     font-family: -apple-system, sans-serif;
-  }}
-  .empty-hint {{
+  }
+  .empty-hint {
     color: var(--muted);
     font-size: 12px;
     padding: 8px 4px;
-  }}
-  input[type="range"] {{
+  }
+  input[type="range"] {
     cursor: pointer;
-  }}
-  @media (max-width: 1100px) {{
-    .main-grid {{ grid-template-columns: 220px 1fr 310px; }}
-  }}
+  }
+  @media (max-width: 1100px) {
+    .main-grid { grid-template-columns: 220px 1fr 310px; }
+  }
 </style>
 </head>
 <body>
 <div class="app">
-  <div style="padding:6px 14px;border-bottom:1px solid #ccc;font-size:12.5px;background:#fafafa;">
-    <a href="../index.html" style="color:#0056b3;text-decoration:none;">&larr; Back to Analysis Portal</a> &middot;
-    <a href="README.html" style="color:#0056b3;text-decoration:none;">README.html</a> &middot;
-    <a href="README.md" style="color:#0056b3;text-decoration:none;">README.md</a>
+  <div style="padding:6px 14px;border-bottom:1px solid #ccc;font-size:12.5px;background:#fafafa;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+    <div>
+      <a href="../index.html" style="color:#0056b3;text-decoration:none;">&larr; Back to Analysis Portal</a> &middot;
+      <a href="README.html" style="color:#0056b3;text-decoration:none;">README.html</a> &middot;
+      <a href="README.md" data-version-href="dependency_graph/README.md" style="color:#0056b3;text-decoration:none;">README.md</a>
+    </div>
+    <span data-version-picker></span>
   </div>
+  <script src="../version_picker.js"></script>
   <header>
     <div class="title-wrap">
       <h1>Riemann Proof — Theory Dependency Explorer</h1>
-      <span class="pill"><strong>Strict Module DAG</strong></span>
+      <span class="pill" id="ver-pill"><strong>Strict Module DAG</strong></span>
     </div>
     <div class="dir-banner">
       <strong>Edge Direction:</strong> Arrow <code>A → B</code> means <code>A</code> <strong>depends on</strong> <code>B</code>
@@ -1317,7 +1417,7 @@ def write_explorer_html(data: dict[str, Any], out_path: Path) -> None:
   <div class="toolbar">
     <div class="tool-group">
       <span class="tool-label">Preset</span>
-      <button id="btn-l1" class="active">Level 1 (10)</button>
+      <button id="btn-l1" class="active">Level 1</button>
       <button id="btn-l2-major">Level 2 Major</button>
       <button id="btn-l2-all">Level 2 All</button>
     </div>
@@ -1394,9 +1494,7 @@ def write_explorer_html(data: dict[str, Any], out_path: Path) -> None:
 </div>
 
 <script>
-const GRAPH_DATA = {json_str};
-
-(function () {{
+function initDepExplorer(GRAPH_DATA) {
   "use strict";
 
   const nodesById = GRAPH_DATA.tree.nodes;
@@ -1405,53 +1503,58 @@ const GRAPH_DATA = {json_str};
   const colors = GRAPH_DATA.colors;
   const repoRoot = GRAPH_DATA.meta.repo_root;
 
+  document.getElementById("btn-l1").textContent = `Level 1 (${rootIds.length})`;
+  if (window.RHVersion && RHVersion.current) {
+    document.getElementById("ver-pill").innerHTML = `<strong>${RHVersion.current.short_label || RHVersion.current.label}</strong> &middot; Strict Module DAG`;
+  }
+
   // Build quick exact lookup maps for L1, L2, L3 edge metrics (src_files / dst_files)
   const exactL1 = new Map();
-  for (const e of GRAPH_DATA.levels["1"].edges) {{
+  for (const e of GRAPH_DATA.levels["1"].edges) {
     exactL1.set(e.src + "|" + e.dst, e);
-  }}
+  }
   const exactL2 = new Map();
-  for (const e of GRAPH_DATA.levels["2"].edges) {{
+  for (const e of GRAPH_DATA.levels["2"].edges) {
     exactL2.set(e.src + "|" + e.dst, e);
-  }}
+  }
   const exactL3 = new Map();
-  for (const e of leafEdges) {{
+  for (const e of leafEdges) {
     exactL3.set(e[0] + "|" + e[1], e);
-  }}
+  }
 
   // Precompute leaf -> ancestor chain [L1, L2?, L3?]
   const leafIds = [];
   const leafChain = new Map();
-  for (const nid of Object.keys(nodesById)) {{
+  for (const nid of Object.keys(nodesById)) {
     const nd = nodesById[nid];
-    if (nd.is_leaf) {{
+    if (nd.is_leaf) {
       leafIds.push(nid);
       const chain = [];
       let cur = nid;
-      while (cur) {{
+      while (cur) {
         chain.push(cur);
         cur = nodesById[cur].parent_id;
-      }}
+      }
       chain.reverse();
       leafChain.set(nid, chain);
-    }}
-  }}
+    }
+  }
 
   // Precompute SCC membership at L1 and L2
   const sccInfoByKey = new Map();
-  for (const lvl of ["1", "2", "3"]) {{
-    for (const comp of GRAPH_DATA.levels[lvl].sccs) {{
-      for (const k of comp) {{
+  for (const lvl of ["1", "2", "3"]) {
+    for (const comp of GRAPH_DATA.levels[lvl].sccs) {
+      for (const k of comp) {
         sccInfoByKey.set(lvl + ":" + k, comp.length);
-      }}
-    }}
-  }}
+      }
+    }
+  }
 
   // Application state
-  const state = {{
+  const state = {
     expandedIds: new Set(),
     treeOpenIds: new Set(),
-    selectedId: "L1:Development",
+    selectedId: nodesById["L1:Development"] ? "L1:Development" : (rootIds[0] || null),
     hoveredNodeId: null,
     hoveredEdge: null,
     minWeight: 1,
@@ -1462,12 +1565,12 @@ const GRAPH_DATA = {json_str};
     visibleNodeMap: new Map(),
     visibleEdges: [],
     edgeLookup: new Map(),
-    positions: new Map(), // nid -> {{x, y, w, h}}
-    cam: {{ x: 0, y: 0, scale: 1 }},
+    positions: new Map(), // nid -> {x, y, w, h}
+    cam: { x: 0, y: 0, scale: 1 },
     dragging: false,
     dragMoved: false,
-    dragStart: {{ x: 0, y: 0, camX: 0, camY: 0 }},
-  }};
+    dragStart: { x: 0, y: 0, camX: 0, camY: 0 },
+  };
 
   // DOM refs
   const canvas = document.getElementById("graph-canvas");
@@ -1484,66 +1587,66 @@ const GRAPH_DATA = {json_str};
   const searchInput = document.getElementById("search-input");
   const searchResults = document.getElementById("search-results");
 
-  function fmt(n) {{
+  function fmt(n) {
     return Number(n).toLocaleString("en-US");
-  }}
+  }
 
-  function escHtml(s) {{
+  function escHtml(s) {
     return String(s)
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;");
-  }}
+  }
 
   // Log-scale slider mapping: 0..100 -> 1..42000
-  function sliderToWeight(v) {{
+  function sliderToWeight(v) {
     const t = Number(v) / 100;
     if (t <= 0) return 1;
     return Math.round(Math.pow(42000, t));
-  }}
-  function weightToSlider(w) {{
+  }
+  function weightToSlider(w) {
     if (w <= 1) return 0;
     return Math.min(100, Math.round((Math.log(w) / Math.log(42000)) * 100));
-  }}
+  }
 
-  function visibleAncestor(leafId) {{
+  function visibleAncestor(leafId) {
     const chain = leafChain.get(leafId);
-    for (let i = 0; i < chain.length - 1; i++) {{
-      if (!state.expandedIds.has(chain[i])) {{
+    for (let i = 0; i < chain.length - 1; i++) {
+      if (!state.expandedIds.has(chain[i])) {
         return chain[i];
-      }}
-    }}
+      }
+    }
     return chain[chain.length - 1];
-  }}
+  }
 
-  function recomputeVisibleGraph() {{
+  function recomputeVisibleGraph() {
     const visSet = new Set();
     const leafToVis = new Map();
-    for (const lid of leafIds) {{
+    for (const lid of leafIds) {
       const v = visibleAncestor(lid);
       visSet.add(v);
       leafToVis.set(lid, v);
-    }}
+    }
 
     state.visibleNodes = Array.from(visSet).map((id) => nodesById[id]);
     state.visibleNodeMap = new Map(state.visibleNodes.map((n) => [n.id, n]));
 
     // Aggregate leaf edges across visible partition
     const rawAgg = new Map();
-    for (let i = 0; i < leafEdges.length; i++) {{
+    for (let i = 0; i < leafEdges.length; i++) {
       const e = leafEdges[i];
       const vs = leafToVis.get(e[0]);
       const vd = leafToVis.get(e[1]);
-      if (vs !== vd) {{
+      if (vs !== vd) {
         const key = vs + "|" + vd;
         rawAgg.set(key, (rawAgg.get(key) || 0) + e[2]);
-      }}
-    }}
+      }
+    }
 
     const edges = [];
     const lookup = new Map();
-    for (const [key, w] of rawAgg.entries()) {{
+    for (const [key, w] of rawAgg.entries()) {
       const sep = key.indexOf("|");
       const src = key.slice(0, sep);
       const dst = key.slice(sep + 1);
@@ -1554,17 +1657,17 @@ const GRAPH_DATA = {json_str};
       const srcNd = nodesById[src];
       const dstNd = nodesById[dst];
       const dKey = srcNd.dir_key + "|" + dstNd.dir_key;
-      if (srcNd.level === 1 && dstNd.level === 1) {{
+      if (srcNd.level === 1 && dstNd.level === 1) {
         const ex = exactL1.get(dKey);
-        if (ex) {{ srcFiles = ex.src_files; dstFiles = ex.dst_files; }}
-      }} else if ((srcNd.level === 2 || (srcNd.level === 1 && srcNd.is_leaf)) && (dstNd.level === 2 || (dstNd.level === 1 && dstNd.is_leaf))) {{
+        if (ex) { srcFiles = ex.src_files; dstFiles = ex.dst_files; }
+      } else if ((srcNd.level === 2 || (srcNd.level === 1 && srcNd.is_leaf)) && (dstNd.level === 2 || (dstNd.level === 1 && dstNd.is_leaf))) {
         const ex = exactL2.get(dKey);
-        if (ex) {{ srcFiles = ex.src_files; dstFiles = ex.dst_files; }}
-      }} else if (srcNd.is_leaf && dstNd.is_leaf) {{
+        if (ex) { srcFiles = ex.src_files; dstFiles = ex.dst_files; }
+      } else if (srcNd.is_leaf && dstNd.is_leaf) {
         const ex = exactL3.get(key);
-        if (ex) {{ srcFiles = ex[3]; dstFiles = ex[4]; }}
-      }}
-      const obj = {{
+        if (ex) { srcFiles = ex[3]; dstFiles = ex[4]; }
+      }
+      const obj = {
         src,
         dst,
         weight: w,
@@ -1572,32 +1675,32 @@ const GRAPH_DATA = {json_str};
         reverseWeight: revW,
         srcFiles,
         dstFiles,
-      }};
+      };
       edges.push(obj);
       lookup.set(key, obj);
-    }}
+    }
 
     edges.sort((a, b) => b.weight - a.weight);
     state.visibleEdges = edges;
     state.edgeLookup = lookup;
 
     // Ensure selectedId is visible (or lift to visible ancestor)
-    if (state.selectedId && !state.visibleNodeMap.has(state.selectedId)) {{
+    if (state.selectedId && !state.visibleNodeMap.has(state.selectedId)) {
       let cur = state.selectedId;
-      while (cur && !state.visibleNodeMap.has(cur)) {{
+      while (cur && !state.visibleNodeMap.has(cur)) {
         cur = nodesById[cur] ? nodesById[cur].parent_id : null;
-      }}
+      }
       state.selectedId = cur || (state.visibleNodes[0] ? state.visibleNodes[0].id : null);
-    }}
+    }
 
     layoutVisibleNodes();
     updateCountsBadge();
     renderTreeSidebar();
     renderInspector();
     renderCanvas();
-  }}
+  }
 
-  function layoutVisibleNodes() {{
+  function layoutVisibleNodes() {
     const nodes = state.visibleNodes;
     const nCount = nodes.length;
     if (nCount === 0) return;
@@ -1606,67 +1709,67 @@ const GRAPH_DATA = {json_str};
     // Height mode: group by quantized max_height descending (top = 202, bottom = 0)
     // Dist mode: group by min_dist ascending (top = 0, bottom = max)
     const buckets = new Map();
-    for (const nd of nodes) {{
+    for (const nd of nodes) {
       let layerKey;
-      if (state.layoutMode === "height") {{
+      if (state.layoutMode === "height") {
         if (nd.max_height >= 195) layerKey = -nd.max_height; // keep Main/Supplements/Dev separated cleanly
         else if (nd.max_height === 0) layerKey = 1000;
         else layerKey = -Math.round(nd.max_height / 14) * 14;
-      }} else {{
+      } else {
         layerKey = nd.min_dist;
-      }}
+      }
       if (!buckets.has(layerKey)) buckets.set(layerKey, []);
       buckets.get(layerKey).push(nd);
-    }}
+    }
 
     const sortedKeys = Array.from(buckets.keys()).sort((a, b) => a - b);
 
     // Build adjacency for barycenter ordering within each layer
     const neighbors = new Map();
     for (const nd of nodes) neighbors.set(nd.id, []);
-    for (const e of state.visibleEdges) {{
-      if (e.weight >= Math.min(state.minWeight, 10)) {{
-        neighbors.get(e.src).push({{ id: e.dst, w: e.weight }});
-        neighbors.get(e.dst).push({{ id: e.src, w: e.weight }});
-      }}
-    }}
+    for (const e of state.visibleEdges) {
+      if (e.weight >= Math.min(state.minWeight, 10)) {
+        neighbors.get(e.src).push({ id: e.dst, w: e.weight });
+        neighbors.get(e.dst).push({ id: e.src, w: e.weight });
+      }
+    }
 
     // Initial deterministic order inside each bucket by top_order & files
     const topRank = new Map(GRAPH_DATA.top_order.map((t, i) => [t, i]));
-    for (const k of sortedKeys) {{
-      buckets.get(k).sort((a, b) => {{
+    for (const k of sortedKeys) {
+      buckets.get(k).sort((a, b) => {
         const ta = topRank.get(a.top_dir) ?? 99;
         const tb = topRank.get(b.top_dir) ?? 99;
         if (ta !== tb) return ta - tb;
         return b.files - a.files;
-      }});
-    }}
+      });
+    }
 
     // Estimate initial x-coord and run 2 barycenter passes
     const tempX = new Map();
-    for (const k of sortedKeys) {{
+    for (const k of sortedKeys) {
       const row = buckets.get(k);
       row.forEach((nd, idx) => tempX.set(nd.id, idx - (row.length - 1) / 2));
-    }}
-    for (let pass = 0; pass < 2; pass++) {{
-      for (const k of sortedKeys) {{
+    }
+    for (let pass = 0; pass < 2; pass++) {
+      for (const k of sortedKeys) {
         const row = buckets.get(k);
         if (row.length <= 2) continue;
         const score = new Map();
-        for (const nd of row) {{
+        for (const nd of row) {
           const nbs = neighbors.get(nd.id);
           let sw = 0, wx = 0;
-          for (const nb of nbs) {{
+          for (const nb of nbs) {
             const lw = Math.log10(nb.w + 1);
             wx += (tempX.get(nb.id) || 0) * lw;
             sw += lw;
-          }}
+          }
           score.set(nd.id, sw > 0 ? wx / sw : tempX.get(nd.id));
-        }}
+        }
         row.sort((a, b) => (score.get(a.id) - score.get(b.id)) || (b.files - a.files));
         row.forEach((nd, idx) => tempX.set(nd.id, idx - (row.length - 1) / 2));
-      }}
-    }}
+      }
+    }
 
     const boxW = nCount > 80 ? 156 : 182;
     const boxH = nCount > 80 ? 44 : 52;
@@ -1676,39 +1779,39 @@ const GRAPH_DATA = {json_str};
 
     state.positions.clear();
     let curY = 0;
-    for (const k of sortedKeys) {{
+    for (const k of sortedKeys) {
       const rowNodes = buckets.get(k);
       const chunks = [];
-      for (let i = 0; i < rowNodes.length; i += maxPerRow) {{
+      for (let i = 0; i < rowNodes.length; i += maxPerRow) {
         chunks.push(rowNodes.slice(i, i + maxPerRow));
-      }}
-      for (const chunk of chunks) {{
+      }
+      for (const chunk of chunks) {
         const totalW = chunk.length * boxW + (chunk.length - 1) * gapX;
         let curX = -totalW / 2;
-        for (const nd of chunk) {{
-          state.positions.set(nd.id, {{
+        for (const nd of chunk) {
+          state.positions.set(nd.id, {
             x: curX,
             y: curY,
             w: boxW,
             h: boxH,
-          }});
+          });
           curX += boxW + gapX;
-        }}
+        }
         curY += boxH + (chunks.length > 1 ? 26 : 0);
-      }}
+      }
       curY += gapY;
-    }}
-  }}
+    }
+  }
 
-  function fitToScreen() {{
+  function fitToScreen() {
     if (state.positions.size === 0) return;
     let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-    for (const p of state.positions.values()) {{
+    for (const p of state.positions.values()) {
       minX = Math.min(minX, p.x);
       minY = Math.min(minY, p.y);
       maxX = Math.max(maxX, p.x + p.w);
       maxY = Math.max(maxY, p.y + p.h);
-    }}
+    }
     const rect = wrap.getBoundingClientRect();
     const pad = 64;
     const gw = Math.max(1, maxX - minX);
@@ -1721,9 +1824,9 @@ const GRAPH_DATA = {json_str};
     state.cam.x = rect.width / 2 - ((minX + maxX) / 2) * scale;
     state.cam.y = rect.height / 2 - ((minY + maxY) / 2) * scale;
     renderCanvas();
-  }}
+  }
 
-  function focusNode(nid) {{
+  function focusNode(nid) {
     const p = state.positions.get(nid);
     if (!p) return;
     const rect = wrap.getBoundingClientRect();
@@ -1731,95 +1834,95 @@ const GRAPH_DATA = {json_str};
     state.cam.scale = Math.min(targetScale, 1.4);
     state.cam.x = rect.width / 2 - (p.x + p.w / 2) * state.cam.scale;
     state.cam.y = rect.height / 2 - (p.y + p.h / 2) * state.cam.scale;
-  }}
+  }
 
-  function getFilteredEdges() {{
+  function getFilteredEdges() {
     const sel = state.selectedId;
     const minW = state.minWeight;
     const keepSel = state.keepSelectedEdges;
-    return state.visibleEdges.filter((e) => {{
+    return state.visibleEdges.filter((e) => {
       if (e.weight >= minW) return true;
       if (keepSel && sel && (e.src === sel || e.dst === sel)) return true;
       return false;
-    }});
-  }}
+    });
+  }
 
-  function computeHighlightSets(filteredEdges) {{
+  function computeHighlightSets(filteredEdges) {
     const sel = state.selectedId;
     const upstreamNodes = new Set(); // sel imports these
     const downstreamNodes = new Set(); // these import sel
     const mutualNodes = new Set();
     const edgeRoles = new Map(); // edge -> "out" | "in" | "mutual" | "dim" | "normal"
 
-    if (!sel || !state.visibleNodeMap.has(sel)) {{
+    if (!sel || !state.visibleNodeMap.has(sel)) {
       for (const e of filteredEdges) edgeRoles.set(e, "normal");
-      return {{ upstreamNodes, downstreamNodes, mutualNodes, edgeRoles }};
-    }}
+      return { upstreamNodes, downstreamNodes, mutualNodes, edgeRoles };
+    }
 
-    if (state.hopMode === "direct") {{
-      for (const e of filteredEdges) {{
+    if (state.hopMode === "direct") {
+      for (const e of filteredEdges) {
         if (e.src === sel) upstreamNodes.add(e.dst);
         if (e.dst === sel) downstreamNodes.add(e.src);
-      }}
-      for (const id of upstreamNodes) {{
+      }
+      for (const id of upstreamNodes) {
         if (downstreamNodes.has(id)) mutualNodes.add(id);
-      }}
-      for (const e of filteredEdges) {{
-        if (e.src === sel && e.dst !== sel) {{
+      }
+      for (const e of filteredEdges) {
+        if (e.src === sel && e.dst !== sel) {
           edgeRoles.set(e, mutualNodes.has(e.dst) ? "mutual" : "out");
-        }} else if (e.dst === sel && e.src !== sel) {{
+        } else if (e.dst === sel && e.src !== sel) {
           edgeRoles.set(e, mutualNodes.has(e.src) ? "mutual" : "in");
-        }} else {{
+        } else {
           edgeRoles.set(e, "dim");
-        }}
-      }}
-    }} else {{
+        }
+      }
+    } else {
       // Transitive BFS upstream (following src -> dst) and downstream (dst -> src)
       const outAdj = new Map();
       const inAdj = new Map();
-      for (const e of filteredEdges) {{
+      for (const e of filteredEdges) {
         if (!outAdj.has(e.src)) outAdj.set(e.src, []);
         outAdj.get(e.src).push(e.dst);
         if (!inAdj.has(e.dst)) inAdj.set(e.dst, []);
         inAdj.get(e.dst).push(e.src);
-      }}
+      }
       const q1 = [sel];
       const visUp = new Set([sel]);
-      while (q1.length) {{
+      while (q1.length) {
         const u = q1.shift();
-        for (const v of (outAdj.get(u) || [])) {{
-          if (!visUp.has(v)) {{ visUp.add(v); upstreamNodes.add(v); q1.push(v); }}
-        }}
-      }}
+        for (const v of (outAdj.get(u) || [])) {
+          if (!visUp.has(v)) { visUp.add(v); upstreamNodes.add(v); q1.push(v); }
+        }
+      }
       const q2 = [sel];
       const visDown = new Set([sel]);
-      while (q2.length) {{
+      while (q2.length) {
         const u = q2.shift();
-        for (const v of (inAdj.get(u) || [])) {{
-          if (!visDown.has(v)) {{ visDown.add(v); downstreamNodes.add(v); q2.push(v); }}
-        }}
-      }}
-      for (const id of upstreamNodes) {{
+        for (const v of (inAdj.get(u) || [])) {
+          if (!visDown.has(v)) { visDown.add(v); downstreamNodes.add(v); q2.push(v); }
+        }
+      }
+      for (const id of upstreamNodes) {
         if (downstreamNodes.has(id)) mutualNodes.add(id);
-      }}
-      for (const e of filteredEdges) {{
+      }
+      for (const e of filteredEdges) {
         const inUp = (e.src === sel || upstreamNodes.has(e.src)) && (upstreamNodes.has(e.dst) || e.dst === sel);
         const inDn = (e.dst === sel || downstreamNodes.has(e.dst)) && (downstreamNodes.has(e.src) || e.src === sel);
         if (inUp && inDn) edgeRoles.set(e, "mutual");
         else if (inUp) edgeRoles.set(e, "out");
         else if (inDn) edgeRoles.set(e, "in");
         else edgeRoles.set(e, "dim");
-      }}
-    }}
-    return {{ upstreamNodes, downstreamNodes, mutualNodes, edgeRoles }};
-  }}
+      }
+    }
+    return { upstreamNodes, downstreamNodes, mutualNodes, edgeRoles };
+  }
 
-  function updateCountsBadge() {{
+  function updateCountsBadge() {
     const filtered = getFilteredEdges();
-    hudCounts.textContent = `Visible: ${{state.visibleNodes.length}} nodes · ${{filtered.length}}/${{state.visibleEdges.length}} edges`;
-  }}
+    hudCounts.textContent = `Visible: ${state.visibleNodes.length} nodes · ${filtered.length}/${state.visibleEdges.length} edges`;
+  }
 
-  function edgeCurvePoints(e) {{
+  function edgeCurvePoints(e) {
     const ps = state.positions.get(e.src);
     const pd = state.positions.get(e.dst);
     if (!ps || !pd) return null;
@@ -1832,13 +1935,13 @@ const GRAPH_DATA = {json_str};
     const vx = dx - sx;
     const vy = dy - sy;
     let x1 = sx, y1 = sy, x2 = dx, y2 = dy;
-    if (Math.abs(vy) >= Math.abs(vx) * 0.45) {{
+    if (Math.abs(vy) >= Math.abs(vx) * 0.45) {
       y1 = vy >= 0 ? ps.y + ps.h : ps.y;
       y2 = vy >= 0 ? pd.y : pd.y + pd.h;
-    }} else {{
+    } else {
       x1 = vx >= 0 ? ps.x + ps.w : ps.x;
       x2 = vx >= 0 ? pd.x : pd.x + pd.w;
-    }}
+    }
     const mx = (x1 + x2) / 2;
     const my = (y1 + y2) / 2;
     const len = Math.hypot(x2 - x1, y2 - y1) || 1;
@@ -1847,10 +1950,10 @@ const GRAPH_DATA = {json_str};
     const curveOffset = e.hasReverse ? Math.min(44, Math.max(16, len * 0.14)) : Math.min(26, len * 0.07);
     const cx = mx + nx * curveOffset;
     const cy = my + ny * curveOffset;
-    return {{ x1, y1, cx, cy, x2, y2 }};
-  }}
+    return { x1, y1, cx, cy, x2, y2 };
+  }
 
-  function drawRoundedRect(x, y, w, h, r) {{
+  function drawRoundedRect(x, y, w, h, r) {
     ctx.beginPath();
     ctx.moveTo(x + r, y);
     ctx.lineTo(x + w - r, y);
@@ -1862,15 +1965,15 @@ const GRAPH_DATA = {json_str};
     ctx.lineTo(x, y + r);
     ctx.quadraticCurveTo(x, y, x + r, y);
     ctx.closePath();
-  }}
+  }
 
-  function renderCanvas() {{
+  function renderCanvas() {
     const rect = wrap.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
-    if (canvas.width !== Math.round(rect.width * dpr) || canvas.height !== Math.round(rect.height * dpr)) {{
+    if (canvas.width !== Math.round(rect.width * dpr) || canvas.height !== Math.round(rect.height * dpr)) {
       canvas.width = Math.round(rect.width * dpr);
       canvas.height = Math.round(rect.height * dpr);
-    }}
+    }
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, rect.width, rect.height);
 
@@ -1879,18 +1982,18 @@ const GRAPH_DATA = {json_str};
     ctx.scale(state.cam.scale, state.cam.scale);
 
     const filteredEdges = getFilteredEdges();
-    const {{ upstreamNodes, downstreamNodes, mutualNodes, edgeRoles }} = computeHighlightSets(filteredEdges);
+    const { upstreamNodes, downstreamNodes, mutualNodes, edgeRoles } = computeHighlightSets(filteredEdges);
 
     // Draw dimmed/normal edges first, then highlighted edges on top
-    const orderedEdges = filteredEdges.slice().sort((a, b) => {{
+    const orderedEdges = filteredEdges.slice().sort((a, b) => {
       const ra = edgeRoles.get(a);
       const rb = edgeRoles.get(b);
       const pa = (ra === "dim") ? 0 : (ra === "normal" ? 1 : 2);
       const pb = (rb === "dim") ? 0 : (rb === "normal" ? 1 : 2);
       return pa - pb;
-    }});
+    });
 
-    for (const e of orderedEdges) {{
+    for (const e of orderedEdges) {
       const pts = edgeCurvePoints(e);
       if (!pts) continue;
       const role = edgeRoles.get(e);
@@ -1899,25 +2002,25 @@ const GRAPH_DATA = {json_str};
       let alpha = 1;
       let lw = Math.max(0.8, Math.min(4.8, 0.7 + Math.log10(e.weight + 1) * 0.85));
 
-      if (role === "dim") {{
+      if (role === "dim") {
         stroke = "rgba(148, 163, 184, 0.18)";
         lw = Math.min(lw, 1.4);
-      }} else if (role === "out") {{
+      } else if (role === "out") {
         stroke = "#0284c7";
         lw = Math.max(lw, 2.1);
-      }} else if (role === "in") {{
+      } else if (role === "in") {
         stroke = "#d97706";
         lw = Math.max(lw, 2.1);
-      }} else if (role === "mutual") {{
+      } else if (role === "mutual") {
         stroke = "#7c3aed";
         lw = Math.max(lw, 2.2);
-      }} else {{
+      } else {
         stroke = e.weight >= 1000 ? "rgba(2, 132, 199, 0.55)" : "rgba(100, 116, 139, 0.35)";
-      }}
-      if (isHover) {{
+      }
+      if (isHover) {
         stroke = "#111111";
         lw += 1.4;
-      }}
+      }
 
       ctx.strokeStyle = stroke;
       ctx.lineWidth = lw;
@@ -1927,7 +2030,7 @@ const GRAPH_DATA = {json_str};
       ctx.stroke();
 
       // Arrowhead near target
-      if (role !== "dim" || state.cam.scale > 0.55) {{
+      if (role !== "dim" || state.cam.scale > 0.55) {
         const t = 0.96;
         const tx = 2 * (1 - t) * (pts.cx - pts.x1) + 2 * t * (pts.x2 - pts.cx);
         const ty = 2 * (1 - t) * (pts.cy - pts.y1) + 2 * t * (pts.y2 - pts.cy);
@@ -1940,10 +2043,10 @@ const GRAPH_DATA = {json_str};
         ctx.lineTo(pts.x2 - headLen * Math.cos(ang + 0.38), pts.y2 - headLen * Math.sin(ang + 0.38));
         ctx.closePath();
         ctx.fill();
-      }}
+      }
 
       // Edge weight label for highlighted direct edges or very heavy edges
-      if ((role === "out" || role === "in" || role === "mutual" || isHover) && state.cam.scale >= 0.4) {{
+      if ((role === "out" || role === "in" || role === "mutual" || isHover) && state.cam.scale >= 0.4) {
         const lx = 0.25 * pts.x1 + 0.5 * pts.cx + 0.25 * pts.x2;
         const ly = 0.25 * pts.y1 + 0.5 * pts.cy + 0.25 * pts.y2;
         const txt = fmt(e.weight);
@@ -1959,11 +2062,11 @@ const GRAPH_DATA = {json_str};
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         ctx.fillText(txt, lx, ly);
-      }}
-    }}
+      }
+    }
 
     // Draw nodes
-    for (const nd of state.visibleNodes) {{
+    for (const nd of state.visibleNodes) {
       const p = state.positions.get(nd.id);
       if (!p) continue;
       const c = colors[nd.top_dir] || colors["BuildAid"];
@@ -1989,11 +2092,11 @@ const GRAPH_DATA = {json_str};
       // Border highlight
       let borderCol = "#999999";
       let bw = 1.2;
-      if (isSel) {{ borderCol = "#111111"; bw = 2.6; }}
-      else if (isMut) {{ borderCol = "#7c3aed"; bw = 2.2; }}
-      else if (isUp) {{ borderCol = "#0284c7"; bw = 2.0; }}
-      else if (isDn) {{ borderCol = "#d97706"; bw = 2.0; }}
-      if (isHover && !isSel) {{ borderCol = "#111111"; bw = 2.0; }}
+      if (isSel) { borderCol = "#111111"; bw = 2.6; }
+      else if (isMut) { borderCol = "#7c3aed"; bw = 2.2; }
+      else if (isUp) { borderCol = "#0284c7"; bw = 2.0; }
+      else if (isDn) { borderCol = "#d97706"; bw = 2.0; }
+      if (isHover && !isSel) { borderCol = "#111111"; bw = 2.0; }
 
       ctx.strokeStyle = borderCol;
       ctx.lineWidth = bw;
@@ -2001,7 +2104,7 @@ const GRAPH_DATA = {json_str};
       ctx.stroke();
 
       // Text inside node
-      if (state.cam.scale >= 0.22) {{
+      if (state.cam.scale >= 0.22) {
         ctx.fillStyle = "#111111";
         ctx.font = "700 11px -apple-system, BlinkMacSystemFont, sans-serif";
         ctx.textAlign = "left";
@@ -2012,12 +2115,12 @@ const GRAPH_DATA = {json_str};
 
         ctx.fillStyle = "#555555";
         ctx.font = "10px ui-monospace, monospace";
-        ctx.fillText(`${{fmt(nd.files)}}f · H=${{nd.max_height}}`, p.x + 10, p.y + p.h - 17);
+        ctx.fillText(`${fmt(nd.files)}f · H=${nd.max_height}`, p.x + 10, p.y + p.h - 17);
 
         // Expand/collapse badge
-        if (!nd.is_leaf) {{
+        if (!nd.is_leaf) {
           const isExp = state.expandedIds.has(nd.id);
-          const badge = isExp ? "−" : `+${{nd.children_ids.length}}`;
+          const badge = isExp ? "−" : `+${nd.children_ids.length}`;
           ctx.font = "700 9px ui-monospace, monospace";
           const bwTxt = ctx.measureText(badge).width + 8;
           ctx.fillStyle = "#eeeeee";
@@ -2026,101 +2129,101 @@ const GRAPH_DATA = {json_str};
           ctx.fillStyle = "#222222";
           ctx.textAlign = "center";
           ctx.fillText(badge, p.x + p.w - bwTxt / 2 - 6, p.y + 8);
-        }}
-      }}
+        }
+      }
       ctx.restore();
-    }}
+    }
 
     ctx.restore();
-  }}
+  }
 
-  function screenToWorld(sx, sy) {{
-    return {{
+  function screenToWorld(sx, sy) {
+    return {
       x: (sx - state.cam.x) / state.cam.scale,
       y: (sy - state.cam.y) / state.cam.scale,
-    }};
-  }}
+    };
+  }
 
-  function hitTestNode(wx, wy) {{
-    for (let i = state.visibleNodes.length - 1; i >= 0; i--) {{
+  function hitTestNode(wx, wy) {
+    for (let i = state.visibleNodes.length - 1; i >= 0; i--) {
       const nd = state.visibleNodes[i];
       const p = state.positions.get(nd.id);
-      if (p && wx >= p.x && wx <= p.x + p.w && wy >= p.y && wy <= p.y + p.h) {{
+      if (p && wx >= p.x && wx <= p.x + p.w && wy >= p.y && wy <= p.y + p.h) {
         return nd.id;
-      }}
-    }}
+      }
+    }
     return null;
-  }}
+  }
 
-  function hitTestEdge(wx, wy) {{
+  function hitTestEdge(wx, wy) {
     const filtered = getFilteredEdges();
     let best = null;
     let bestDist = 9 / Math.max(0.4, state.cam.scale);
-    for (const e of filtered) {{
+    for (const e of filtered) {
       const pts = edgeCurvePoints(e);
       if (!pts) continue;
-      for (let t = 0.1; t <= 0.9; t += 0.1) {{
+      for (let t = 0.1; t <= 0.9; t += 0.1) {
         const omt = 1 - t;
         const bx = omt * omt * pts.x1 + 2 * omt * t * pts.cx + t * t * pts.x2;
         const by = omt * omt * pts.y1 + 2 * omt * t * pts.cy + t * t * pts.y2;
         const d = Math.hypot(wx - bx, wy - by);
-        if (d < bestDist) {{
+        if (d < bestDist) {
           bestDist = d;
           best = e;
-        }}
-      }}
-    }}
+        }
+      }
+    }
     return best;
-  }}
+  }
 
-  function toggleExpandNode(nid) {{
+  function toggleExpandNode(nid) {
     const nd = nodesById[nid];
     if (!nd || nd.is_leaf) return;
-    if (state.expandedIds.has(nid)) {{
+    if (state.expandedIds.has(nid)) {
       // Collapse nid and any expanded descendants
       const stack = [nid];
-      while (stack.length) {{
+      while (stack.length) {
         const cur = stack.pop();
         state.expandedIds.delete(cur);
         for (const cid of nodesById[cur].children_ids) stack.push(cid);
-      }}
-    }} else {{
+      }
+    } else {
       // Expand ancestors up to nid and expand nid itself
       let cur = nid;
-      while (cur) {{
+      while (cur) {
         if (!nodesById[cur].is_leaf) state.expandedIds.add(cur);
         state.treeOpenIds.add(cur);
         cur = nodesById[cur].parent_id;
-      }}
-    }}
+      }
+    }
     recomputeVisibleGraph();
-  }}
+  }
 
-  function selectAndFocus(nid, expandParentIfHidden = true) {{
+  function selectAndFocus(nid, expandParentIfHidden = true) {
     const nd = nodesById[nid];
     if (!nd) return;
-    if (expandParentIfHidden && !state.visibleNodeMap.has(nid)) {{
+    if (expandParentIfHidden && !state.visibleNodeMap.has(nid)) {
       let cur = nd.parent_id;
-      while (cur) {{
+      while (cur) {
         state.expandedIds.add(cur);
         state.treeOpenIds.add(cur);
         cur = nodesById[cur].parent_id;
-      }}
+      }
       recomputeVisibleGraph();
-    }}
+    }
     state.selectedId = nid;
     let cur = nd.parent_id;
-    while (cur) {{ state.treeOpenIds.add(cur); cur = nodesById[cur].parent_id; }}
+    while (cur) { state.treeOpenIds.add(cur); cur = nodesById[cur].parent_id; }
     focusNode(nid);
     updateCountsBadge();
     renderTreeSidebar();
     renderInspector();
     renderCanvas();
-  }}
+  }
 
-  function renderTreeSidebar() {{
+  function renderTreeSidebar() {
     const frag = document.createDocumentFragment();
-    function buildRow(nid, depth) {{
+    function buildRow(nid, depth) {
       const nd = nodesById[nid];
       const row = document.createElement("div");
       row.className = "tree-row" + (state.selectedId === nid ? " selected" : "");
@@ -2131,13 +2234,13 @@ const GRAPH_DATA = {json_str};
       const hasKids = nd.children_ids.length > 0;
       const isOpen = state.treeOpenIds.has(nid);
       tog.textContent = hasKids ? (isOpen ? "▼" : "▶") : "•";
-      tog.addEventListener("click", (ev) => {{
+      tog.addEventListener("click", (ev) => {
         ev.stopPropagation();
         if (!hasKids) return;
         if (state.treeOpenIds.has(nid)) state.treeOpenIds.delete(nid);
         else state.treeOpenIds.add(nid);
         renderTreeSidebar();
-      }});
+      });
 
       const dot = document.createElement("span");
       dot.className = "tree-dot";
@@ -2157,24 +2260,24 @@ const GRAPH_DATA = {json_str};
       row.addEventListener("dblclick", () => toggleExpandNode(nid));
       frag.appendChild(row);
 
-      if (hasKids && isOpen) {{
+      if (hasKids && isOpen) {
         for (const cid of nd.children_ids) buildRow(cid, depth + 1);
-      }}
-    }}
+      }
+    }
     for (const rid of rootIds) buildRow(rid, 0);
     dirTreeEl.innerHTML = "";
     dirTreeEl.appendChild(frag);
-  }}
+  }
 
-  function renderInspector() {{
+  function renderInspector() {
     const nid = state.selectedId;
-    if (!nid || !nodesById[nid]) {{
+    if (!nid || !nodesById[nid]) {
       inspLevel.textContent = "—";
       inspBody.innerHTML = '<div class="empty-hint">Click any directory node to inspect its stats, imports, dependents, and top cross-boundary files.</div>';
       return;
-    }}
+    }
     const nd = nodesById[nid];
-    inspLevel.textContent = `Level ${{nd.level}} (${{nd.top_dir}})`;
+    inspLevel.textContent = `Level ${nd.level} (${nd.top_dir})`;
 
     // Gather incoming and outgoing edges in the CURRENT visible graph
     const outEdges = state.visibleEdges.filter((e) => e.src === nid).sort((a, b) => b.weight - a.weight);
@@ -2186,238 +2289,239 @@ const GRAPH_DATA = {json_str};
 
     let html = `
       <div style="margin-bottom:10px;">
-        <div style="font-size:14px;font-weight:700;color:var(--text);word-break:break-word;">${{escHtml(nd.id.replace(/^L\\d:/, ""))}}</div>
+        <div style="font-size:14px;font-weight:700;color:var(--text);word-break:break-word;">${escHtml(nd.id.replace(/^L\\d:/, ""))}</div>
         <div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
-          ${{!nd.is_leaf ? `<button id="insp-toggle-exp" class="sm">${{isExp ? "Collapse Subdirs" : `Expand (+${{nd.children_ids.length}} subdirs)`}}</button>` : '<span class="pill">Leaf Directory</span>'}}
-          ${{nd.parent_id ? `<button id="insp-up-parent" class="sm">Parent: ${{escHtml(nodesById[nd.parent_id].label)}}</button>` : ""}}
-          ${{sccSize > 1 ? `<span class="pill" style="border-color:#7c3aed;color:#6b21a8;">In L${{nd.level}} SCC (size ${{sccSize}})</span>` : `<span class="pill">Acyclic at L${{nd.level}}</span>`}}
+          ${!nd.is_leaf ? `<button id="insp-toggle-exp" class="sm">${isExp ? "Collapse Subdirs" : `Expand (+${nd.children_ids.length} subdirs)`}</button>` : '<span class="pill">Leaf Directory</span>'}
+          ${nd.parent_id ? `<button id="insp-up-parent" class="sm">Parent: ${escHtml(nodesById[nd.parent_id].label)}</button>` : ""}
+          ${sccSize > 1 ? `<span class="pill" style="border-color:#7c3aed;color:#6b21a8;">In L${nd.level} SCC (size ${sccSize})</span>` : `<span class="pill">Acyclic at L${nd.level}</span>`}
         </div>
       </div>
 
       <div class="stat-grid">
-        <div class="stat-card"><div class="k">Dist from Main</div><div class="v">min ${{nd.min_dist}} · avg ${{nd.avg_dist}}</div></div>
-        <div class="stat-card"><div class="k">Max Leaf Height</div><div class="v">${{nd.max_height}}</div></div>
+        <div class="stat-card"><div class="k">Dist from Main</div><div class="v">min ${nd.min_dist} · avg ${nd.avg_dist}</div></div>
+        <div class="stat-card"><div class="k">Max Leaf Height</div><div class="v">${nd.max_height}</div></div>
       </div>
 
       <div class="sec-title">
         <span style="color:var(--out-color);">Imports → (Dependencies of this dir)</span>
-        <span>${{fmt(totOut)}} total</span>
+        <span>${fmt(totOut)} total</span>
       </div>
       <div class="edge-list">
     `;
 
-    if (outEdges.length === 0) {{
+    if (outEdges.length === 0) {
       html += '<div class="empty-hint">No cross-directory outgoing imports in current view.</div>';
-    }} else {{
-      for (const e of outEdges.slice(0, 15)) {{
+    } else {
+      for (const e of outEdges.slice(0, 15)) {
         const target = nodesById[e.dst];
         const pct = totOut > 0 ? ((e.weight / totOut) * 100).toFixed(1) : "0.0";
-        const fileNote = e.srcFiles !== null ? ` · ${{fmt(e.srcFiles)}}→${{fmt(e.dstFiles)}}f` : "";
+        const fileNote = e.srcFiles !== null ? ` · ${fmt(e.srcFiles)}→${fmt(e.dstFiles)}f` : "";
         html += `
-          <div class="edge-row jump-node" data-nid="${{escHtml(e.dst)}}">
-            <span class="edge-name" title="${{escHtml(target.id.replace(/^L\\d:/, ""))}}">${{escHtml(target.id.replace(/^L\\d:/, ""))}}</span>
+          <div class="edge-row jump-node" data-nid="${escHtml(e.dst)}">
+            <span class="edge-name" title="${escHtml(target.id.replace(/^L\\d:/, ""))}">${escHtml(target.id.replace(/^L\\d:/, ""))}</span>
             <span class="edge-meta">
-              ${{e.hasReverse ? `<span class="tag-mutual" title="Reverse edge weight: ${{fmt(e.reverseWeight)}}">⇄ ${{fmt(e.reverseWeight)}}</span>` : ""}}
-              <span style="color:var(--out-color);">${{fmt(e.weight)}}</span>
-              <span style="color:var(--muted);">(${{pct}}%${{fileNote}})</span>
+              ${e.hasReverse ? `<span class="tag-mutual" title="Reverse edge weight: ${fmt(e.reverseWeight)}">⇄ ${fmt(e.reverseWeight)}</span>` : ""}
+              <span style="color:var(--out-color);">${fmt(e.weight)}</span>
+              <span style="color:var(--muted);">(${pct}%${fileNote})</span>
             </span>
           </div>`;
-      }}
-    }}
+      }
+    }
     html += `</div>`;
 
     html += `
       <div class="sec-title">
         <span style="color:var(--in-color);">Imported by ← (Dependents on this dir)</span>
-        <span>${{fmt(totIn)}} total</span>
+        <span>${fmt(totIn)} total</span>
       </div>
       <div class="edge-list">
     `;
-    if (inEdges.length === 0) {{
+    if (inEdges.length === 0) {
       html += '<div class="empty-hint">No cross-directory incoming imports in current view.</div>';
-    }} else {{
-      for (const e of inEdges.slice(0, 15)) {{
+    } else {
+      for (const e of inEdges.slice(0, 15)) {
         const src = nodesById[e.src];
         const pct = totIn > 0 ? ((e.weight / totIn) * 100).toFixed(1) : "0.0";
-        const fileNote = e.srcFiles !== null ? ` · ${{fmt(e.srcFiles)}}→${{fmt(e.dstFiles)}}f` : "";
+        const fileNote = e.srcFiles !== null ? ` · ${fmt(e.srcFiles)}→${fmt(e.dstFiles)}f` : "";
         html += `
-          <div class="edge-row jump-node" data-nid="${{escHtml(e.src)}}">
-            <span class="edge-name" title="${{escHtml(src.id.replace(/^L\\d:/, ""))}}">${{escHtml(src.id.replace(/^L\\d:/, ""))}}</span>
+          <div class="edge-row jump-node" data-nid="${escHtml(e.src)}">
+            <span class="edge-name" title="${escHtml(src.id.replace(/^L\\d:/, ""))}">${escHtml(src.id.replace(/^L\\d:/, ""))}</span>
             <span class="edge-meta">
-              ${{e.hasReverse ? `<span class="tag-mutual" title="Reverse edge weight: ${{fmt(e.reverseWeight)}}">⇄ ${{fmt(e.reverseWeight)}}</span>` : ""}}
-              <span style="color:var(--in-color);">${{fmt(e.weight)}}</span>
-              <span style="color:var(--muted);">(${{pct}}%${{fileNote}})</span>
+              ${e.hasReverse ? `<span class="tag-mutual" title="Reverse edge weight: ${fmt(e.reverseWeight)}">⇄ ${fmt(e.reverseWeight)}</span>` : ""}
+              <span style="color:var(--in-color);">${fmt(e.weight)}</span>
+              <span style="color:var(--muted);">(${pct}%${fileNote})</span>
             </span>
           </div>`;
-      }}
-    }}
+      }
+    }
     html += `</div>`;
 
-    html += `<div class="sec-title"><span>Top Cross-Boundary Outgoing Files (L${{nd.level}})</span></div>`;
-    if (nd.top_out_files.length === 0) {{
+    html += `<div class="sec-title"><span>Top Cross-Boundary Outgoing Files (L${nd.level})</span></div>`;
+    if (nd.top_out_files.length === 0) {
       html += '<div class="empty-hint">None at this level.</div>';
-    }} else {{
-      for (const f of nd.top_out_files) {{
-        const href = "file://" + repoRoot + "/" + f.rel_path;
+    } else {
+      for (const f of nd.top_out_files) {
+        const href = (window.RHVersion && RHVersion.sourceUrl) ? RHVersion.sourceUrl(f.rel_path) : f.rel_path;
         html += `
-          <a class="file-link" href="${{escHtml(href)}}" target="_blank" rel="noopener">
-            ${{escHtml(f.rel_path)}}
-            <div class="file-sub">${{fmt(f.cross_out)}} cross-dir imports out · ${{fmt(f.lines)}} lines · dist ${{f.dist}} · H=${{f.height}}</div>
+          <a class="file-link" href="${escHtml(href)}" target="_blank" rel="noopener">
+            ${escHtml(f.rel_path)}
+            <div class="file-sub">${fmt(f.cross_out)} cross-dir imports out · ${fmt(f.lines)} lines · dist ${f.dist} · H=${f.height}</div>
           </a>`;
-      }}
-    }}
+      }
+    }
 
-    html += `<div class="sec-title"><span>Top Cross-Boundary Imported Files (L${{nd.level}})</span></div>`;
-    if (nd.top_in_files.length === 0) {{
+    html += `<div class="sec-title"><span>Top Cross-Boundary Imported Files (L${nd.level})</span></div>`;
+    if (nd.top_in_files.length === 0) {
       html += '<div class="empty-hint">None at this level.</div>';
-    }} else {{
-      for (const f of nd.top_in_files) {{
-        const href = "file://" + repoRoot + "/" + f.rel_path;
+    } else {
+      for (const f of nd.top_in_files) {
+        const href = (window.RHVersion && RHVersion.sourceUrl) ? RHVersion.sourceUrl(f.rel_path) : f.rel_path;
         html += `
-          <a class="file-link" href="${{escHtml(href)}}" target="_blank" rel="noopener">
-            ${{escHtml(f.rel_path)}}
-            <div class="file-sub">${{fmt(f.cross_in)}} cross-dir imports in · ${{fmt(f.lines)}} lines · dist ${{f.dist}} · H=${{f.height}}</div>
+          <a class="file-link" href="${escHtml(href)}" target="_blank" rel="noopener">
+            ${escHtml(f.rel_path)}
+            <div class="file-sub">${fmt(f.cross_in)} cross-dir imports in · ${fmt(f.lines)} lines · dist ${f.dist} · H=${f.height}</div>
           </a>`;
-      }}
-    }}
+      }
+    }
 
     inspBody.innerHTML = html;
 
     const btnExp = document.getElementById("insp-toggle-exp");
     if (btnExp) btnExp.addEventListener("click", () => toggleExpandNode(nid));
     const btnParent = document.getElementById("insp-up-parent");
-    if (btnParent) btnParent.addEventListener("click", () => {{
+    if (btnParent) btnParent.addEventListener("click", () => {
       const pid = nd.parent_id;
-      if (pid) {{
+      if (pid) {
         state.expandedIds.delete(pid);
         state.selectedId = pid;
         recomputeVisibleGraph();
         fitToScreen();
-      }}
-    }});
-    for (const row of inspBody.querySelectorAll(".jump-node")) {{
+      }
+    });
+    for (const row of inspBody.querySelectorAll(".jump-node")) {
       row.addEventListener("click", () => selectAndFocus(row.getAttribute("data-nid"), true));
-    }}
-  }}
+    }
+  }
 
   // Presets
-  function setPreset(mode) {{
+  function setPreset(mode) {
     document.getElementById("btn-l1").classList.toggle("active", mode === "l1");
     document.getElementById("btn-l2-major").classList.toggle("active", mode === "l2-major");
     document.getElementById("btn-l2-all").classList.toggle("active", mode === "l2-all");
 
     state.expandedIds.clear();
-    if (mode === "l2-major") {{
-      for (const t of ["Supplements", "Development", "CompanionTheory", "PositivityTheory", "GroundTheory", "ReciprocityTheory"]) {{
-        const id = "L1:" + t;
-        if (nodesById[id] && !nodesById[id].is_leaf) state.expandedIds.add(id);
-      }}
-    }} else if (mode === "l2-all") {{
-      for (const rid of rootIds) {{
+    if (mode === "l2-major") {
+      for (const rid of rootIds) {
+        const t = rid.slice(3);
+        if (["(root)", "Formalism", "Lemmata", "BuildAid"].includes(t)) continue;
+        if (nodesById[rid] && !nodesById[rid].is_leaf) state.expandedIds.add(rid);
+      }
+    } else if (mode === "l2-all") {
+      for (const rid of rootIds) {
         if (!nodesById[rid].is_leaf) state.expandedIds.add(rid);
-      }}
-    }}
+      }
+    }
     recomputeVisibleGraph();
     fitToScreen();
-  }}
+  }
 
   document.getElementById("btn-l1").addEventListener("click", () => setPreset("l1"));
   document.getElementById("btn-l2-major").addEventListener("click", () => setPreset("l2-major"));
   document.getElementById("btn-l2-all").addEventListener("click", () => setPreset("l2-all"));
 
-  document.getElementById("btn-layout-height").addEventListener("click", (ev) => {{
+  document.getElementById("btn-layout-height").addEventListener("click", (ev) => {
     state.layoutMode = "height";
     ev.target.classList.add("active");
     document.getElementById("btn-layout-dist").classList.remove("active");
     layoutVisibleNodes();
     fitToScreen();
-  }});
-  document.getElementById("btn-layout-dist").addEventListener("click", (ev) => {{
+  });
+  document.getElementById("btn-layout-dist").addEventListener("click", (ev) => {
     state.layoutMode = "dist";
     ev.target.classList.add("active");
     document.getElementById("btn-layout-height").classList.remove("active");
     layoutVisibleNodes();
     fitToScreen();
-  }});
+  });
 
-  document.getElementById("btn-hop-1").addEventListener("click", (ev) => {{
+  document.getElementById("btn-hop-1").addEventListener("click", (ev) => {
     state.hopMode = "direct";
     ev.target.classList.add("active");
     document.getElementById("btn-hop-all").classList.remove("active");
     renderCanvas();
-  }});
-  document.getElementById("btn-hop-all").addEventListener("click", (ev) => {{
+  });
+  document.getElementById("btn-hop-all").addEventListener("click", (ev) => {
     state.hopMode = "transitive";
     ev.target.classList.add("active");
     document.getElementById("btn-hop-1").classList.remove("active");
     renderCanvas();
-  }});
+  });
 
-  function applyWeightFilter(w) {{
+  function applyWeightFilter(w) {
     state.minWeight = w;
     weightVal.textContent = "≥ " + fmt(w);
     weightSlider.value = weightToSlider(w);
     updateCountsBadge();
     renderCanvas();
-  }}
+  }
   weightSlider.addEventListener("input", () => applyWeightFilter(sliderToWeight(weightSlider.value)));
-  for (const b of document.querySelectorAll(".preset-w")) {{
+  for (const b of document.querySelectorAll(".preset-w")) {
     b.addEventListener("click", () => applyWeightFilter(Number(b.getAttribute("data-w"))));
-  }}
-  chkKeepSel.addEventListener("change", () => {{
+  }
+  chkKeepSel.addEventListener("change", () => {
     state.keepSelectedEdges = chkKeepSel.checked;
     updateCountsBadge();
     renderCanvas();
-  }});
+  });
 
   // Search box across all 877 nodes
   const allSearchNodes = Object.values(nodesById).sort((a, b) => b.files - a.files);
-  searchInput.addEventListener("input", () => {{
+  searchInput.addEventListener("input", () => {
     const q = searchInput.value.trim().toLowerCase();
-    if (!q) {{
+    if (!q) {
       searchResults.style.display = "none";
       return;
-    }}
+    }
     const matches = allSearchNodes
       .filter((n) => n.id.toLowerCase().includes(q) || n.dir_key.toLowerCase().includes(q))
       .slice(0, 25);
-    if (matches.length === 0) {{
+    if (matches.length === 0) {
       searchResults.innerHTML = '<div class="search-item"><span class="sname">No matching directories</span></div>';
-    }} else {{
+    } else {
       searchResults.innerHTML = matches
         .map(
           (m) => `
-          <div class="search-item" data-nid="${{escHtml(m.id)}}">
-            <span class="sname">${{escHtml(m.id.replace(/^L\\d:/, ""))}}</span>
-            <span class="smeta">L${{m.level}} · ${{fmt(m.files)}}f</span>
+          <div class="search-item" data-nid="${escHtml(m.id)}">
+            <span class="sname">${escHtml(m.id.replace(/^L\\d:/, ""))}</span>
+            <span class="smeta">L${m.level} · ${fmt(m.files)}f</span>
           </div>`
         )
         .join("");
-      for (const el of searchResults.querySelectorAll(".search-item")) {{
-        el.addEventListener("click", () => {{
+      for (const el of searchResults.querySelectorAll(".search-item")) {
+        el.addEventListener("click", () => {
           const nid = el.getAttribute("data-nid");
           searchResults.style.display = "none";
           selectAndFocus(nid, true);
-        }});
-      }}
-    }}
+        });
+      }
+    }
     searchResults.style.display = "block";
-  }});
-  document.addEventListener("click", (ev) => {{
-    if (!searchResults.contains(ev.target) && ev.target !== searchInput) {{
+  });
+  document.addEventListener("click", (ev) => {
+    if (!searchResults.contains(ev.target) && ev.target !== searchInput) {
       searchResults.style.display = "none";
-    }}
-  }});
+    }
+  });
 
   // Canvas interactions (pan, zoom, click, double-click, hover)
-  canvas.addEventListener("mousedown", (ev) => {{
+  canvas.addEventListener("mousedown", (ev) => {
     state.dragging = true;
     state.dragMoved = false;
-    state.dragStart = {{ x: ev.clientX, y: ev.clientY, camX: state.cam.x, camY: state.cam.y }};
+    state.dragStart = { x: ev.clientX, y: ev.clientY, camX: state.cam.x, camY: state.cam.y };
     canvas.classList.add("dragging");
-  }});
-  window.addEventListener("mousemove", (ev) => {{
-    if (state.dragging) {{
+  });
+  window.addEventListener("mousemove", (ev) => {
+    if (state.dragging) {
       const dx = ev.clientX - state.dragStart.x;
       const dy = ev.clientY - state.dragStart.y;
       if (Math.hypot(dx, dy) > 4) state.dragMoved = true;
@@ -2426,80 +2530,80 @@ const GRAPH_DATA = {json_str};
       tooltip.style.display = "none";
       renderCanvas();
       return;
-    }}
-    if (ev.target !== canvas) {{
+    }
+    if (ev.target !== canvas) {
       tooltip.style.display = "none";
       return;
-    }}
+    }
     const rect = canvas.getBoundingClientRect();
     const sx = ev.clientX - rect.left;
     const sy = ev.clientY - rect.top;
     const wpt = screenToWorld(sx, sy);
     const nid = hitTestNode(wpt.x, wpt.y);
     const edge = nid ? null : hitTestEdge(wpt.x, wpt.y);
-    if (nid !== state.hoveredNodeId || edge !== state.hoveredEdge) {{
+    if (nid !== state.hoveredNodeId || edge !== state.hoveredEdge) {
       state.hoveredNodeId = nid;
       state.hoveredEdge = edge;
       renderCanvas();
-    }}
-    if (nid) {{
+    }
+    if (nid) {
       const nd = nodesById[nid];
       tooltip.innerHTML = `
-        <div style="font-weight:700;margin-bottom:3px;">${{escHtml(nd.id.replace(/^L\\d:/, ""))}}</div>
-        <div>Min dist: ${{nd.min_dist}} · Max height: ${{nd.max_height}}</div>
-        ${{!nd.is_leaf ? '<div style="color:#94a3b8;margin-top:3px;">Double-click to expand/collapse</div>' : ""}}
+        <div style="font-weight:700;margin-bottom:3px;">${escHtml(nd.id.replace(/^L\\d:/, ""))}</div>
+        <div>Min dist: ${nd.min_dist} · Max height: ${nd.max_height}</div>
+        ${!nd.is_leaf ? '<div style="color:#94a3b8;margin-top:3px;">Double-click to expand/collapse</div>' : ""}
       `;
       tooltip.style.left = Math.min(rect.width - 280, sx + 14) + "px";
       tooltip.style.top = Math.min(rect.height - 95, sy + 14) + "px";
       tooltip.style.display = "block";
       canvas.style.cursor = "pointer";
-    }} else if (edge) {{
-      const revTxt = edge.hasReverse ? `<br/>Reverse (${{escHtml(edge.dst.replace(/^L\\d:/,""))}} → ${{escHtml(edge.src.replace(/^L\\d:/,""))}}): <strong>${{fmt(edge.reverseWeight)}}</strong>` : "";
+    } else if (edge) {
+      const revTxt = edge.hasReverse ? `<br/>Reverse (${escHtml(edge.dst.replace(/^L\\d:/,""))} → ${escHtml(edge.src.replace(/^L\\d:/,""))}): <strong>${fmt(edge.reverseWeight)}</strong>` : "";
       tooltip.innerHTML = `
-        <div><strong>${{escHtml(edge.src.replace(/^L\\d:/, ""))}}</strong></div>
-        <div>imports → <strong>${{escHtml(edge.dst.replace(/^L\\d:/, ""))}}</strong></div>
-        <div style="margin-top:3px;">Weight: <strong>${{fmt(edge.weight)}}</strong> file imports${{revTxt}}</div>
+        <div><strong>${escHtml(edge.src.replace(/^L\\d:/, ""))}</strong></div>
+        <div>imports → <strong>${escHtml(edge.dst.replace(/^L\\d:/, ""))}</strong></div>
+        <div style="margin-top:3px;">Weight: <strong>${fmt(edge.weight)}</strong> file imports${revTxt}</div>
       `;
       tooltip.style.left = Math.min(rect.width - 310, sx + 14) + "px";
       tooltip.style.top = Math.min(rect.height - 95, sy + 14) + "px";
       tooltip.style.display = "block";
       canvas.style.cursor = "pointer";
-    }} else {{
+    } else {
       tooltip.style.display = "none";
       canvas.style.cursor = "grab";
-    }}
-  }});
-  window.addEventListener("mouseup", (ev) => {{
+    }
+  });
+  window.addEventListener("mouseup", (ev) => {
     if (!state.dragging) return;
     state.dragging = false;
     canvas.classList.remove("dragging");
-    if (!state.dragMoved && ev.target === canvas) {{
+    if (!state.dragMoved && ev.target === canvas) {
       const rect = canvas.getBoundingClientRect();
       const wpt = screenToWorld(ev.clientX - rect.left, ev.clientY - rect.top);
       const nid = hitTestNode(wpt.x, wpt.y);
-      if (nid) {{
+      if (nid) {
         state.selectedId = nid;
         let cur = nodesById[nid].parent_id;
-        while (cur) {{ state.treeOpenIds.add(cur); cur = nodesById[cur].parent_id; }}
+        while (cur) { state.treeOpenIds.add(cur); cur = nodesById[cur].parent_id; }
         updateCountsBadge();
         renderTreeSidebar();
         renderInspector();
         renderCanvas();
-      }}
-    }}
-  }});
-  canvas.addEventListener("dblclick", (ev) => {{
+      }
+    }
+  });
+  canvas.addEventListener("dblclick", (ev) => {
     const rect = canvas.getBoundingClientRect();
     const wpt = screenToWorld(ev.clientX - rect.left, ev.clientY - rect.top);
     const nid = hitTestNode(wpt.x, wpt.y);
-    if (nid) {{
+    if (nid) {
       toggleExpandNode(nid);
       fitToScreen();
-    }}
-  }});
+    }
+  });
   canvas.addEventListener(
     "wheel",
-    (ev) => {{
+    (ev) => {
       ev.preventDefault();
       const rect = canvas.getBoundingClientRect();
       const sx = ev.clientX - rect.left;
@@ -2511,11 +2615,11 @@ const GRAPH_DATA = {json_str};
       state.cam.y = sy - (sy - state.cam.y) * ratio;
       state.cam.scale = newScale;
       renderCanvas();
-    }},
-    {{ passive: false }}
+    },
+    { passive: false }
   );
 
-  document.getElementById("btn-zoom-in").addEventListener("click", () => {{
+  document.getElementById("btn-zoom-in").addEventListener("click", () => {
     const rect = wrap.getBoundingClientRect();
     const cx = rect.width / 2, cy = rect.height / 2;
     const ns = Math.min(2.8, state.cam.scale * 1.25);
@@ -2524,8 +2628,8 @@ const GRAPH_DATA = {json_str};
     state.cam.y = cy - (cy - state.cam.y) * r;
     state.cam.scale = ns;
     renderCanvas();
-  }});
-  document.getElementById("btn-zoom-out").addEventListener("click", () => {{
+  });
+  document.getElementById("btn-zoom-out").addEventListener("click", () => {
     const rect = wrap.getBoundingClientRect();
     const cx = rect.width / 2, cy = rect.height / 2;
     const ns = Math.max(0.08, state.cam.scale / 1.25);
@@ -2534,22 +2638,23 @@ const GRAPH_DATA = {json_str};
     state.cam.y = cy - (cy - state.cam.y) * r;
     state.cam.scale = ns;
     renderCanvas();
-  }});
+  });
   document.getElementById("btn-fit").addEventListener("click", fitToScreen);
-  document.getElementById("btn-clear-sel").addEventListener("click", () => {{
+  document.getElementById("btn-clear-sel").addEventListener("click", () => {
     state.selectedId = null;
     updateCountsBadge();
     renderTreeSidebar();
     renderInspector();
     renderCanvas();
-  }});
+  });
 
   window.addEventListener("resize", renderCanvas);
 
   // Initialize view
   recomputeVisibleGraph();
   fitToScreen();
-}})();
+}
+RHVersion.loadDataScript("dependency_graph/dir_graph_data.js", "__DEP_GRAPH_DATA__", initDepExplorer);
 </script>
 </body>
 </html>
@@ -2558,29 +2663,80 @@ const GRAPH_DATA = {json_str};
 
 
 def main() -> None:
+    global SRC_DIR, DB_PATH, META_PATH, OUT_DIR
+    parser = argparse.ArgumentParser(description="Build directory-level dependency graphs")
+    parser.add_argument("--src-dir", type=Path, default=SRC_DIR)
+    parser.add_argument("--db-path", type=Path, default=DB_PATH)
+    parser.add_argument("--meta-path", type=Path, default=META_PATH)
+    parser.add_argument("--out-dir", type=Path, default=OUT_DIR)
+    parser.add_argument("--version-label", type=str, default="")
+    parser.add_argument("--source-blob-base", type=str, default="")
+    parser.add_argument("--rel-src-label", type=str, default="src/")
+    parser.add_argument("--write-html", action="store_true", help="Write canonical dependency_explorer.html")
+    args = parser.parse_args()
+
+    SRC_DIR = args.src_dir
+    DB_PATH = args.db_path
+    META_PATH = args.meta_path
+    OUT_DIR = args.out_dir
     OUT_DIR.mkdir(parents=True, exist_ok=True)
+
     data = load_graph_data()
 
-    # Save clean dir_graph.json (excluding internal _major_projection scratch key)
+    # Save dir_graph.json + dir_graph_data.js
     json_out = {k: v for k, v in data.items() if not k.startswith("_")}
     json_path = OUT_DIR / "dir_graph.json"
     json_path.write_text(json.dumps(json_out, indent=2), encoding="utf-8")
+
+    embedded_payload = {
+        "meta": data["meta"],
+        "colors": TOP_COLORS,
+        "top_order": data.get("top_order", TOP_ORDER),
+        "levels": {
+            "1": data["levels"]["1"],
+            "2": data["levels"]["2"],
+            "3": {
+                "node_count": data["levels"]["3"]["node_count"],
+                "edge_count": data["levels"]["3"]["edge_count"],
+                "total_cross_edges": data["levels"]["3"]["total_cross_edges"],
+                "mutual_pairs": data["levels"]["3"]["mutual_pairs"],
+                "nontrivial_scc_count": data["levels"]["3"]["nontrivial_scc_count"],
+                "sccs": data["levels"]["3"]["sccs"],
+            },
+        },
+        "tree": data["tree"],
+    }
+    js_blob = json.dumps(embedded_payload, separators=(",", ":"), ensure_ascii=True).replace("<", "\\u003c")
+    js_path = OUT_DIR / "dir_graph_data.js"
+    js_path.write_text(f"window.__DEP_GRAPH_DATA__ = {js_blob};\n", encoding="utf-8")
 
     mmd_path = OUT_DIR / "top_level_graph.mmd"
     top_dot_path = OUT_DIR / "top_level_graph.dot"
     top_svg_path = OUT_DIR / "top_level_graph.svg"
     d2_dot_path = OUT_DIR / "depth2_major_graph.dot"
     d2_svg_path = OUT_DIR / "depth2_major_graph.svg"
-    html_path = OUT_DIR / "dependency_explorer.html"
+    readme_path = OUT_DIR / "README.md"
 
     write_top_level_mermaid(data, mmd_path)
     write_top_level_dot(data, top_dot_path)
     write_depth2_major_dot(data, d2_dot_path)
     render_svg_with_dot(top_dot_path, top_svg_path)
     render_svg_with_dot(d2_dot_path, d2_svg_path)
-    write_explorer_html(data, html_path)
+    write_readme_md(
+        data,
+        readme_path,
+        source_blob_base=args.source_blob_base,
+        version_label=args.version_label,
+        rel_src_label=args.rel_src_label,
+    )
 
-    for p in (json_path, mmd_path, top_dot_path, top_svg_path, d2_dot_path, d2_svg_path, html_path):
+    outputs = [json_path, js_path, mmd_path, top_dot_path, top_svg_path, d2_dot_path, d2_svg_path, readme_path]
+    if args.write_html:
+        html_path = SCRIPT_DIR / "dependency_explorer.html"
+        write_explorer_html(data, html_path)
+        outputs.append(html_path)
+
+    for p in outputs:
         print(f"Wrote {p} ({p.stat().st_size:,} bytes)")
 
 

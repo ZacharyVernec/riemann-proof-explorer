@@ -1,349 +1,56 @@
-# Full Lean Module Dependency DAG
+# Full Lean Module Dependency DAG (`community-307cef33`)
 
-This document describes the repeatable layout pipeline, binary data packaging, graph-simplification modes, and WebGL visualization behind the interactive full-graph viewer:
+This document summarizes the deterministic Sugiyama layout, binary data packaging, graph-simplification modes, and WebGL visualization for `src/` (**59,836 reachable modules**, **367,774 internal import edges**, **94 layers**) in [full_dag.html](full_dag.html).
 
-- **Interactive Viewer:** [full_dag.html](full_dag.html) (pan and zoom across all modules and import edges, with three composable simplification switches: **Collapse existing theory** `C`, **Hide redundant imports** `H`, and **Collapse chains & leaves** `L`)
-- **Layout Generator:** [build_full_dag.py](build_full_dag.py)
-- **Layout Summary:** [layout_summary.json](layout_summary.json)
-- **SQLite Indexer:** [build_index.py](../build_index.py)
-- **Existing-Theory Inventory & Methodology:** [PUBLISHED_THEOREMS_INVENTORY.html](../published_theorems/PUBLISHED_THEOREMS_INVENTORY.html) ([Markdown](../published_theorems/PUBLISHED_THEOREMS_INVENTORY.md))
-
-> **Direction Convention:** Every node represents a `.lean` module under `lean/src`. A directed edge **`A -> B`** means **`A` imports `B`** (`A` depends on `B`). Top-level theorem modules sit at the top (`layer 0`), and foundational definitions and leaf modules sit below (`layer 1..202`).
+> **Direction Convention:** Every node represents a `.lean` module under the source tree. A directed edge **`A -> B`** means **`A` imports `B`** (`A` depends on `B`). Top-level theorem modules sit at the top (`layer 0`), and foundational leaves sit below.
 
 ---
 
-## 1. Why Modules Rather Than Individual Statements?
+## 1. Scale & Simplification Modes
+
+| View Mode | Active Controls | Nodes | Edges | Layers |
+|---|---|---:|---:|---:|
+| **Full DAG** | Default (`C=off, H=off, L=off`) | 59,836 | 367,774 | 94 |
+| **Full Hasse** | `H` (Transitive reduction) | 59,836 | 170,783 | 94 |
+| **Existing-Theory Collapse** | `C` (74 literature supernodes) | 53,296 | 314,259 | 84 |
+| **Existing-Theory Hasse** | `C + H` | 53,296 | 149,879 | 84 |
+| **Chain/Leaf Simplified (`full_simp`)** | `L` | 56,808 | 363,081 | 94 |
+| **Chain/Leaf Simplified (`full_hasse_simp`)** | `L` | 49,704 | 159,232 | 91 |
+| **Chain/Leaf Simplified (`existing_simp`)** | `L` | 50,299 | 309,708 | 84 |
+| **Chain/Leaf Simplified (`existing_hasse_simp`)** | `L` | 43,797 | 139,112 | 80 |
+
+- **Existing-Theory Contraction:** Collapses **6,614** modules (11.1% of reachable codebase, anchored at **291** proof-root frontier modules) into **74 Literature Supernodes**, leaving **53,222** novel/shared interface modules.
+- **Declarations Indexed (Reachable):** **761,777** Lean declarations across `src/`.
+- **Binary Packaging (`LDAG` v3):** `7,591,928` raw bytes → `4,219,851` gzip bytes → `5,626,501` JS bytes (`full_dag_data.js`).
+
+## 2. Domain Breakdown & Top Imported Hubs
+
+| Top-Level Directory | Modules |
+|---|---:|
+| `Development` | 41,263 |
+| `Formalism` | 9,901 |
+| `GroundTheory` | 5,217 |
+| `ReciprocityTheory` | 2,393 |
+| `CompanionTheory` | 685 |
+| `PositivityTheory` | 226 |
+| `Lemmata` | 149 |
+| `(root)` | 2 |
+
+| Top Imported Hub Module | In-Degree | Out-Degree | Layer |
+|---|---:|---:|---:|
+| `ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/BirationalGeometry/ToroidalCompactification/IsCompletedStrictHens.lean` | 1,138 | 0 | 93 |
+| `Formalism/LocalToGlobal/IndefiniteReal/LinksDefs.lean` | 986 | 8 | 71 |
+| `Formalism/SharpRestriction/LevelLetterCocycles/DataNLoc.lean` | 895 | 1 | 90 |
+| `ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/SemiabelianSchemes/CubicalStructures/CubeSymmetricSwapFirst.lean` | 813 | 0 | 93 |
+| `Development/AbelianVarietyTheory/BlockTheory/DivisorBase/WeilTensorModels.lean` | 713 | 5 | 69 |
+| `Formalism/SharpRestriction/GlobalSchurBounds/GeneralLinearActions/GenusMassVolumes.lean` | 611 | 1 | 92 |
+| `Formalism/LocalToGlobal/IndefiniteReal/LocalNewformFunction.lean` | 596 | 1 | 74 |
+| `Formalism/LocalToGlobal/ProjectiveLattices/ErealAddIInf.lean` | 546 | 0 | 91 |
+| `ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/ExtensionDescent/GlobalSectionsRankAlgClosed.lean` | 540 | 3 | 88 |
+| `ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/DiscreteValuationRings/LBPull.lean` | 521 | 2 | 91 |
+| `Development/AbelianVarietyTheory/Proofs/FoundationProofs/ExistsContinuousPadic.lean` | 500 | 3 | 86 |
+| `Formalism/SharpRestriction/CuspSpanNormBounds/Point.lean` | 484 | 0 | 93 |
+| `Formalism/LocalRingCardinality/DataTheta.lean` | 458 | 2 | 85 |
+| `Formalism/SharpRestriction/LevelLetterCocycles/LocCoh.lean` | 453 | 2 | 90 |
+| `ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/BirationalGeometry/ToroidalCompactification/CocycleRightZeroThd.lean` | 450 | 0 | 93 |
 
-In Lean 4, a **module** corresponds 1-to-1 with a single `.lean` source file under `lean/src/` (the compilation unit that produces one `.olean` binary). For instance, `lean/src/Main.lean` is module `Main`, and `lean/src/Supplements/Kernels/MainTheoremsAll.lean` is module `Supplements.Kernels.MainTheoremsAll`. Each module begins with explicit `import` headers declaring its dependencies, and because Lean forbids circular imports, the module import graph is guaranteed to be a strict DAG.
-
-Inside those modules live individual **declarations** (`theorem`, `lemma`, `def`, `structure`, `class`, `inductive`, `abbrev`, `instance`). A finer-grained **declaration-level DAG**—linking every declaration to the exact constants referenced in its type and proof term—is not tracked here for three reasons:
-
-1. **Accurate extraction requires full compilation:** Lean 4 proofs rely heavily on tactics (`simp`, `linarith`, `ring`, `aesop`, etc.), typeclass synthesis, coercions, and `open`ed namespaces, so many dependencies never appear explicitly by name in raw `.lean` source text. Recovering true declaration-level edges requires compiling the entire codebase to `.olean` files and inspecting Lean's elaborated `Environment` (for example, `Expr.getUsedConstants` on each `ConstantInfo`). By contrast, module `import` statements are explicit syntax at the top of every file, allowing [build_index.py](../build_index.py) to extract the exact module DAG deterministically from `lean/src/` in ~25 seconds using only Python.
-2. **Scale and architectural clarity:** The codebase contains **1,057,807** internal declarations (6× the **175,187** modules). Including tactic-elaborated and typeclass-synthesized edges would expand the graph to tens of millions of edges, dramatically increasing layout and browser rendering cost while obscuring macro-level mathematical structure under low-level algebraic and tactic plumbing.
-3. **Modules here are already fine-grained:** Across the 175,187 modules in `lean/src/`, the median module contains just **2 declarations** (mean `6.04`), and **78,880 modules (45.0%)** contain a single declaration. The module DAG therefore already approximates a theorem-by-theorem dependency graph while naturally grouping small local helper lemmas together.
-
----
-
-## 2. End-to-End Repeatable Pipeline
-
-The visualization is generated deterministically from the Lean source tree with zero hardcoded module paths, directory names, layer counts, or fixed directory-to-color mappings. Whenever the underlying Lean codebase is refactored, regenerating the graph requires a single command:
-
-```bash
-python3 analysis/full_dag/build_full_dag.py --rebuild-index
-```
-
-If `analysis/data/graph.sqlite` is already up to date, omitting `--rebuild-index` skips re-scanning `lean/src` and rebuilds the layout and dataset directly from SQLite in ~30 seconds:
-
-```bash
-python3 analysis/full_dag/build_full_dag.py
-```
-
-The pipeline executes five stages:
-
-1. **Source Indexing (`analysis/build_index.py`):** Walks `lean/src` in sorted relative-path order, parses `import` statements, builds the deduplicated internal module import graph, and writes `analysis/data/graph.sqlite` and `analysis/data/meta.json`.
-2. **Acyclicity Verification (`load_graph` + Kahn's topological sort):** Loads all modules ordered deterministically by `(rel_path, id)` and runs Kahn's topological algorithm from roots ($\text{in\_degree} = 0$). If any import cycle exists, the pipeline aborts immediately with an error.
-3. **Deterministic 3-Stage Sugiyama Layout (`compute_layout`):** Assigns integer layer coordinates $y(u)$ and continuous non-overlapping horizontal coordinates $x(u)$, then scales vertical spacing dynamically to preserve a readable widescreen aspect ratio.
-4. **Graph Simplification & Multi-View Weighted Layouts (`build_collapsed_dag`, `compute_transitive_reduction`, `simplify_chains_and_leaves`):**
-   - Applies the inventory-driven proof-frontier cut to contract peer-reviewed background proofs into **83 Literature Supernodes** (`existing`).
-   - Computes exact transitive reduction (Hasse diagrams) on both the full DAG (`full_hasse`) and existing-theory DAG (`existing_hasse`), packing 1-bit-per-edge masks for zero-jump in-place toggling.
-   - Runs a 2-phase fixed-point chain/leaf collapse (`simplify_chains_and_leaves`) across all four `(existing, hasse)` combinations (`full_simp`, `full_hasse_simp`, `existing_simp`, `existing_hasse_simp`), computing weighted Sugiyama layouts using edge weights $w_E = \text{mult} + \text{chain}$.
-5. **Canonical Re-Indexing & `LDAG` v3 Packaging:** Re-indexes every node-bearing layout in `(y, x, sort_key)` order, packs typed arrays, LEB128 delta-varint CSR adjacency lists, 1-bit Hasse masks, sparse weighted-anchor records, and 1-bit-flagged weighted edge streams into a 4-byte-aligned `LDAG` v3 binary buffer, compresses deterministically (`gzip` with `mtime=0`), and emits [full_dag_data.js](full_dag_data.js) alongside [layout_summary.json](layout_summary.json).
-
----
-
-## 3. Layout Algorithm
-
-Drawing the complete import graph of 175,187 modules and 753,261 edges requires strict topological orientation (every edge pointing downward) while minimizing vertical edge spans and horizontal edge crossings.
-
-### Stage 1: Bottom-Aligned Longest-Path Layering
-
-First, module heights $h(u)$ from leaf modules ($\text{out\_degree} = 0$) are computed in reverse topological order:
-
-$$h(u) = \begin{cases} 0 & \text{if } \text{out}(u) = \emptyset, \\ 1 + \max_{(u, v) \in E} h(v) & \text{otherwise.} \end{cases}$$
-
-Setting initial vertical rank $y_0(u) = H_{\max} - h(u)$ places the root entry module (`Main`, $h = 202$) at $y = 0$ and guarantees $y_0(v) \ge y_0(u) + 1$ for every edge $(u, v) \in E$.
-
-### Stage 2: Feasible $L_1$ Vertical Rank Tightening
-
-Bottom-aligned layering leaves intermediate modules with fewer outgoing than incoming dependencies sitting deeper than necessary. To reduce total vertical edge length $\sum_{(u,v)\in E} (y(v) - y(u))$ while strictly preserving the DAG invariant $y(v) \ge y(u) + 1$, the generator runs up to 25 alternating topological and reverse-topological coordinate-descent sweeps.
-
-At each node $u$, the feasible integer interval imposed by its neighbors is:
-
-$$\ell(u) = \begin{cases} 0 & \text{if } \text{in}(u) = \emptyset, \\ \max_{(p, u) \in E} y(p) + 1 & \text{otherwise,} \end{cases} \qquad r(u) = \begin{cases} H_{\max} & \text{if } \text{out}(u) = \emptyset, \\ \min_{(u, c) \in E} y(c) - 1 & \text{otherwise.} \end{cases}$$
-
-Since the local derivative of total edge span with respect to $y(u)$ is $|\text{in}(u)| - |\text{out}(u)|$:
-- If $|\text{in}(u)| > |\text{out}(u)|$, $u$ moves to $\ell(u)$ (pulled upward toward its importers).
-- If $|\text{out}(u)| > |\text{in}(u)|$, $u$ moves to $r(u)$ (pulled downward toward its dependencies).
-- If $|\text{in}(u)| = |\text{out}(u)|$, $u$ moves to the rounded mean of its neighbors clamped to $[\ell(u), r(u)]$.
-
-Across the full graph, these sweeps reduce mean vertical edge span from **18.926** layers to **17.288** layers, placing **190,823** edges on adjacent layers ($\Delta y = 1$) and **352,622** edges within $\Delta y \le 5$.
-
-### Stage 3: Weighted Barycenter Ordering & Isotonic $L_2$ Placement
-
-Nodes are grouped into layers $L_0, \dots, L_{202}$, initially sorted by `rel_path` and centered with unit spacing. The generator then executes 16 alternating top-down and bottom-up sweeps:
-
-1. **Inverse-Span Weighted Barycenter:** For every node $u \in L_k$, its target horizontal position $\bar{x}(u)$ averages both incoming and outgoing neighbors weighted by $w(u, v) = |y(u) - y(v)|^{-1}$ so short-span edges pull more strongly than long-span cross-layer edges:
-
-$$\bar{x}(u) = \frac{\sum_{v \in \text{in}(u) \cup \text{out}(u)} \frac{x(v)}{|y(u) - y(v)|}}{\sum_{v \in \text{in}(u) \cup \text{out}(u)} \frac{1}{|y(u) - y(v)|}}.$$
-
-2. **Permutation & Relaxation:** During the first 10 sweeps, each layer is re-sorted by $(\bar{x}(u), \text{rel\_path}(u))$ to eliminate crossings; during the final 6 sweeps, the layer ordering is held fixed while coordinates relax smoothly.
-3. **Pool-Adjacent-Violators (PAV) Isotonic Projection:** Within each ordered layer $u_0, \dots, u_{m-1}$, coordinates are projected onto the non-overlap polytope $x(u_{i+1}) - x(u_i) \ge 1.0$ by solving the exact $O(m)$ isotonic $L_2$ regression problem $\min \sum_{i=0}^{m-1} (x_i - \bar{x}(u_i))^2$ via the Pool-Adjacent-Violators algorithm on $z_i = x_i - i$ with target $t_i = \bar{x}(u_i) - i$.
-
-This stage reduces mean horizontal edge span $|\Delta x|$ nearly threefold, from **363.32** units to **121.839** units, while enforcing a strict minimum horizontal gap of **1.0** world unit between adjacent nodes in every layer.
-
-Finally, layer vertical spacing $\Delta y$ is computed dynamically from the total horizontal span $W_x = x_{\max} - x_{\min}$ and layer count $K$ as $\Delta y = \text{clamp}\!\left(\frac{W_x}{1.85 \cdot (K - 1)},\, 4.0,\, 12.0\right)$, yielding $\Delta y = 9.3166$ and an overall aspect ratio of **1.85 : 1**.
-
----
-
-## 4. Refactor-Resilience Guarantees
-
-- **Zero Hardcoded Names or Counts:** Every top-level directory (`top_dir`) is discovered dynamically from `graph.sqlite`, sorted deterministically by `(-module_count, top_dir)`, and colored from a fixed high-contrast light-theme categorical palette (with a deterministic golden-angle HSL fallback if a refactor introduces more than 10 top-level directories).
-- **Deterministic Tie-Breaking & Bit-Exact Output:** Node ordering ties break on `rel_path`, canonical IDs are sorted by `(layer, x, rel_path)`, and gzip compression uses `mtime=0`, ensuring repeated runs on unchanged sources emit byte-identical outputs.
-- **Invariant Checks:** Across all 8 composable views, the generator verifies zero self-loops, exact topological completeness (`len(topo) == N`), strict downward edge monotonicity ($y(u) < y(v)$ and $\text{id}(u) < \text{id}(v)$), intra-layer non-overlap ($\Delta x \ge 1.0$), exact Hasse bitmask counts (`386,211` for `full_hasse`, `305,256` for `existing_hasse`), zero remaining unprotected simple leaves or `(1,1)` pass-through nodes after fixed-point simplification, and exact module conservation ($\sum_{v \in V} w(v) + \sum_{e \in E} \text{chain}(e) = 175{,}187$) before writing output.
-
----
-
-## 5. Simplification Modes, Weights & `LDAG` v3 Architecture
-
-The viewer provides three orthogonal, composable toggles that switch smoothly between **8 pre-verified graph views**:
-
-1. **Collapse existing theory (`C`):** Contracts established peer-reviewed mathematical proofs into **83 Literature Supernodes**.
-2. **Hide redundant imports (`H`):** Applies exact transitive reduction (the Hasse diagram), hiding shortcut import edges that are already implied by longer dependency paths.
-3. **Collapse chains & leaves (`L`):** Folds private simple-leaf subtrees upward into weighted parent anchor nodes (`Anchor [w]`) and contracts pass-through `(1,1)` chains onto weighted dependency edges.
-
----
-
-### 5.1 Existing-Theory Proof-Frontier Cut ("Collapse existing theory")
-
-The **"Collapse existing theory"** toggle in [full_dag.html](full_dag.html) (keyboard shortcut `C`) lets readers hide the subtrees of the Lean codebase proving already-established peer-reviewed mathematics while preserving every novel theorem, shared interface specification, and statement contract.
-
-Following the identification methodology documented in [PUBLISHED_THEOREMS_INVENTORY.md](../published_theorems/PUBLISHED_THEOREMS_INVENTORY.md#methodology-identifying-collapsible-existing-theory-proof-subtrees), `build_full_dag.py`:
-
-1. Parses all audited peer-reviewed `Prop` identifiers and bold canonical literature titles across Sections 1–11 of the inventory (`534` target symbols across `109` literature entries), excluding Section 12 project-specific statements and internal scaffolding.
-2. Enforces the SQLite defining-module ancestor guard and scans final conclusion heads of `theorem`/`lemma` declarations while excluding `*/Definitions/*`, assumed hypothesis-bundle projections/dispatchers (`HypothesesU`, `OpenImageCondition`, `OpenLiteratureStatements`, etc.), novel headline modules, and `20` multi-topic re-export barrels (`ProvedMore`, `InputsOf`, `Multi`, `BridgesMore`, etc.).
-3. Performs reachability from `Main` without crossing outgoing edges of detected proof roots while applying **targeted dead-import pruning** on `RiemannHypothesisOfEveryCharacter.lean` (ignoring `54` provably unreferenced imports whose targets lie strictly below the baseline published-theorem frontier so proof-only interiors cannot leak past the cut without falsely collapsing unrelated legacy modules).
-
-Modules unreachable from `Main` past the proof-frontier cut form the **proof-only interior** $C$ (`39,314` modules), while the reached proof-root modules form the **frontier** $F$ (`420` modules). Merging frontier proof roots by literature topic while keeping outgoing `Supernode -> Shared Active` edges breaks DAG acyclicity whenever alternative proofs sit at different heights around shared definitions. To preserve a strict DAG:
-
-- Frontier modules $F$ are grouped by their primary inventory row into **83 Literature Supernodes** $S_T$ rendered as **diamond axiom sinks** ($\text{out\_degree} = 0$).
-- Every proof-only interior module $v \in C$ is assigned to a unique Literature Supernode $S_T$ via deterministic multi-source BFS from $F$ (ordered by distance from `Main` and in-degree), yielding a complete disjoint partition with zero unowned nodes:
-
-$$|A| + \sum_{T} |S_T| = 135{,}453 + 39{,}734 = 175{,}187.$$
-
-Each supernode displays its canonical literature title and exact collapsed module count in brackets alongside the diamond node (for example, `BLGGT / Caraiani Strong Local–Global Compatibility [13,455]`). Contracting multiple frontier proof imports from an active module $u \in A$ to the same Literature Supernode $S_T$ induces edge multiplicity weights $w(u, v) = |\{(u, f) \in E : f \in F_T\}|$ (`6,289` contracted supernode edges representing `7,125` raw frontier imports, with `711` edges having $w \ge 2$, up to $w_{\max} = 8$).
-
----
-
-### 5.2 Transitive Reduction ("Hide redundant imports" / Hasse Diagram)
-
-In Lean source files, modules frequently `import` both a downstream module $B$ and an ancestor $C$ that $B$ already imports (`A -> B -> C` alongside shortcut `A -> C`). Nearly half of all edges in the import graph are transitively redundant shortcuts of this form.
-
-The **"Hide redundant imports"** toggle (`H` hotkey) displays the DAG's **exact transitive reduction** (its Hasse diagram), keeping an edge $(u, v)$ if and only if no indirect directed path $u \to \dots \to v$ of length $\ge 2$ exists:
-
-- **Algorithm (`compute_transitive_reduction`):** Processes nodes in topological order using striped arbitrary-precision integer bitsets (stripe width $B = 16{,}384$) to compute, for each node $u$, its 1-step reachability bitset $R_1(u)$ and its $\ge 2$-step reachability bitset $R_2(u) = \bigvee_{(u, v) \in E} R_1(v)$. Edge $(u, v)$ is redundant iff $v \in R_2(u)$.
-- **Edge Reduction:**
-  - On the **Full DAG**, transitive reduction removes **367,050** redundant shortcut edges (`48.73%`), leaving **386,211** essential covering edges (`full_hasse`).
-  - On the **Existing-Theory DAG**, transitive reduction removes **287,744** redundant edges (`48.52%`), leaving **305,256** essential covering edges (`existing_hasse`).
-- **In-Place Zero-Jump Filtering:** When *Collapse chains & leaves* is off, toggling *Hide redundant imports* keeps the exact node set, coordinates, and current pan/zoom unchanged. Both views reuse the base node VBO while filtering the CSR edges via compact 1-bit-per-edge masks (`full_hasse_mask` = `94,158` B; `existing_hasse_mask` = `74,125` B).
-
----
-
-### 5.3 Chain & Simple-Leaf Collapse ("Collapse chains & leaves")
-
-In the raw direct-import DAG, **21,928 modules (`12.52%`)** have at most one dependent (`in_degree <= 1`) and at most one internal dependency (`out_degree <= 1`): **3,965** simple leaves and **17,963** pass-through `(1,1)` nodes. Once transitively redundant shortcut edges are removed, that rises to **68,724 modules (`39.23%`)**, exposing **11,489** multi-node linear chains (up to `18` modules long, including `8,832` length-2 `*Statement.lean -> *.lean` wrapper pairs).
-
-The **"Collapse chains & leaves"** toggle (`L` hotkey) runs `simplify_chains_and_leaves`, a deterministic 2-phase fixed-point contraction loop:
-
-1. **Phase 1 — Simple-Leaf Folding into Node Weight (`in = 1, out = 0`):** Iteratively peels every unprotected node $u$ with a single importer $p$ and zero internal dependencies upward into $p$, transferring both $u$'s node weight $w(u)$ and any contracted chain weight on edge $(p, u)$ to $p$:
-   $$w(p) \leftarrow w(p) + w(u) + \text{chain}(p, u).$$
-   Private hanging leaf-trees collapse recursively into a single weighted anchor node (for example, `Main` absorbs `Statements` to reach weight `2`, while `FirstDeRhamHomologyProjectiveOverTensorIntegers` absorbs `24` leaves to reach weight `25`). When *Collapse existing theory* is also active, the **83 Literature Supernodes** are protected from absorption so diamond landmarks always remain visible.
-2. **Phase 2 — Pass-Through `(1,1)` Chain Contraction into Edge Weight:** Iteratively contracts every unprotected node $u$ with `in(u) = 1, out(u) = 1` along $p \to u \to c$ into a direct edge $(p, c)$, merging parallel paths when $(p, c)$ already exists:
-   $$\text{mult}(p, c) \mathrel{+}= \max\!\big(\text{mult}(p, u),\, \text{mult}(u, c)\big), \qquad \text{chain}(p, c) \mathrel{+}= \text{chain}(p, u) + \text{chain}(u, c) + w(u).$$
-   The combined edge weight used for layout attraction and stroke rendering is $w_E(e) = \text{mult}(e) + \text{chain}(e)$.
-3. **Fixed-Point Iteration & Composition with Hasse:** Phases 1 and 2 repeat until no unprotected `(1, <=1)` nodes remain (catching cascading leaves exposed when parallel-edge merges reduce a node's `in_degree` from `2` to `1`). When both *Hide redundant imports* and *Collapse chains & leaves* are active, transitive reduction runs **first** so shortcut-hidden chains (`*Statement -> Impl` pairs, `18`-node Gram–Schmidt frame chains, etc.) are exposed and collapsed while retaining their contracted weighted edges.
-
-**Exact Module Conservation:** Across all four simplified views, every original Lean module is accounted for either inside a surviving node's weight (active anchor or Literature Supernode) or inside a surviving edge's contracted chain count:
-
-$$\sum_{v \in V} w(v) + \sum_{e \in E} \text{chain}(e) = 175{,}187.$$
-
-*(Each simplified view runs a full weighted Sugiyama layout with edge weights $w_E = \text{mult} + \text{chain}$, enforcing strict DAG monotonicity and $\Delta x \ge 1.0$.)*
-
----
-
-### 5.4 Node Labeling & Weight Encoding (Option A)
-
-To keep labels readable across zoom levels while communicating exact collapse counts:
-
-- **Weighted Anchor Nodes (`Anchor [w]`):** Any active module whose node weight exceeds `1` renders with an increased disc diameter ($w_{\text{base}} + 0.55 \ln(w)$) and a crisp **inner white halo ring** (`alphaByte = 128` in the node shader). Its primary label follows Option A—the surviving anchor module's short name plus a bold domain-colored `[w]` suffix (for example, `Main [2]`, `CayDensEx [25]`, matching the `[count]` convention on Literature Supernodes).
-- **Deep-Zoom Breakdown Subtitles (`zoom >= 55`):** When zoomed in on an anchor node with $k = w - 1$ absorbed modules:
-  - Single-leaf absorption ($k = 1$) names the absorbed module directly (e.g., `+1 leaf (Statements)`).
-  - Multi-module absorption reports `+k leaves` or `+k collapsed (L leaves, C chain)` alongside the module's directory path.
-- **Weighted Edges & Badges:** Contracted edges render with increased WebGL opacity, 2D variable-thickness strokes scaled by $\log_2(w_E)$, weight-scaled deep-zoom arrowheads, and collision-free edge badges at `zoom >= 6` (`×m` for multiplicity, `+c` for contracted chain modules, or `×m +c` when both are non-trivial).
-
----
-
-### 5.5 Compact Offline Payload (`LDAG` v3 in `full_dag_data.js`)
-
-Because browser `fetch()` requests to local files fail under `file://` CORS restrictions, the pipeline embeds the gzipped binary container as a Base64-encoded global assignment (`window.__FULL_DAG_GZ_B64__`) in `full_dag_data.js` and decompresses it client-side using `DecompressionStream("gzip")`.
-
-Inside the decompressed 4-byte-aligned little-endian `LDAG` v3 container (`19,365,504` raw bytes / `9,305,882` B gzipped / `12,407,877` B JS payload):
-- **Header JSON:** Bounds, layer metrics, and discovered domain palette for the base `full` graph, `collapsed`, `full_hasse`, `existing_hasse`, and all four `simplified` views.
-- **Full & Existing-Theory Sections (`v1` + `v2`):** `layerOffsets`, `nodeX`, `nodeGroup`, `nodeInDeg`/`nodeOutDeg`, `nodeDirId`, string tables (`dir_blob`, `name_blob`), delta-varint CSR `edge_buf` (`1,809,565` B), collapsed supernode metadata (`c_super_edges_buf` = `159,866` B), and `54` canonical dead-edge pairs.
-- **Hasse Bitmasks (`v3`):** `full_hasse_mask` (`94,158` B) and `existing_hasse_mask` (`74,125` B) bit-packed in exact base CSR edge order; decoded lazily into filtered edge VBOs without duplicating node buffers.
-- **4 Simplified View Sections (`v3`):** For each of `full_simp`, `full_hasse_simp`, `existing_simp`, and `existing_hasse_simp`: `layerOffsets`, `nodeX`, `nodeFullId`, sparse `16`-byte `<IIHHi` weighted-anchor records (`node_id, weight, abs_leaves, abs_chains, rep_full_id`), and 1-bit-flagged LEB128 CSR edge streams (`4,719,947` B total across all 4 views, storing only a `(delta << 1) | has_weights` code for unit edges and appending `(mult, chain)` varints only when `mult != 1` or `chain != 0`).
-
----
-
-## 6. Viewer Legend and Visual Encoding
-
-The interactive viewer ([full_dag.html](full_dag.html)) displays a compact, collapsible legend in the bottom-left corner so colors, node sizes, edge gradients, and optional supernodes can be read directly on the canvas:
-
-- **Dynamic Corner Legend:** On load, the legend is populated directly from `header.groups` inside `full_dag_data.js` (sorted by descending module count with zero hardcoded directory names or colors). Each row pairs a circular swatch with a top-level directory (`top_dir`) and its module count. Clicking the **Legend** header collapses or expands the panel, and the 2D label renderer reserves the legend's live screen rectangle (`reserveUiRects`) so node labels never overlap it.
-- **Node Color Palette (`top_dir`):** Every Lean module node is colored by its top-level directory under `lean/src/`, assigned deterministically in descending order of module count (tie-broken alphabetically) from `BASE_PALETTE` in [build_full_dag.py](build_full_dag.py) and recorded in [layout_summary.json](layout_summary.json):
-
-| Top-Level Directory | Modules | Hex | Color |
-| :--- | ---: | :--- | :--- |
-| `Development` | 141,928 | `#2563eb` | Blue |
-| `Formalism` | 18,254 | `#ea580c` | Orange |
-| `GroundTheory` | 8,507 | `#ca8a04` | Gold / Amber |
-| `ReciprocityTheory` | 3,845 | `#0d9488` | Teal |
-| `CompanionTheory` | 2,027 | `#059669` | Emerald green |
-| `PositivityTheory` | 449 | `#c026d3` | Fuchsia / Magenta |
-| `Lemmata` | 167 | `#7c3aed` | Violet / Purple |
-| `BuildAid` | 5 | `#64748b` | Slate gray |
-| `Supplements` | 3 | `#4f46e5` | Indigo |
-| `(root)` (`Main`, `Statements`) | 2 | `#111827` | Charcoal / Near-black |
-
-- **Future Refactor Fallback:** If a future refactor adds more than 10 top-level directories, `group_color()` in [build_full_dag.py](build_full_dag.py) assigns deterministic golden-angle HSL colors (`hue = ((idx - 10) * 0.618033988749895) % 1`, saturation `0.72`, lightness `0.42`) for indices `idx >= 10`.
-- **Edges:** Import links linearly interpolate RGB color from the importer node (`A`) to the dependency node (`B`), with zoom-adaptive opacity and deep-zoom directional arrowheads pointing toward dependencies.
-- **Node Size & Zoomed Rim:** Disc diameter grows gently with in-degree (and root modules with `in_degree = 0` are emphasized) and `sqrt(zoom)`. When zoomed in (disc diameter above ~5.5 CSS px), each disc gains a subtly darkened border rim (`col * 0.55`) to keep adjacent nodes distinct.
-- **Top-Right Toggle Bar & Hotkeys:**
-  - **Collapse existing theory (`C`):** Replaces peer-reviewed proof subtrees with **83 Literature Supernodes** (`◆` diamond axiom sinks).
-  - **Hide redundant imports (`H`):** Displays the exact Hasse diagram (transitive reduction), removing shortcut edges implied by longer paths. When *Collapse chains & leaves* is off, edges toggle **in place** without altering camera pan/zoom.
-  - **Collapse chains & leaves (`L`):** Folds private simple leaves upward into weighted anchor nodes (`Anchor [w]`, ringed discs) and contracts `(1,1)` pass-through chains onto weighted dependency edges.
-- **Collapsed Legend Keys:** When active, the legend dynamically displays `◆ Collapsed existing theory`, a ringed-circle key for `Weighted node [w] (absorbed leaves)`, and a thickened bar for `Weighted edge (×mult / +chain)`.
-- **Node & Edge Visual Scaling:** Disc diameter grows with in-degree and absorbed node weight; contracted edges scale in WebGL opacity, 2D line width ($\log_2 w_E$), arrowhead size, and deep-zoom `×m` / `+c` / `×m +c` badges.
-
----
-
-## 7. Current Graph & Layout Summary
-
-### 8-View Summary Matrix
-
-| View (`Existing`, `Hasse`, `Chains/Leaves`) | Nodes | Edges | Layers | Layer Spacing | Avg $\Delta y$ | Avg $\lvert\Delta x\rvert$ | Weighted Anchors ($w > 1$) | Weighted Edges ($w_E \ge 2$) | Module Conservation ($\sum w_V + \sum \text{chain}_E$) |
-| :--- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| **Full DAG** (`F, F, F`) | 175,187 | 753,261 | 203 | 9.3166 | 17.288 | 121.839 | — | — | `175,187 + 0 = 175,187` |
-| **Full + Hide redundant imports** (`F, T, F`) | 175,187 | 386,211 | 203 | 9.3166 | *(in-place)* | *(in-place)* | — | — | `175,187 + 0 = 175,187` |
-| **Existing Theory** (`T, F, F`) | 135,536 | 593,000 | 177 | 8.9466 | 16.342 | 96.408 | 83 supernodes | 711 | `175,187 + 0 = 175,187` |
-| **Existing + Hide redundant imports** (`T, T, F`) | 135,536 | 305,256 | 177 | 8.9466 | *(in-place)* | *(in-place)* | 83 supernodes | *(in-place)* | `175,187 + 0 = 175,187` |
-| **Full + Chains & Leaves** (`F, F, T`) | 148,009 | 712,764 | 202 | 6.3202 | 17.803 | 111.004 | 2,609 (`max w=25`) | 9,680 (`max w=152`) | `152,920 + 22,267 = 175,187` |
-| **Full + Hasse + Chains & Leaves** (`F, T, T`) | 104,622 | 307,224 | 151 | 6.2397 | 9.430 | 80.710 | 2,449 (`max w=28`) | 42,592 (`max w=154`) | `109,360 + 65,827 = 175,187` |
-| **Existing + Chains & Leaves** (`T, F, T`) | 115,374 | 563,733 | 177 | 6.1701 | 16.835 | 88.081 | 2,125 + 83 super | 8,336 (`max w=112`) | `158,897 + 16,290 = 175,187` |
-| **Existing + Hasse + Chains & Leaves** (`T, T, T`) | 83,150 | 247,282 | 151 | 5.2306 | 9.058 | 68.454 | 1,995 + 83 super | 32,629 (`max w=95`) | `126,554 + 48,633 = 175,187` |
-
-### Top Weighted Anchor Nodes & Contracted Edges (`full_hasse_simp`)
-
-| Top Weighted Anchor Node (`Anchor [w]`) | Weight $w$ | Breakdown (`leaves` / `chains`) | Primary Absorbed Leaf |
-| :--- | ---: | :---: | :--- |
-| `UnitTraceSumBounds/Imports` | 28 | 19 / 8 | `CBFiLower` |
-| `DivisorProofs/FirstDeRhamHomologyProjectiveOverTensorIntegers` | 25 | 24 / 0 | `AnnihilatorLiftOfMulEqP` |
-| `ArchimedeanOrbitMeasures/CayDensEx` | 25 | 12 / 12 | `Imports` |
-| `DivisorProofs/EtaleLocalVanishingCohomology` | 24 | 23 / 0 | `EtaleUniquePrimeLeMapMaximal` |
-| `DivisorProofs/ExistsStrictHenselisation` | 24 | 23 / 0 | `ExistsNumDen` |
-
-| Top Contracted Edge (`src → dst`) | Combined Weight $w_E$ | Multiplicity (`×mult`) | Contracted Chain (`+chain`) |
-| :--- | ---: | ---: | ---: |
-| `IsolateSpecHolds → IsolateSpec` | 154 | ×76 | +78 |
-| `AbelianHodgeDeRham → H1CommutesBaseChange` | 126 | ×38 | +88 |
-| `RsOf → UnramifiedEulerProductIntegral` | 95 | ×31 | +64 |
-| `RsPoleOfInputs → ColumnConjugationMeasure` | 90 | ×44 | +46 |
-| `HasRepresentingSchemePinchedBase → UnitsPatch` | 74 | ×23 | +51 |
-
-### Full DAG Summary
-
-| Metric | Value |
-| :--- | ---: |
-| Total Lean Modules (Nodes) | 175,187 |
-| Total Internal Import Edges | 753,261 |
-| Acyclic DAG Verified (`is_dag`) | `true` |
-| Topological Layers | 203 (`layer 0`..`202`) |
-| Layer Width (min / median / p95 / max) | 1 / 712 / 2,042 / 3,480 |
-| Vertical Layer Spacing (`layer_dy`) | 9.3166 |
-| Mean Vertical Span ($\Delta y$ before $\to$ after) | 18.926 $\to$ 17.288 |
-| Mean Horizontal Span ($\lvert\Delta x\rvert$ before $\to$ after) | 363.320 $\to$ 121.839 |
-| Adjacent-Layer Edges ($\Delta y = 1$) | 190,823 |
-| Short-Span Edges ($\Delta y \le 5$) | 352,622 |
-| World Aspect Ratio | 1.85 : 1 |
-| `LDAG` v3 Payload (`full_dag_data.js`) | 12,407,877 bytes (`9,305,882` B gzipped / `19,365,504` B raw) |
-
-### Collapsed DAG Summary ("Collapse Existing Theory")
-
-| Metric | Value |
-| :--- | ---: |
-| Collapsed View Nodes (`active + supernodes`) | 135,536 (`135,453` active + `83` literature supernodes) |
-| Collapsed Modules Total (`frontier + interior`) | 39,734 (`22.68%` of codebase: `420` frontier + `39,314` interior) |
-| Collapsed View Edges (`active + supernode`) | 593,000 (`586,711` active + `6,289` supernode edges) |
-| Raw Frontier Imports Contracted / Max Weight | 7,125 raw imports / $w_{\max} = 8$ (`711` edges with $w \ge 2$) |
-| Targeted Dead Bridge Imports Pruned (`RHEC`) | 54 |
-| Acyclic DAG Verified (`is_dag`) | `true` |
-| Topological Layers (`c_num_layers`) | 177 (`layer 0`..`176`) |
-| Collapsed Layer Width (min / median / p95 / max) | 1 / 752 / 1,739 / 2,914 |
-| Vertical Layer Spacing (`c_layer_dy`) | 8.9466 |
-| Mean Vertical Span ($\Delta y$ before $\to$ after) | 18.218 $\to$ 16.342 (`148,231` at $\Delta y = 1$) |
-| Mean Horizontal Span ($\lvert\Delta x\rvert$ before $\to$ after) | 294.990 $\to$ 96.408 |
-| Min Intra-Layer Gap / World Aspect Ratio | 1.0 / 1.85 : 1 |
-
-### Discovered Top-Level Domains & Collapse Breakdown
-
-| Top-Level Directory | Total Modules | Active | Collapsed | Collapsed % | Palette Color | Layer Range (Full min / med / max) | Mean $x$ (Full) |
-| :--- | ---: | ---: | ---: | ---: | :---: | :---: | ---: |
-| `Development` | 141,928 | 104,931 | 36,997 | 26.1% | `#2563eb` | 4 / 151 / 202 | -161.56 |
-| `Formalism` | 18,254 | 18,168 | 86 | 0.5% | `#ea580c` | 98 / 177 / 202 | 603.79 |
-| `GroundTheory` | 8,507 | 6,627 | 1,880 | 22.1% | `#ca8a04` | 34 / 192 / 202 | 1,018.81 |
-| `ReciprocityTheory` | 3,845 | 3,780 | 65 | 1.7% | `#0d9488` | 86 / 189 / 202 | 780.37 |
-| `CompanionTheory` | 2,027 | 1,388 | 639 | 31.5% | `#059669` | 88 / 167 / 202 | -518.52 |
-| `PositivityTheory` | 449 | 384 | 65 | 14.5% | `#c026d3` | 67 / 105 / 202 | 643.54 |
-| `Lemmata` | 167 | 167 | 0 | 0.0% | `#7c3aed` | 141 / 195 / 202 | 651.02 |
-| `BuildAid` | 5 | 3 | 2 | 40.0% | `#64748b` | 143 / 157 / 185 | 171.43 |
-| `Supplements` | 3 | 3 | 0 | 0.0% | `#4f46e5` | 1 / 2 / 3 | 24.93 |
-| `(root)` | 2 | 2 | 0 | 0.0% | `#111827` | 0 / 1 / 1 | 20.19 |
-
-### Top 20 Collapsed Literature Supernodes
-
-| Literature Supernode Title | Owned Collapsed Modules | Full Cone Modules | Frontier Roots | Contracted In-Edges | Raw Imports |
-| :--- | ---: | ---: | ---: | ---: | ---: |
-| BLGGT / Caraiani Strong Local–Global Compatibility | 13,455 | 17,230 | 3 | 7 | 7 |
-| PEL Shimura Toroidal Compactifications & Mumford Degeneration | 7,036 | 8,181 | 9 | 109 | 142 |
-| Abelian de Rham, Crystalline & Gauss–Manin Comparisons | 1,276 | 1,708 | 10 | 31 | 37 |
-| Standard Siegel–Weil & Eisenstein Continuation | 1,131 | 1,685 | 3 | 3 | 5 |
-| Unitary-to-GLₙ Isobaric Base Change | 967 | 984 | 6 | 21 | 25 |
-| Ichino / Kudla–Rallis Convergent Siegel–Weil | 903 | 1,056 | 4 | 6 | 9 |
-| Arithmetic Hilbert–Samuel, Volume & Absolute Siegel | 841 | 879 | 4 | 12 | 18 |
-| SGA 7 Semistable Reduction, Néron Models & Serre–Tate | 814 | 1,016 | 7 | 11 | 17 |
-| Grothendieck–Messing Deformation & Dieudonné Crystals | 794 | 887 | 3 | 267 | 271 |
-| Jacquet–Shalika Rigidity & Bounds | 772 | 836 | 6 | 80 | 84 |
-| Kawamata–Viehweg, Nadel Vanishing & Angehrn–Siu | 771 | 868 | 3 | 2 | 6 |
-| Chern–Weil Theory & Mumford Proportionality | 766 | 836 | 7 | 5 | 10 |
-| Poincaré–Lelong Current Identity | 674 | 696 | 1 | 2 | 2 |
-| Fargues–Tate Exactness & Hodge–Tate Map | 617 | 618 | 2 | 4 | 4 |
-| Bhatt–Scholze Prismatic F-Crystals | 579 | 596 | 3 | 5 | 7 |
-| Berger p-adic Monodromy Theorem | 563 | 582 | 1 | 3 | 3 |
-| Hironaka Resolution of Singularities (Char. 0) | 540 | 545 | 3 | 2 | 6 |
-| Harish-Chandra Discrete Series Classification | 494 | 507 | 13 | 1,179 | 1,325 |
-| Convergent Siegel–Weil Formula (Weil 1965) | 492 | 527 | 3 | 2 | 3 |
-| Global Galois Euler Characteristic & Cohomological Dimension | 471 | 589 | 3 | 82 | 84 |
-
----
-
-## 8. Regenerating After a Lean Refactor
-
-```bash
-# 1. Re-index lean/src into analysis/data/graph.sqlite and rebuild the full DAG payload
-python3 /home/ubuntu/riemann_proof/analysis/full_dag/build_full_dag.py --rebuild-index
-
-# 2. Re-render HTML versions of all Markdown reports (including FULL_DAG.html)
-node /home/ubuntu/riemann_proof/analysis/render_reports.js
-
-# 3. Open the local analysis portal or viewer directly
-python3 -m http.server 8000 --directory /home/ubuntu/riemann_proof/analysis
-```

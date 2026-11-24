@@ -1,0 +1,1453 @@
+{
+  "node_count": 59836,
+  "edge_count": 367774,
+  "num_layers": 94,
+  "layer_dy": 10.7149,
+  "min_intra_layer_gap": 1.0,
+  "bounds": {
+    "xmin": -921.74658203125,
+    "xmax": 921.74658203125,
+    "ymin": 0.0,
+    "ymax": 996.4857
+  },
+  "aspect_ratio": 1.85,
+  "layout_metrics": {
+    "is_dag": true,
+    "y_iters_requested": 25,
+    "y_iters_run": 17,
+    "x_sweeps_run": 16,
+    "init_avg_y_span": 16.34,
+    "final_avg_y_span": 15.095,
+    "span_eq_1_edges": 66253,
+    "span_le_5_edges": 141499,
+    "init_avg_x_span": 255.935,
+    "final_avg_x_span": 95.519,
+    "layer_widths": {
+      "min": 1,
+      "median": 458,
+      "p95": 1652,
+      "max": 1842
+    }
+  },
+  "domains": [
+    {
+      "name": "Development",
+      "color": "#2563eb",
+      "modules": 41263,
+      "min_layer": 1,
+      "median_layer": 65,
+      "max_layer": 93,
+      "mean_x": -268.49
+    },
+    {
+      "name": "Formalism",
+      "color": "#ea580c",
+      "modules": 9901,
+      "min_layer": 29,
+      "median_layer": 75,
+      "max_layer": 93,
+      "mean_x": 164.9
+    },
+    {
+      "name": "GroundTheory",
+      "color": "#ca8a04",
+      "modules": 5217,
+      "min_layer": 32,
+      "median_layer": 87,
+      "max_layer": 93,
+      "mean_x": 484.8
+    },
+    {
+      "name": "ReciprocityTheory",
+      "color": "#0d9488",
+      "modules": 2393,
+      "min_layer": 27,
+      "median_layer": 86,
+      "max_layer": 93,
+      "mean_x": 333.21
+    },
+    {
+      "name": "CompanionTheory",
+      "color": "#059669",
+      "modules": 685,
+      "min_layer": 24,
+      "median_layer": 74,
+      "max_layer": 93,
+      "mean_x": -321.63
+    },
+    {
+      "name": "PositivityTheory",
+      "color": "#c026d3",
+      "modules": 226,
+      "min_layer": 14,
+      "median_layer": 58,
+      "max_layer": 93,
+      "mean_x": 166.96
+    },
+    {
+      "name": "Lemmata",
+      "color": "#7c3aed",
+      "modules": 149,
+      "min_layer": 51,
+      "median_layer": 86,
+      "max_layer": 93,
+      "mean_x": 173.7
+    },
+    {
+      "name": "(root)",
+      "color": "#64748b",
+      "modules": 2,
+      "min_layer": 0,
+      "median_layer": 88,
+      "max_layer": 88,
+      "mean_x": -229.41
+    }
+  ],
+  "roots": [
+    {
+      "module": "Main",
+      "rel_path": "Main.lean",
+      "layer": 0,
+      "in_degree": 0,
+      "out_degree": 3
+    }
+  ],
+  "top_in_degree_hubs": [
+    {
+      "module": "ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens",
+      "rel_path": "ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/BirationalGeometry/ToroidalCompactification/IsCompletedStrictHens.lean",
+      "top_dir": "ReciprocityTheory",
+      "layer": 93,
+      "in_degree": 1138,
+      "out_degree": 0
+    },
+    {
+      "module": "Formalism.LocalToGlobal.IndefiniteReal.LinksDefs",
+      "rel_path": "Formalism/LocalToGlobal/IndefiniteReal/LinksDefs.lean",
+      "top_dir": "Formalism",
+      "layer": 71,
+      "in_degree": 986,
+      "out_degree": 8
+    },
+    {
+      "module": "Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc",
+      "rel_path": "Formalism/SharpRestriction/LevelLetterCocycles/DataNLoc.lean",
+      "top_dir": "Formalism",
+      "layer": 90,
+      "in_degree": 895,
+      "out_degree": 1
+    },
+    {
+      "module": "ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst",
+      "rel_path": "ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/SemiabelianSchemes/CubicalStructures/CubeSymmetricSwapFirst.lean",
+      "top_dir": "ReciprocityTheory",
+      "layer": 93,
+      "in_degree": 813,
+      "out_degree": 0
+    },
+    {
+      "module": "Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels",
+      "rel_path": "Development/AbelianVarietyTheory/BlockTheory/DivisorBase/WeilTensorModels.lean",
+      "top_dir": "Development",
+      "layer": 69,
+      "in_degree": 713,
+      "out_degree": 5
+    },
+    {
+      "module": "Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes",
+      "rel_path": "Formalism/SharpRestriction/GlobalSchurBounds/GeneralLinearActions/GenusMassVolumes.lean",
+      "top_dir": "Formalism",
+      "layer": 92,
+      "in_degree": 611,
+      "out_degree": 1
+    },
+    {
+      "module": "Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction",
+      "rel_path": "Formalism/LocalToGlobal/IndefiniteReal/LocalNewformFunction.lean",
+      "top_dir": "Formalism",
+      "layer": 74,
+      "in_degree": 596,
+      "out_degree": 1
+    },
+    {
+      "module": "Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf",
+      "rel_path": "Formalism/LocalToGlobal/ProjectiveLattices/ErealAddIInf.lean",
+      "top_dir": "Formalism",
+      "layer": 91,
+      "in_degree": 546,
+      "out_degree": 0
+    },
+    {
+      "module": "ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.GlobalSectionsRankAlgClosed",
+      "rel_path": "ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/ExtensionDescent/GlobalSectionsRankAlgClosed.lean",
+      "top_dir": "ReciprocityTheory",
+      "layer": 88,
+      "in_degree": 540,
+      "out_degree": 3
+    },
+    {
+      "module": "ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull",
+      "rel_path": "ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/DiscreteValuationRings/LBPull.lean",
+      "top_dir": "ReciprocityTheory",
+      "layer": 91,
+      "in_degree": 521,
+      "out_degree": 2
+    },
+    {
+      "module": "Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsContinuousPadic",
+      "rel_path": "Development/AbelianVarietyTheory/Proofs/FoundationProofs/ExistsContinuousPadic.lean",
+      "top_dir": "Development",
+      "layer": 86,
+      "in_degree": 500,
+      "out_degree": 3
+    },
+    {
+      "module": "Formalism.SharpRestriction.CuspSpanNormBounds.Point",
+      "rel_path": "Formalism/SharpRestriction/CuspSpanNormBounds/Point.lean",
+      "top_dir": "Formalism",
+      "layer": 93,
+      "in_degree": 484,
+      "out_degree": 0
+    },
+    {
+      "module": "Formalism.LocalRingCardinality.DataTheta",
+      "rel_path": "Formalism/LocalRingCardinality/DataTheta.lean",
+      "top_dir": "Formalism",
+      "layer": 85,
+      "in_degree": 458,
+      "out_degree": 2
+    },
+    {
+      "module": "Formalism.SharpRestriction.LevelLetterCocycles.LocCoh",
+      "rel_path": "Formalism/SharpRestriction/LevelLetterCocycles/LocCoh.lean",
+      "top_dir": "Formalism",
+      "layer": 90,
+      "in_degree": 453,
+      "out_degree": 2
+    },
+    {
+      "module": "ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd",
+      "rel_path": "ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/BirationalGeometry/ToroidalCompactification/CocycleRightZeroThd.lean",
+      "top_dir": "ReciprocityTheory",
+      "layer": 93,
+      "in_degree": 450,
+      "out_degree": 0
+    }
+  ],
+  "collapsed": {
+    "node_count": 53296,
+    "active_node_count": 53222,
+    "supernode_count": 74,
+    "collapsed_module_count": 6614,
+    "collapsed_pct": 11.05,
+    "frontier_module_count": 291,
+    "interior_module_count": 6323,
+    "edge_count": 314259,
+    "active_edge_count": 312884,
+    "super_edge_count": 1375,
+    "raw_super_edge_count": 1649,
+    "max_edge_weight": 7,
+    "weighted_edges_ge_2": 175,
+    "weight_histogram": {
+      "1": 314084,
+      "2": 113,
+      "3": 38,
+      "4": 15,
+      "5": 7,
+      "7": 2
+    },
+    "num_layers": 84,
+    "layer_dy": 11.4842,
+    "min_intra_layer_gap": 1.0,
+    "bounds": {
+      "xmin": -881.699462890625,
+      "xmax": 881.699462890625,
+      "ymin": 0.0,
+      "ymax": 953.1886
+    },
+    "aspect_ratio": 1.85,
+    "dead_edges_pruned": 0,
+    "layout_metrics": {
+      "is_dag": true,
+      "y_iters_requested": 25,
+      "y_iters_run": 14,
+      "x_sweeps_run": 16,
+      "init_avg_y_span": 14.769,
+      "final_avg_y_span": 13.551,
+      "span_eq_1_edges": 58824,
+      "span_le_5_edges": 125721,
+      "init_avg_x_span": 234.869,
+      "final_avg_x_span": 88.123,
+      "layer_widths": {
+        "min": 1,
+        "median": 739,
+        "p95": 1504,
+        "max": 1761
+      }
+    },
+    "domain_breakdown": [
+      {
+        "name": "Development",
+        "total_modules": 41263,
+        "active_modules": 35988,
+        "collapsed_modules": 5275,
+        "collapsed_pct": 12.8
+      },
+      {
+        "name": "Formalism",
+        "total_modules": 9901,
+        "active_modules": 9813,
+        "collapsed_modules": 88,
+        "collapsed_pct": 0.9
+      },
+      {
+        "name": "GroundTheory",
+        "total_modules": 5217,
+        "active_modules": 4211,
+        "collapsed_modules": 1006,
+        "collapsed_pct": 19.3
+      },
+      {
+        "name": "ReciprocityTheory",
+        "total_modules": 2393,
+        "active_modules": 2337,
+        "collapsed_modules": 56,
+        "collapsed_pct": 2.3
+      },
+      {
+        "name": "CompanionTheory",
+        "total_modules": 685,
+        "active_modules": 525,
+        "collapsed_modules": 160,
+        "collapsed_pct": 23.4
+      },
+      {
+        "name": "PositivityTheory",
+        "total_modules": 226,
+        "active_modules": 197,
+        "collapsed_modules": 29,
+        "collapsed_pct": 12.8
+      },
+      {
+        "name": "Lemmata",
+        "total_modules": 149,
+        "active_modules": 149,
+        "collapsed_modules": 0,
+        "collapsed_pct": 0.0
+      },
+      {
+        "name": "(root)",
+        "total_modules": 2,
+        "active_modules": 2,
+        "collapsed_modules": 0,
+        "collapsed_pct": 0.0
+      }
+    ],
+    "top_supernodes": [
+      {
+        "title": "PEL Shimura Toroidal Compactifications & Mumford Degeneration",
+        "inventory_key": "lit_059",
+        "owned_modules": 1343,
+        "cone_modules": 1398,
+        "frontier_modules": 2,
+        "in_edges": 10,
+        "raw_in_edges": 11,
+        "dominant_domain": "Development",
+        "layer": 63
+      },
+      {
+        "title": "Ichino / Kudla\u2013Rallis Convergent Siegel\u2013Weil",
+        "inventory_key": "lit_044",
+        "owned_modules": 882,
+        "cone_modules": 899,
+        "frontier_modules": 4,
+        "in_edges": 3,
+        "raw_in_edges": 5,
+        "dominant_domain": "Development",
+        "layer": 30
+      },
+      {
+        "title": "Poincar\u00e9\u2013Lelong Current Identity",
+        "inventory_key": "lit_067",
+        "owned_modules": 547,
+        "cone_modules": 547,
+        "frontier_modules": 1,
+        "in_edges": 1,
+        "raw_in_edges": 1,
+        "dominant_domain": "GroundTheory",
+        "layer": 4
+      },
+      {
+        "title": "BLGGT / Caraiani Strong Local\u2013Global Compatibility",
+        "inventory_key": "lit_083",
+        "owned_modules": 405,
+        "cone_modules": 501,
+        "frontier_modules": 3,
+        "in_edges": 8,
+        "raw_in_edges": 9,
+        "dominant_domain": "Development",
+        "layer": 41
+      },
+      {
+        "title": "Moriwaki Arithmetic Bigness & Hilbert\u2013Samuel",
+        "inventory_key": "lit_087",
+        "owned_modules": 298,
+        "cone_modules": 298,
+        "frontier_modules": 1,
+        "in_edges": 1,
+        "raw_in_edges": 1,
+        "dominant_domain": "GroundTheory",
+        "layer": 4
+      },
+      {
+        "title": "Unitary-to-GL\u2099 Isobaric Base Change",
+        "inventory_key": "lit_085",
+        "owned_modules": 281,
+        "cone_modules": 294,
+        "frontier_modules": 5,
+        "in_edges": 14,
+        "raw_in_edges": 14,
+        "dominant_domain": "Development",
+        "layer": 83
+      },
+      {
+        "title": "Abelian de Rham, Crystalline & Gauss\u2013Manin Comparisons",
+        "inventory_key": "lit_056",
+        "owned_modules": 226,
+        "cone_modules": 239,
+        "frontier_modules": 14,
+        "in_edges": 47,
+        "raw_in_edges": 65,
+        "dominant_domain": "Development",
+        "layer": 68
+      },
+      {
+        "title": "Chern\u2013Weil Theory & Mumford Proportionality",
+        "inventory_key": "lit_066",
+        "owned_modules": 195,
+        "cone_modules": 221,
+        "frontier_modules": 2,
+        "in_edges": 13,
+        "raw_in_edges": 13,
+        "dominant_domain": "Development",
+        "layer": 16
+      },
+      {
+        "title": "Finiteness of Twisted \u00c9tale Cohomology",
+        "inventory_key": "lit_089",
+        "owned_modules": 161,
+        "cone_modules": 161,
+        "frontier_modules": 2,
+        "in_edges": 2,
+        "raw_in_edges": 2,
+        "dominant_domain": "Development",
+        "layer": 78
+      },
+      {
+        "title": "Global Galois Euler Characteristic & Cohomological Dimension",
+        "inventory_key": "lit_071",
+        "owned_modules": 158,
+        "cone_modules": 209,
+        "frontier_modules": 3,
+        "in_edges": 10,
+        "raw_in_edges": 12,
+        "dominant_domain": "GroundTheory",
+        "layer": 73
+      },
+      {
+        "title": "Kawamata\u2013Viehweg, Nadel Vanishing & Angehrn\u2013Siu",
+        "inventory_key": "lit_064",
+        "owned_modules": 154,
+        "cone_modules": 179,
+        "frontier_modules": 3,
+        "in_edges": 1,
+        "raw_in_edges": 3,
+        "dominant_domain": "Development",
+        "layer": 4
+      },
+      {
+        "title": "Harish-Chandra Discrete Series Classification",
+        "inventory_key": "lit_033",
+        "owned_modules": 133,
+        "cone_modules": 153,
+        "frontier_modules": 12,
+        "in_edges": 67,
+        "raw_in_edges": 83,
+        "dominant_domain": "CompanionTheory",
+        "layer": 56
+      },
+      {
+        "title": "Bhatt\u2013Scholze Prismatic F-Crystals",
+        "inventory_key": "lit_050",
+        "owned_modules": 130,
+        "cone_modules": 143,
+        "frontier_modules": 2,
+        "in_edges": 3,
+        "raw_in_edges": 4,
+        "dominant_domain": "Development",
+        "layer": 61
+      },
+      {
+        "title": "Arithmetic Hilbert\u2013Samuel, Volume & Absolute Siegel",
+        "inventory_key": "lit_069",
+        "owned_modules": 118,
+        "cone_modules": 199,
+        "frontier_modules": 2,
+        "in_edges": 4,
+        "raw_in_edges": 4,
+        "dominant_domain": "Development",
+        "layer": 27
+      },
+      {
+        "title": "Fargues\u2013Tate Exactness & Hodge\u2013Tate Map",
+        "inventory_key": "lit_051",
+        "owned_modules": 112,
+        "cone_modules": 112,
+        "frontier_modules": 1,
+        "in_edges": 1,
+        "raw_in_edges": 1,
+        "dominant_domain": "Development",
+        "layer": 4
+      },
+      {
+        "title": "Gillet\u2013Soul\u00e9 Arithmetic Intersection & Chow Heights",
+        "inventory_key": "lit_068",
+        "owned_modules": 102,
+        "cone_modules": 129,
+        "frontier_modules": 5,
+        "in_edges": 14,
+        "raw_in_edges": 18,
+        "dominant_domain": "Development",
+        "layer": 57
+      },
+      {
+        "title": "Bernstein\u2013Zelevinsky Smooth GL\u2099(k) Theory",
+        "inventory_key": "lit_025",
+        "owned_modules": 101,
+        "cone_modules": 139,
+        "frontier_modules": 22,
+        "in_edges": 65,
+        "raw_in_edges": 96,
+        "dominant_domain": "Development",
+        "layer": 77
+      },
+      {
+        "title": "Zelevinsky\u2013Langlands Segment Classification",
+        "inventory_key": "lit_026",
+        "owned_modules": 97,
+        "cone_modules": 122,
+        "frontier_modules": 10,
+        "in_edges": 22,
+        "raw_in_edges": 31,
+        "dominant_domain": "Development",
+        "layer": 64
+      },
+      {
+        "title": "Grothendieck\u2013Messing Deformation & Dieudonn\u00e9 Crystals",
+        "inventory_key": "lit_057",
+        "owned_modules": 94,
+        "cone_modules": 101,
+        "frontier_modules": 6,
+        "in_edges": 41,
+        "raw_in_edges": 56,
+        "dominant_domain": "Development",
+        "layer": 68
+      },
+      {
+        "title": "Jacquet\u2013Shalika Rigidity & Bounds",
+        "inventory_key": "lit_010",
+        "owned_modules": 87,
+        "cone_modules": 93,
+        "frontier_modules": 5,
+        "in_edges": 71,
+        "raw_in_edges": 77,
+        "dominant_domain": "Development",
+        "layer": 83
+      },
+      {
+        "title": "SGA 7 Semistable Reduction, N\u00e9ron Models & Serre\u2013Tate",
+        "inventory_key": "lit_058",
+        "owned_modules": 81,
+        "cone_modules": 83,
+        "frontier_modules": 5,
+        "in_edges": 9,
+        "raw_in_edges": 11,
+        "dominant_domain": "Development",
+        "layer": 71
+      },
+      {
+        "title": "Berger p-adic Monodromy Theorem",
+        "inventory_key": "lit_049",
+        "owned_modules": 78,
+        "cone_modules": 84,
+        "frontier_modules": 1,
+        "in_edges": 4,
+        "raw_in_edges": 4,
+        "dominant_domain": "Development",
+        "layer": 40
+      },
+      {
+        "title": "Harish-Chandra Automorphic Finiteness",
+        "inventory_key": "lit_005",
+        "owned_modules": 62,
+        "cone_modules": 71,
+        "frontier_modules": 4,
+        "in_edges": 23,
+        "raw_in_edges": 23,
+        "dominant_domain": "Development",
+        "layer": 53
+      },
+      {
+        "title": "Poitou\u2013Tate Nine-Term Duality",
+        "inventory_key": "lit_070",
+        "owned_modules": 62,
+        "cone_modules": 156,
+        "frontier_modules": 3,
+        "in_edges": 21,
+        "raw_in_edges": 23,
+        "dominant_domain": "GroundTheory",
+        "layer": 77
+      },
+      {
+        "title": "Weight-1 Hilbert Eisenstein Series",
+        "inventory_key": "lit_017",
+        "owned_modules": 55,
+        "cone_modules": 55,
+        "frontier_modules": 2,
+        "in_edges": 1,
+        "raw_in_edges": 2,
+        "dominant_domain": "PositivityTheory",
+        "layer": 30
+      },
+      {
+        "title": "Rapid Decay of Cusp Forms & Siegel Sets",
+        "inventory_key": "lit_007",
+        "owned_modules": 37,
+        "cone_modules": 38,
+        "frontier_modules": 11,
+        "in_edges": 57,
+        "raw_in_edges": 62,
+        "dominant_domain": "Development",
+        "layer": 63
+      },
+      {
+        "title": "Local & Global Tate Duality, Euler Char & Greenberg\u2013Wiles",
+        "inventory_key": "lit_086",
+        "owned_modules": 37,
+        "cone_modules": 47,
+        "frontier_modules": 8,
+        "in_edges": 5,
+        "raw_in_edges": 15,
+        "dominant_domain": "GroundTheory",
+        "layer": 59
+      },
+      {
+        "title": "p-adic Howe Duality, M\u00ednguez & Kudla Splitting",
+        "inventory_key": "lit_031",
+        "owned_modules": 35,
+        "cone_modules": 35,
+        "frontier_modules": 3,
+        "in_edges": 6,
+        "raw_in_edges": 7,
+        "dominant_domain": "Development",
+        "layer": 37
+      },
+      {
+        "title": "Real Howe Duality & Metaplectic Representation",
+        "inventory_key": "lit_040",
+        "owned_modules": 32,
+        "cone_modules": 34,
+        "frontier_modules": 5,
+        "in_edges": 5,
+        "raw_in_edges": 10,
+        "dominant_domain": "Development",
+        "layer": 83
+      },
+      {
+        "title": "Harish-Chandra (g, K)-Modules & Admissibility",
+        "inventory_key": "lit_032",
+        "owned_modules": 29,
+        "cone_modules": 29,
+        "frontier_modules": 5,
+        "in_edges": 9,
+        "raw_in_edges": 15,
+        "dominant_domain": "Formalism",
+        "layer": 76
+      }
+    ]
+  },
+  "full_hasse": {
+    "edge_count": 170783,
+    "redundant_edge_count": 196991,
+    "bitmask_bytes": 45972
+  },
+  "existing_hasse": {
+    "edge_count": 149879,
+    "redundant_edge_count": 164380,
+    "bitmask_bytes": 39283
+  },
+  "simplified": {
+    "full_simp": {
+      "node_count": 56808,
+      "edge_count": 363081,
+      "num_layers": 94,
+      "layer_dy": 10.1192,
+      "min_intra_layer_gap": 1.0,
+      "bounds": {
+        "xmin": -870.5,
+        "xmax": 870.5,
+        "ymin": 0.0,
+        "ymax": 941.0856
+      },
+      "aspect_ratio": 1.85,
+      "leaves_removed": 667,
+      "chains_removed": 2361,
+      "weighted_node_count": 526,
+      "max_node_weight": 13,
+      "weighted_edge_count": 1542,
+      "chain_edge_count": 1542,
+      "max_edge_weight": 57,
+      "max_edge_mult": 29,
+      "max_edge_chain": 28,
+      "total_node_weight": 57502,
+      "total_edge_chain_weight": 2334,
+      "layout_metrics": {
+        "is_dag": true,
+        "y_iters_requested": 25,
+        "y_iters_run": 12,
+        "x_sweeps_run": 16,
+        "init_avg_y_span": 16.439,
+        "final_avg_y_span": 15.225,
+        "span_eq_1_edges": 64700,
+        "span_le_5_edges": 138346,
+        "init_avg_x_span": 243.151,
+        "final_avg_x_span": 91.813,
+        "layer_widths": {
+          "min": 1,
+          "median": 425,
+          "p95": 1504,
+          "max": 1742
+        }
+      },
+      "top_weighted_nodes": [
+        {
+          "rel_path": "Development/WeilBound/RepresentationTheoryGL/UnitaryDualProof/HermitianForms/LiftStep.lean",
+          "weight": 13,
+          "absorbed_leaves": 12,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Development/WeilBound/RepresentationTheoryGL/UnitaryDualProof/Prelims/DistribHaarCharEqOneOfValuationEqOne.lean"
+        },
+        {
+          "rel_path": "Development/WeilBound/RepresentationTheoryGL/UnitaryDualProof/HermitianForms/Core.lean",
+          "weight": 11,
+          "absorbed_leaves": 10,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Development/WeilBound/RepresentationTheoryGL/UnitaryDualProof/Prelims/ComapMulVecCompactOpen.lean"
+        },
+        {
+          "rel_path": "GroundTheory/HeightsAndTheta/Heights/LocalFiniteness/InjectiveHolomorphicJacobianNeZeroHolds.lean",
+          "weight": 9,
+          "absorbed_leaves": 5,
+          "absorbed_chains": 3,
+          "rep_rel_path": "GroundTheory/HeightsAndTheta/Heights/ComplexAnalyticSets/StGenericFreeness.lean"
+        },
+        {
+          "rel_path": "Development/WeilBound/RepresentationTheoryGL/UnitaryDualProof/HermitianForms/BesselSum.lean",
+          "weight": 8,
+          "absorbed_leaves": 7,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Development/WeilBound/RepresentationTheoryGL/UnitaryDualProof/Prelims/CardCosetRepsEqRelIndex.lean"
+        },
+        {
+          "rel_path": "Formalism/SharpRestriction/GlobalSchurBounds/GlobalRankLatticeProofs/UnitTraceSumBounds/DivisionRationalLattice.lean",
+          "weight": 8,
+          "absorbed_leaves": 4,
+          "absorbed_chains": 3,
+          "rep_rel_path": "Formalism/PeriodIntegrals/FinOrdAd.lean"
+        },
+        {
+          "rel_path": "Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/ThresholdArguments/DenseThresholdCases/TOrdVan.lean",
+          "weight": 7,
+          "absorbed_leaves": 6,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Development/AutomorphicArithmetic/AutomorphicVarieties/TheoremsMuLinked/HidaOrdinaryHecke/AnnFin.lean"
+        },
+        {
+          "rel_path": "Formalism/SharpRestriction/GrowthBounds/TwistedSubstitution/OperatorWeightBoundHolds.lean",
+          "weight": 7,
+          "absorbed_leaves": 3,
+          "absorbed_chains": 3,
+          "rep_rel_path": "Formalism/PeriodIntegrals/FockRBlock.lean"
+        },
+        {
+          "rel_path": "ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/SquareIntegrability/GCauchyHolds.lean",
+          "weight": 7,
+          "absorbed_leaves": 4,
+          "absorbed_chains": 2,
+          "rep_rel_path": "Formalism/FilteredPoleLength/ReducedBasisBounds/TransvectionIsometry.lean"
+        },
+        {
+          "rel_path": "Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/EveryCharacterOfLiteratureOfVWin.lean",
+          "weight": 6,
+          "absorbed_leaves": 1,
+          "absorbed_chains": 4,
+          "rep_rel_path": "CompanionTheory/RealGroups/UnitaryAdmissibility/ArchimedeanUnitaryDual/StSandwich.lean"
+        },
+        {
+          "rel_path": "Development/AutomorphicArithmetic/CommutativeAlgebra/ExistsClopRepOfRankOfLocallyNoetherian.lean",
+          "weight": 6,
+          "absorbed_leaves": 5,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/ComapEqKerIff.lean"
+        }
+      ],
+      "top_weighted_edges": [
+        {
+          "src": "Development/AutomorphicArithmetic/Foundations/GaloisRepresentations/TranscendenceTraces/IsolateSpecHolds.lean",
+          "dst": "Development/AutomorphicArithmetic/Foundations/GaloisRepresentations/TranscendenceTraces/IsolateSpec.lean",
+          "weight": 57,
+          "mult": 29,
+          "chain": 28
+        },
+        {
+          "src": "Development/AutomorphicArithmetic/Foundations/EtaleClopenDescent/ExistsChartLiftOfFiniteCover.lean",
+          "dst": "Development/AutomorphicArithmetic/Foundations/GaloisRepresentations/LocalMaximality/LiftFactorization.lean",
+          "weight": 45,
+          "mult": 23,
+          "chain": 22
+        },
+        {
+          "src": "GroundTheory/HeightsAndTheta/Heights/RemainderTerms/Imports.lean",
+          "dst": "GroundTheory/HeightsAndTheta/Heights/RemainderTerms/StatementsSchur.lean",
+          "weight": 42,
+          "mult": 21,
+          "chain": 21
+        },
+        {
+          "src": "Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/ThresholdArguments/DenseThresholdCases/TTypeEx.lean",
+          "dst": "PositivityTheory/AutomorphicForms/PublishedInputs/NonzeroTypes/NonzeroLeviEigenvectorExists.lean",
+          "weight": 38,
+          "mult": 19,
+          "chain": 19
+        },
+        {
+          "src": "Development/WeilBound/CoreStatements/PublishedTheorems/JacquetShalikaRigidity/RsPoleOfInputs.lean",
+          "dst": "Development/WeilBound/CoreStatements/PublishedTheorems/JacquetShalikaRigidity/ColumnConjugationMeasure.lean",
+          "weight": 35,
+          "mult": 18,
+          "chain": 17
+        },
+        {
+          "src": "Development/AutomorphicArithmetic/CommutativeAlgebra/EtaleCohomology/N81.lean",
+          "dst": "Development/EtaleCohomology/EtaleSheaves/EtaleBaseChangeFractionFieldIndEtaleOverPolynomi.lean",
+          "weight": 35,
+          "mult": 18,
+          "chain": 17
+        },
+        {
+          "src": "GroundTheory/HeightsAndTheta/Heights/RemainderTerms/Imports.lean",
+          "dst": "GroundTheory/HeightsAndTheta/Heights/RemainderTerms/AltCoeff.lean",
+          "weight": 34,
+          "mult": 17,
+          "chain": 17
+        },
+        {
+          "src": "Development/EtaleCohomology/CohomologicalPurity/FinLeafThom.lean",
+          "dst": "Development/EtaleCohomology/CohomologicalPurity/LeafThomCut.lean",
+          "weight": 31,
+          "mult": 15,
+          "chain": 16
+        },
+        {
+          "src": "Development/AutomorphicArithmetic/Foundations/EtaleClopenDescent/ExistsChartLiftOfFiniteCover.lean",
+          "dst": "Development/AutomorphicArithmetic/Foundations/GaloisRepresentations/LocalMaximality/ResidueOfTraceIsFiberSum.lean",
+          "weight": 31,
+          "mult": 16,
+          "chain": 15
+        },
+        {
+          "src": "PositivityTheory/AutomorphicForms/PublishedInputs/JacquetLanglands/TorusKernels/FinalTF.lean",
+          "dst": "PositivityTheory/AutomorphicForms/PublishedInputs/JacquetLanglands/TorusKernels/MultivariableReproducingFormula.lean",
+          "weight": 31,
+          "mult": 16,
+          "chain": 15
+        }
+      ]
+    },
+    "full_hasse_simp": {
+      "node_count": 49704,
+      "edge_count": 159232,
+      "num_layers": 91,
+      "layer_dy": 9.1231,
+      "min_intra_layer_gap": 1.0,
+      "bounds": {
+        "xmin": -759.5,
+        "xmax": 759.5,
+        "ymin": 0.0,
+        "ymax": 821.079
+      },
+      "aspect_ratio": 1.85,
+      "leaves_removed": 1319,
+      "chains_removed": 8813,
+      "weighted_node_count": 884,
+      "max_node_weight": 14,
+      "weighted_edge_count": 6707,
+      "chain_edge_count": 6707,
+      "max_edge_weight": 60,
+      "max_edge_mult": 30,
+      "max_edge_chain": 30,
+      "total_node_weight": 50916,
+      "total_edge_chain_weight": 8920,
+      "layout_metrics": {
+        "is_dag": true,
+        "y_iters_requested": 25,
+        "y_iters_run": 12,
+        "x_sweeps_run": 16,
+        "init_avg_y_span": 9.622,
+        "final_avg_y_span": 8.412,
+        "span_eq_1_edges": 57742,
+        "span_le_5_edges": 92444,
+        "init_avg_x_span": 166.216,
+        "final_avg_x_span": 75.646,
+        "layer_widths": {
+          "min": 1,
+          "median": 450,
+          "p95": 1305,
+          "max": 1520
+        }
+      },
+      "top_weighted_nodes": [
+        {
+          "rel_path": "Development/AbelianVarietyTheory/Proofs/JetHarmonics/ExistsMultiplicativeChartAtSplitPrime.lean",
+          "weight": 14,
+          "absorbed_leaves": 2,
+          "absorbed_chains": 11,
+          "rep_rel_path": "Development/AbelianVarietyTheory/Definitions/Jets/PowerSeriesHasSumAt.lean"
+        },
+        {
+          "rel_path": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/PicDivisibleDedekindFiniteTypeAlgClosed.lean",
+          "weight": 14,
+          "absorbed_leaves": 13,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Development/AbelianVarietyTheory/Proofs/FoundationProofs/NewtonPowerSeriesSurjectiveLinearizationSolution.lean"
+        },
+        {
+          "rel_path": "Development/WeilBound/RepresentationTheoryGL/UnitaryDualProof/HermitianForms/LiftStep.lean",
+          "weight": 13,
+          "absorbed_leaves": 12,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Development/WeilBound/RepresentationTheoryGL/UnitaryDualProof/Prelims/DistribHaarCharEqOneOfValuationEqOne.lean"
+        },
+        {
+          "rel_path": "Development/WeilBound/RepresentationTheoryGL/UnitaryDualProof/HermitianForms/Core.lean",
+          "weight": 13,
+          "absorbed_leaves": 12,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Development/WeilBound/RepresentationTheoryGL/UnitaryDualProof/Prelims/ComapMulVecCompactOpen.lean"
+        },
+        {
+          "rel_path": "GroundTheory/HeightsAndTheta/Heights/LocalFiniteness/InjectiveHolomorphicJacobianNeZeroHolds.lean",
+          "weight": 13,
+          "absorbed_leaves": 12,
+          "absorbed_chains": 0,
+          "rep_rel_path": "GroundTheory/HeightsAndTheta/Heights/ComplexAnalyticSets/StGenericNoetherNormalisation.lean"
+        },
+        {
+          "rel_path": "Formalism/LocalToGlobal/SiegelLatticeTheory/ClosedVolumeStatements/LevelSubgroupProperties.lean",
+          "weight": 9,
+          "absorbed_leaves": 8,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Formalism/PeriodIntegrals/PhConvProj.lean"
+        },
+        {
+          "rel_path": "Development/WeilBound/RepresentationTheoryGL/UnitaryDualProof/HermitianForms/BesselSum.lean",
+          "weight": 8,
+          "absorbed_leaves": 7,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Development/WeilBound/RepresentationTheoryGL/UnitaryDualProof/Prelims/CardCosetRepsEqRelIndex.lean"
+        },
+        {
+          "rel_path": "Formalism/SharpRestriction/GlobalSchurBounds/GlobalRankLatticeProofs/UnitTraceSumBounds/DivisionRationalLattice.lean",
+          "weight": 8,
+          "absorbed_leaves": 7,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Formalism/PeriodIntegrals/FinOrdAd.lean"
+        },
+        {
+          "rel_path": "Development/AutomorphicArithmetic/AutomorphicVarieties/LiteratureResults/KTheoryStability/ReductionBoundsTorsion/AffineSplittingSpan/SAffOf.lean",
+          "weight": 8,
+          "absorbed_leaves": 2,
+          "absorbed_chains": 5,
+          "rep_rel_path": "Development/AutomorphicArithmetic/AutomorphicVarieties/LiteratureResults/KTheoryStability/ReductionBoundsTorsion/AffineSplittingSpan/Transfer.lean"
+        },
+        {
+          "rel_path": "GroundTheory/GlobalFields/ComplexMultiplication/Uniformization.lean",
+          "weight": 8,
+          "absorbed_leaves": 7,
+          "absorbed_chains": 0,
+          "rep_rel_path": "GroundTheory/GlobalFields/ComplexMultiplication/RectangleIntegral.lean"
+        }
+      ],
+      "top_weighted_edges": [
+        {
+          "src": "Development/AutomorphicArithmetic/Foundations/GaloisRepresentations/TranscendenceTraces/IsolateSpecHolds.lean",
+          "dst": "Development/AutomorphicArithmetic/Foundations/GaloisRepresentations/TranscendenceTraces/IsolateSpec.lean",
+          "weight": 60,
+          "mult": 30,
+          "chain": 30
+        },
+        {
+          "src": "Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/ThresholdArguments/DenseThresholdCases/TTypeEx.lean",
+          "dst": "PositivityTheory/AutomorphicForms/PublishedInputs/NonzeroTypes/NonzeroLeviEigenvectorExists.lean",
+          "weight": 48,
+          "mult": 24,
+          "chain": 24
+        },
+        {
+          "src": "Development/WeilBound/CoreStatements/PublishedTheorems/JacquetShalikaRigidity/RsPoleOfInputs.lean",
+          "dst": "Development/WeilBound/CoreStatements/PublishedTheorems/JacquetShalikaRigidity/ColumnConjugationMeasure.lean",
+          "weight": 48,
+          "mult": 24,
+          "chain": 24
+        },
+        {
+          "src": "Development/AutomorphicArithmetic/Foundations/EtaleClopenDescent/ExistsChartLiftOfFiniteCover.lean",
+          "dst": "Development/AutomorphicArithmetic/Foundations/GaloisRepresentations/LocalMaximality/LiftFactorization.lean",
+          "weight": 46,
+          "mult": 23,
+          "chain": 23
+        },
+        {
+          "src": "GroundTheory/HeightsAndTheta/Heights/RemainderTerms/Imports.lean",
+          "dst": "GroundTheory/HeightsAndTheta/Heights/RemainderTerms/StatementsSchur.lean",
+          "weight": 43,
+          "mult": 21,
+          "chain": 22
+        },
+        {
+          "src": "Development/EtaleCohomology/CohomologicalPurity/FinLeafThom.lean",
+          "dst": "Development/EtaleCohomology/CohomologicalPurity/LeafThomCut.lean",
+          "weight": 36,
+          "mult": 14,
+          "chain": 22
+        },
+        {
+          "src": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/UnitarySatakeWeylInvariant.lean",
+          "dst": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/AntiJMulApply.lean",
+          "weight": 36,
+          "mult": 18,
+          "chain": 18
+        },
+        {
+          "src": "Development/AutomorphicArithmetic/Foundations/EtaleClopenDescent/ExistsChartLiftOfFiniteCover.lean",
+          "dst": "Development/AutomorphicArithmetic/Foundations/GaloisRepresentations/LocalMaximality/ResidueOfTraceIsFiberSum.lean",
+          "weight": 34,
+          "mult": 17,
+          "chain": 17
+        },
+        {
+          "src": "GroundTheory/HeightsAndTheta/Heights/RemainderTerms/Imports.lean",
+          "dst": "GroundTheory/HeightsAndTheta/Heights/RemainderTerms/AltCoeff.lean",
+          "weight": 33,
+          "mult": 16,
+          "chain": 17
+        },
+        {
+          "src": "PositivityTheory/AutomorphicForms/PublishedInputs/JacquetLanglands/TorusKernels/FinalTF.lean",
+          "dst": "PositivityTheory/AutomorphicForms/PublishedInputs/JacquetLanglands/TorusKernels/MultivariableReproducingFormula.lean",
+          "weight": 32,
+          "mult": 16,
+          "chain": 16
+        }
+      ]
+    },
+    "existing_simp": {
+      "node_count": 50299,
+      "edge_count": 309708,
+      "num_layers": 84,
+      "layer_dy": 10.8694,
+      "min_intra_layer_gap": 1.0,
+      "bounds": {
+        "xmin": -834.5,
+        "xmax": 834.5,
+        "ymin": 0.0,
+        "ymax": 902.1602
+      },
+      "aspect_ratio": 1.85,
+      "leaves_removed": 681,
+      "chains_removed": 2316,
+      "weighted_node_count": 535,
+      "max_node_weight": 13,
+      "weighted_edge_count": 1724,
+      "chain_edge_count": 1550,
+      "max_edge_weight": 57,
+      "max_edge_mult": 29,
+      "max_edge_chain": 28,
+      "total_node_weight": 57550,
+      "total_edge_chain_weight": 2286,
+      "layout_metrics": {
+        "is_dag": true,
+        "y_iters_requested": 25,
+        "y_iters_run": 12,
+        "x_sweeps_run": 16,
+        "init_avg_y_span": 14.871,
+        "final_avg_y_span": 13.685,
+        "span_eq_1_edges": 57213,
+        "span_le_5_edges": 122414,
+        "init_avg_x_span": 221.771,
+        "final_avg_x_span": 84.522,
+        "layer_widths": {
+          "min": 1,
+          "median": 719,
+          "p95": 1374,
+          "max": 1670
+        }
+      },
+      "top_weighted_nodes": [
+        {
+          "rel_path": "Development/WeilBound/RepresentationTheoryGL/UnitaryDualProof/HermitianForms/LiftStep.lean",
+          "weight": 13,
+          "absorbed_leaves": 12,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Development/WeilBound/RepresentationTheoryGL/UnitaryDualProof/Prelims/DistribHaarCharEqOneOfValuationEqOne.lean"
+        },
+        {
+          "rel_path": "Development/WeilBound/RepresentationTheoryGL/UnitaryDualProof/HermitianForms/Core.lean",
+          "weight": 11,
+          "absorbed_leaves": 10,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Development/WeilBound/RepresentationTheoryGL/UnitaryDualProof/Prelims/ComapMulVecCompactOpen.lean"
+        },
+        {
+          "rel_path": "Formalism/LocalToGlobal/SiegelLatticeTheory/ClosedVolumeStatements/LevelSubgroupProperties.lean",
+          "weight": 9,
+          "absorbed_leaves": 6,
+          "absorbed_chains": 2,
+          "rep_rel_path": "Formalism/PeriodIntegrals/PhConvProj.lean"
+        },
+        {
+          "rel_path": "Development/WeilBound/RepresentationTheoryGL/UnitaryDualProof/HermitianForms/BesselSum.lean",
+          "weight": 8,
+          "absorbed_leaves": 7,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Development/WeilBound/RepresentationTheoryGL/UnitaryDualProof/Prelims/CardCosetRepsEqRelIndex.lean"
+        },
+        {
+          "rel_path": "Formalism/SharpRestriction/GlobalSchurBounds/GlobalRankLatticeProofs/UnitTraceSumBounds/DivisionRationalLattice.lean",
+          "weight": 8,
+          "absorbed_leaves": 4,
+          "absorbed_chains": 3,
+          "rep_rel_path": "Formalism/PeriodIntegrals/FinOrdAd.lean"
+        },
+        {
+          "rel_path": "Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/ThresholdArguments/DenseThresholdCases/TOrdVan.lean",
+          "weight": 7,
+          "absorbed_leaves": 6,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Development/AutomorphicArithmetic/AutomorphicVarieties/TheoremsMuLinked/HidaOrdinaryHecke/AnnFin.lean"
+        },
+        {
+          "rel_path": "Formalism/SharpRestriction/GrowthBounds/TwistedSubstitution/OperatorWeightBoundHolds.lean",
+          "weight": 7,
+          "absorbed_leaves": 3,
+          "absorbed_chains": 3,
+          "rep_rel_path": "Formalism/PeriodIntegrals/FockRBlock.lean"
+        },
+        {
+          "rel_path": "Formalism/SharpRestriction/Divisibility/ChainOperators/GenericFramesLetters.lean",
+          "weight": 7,
+          "absorbed_leaves": 3,
+          "absorbed_chains": 3,
+          "rep_rel_path": "Formalism/PeriodIntegrals/NablaSpans/ExpansionCoeffValuationGe.lean"
+        },
+        {
+          "rel_path": "ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/SquareIntegrability/GCauchyHolds.lean",
+          "weight": 7,
+          "absorbed_leaves": 4,
+          "absorbed_chains": 2,
+          "rep_rel_path": "Formalism/FilteredPoleLength/ReducedBasisBounds/TransvectionIsometry.lean"
+        },
+        {
+          "rel_path": "Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/EveryCharacterOfLiteratureOfVWin.lean",
+          "weight": 6,
+          "absorbed_leaves": 1,
+          "absorbed_chains": 4,
+          "rep_rel_path": "CompanionTheory/RealGroups/UnitaryAdmissibility/ArchimedeanUnitaryDual/StSandwich.lean"
+        }
+      ],
+      "top_weighted_edges": [
+        {
+          "src": "Development/AutomorphicArithmetic/Foundations/GaloisRepresentations/TranscendenceTraces/IsolateSpecHolds.lean",
+          "dst": "Development/AutomorphicArithmetic/Foundations/GaloisRepresentations/TranscendenceTraces/IsolateSpec.lean",
+          "weight": 57,
+          "mult": 29,
+          "chain": 28
+        },
+        {
+          "src": "Development/AutomorphicArithmetic/Foundations/EtaleClopenDescent/ExistsChartLiftOfFiniteCover.lean",
+          "dst": "Development/AutomorphicArithmetic/Foundations/GaloisRepresentations/LocalMaximality/LiftFactorization.lean",
+          "weight": 45,
+          "mult": 23,
+          "chain": 22
+        },
+        {
+          "src": "GroundTheory/HeightsAndTheta/Heights/RemainderTerms/Imports.lean",
+          "dst": "GroundTheory/HeightsAndTheta/Heights/RemainderTerms/StatementsSchur.lean",
+          "weight": 42,
+          "mult": 21,
+          "chain": 21
+        },
+        {
+          "src": "Development/EtaleCohomology/CohomologicalPurity/FinLeafThom.lean",
+          "dst": "Development/EtaleCohomology/CohomologicalPurity/LeafThomCut.lean",
+          "weight": 40,
+          "mult": 19,
+          "chain": 21
+        },
+        {
+          "src": "Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/ThresholdArguments/DenseThresholdCases/TTypeEx.lean",
+          "dst": "PositivityTheory/AutomorphicForms/PublishedInputs/NonzeroTypes/NonzeroLeviEigenvectorExists.lean",
+          "weight": 38,
+          "mult": 19,
+          "chain": 19
+        },
+        {
+          "src": "Development/AutomorphicArithmetic/CommutativeAlgebra/EtaleCohomology/N81.lean",
+          "dst": "Development/EtaleCohomology/EtaleSheaves/EtaleBaseChangeFractionFieldIndEtaleOverPolynomi.lean",
+          "weight": 35,
+          "mult": 18,
+          "chain": 17
+        },
+        {
+          "src": "GroundTheory/HeightsAndTheta/Heights/RemainderTerms/Imports.lean",
+          "dst": "GroundTheory/HeightsAndTheta/Heights/RemainderTerms/AltCoeff.lean",
+          "weight": 34,
+          "mult": 17,
+          "chain": 17
+        },
+        {
+          "src": "Development/AutomorphicArithmetic/Foundations/EtaleClopenDescent/ExistsChartLiftOfFiniteCover.lean",
+          "dst": "Development/AutomorphicArithmetic/Foundations/GaloisRepresentations/LocalMaximality/ResidueOfTraceIsFiberSum.lean",
+          "weight": 31,
+          "mult": 16,
+          "chain": 15
+        },
+        {
+          "src": "PositivityTheory/AutomorphicForms/PublishedInputs/JacquetLanglands/TorusKernels/FinalTF.lean",
+          "dst": "PositivityTheory/AutomorphicForms/PublishedInputs/JacquetLanglands/TorusKernels/MultivariableReproducingFormula.lean",
+          "weight": 31,
+          "mult": 16,
+          "chain": 15
+        },
+        {
+          "src": "Development/AutomorphicArithmetic/CommutativeAlgebra/EtaleCohomology/SpecAbsolutelyIntegrallyClosedCohomology.lean",
+          "dst": "Development/EtaleCohomology/EtaleSheaves/LineHigh.lean",
+          "weight": 26,
+          "mult": 12,
+          "chain": 14
+        }
+      ]
+    },
+    "existing_hasse_simp": {
+      "node_count": 43797,
+      "edge_count": 139112,
+      "num_layers": 80,
+      "layer_dy": 9.882,
+      "min_intra_layer_gap": 1.0,
+      "bounds": {
+        "xmin": -722.1239624023438,
+        "xmax": 722.1239624023438,
+        "ymin": 0.0,
+        "ymax": 780.678
+      },
+      "aspect_ratio": 1.85,
+      "leaves_removed": 1263,
+      "chains_removed": 8236,
+      "weighted_node_count": 846,
+      "max_node_weight": 14,
+      "weighted_edge_count": 6332,
+      "chain_edge_count": 6287,
+      "max_edge_weight": 60,
+      "max_edge_mult": 30,
+      "max_edge_chain": 30,
+      "total_node_weight": 51497,
+      "total_edge_chain_weight": 8339,
+      "layout_metrics": {
+        "is_dag": true,
+        "y_iters_requested": 25,
+        "y_iters_run": 10,
+        "x_sweeps_run": 16,
+        "init_avg_y_span": 9.045,
+        "final_avg_y_span": 7.885,
+        "span_eq_1_edges": 50826,
+        "span_le_5_edges": 81646,
+        "init_avg_x_span": 153.117,
+        "final_avg_x_span": 69.627,
+        "layer_widths": {
+          "min": 1,
+          "median": 641,
+          "p95": 1221,
+          "max": 1444
+        }
+      },
+      "top_weighted_nodes": [
+        {
+          "rel_path": "Development/AbelianVarietyTheory/Proofs/JetHarmonics/ExistsMultiplicativeChartAtSplitPrime.lean",
+          "weight": 14,
+          "absorbed_leaves": 2,
+          "absorbed_chains": 11,
+          "rep_rel_path": "Development/AbelianVarietyTheory/Definitions/Jets/PowerSeriesHasSumAt.lean"
+        },
+        {
+          "rel_path": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/PicDivisibleDedekindFiniteTypeAlgClosed.lean",
+          "weight": 14,
+          "absorbed_leaves": 13,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Development/AbelianVarietyTheory/Proofs/FoundationProofs/NewtonPowerSeriesSurjectiveLinearizationSolution.lean"
+        },
+        {
+          "rel_path": "Development/WeilBound/RepresentationTheoryGL/UnitaryDualProof/HermitianForms/LiftStep.lean",
+          "weight": 13,
+          "absorbed_leaves": 12,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Development/WeilBound/RepresentationTheoryGL/UnitaryDualProof/Prelims/DistribHaarCharEqOneOfValuationEqOne.lean"
+        },
+        {
+          "rel_path": "Development/WeilBound/RepresentationTheoryGL/UnitaryDualProof/HermitianForms/Core.lean",
+          "weight": 13,
+          "absorbed_leaves": 12,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Development/WeilBound/RepresentationTheoryGL/UnitaryDualProof/Prelims/ComapMulVecCompactOpen.lean"
+        },
+        {
+          "rel_path": "Formalism/LocalToGlobal/SiegelLatticeTheory/ClosedVolumeStatements/LevelSubgroupProperties.lean",
+          "weight": 9,
+          "absorbed_leaves": 8,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Formalism/PeriodIntegrals/PhConvProj.lean"
+        },
+        {
+          "rel_path": "Development/WeilBound/RepresentationTheoryGL/UnitaryDualProof/HermitianForms/BesselSum.lean",
+          "weight": 8,
+          "absorbed_leaves": 7,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Development/WeilBound/RepresentationTheoryGL/UnitaryDualProof/Prelims/CardCosetRepsEqRelIndex.lean"
+        },
+        {
+          "rel_path": "Formalism/SharpRestriction/GlobalSchurBounds/GlobalRankLatticeProofs/UnitTraceSumBounds/DivisionRationalLattice.lean",
+          "weight": 8,
+          "absorbed_leaves": 7,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Formalism/PeriodIntegrals/FinOrdAd.lean"
+        },
+        {
+          "rel_path": "Development/AutomorphicArithmetic/AutomorphicVarieties/LiteratureResults/KTheoryStability/ReductionBoundsTorsion/AffineSplittingSpan/SAffOf.lean",
+          "weight": 8,
+          "absorbed_leaves": 2,
+          "absorbed_chains": 5,
+          "rep_rel_path": "Development/AutomorphicArithmetic/AutomorphicVarieties/LiteratureResults/KTheoryStability/ReductionBoundsTorsion/AffineSplittingSpan/Transfer.lean"
+        },
+        {
+          "rel_path": "GroundTheory/GlobalFields/ComplexMultiplication/Uniformization.lean",
+          "weight": 8,
+          "absorbed_leaves": 7,
+          "absorbed_chains": 0,
+          "rep_rel_path": "GroundTheory/GlobalFields/ComplexMultiplication/RectangleIntegral.lean"
+        },
+        {
+          "rel_path": "Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/ThresholdArguments/DenseThresholdCases/TOrdVan.lean",
+          "weight": 7,
+          "absorbed_leaves": 6,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Development/AutomorphicArithmetic/AutomorphicVarieties/TheoremsMuLinked/HidaOrdinaryHecke/AnnFin.lean"
+        }
+      ],
+      "top_weighted_edges": [
+        {
+          "src": "Development/AutomorphicArithmetic/Foundations/GaloisRepresentations/TranscendenceTraces/IsolateSpecHolds.lean",
+          "dst": "Development/AutomorphicArithmetic/Foundations/GaloisRepresentations/TranscendenceTraces/IsolateSpec.lean",
+          "weight": 60,
+          "mult": 30,
+          "chain": 30
+        },
+        {
+          "src": "Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/ThresholdArguments/DenseThresholdCases/TTypeEx.lean",
+          "dst": "PositivityTheory/AutomorphicForms/PublishedInputs/NonzeroTypes/NonzeroLeviEigenvectorExists.lean",
+          "weight": 48,
+          "mult": 24,
+          "chain": 24
+        },
+        {
+          "src": "Development/AutomorphicArithmetic/Foundations/EtaleClopenDescent/ExistsChartLiftOfFiniteCover.lean",
+          "dst": "Development/AutomorphicArithmetic/Foundations/GaloisRepresentations/LocalMaximality/LiftFactorization.lean",
+          "weight": 46,
+          "mult": 23,
+          "chain": 23
+        },
+        {
+          "src": "Development/EtaleCohomology/CohomologicalPurity/FinLeafThom.lean",
+          "dst": "Development/EtaleCohomology/CohomologicalPurity/LeafThomCut.lean",
+          "weight": 44,
+          "mult": 17,
+          "chain": 27
+        },
+        {
+          "src": "GroundTheory/HeightsAndTheta/Heights/RemainderTerms/Imports.lean",
+          "dst": "GroundTheory/HeightsAndTheta/Heights/RemainderTerms/StatementsSchur.lean",
+          "weight": 43,
+          "mult": 21,
+          "chain": 22
+        },
+        {
+          "src": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/UnitarySatakeWeylInvariant.lean",
+          "dst": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/AntiJMulApply.lean",
+          "weight": 36,
+          "mult": 18,
+          "chain": 18
+        },
+        {
+          "src": "Development/AutomorphicArithmetic/Foundations/EtaleClopenDescent/ExistsChartLiftOfFiniteCover.lean",
+          "dst": "Development/AutomorphicArithmetic/Foundations/GaloisRepresentations/LocalMaximality/ResidueOfTraceIsFiberSum.lean",
+          "weight": 34,
+          "mult": 17,
+          "chain": 17
+        },
+        {
+          "src": "GroundTheory/HeightsAndTheta/Heights/RemainderTerms/Imports.lean",
+          "dst": "GroundTheory/HeightsAndTheta/Heights/RemainderTerms/AltCoeff.lean",
+          "weight": 33,
+          "mult": 16,
+          "chain": 17
+        },
+        {
+          "src": "PositivityTheory/AutomorphicForms/PublishedInputs/JacquetLanglands/TorusKernels/FinalTF.lean",
+          "dst": "PositivityTheory/AutomorphicForms/PublishedInputs/JacquetLanglands/TorusKernels/MultivariableReproducingFormula.lean",
+          "weight": 32,
+          "mult": 16,
+          "chain": 16
+        },
+        {
+          "src": "Development/AbelianVarietyTheory/Proofs/InertiaEigenvalues/IntegralConnectionTaylorFormulaTameBreuilKisin.lean",
+          "dst": "Development/AbelianVarietyTheory/Definitions/NonGaloisDescent/IsPotential.lean",
+          "weight": 31,
+          "mult": 14,
+          "chain": 17
+        }
+      ]
+    }
+  },
+  "payload": {
+    "format_version": 3,
+    "raw_binary_bytes": 7591928,
+    "gzip_bytes": 4219851,
+    "js_file_bytes": 5626501,
+    "edge_varint_bytes": 752378,
+    "c_super_edges_bytes": 58363,
+    "full_hasse_mask_bytes": 45972,
+    "existing_hasse_mask_bytes": 39283,
+    "simplified_edge_varint_bytes": 2205438,
+    "name_blob_bytes": 1434823,
+    "dir_blob_bytes": 191266
+  },
+  "elapsed_seconds": 75.45
+}

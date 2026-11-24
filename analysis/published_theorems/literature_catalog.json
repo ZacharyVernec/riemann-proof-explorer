@@ -1,0 +1,756 @@
+{
+  "published_theorems_dirs": [
+    {
+      "dir_prefix": "Development/WeilBound/CoreStatements/PublishedTheorems",
+      "role": "19 topical subfolders containing **proofs, bridges, and `*Lit` specs** for ~19 major results",
+      "traceability": "~19 headline results trace to literature; the remaining intermediate `Prop` definitions (`A0`..`KY`, `S1`..`S9`, `G0`..`G9`, `Ptfs*`) are internal proof-decomposition scaffolding and re-export wrappers, with several cross-domain misnomers from automated refactoring"
+    },
+    {
+      "dir_prefix": "Development/AbelianVarietyTheory/PublishedTheorems",
+      "role": "Master catalog across **21 topical subfolders** defining ~260+ distinct `GlobalTheory.Published.* : Prop` statements (several also proved in-place)",
+      "traceability": "~220+ trace to identifiable published theorems (most with concrete scope/conclusion divergences); the remainder are model/sanity checks, non-vacuity witnesses, or internal helpers"
+    },
+    {
+      "dir_prefix": "Development/AutomorphicSpectrum/PublishedTheorems",
+      "role": "7 subfolders of algebraic/complex geometry, $p$-adic Hodge, Harish-Chandra, Siegel–Weil, and analytic NT `Prop` specs",
+      "traceability": "Headline specs trace to published theorems, alongside model/sanity checks (`ProjLineLimit.lean`, `InvLogIntervalIntegrable.lean`) and helper lemmas"
+    },
+    {
+      "dir_prefix": "Development/AutomorphicArithmetic/AutomorphicVarieties/PublishedTheorems",
+      "role": "`UpperTheory.V.Published.*` `Prop` defs (automorphic, Galois, $K$-theory, Kato, Kisin, Ferrero–Washington)",
+      "traceability": "Headline specs trace to published theorems; 11 `Prop` defs (`SelfTw`, `adSys`, `IsNormChar`, `WeakBC`, `IsFL`, `IsGalRepOfR`, `IsoTwist`, `IsQuadCharOf`, `IsBC`, `Kato.IsSel`, `Kato.IsLat`) are custom helper predicates"
+    },
+    {
+      "dir_prefix": "PositivityTheory/PublishedTheorems",
+      "role": "Commutative algebra specializations (non-local Nakayama and global Krull intersection) plus import barrels",
+      "traceability": "2 theorems match Nakayama / Krull intersection; 2 lemmas (`exists_unit_kills_of_idempotent`, `exists_unit_kills`) are custom formal-thickening glue"
+    },
+    {
+      "dir_prefix": "CompanionTheory/EightfoldTheory/VariationTheory/PublishedTheorems",
+      "role": "Pure import barrel (`ImportsAlt.lean`)",
+      "traceability": "Pure import forwarding"
+    }
+  ],
+  "companion_overview": [
+    {
+      "hub": "`Development/AutomorphicArithmetic/Foundations/GaloisRepresentations/TypeConditions/WeightsConjBis.lean` (`Row0b`)",
+      "subtree": "`.../IntegralStructures/RowSrc.lean` & `WeightOneGeometricRealization/`",
+      "domain": "BLGGT / Caraiani strong local–global compatibility via weight-1 geometric realization"
+    },
+    {
+      "hub": "`Development/AutomorphicArithmetic/Foundations/LocalLanglands/IsRecTOfIsRec.lean` (`RecTExists`)",
+      "subtree": "`.../LocalCentralUnits/RecTExists.lean`",
+      "domain": "Local Langlands correspondence for $\\mathrm{GL}_n$ with depth-zero tame inertia types"
+    },
+    {
+      "hub": "`Development/WeilBound/RepresentationTheoryGL/ArchimedeanBaseChange/.../BaseChangeIsobaricNOf.lean` & `.../BaseChangeIdentities/Narrow.lean`",
+      "subtree": "`.../DefiniteNHolds.lean` & `.../BaseChangeIdentities/`",
+      "domain": "Arthur–Clozel / Labesse unitary-to-$\\mathrm{GL}_n$ isobaric base change"
+    },
+    {
+      "hub": "`ReciprocityTheory/Hypotheses/GalCoh.lean` & `Formalism/GaloisCohomology/LocalTateDualityK.lean`",
+      "subtree": "`GroundTheory/ProfiniteCohomology/`, `CompanionTheory/AutomorphicTheory/PadicCyclotomicFields/`",
+      "domain": "Local & global Tate duality, Euler characteristics, Poitou–Tate, and Greenberg–Wiles"
+    },
+    {
+      "hub": "`ReciprocityTheory/.../ArakelovGeometry/MoriwakiSt.lean` & `.../MoriwakiBigness/.../SmallGeneratedCountUpperOfUse.lean`",
+      "subtree": "`.../MoriwakiBigTheorem/Outright.lean` & `HSChain.lean`",
+      "domain": "Moriwaki arithmetic bigness and arithmetic Hilbert–Samuel volume bounds"
+    },
+    {
+      "hub": "`Development/ResolutionOfSingularities/Statements.lean` & `ReciprocityTheory/.../BlowupProjStatement.lean`",
+      "subtree": "`Development/ResolutionOfSingularities/` & `.../ResolutionCharZero/PlugResK.lean`",
+      "domain": "Hironaka functorial resolution of singularities and principalization in characteristic $0$"
+    },
+    {
+      "hub": "`Development/EtaleCohomology/EtaleSheaves/EtaleChapterEFour.lean`",
+      "subtree": "`Development/EtaleCohomology/` (`H0TwistOverClosedField.lean`)",
+      "domain": "Deligne SGA 4½ finiteness of twisted étale cohomology"
+    },
+    {
+      "hub": "`Development/AutomorphicArithmetic/Foundations/GaloisRepresentations/LefschetzSigmaSums/HodgeTraceFromLefschetzAndGroupSide.lean`",
+      "subtree": "`.../EtaleClopenDescent/LefschetzFixedPointFiniteEtaleCorrespondence.lean`",
+      "domain": "Atiyah–Bott / Woods Hole holomorphic Lefschetz fixed-point formula"
+    },
+    {
+      "hub": "`Development/WeilBound/ThetaLifts/LatticeBasics/Hypotheses{S,E}.lean` & `.../Definitions/NonGaloisDescent/GaloisSideTwistedSelmerAuxiliaryPrimes.lean`",
+      "subtree": "`.../SiegelWeilStd.lean`, `.../SiegelMultOf.lean`, `.../Cheb` proofs",
+      "domain": "Standard Siegel–Weil, Eisenstein meromorphic continuation, and qualitative Chebotarev primes"
+    }
+  ],
+  "cross_cutting": [
+    "1. **Bespoke global CM host restrictions (`D7`, `Host E`, `HSp D`):** Dozens of Siegel–Weil, toroidal-compactification, trace-formula, and automorphic-form specs are **not** stated for general number fields or even arbitrary CM fields. `Host E` forces $E$ to contain $\\sqrt{-d}$ for a prime $d \\equiv 7 \\pmod{16}$ with $E/E^+$ unramified everywhere, uniform archimedean signature $(p, q)$, and a unimodular alternating lattice; `D : D7` forces $E$ to be a specific Galois abelian CM field inside $\\mathbb{Q}(\\zeta_{Q_S q d})$, everywhere unramified over $E^+$, with `V : HSp D` requiring a globally unimodular self-dual $\\mathcal{O}_E$-lattice.",
+    "2. **Pervasive domain/characteristic/prime restrictions:** Global $\\mathrm{GL}_n$ automorphic theorems are mostly restricted to `[IsTotallyComplex E]` (or split into totally complex vs. totally real); $p$-adic $\\mathrm{GL}_n$ and LLC theorems are restricted to `[CharZero k]` / completions of number fields; Green and depth-zero inertia theorems are restricted to prime fields $\\mathbb{F}_g$ / $\\mathbb{Q}_g$; several geometric/Shimura statements are restricted to characteristic $0$ or affine bases.",
+    "3. **Weakened conclusions and omitted equivalences:** Many categorical equivalences (prismatic Dieudonné, Bhatt–Scholze, Fontaine, Mumford degeneration, Casselman–Wallach, GAGA, Honda–Tate, Zarhin) are weakened to one-sided existence, drop essential surjectivity/full faithfulness/uniqueness/canonicality, or drop functoriality (e.g., `KLocalisation` and `KDwyerFriedlander` assert bare existence of *some* homomorphisms; `PoitouTate*` uses existential connecting maps; `NadelVanishingPair` omits identifying the ideal sheaf as $\\mathcal{J}(X, \\Delta)$).",
+    "4. **Rare strengthenings or missing axioms relative to literature:** A few specs are *stronger* than the cited source (e.g., `ShinGaloisRep` includes full monodromy compatibility away from $\\ell$ without Caraiani's extra hypotheses; `CasselmanWallach` omits admissibility/finite-length on the Fréchet target `E`; `TaylorYoshidaSquareIntegrable` drops the imaginary quadratic subfield hypothesis), while `LocalConstantsExist` / `DeligneLocalConstants` **omit the monodromy-$N$ axiom** of Deligne (1973) §8.12 completely."
+  ],
+  "sections": [
+    {
+      "num": 1,
+      "title": "Automorphic Forms, Functoriality, Trace Formula & Spectral Theory",
+      "intro": "",
+      "rows": [
+        {
+          "col1": "`CyclicBaseChange` (`Development/AutomorphicArithmetic/AutomorphicVarieties/PublishedTheorems/CuspSemisimpleReal.lean#L47-L60`), `CyclicBaseChangeC`, `QuadInduction` (`.../CyclicBaseChangeC.lean#L66-L87`), `QuadBaseChange` (`.../GelfandKazhdanReal.lean#L144-L147`), `ArthurClozel` (`Development/AbelianVarietyTheory/PublishedTheorems/PublishedFoundations/ArthurClozel.lean#L12-L37`), `ArthurClozelLocalSC` (`.../GaloisCohomology₂/ArthurClozelLocalSC.lean#L13`), `ArthurClozelStrongSupp` (`.../GaloisCohomology₂/ArthurClozelStrongSupp.lean#L13`), `ArthurClozelStrongTC` (`.../GaloisGeometry₂/ArthurClozelStrongTC.lean#L13-L16`)",
+          "col2": "**Arthur–Clozel Cyclic & Quadratic Base Change** — Arthur–Clozel (1989), *Simple Algebras, Base Change, and the Advanced Theory of the Trace Formula*, Ann. Math. Stud. 120, Ch. 1 §6 & Ch. 3 Thms. 4.2, 5.1, 6.2",
+          "col3": "Global versions restrict fields to totally real or totally complex (excluding mixed signatures) and prime degree (or degree 2 for `Quad*`); lifts are **weak** (cofinitely many unramified Satake parameters + $\\infty$ infinitesimal character; `QuadBaseChange`/`ArthurClozel`/`ArthurClozelStrongTC` add split finite places), omitting strong ramified/inert local matching and non-cuspidal isobaric decompositions. `ArthurClozelLocalSC` restricts to supercuspidals over completions of number fields; `ArthurClozelStrongSupp` matches cuspidal supports only (no monodromy/segments)."
+        },
+        {
+          "col1": "`DescentUnitary` (`.../CuspSemisimpleReal.lean#L16-L27`), `BaseChangeDefiniteUnitary` (`.../GaloisCohomology₂/BaseChangeDefiniteUnitary.lean#L235-L241`), `BaseChangeIsobaric` (`.../GaloisCohomology₂/BaseChangeIsobaric.lean#L40-L48`), `BaseChangeDefiniteHyp` (`.../GaloisCohomology₂/BaseChangeDefiniteHyp.lean#L44-L51`)",
+          "col2": "**Labesse CM Unitary Base Change & Descent** — Labesse (2011), *Changement de base CM et séries discrètes*, Cor. 5.3 / Thm. 5.4; Shin (2011); Mok (2015); KMSW (2014)",
+          "col3": "Hardcode the definite unitary group $U(I_n)$ and require $E/E^+$ **unramified at all finite places**. `DescentUnitary` omits Satake matching at inert places outside $S$ and $L$-packet multiplicity formulas (and lacks a Steinberg place, so relies on full stabilized trace formula beyond Labesse 2011). `BaseChangeDefiniteUnitary`/`BaseChangeIsobaric` restrict to trivial split-center character; `BaseChangeDefiniteHyp` carries a **vestigial unused hypothesis** (`p.Prime`, split set `S`)."
+        },
+        {
+          "col1": "`JacquetLanglands` (`.../CuspSemisimpleReal.lean#L62-L67`)",
+          "col2": "**Jacquet–Langlands Correspondence** — Jacquet–Langlands (1970), *Automorphic Forms on $\\mathrm{GL}(2)$*, LNM 114, Thm. 16.1",
+          "col3": "Heavily restricted to totally real $F$, totally definite quaternion algebras **split at all finite places** (`DefQuat F`), and algebraic discrete-series weights; matches only $\\pi_f$ and $\\infty$ infinitesimal character (no Maass forms, finite ramification, or multiplicity equality)."
+        },
+        {
+          "col1": "`AdjointLift`, `SymCube` (`.../CyclicBaseChangeC.lean#L52-L64`)",
+          "col2": "**Gelbart–Jacquet & Kim–Shahidi Functorial Lifts** — Gelbart–Jacquet (1978), *Ann. Sci. ÉNS* 11, Thm. 9.3; Kim–Shahidi (2002), *Ann. of Math.* 155 Thm. B & *Duke Math. J.* 112 Thm. 2.2.2",
+          "col3": "Restricted to totally real $F$; weak lifts only (cofinitely many Satake parameters + $\\infty$ infinitesimal character), omitting strong ramified transfer, $\\mathrm{GL}_2 \\times \\mathrm{GL}_3$, and non-cuspidal isobaric decompositions."
+        },
+        {
+          "col1": "`FormsFiniteReal` (`.../CuspSemisimpleReal.lean#L72-L79`), `AutomorphicFormsFiniteGL` (`.../AutomorphicForms₂/ExistsSpanFormsNeBot.lean#L23-L28`, proved in `Development/WeilBound/CoreStatements/PublishedTheorems/FiniteGLInvariants/AffineLieInvariants/Imports.lean#L6-L7`), `HarishChandraFinite` (`.../AutomorphicForms₂/HarishChandraFinite.lean#L50-L58`), `AutomorphicFormsFiniteUnitary` (`.../DiscreteSeriesUnitary₂/AutomorphicFormsFiniteUnitaryIff.lean#L11`), `AutomorphicFormsFiniteIdeal` (`.../SiegelWeil₂/AutomorphicFormsFiniteIdeal.lean#L71-L79`)",
+          "col2": "**Harish-Chandra Automorphic Finiteness** — Harish-Chandra (1968), *Automorphic Forms on Semisimple Lie Groups*, LNM 62, Ch. I Thm. 1; Borel–Jacquet (1979), Corvallis §4.3",
+          "col3": "Split into group-specific cases ($\\mathrm{GL}_a$ over totally real/complex $E$, or unitary over `D7`/self-dual CM lattices). `FormsFiniteReal`, `AutomorphicFormsFiniteGL`, and `HarishChandraFinite` strengthen $\\mathcal{Z}(\\mathfrak{g})$-finiteness to **fixed Capelli/Gelfand scalar eigencharacters** rather than arbitrary finite-codimension ideals (whereas `AutomorphicFormsFiniteIdeal` retains ideals over `D7`/`HSp`)."
+        },
+        {
+          "col1": "`CuspSemisimpleReal` (`.../CuspSemisimpleReal.lean#L81-L83`), `CuspidalSpectrumGL`, `CuspDiscreteDecompositionGL`, `CuspFiniteVectorsGL`, `CuspFormsBoundedGL` (`.../AutomorphicForms₂/CuspDiscreteDecompositionGL.lean#L104-L117`), `CuspTraceClass`, `CuspDiscreteDecomposition` (`.../TwistedTraceFormula/CuspDiscreteDecompositionOfTraceClass.lean#L21-L25`)",
+          "col2": "**Cuspidal Discrete Spectrum Decomposition** — Gelfand–Piatetski-Shapiro (1963); Godement (1966); Harish-Chandra (1968) Ch. I Thm. 2; Duflo–Labesse (1971); Müller (1989)",
+          "col3": "Restricted to $\\mathrm{GL}_a$ over totally real/complex fields or unitary groups over `D7`/`HSp`. `CuspSemisimpleReal` concludes algebraic span only (no multiplicities or $L^2$-orthogonality)."
+        },
+        {
+          "col1": "`CuspRapidDecaySiegelGL` (`.../AutomorphicForms₂/CuspRapidDecaySiegelGL.lean#L11-L19`), `CuspRapidDecay` (`.../AutomorphicForms₂/ExistsNormLeHeightPow.lean#L28-L32`), `CuspDecaySobolev`, `UnitaryReduction` (`.../TwistedTraceFormula/ExistsGrowthSobNeTopOfIsAutFunSm.lean#L18-L25`), `CuspBounded` (`.../TwistedTraceFormula/ExistsQuotHeightMulExpInfLe.lean#L15`), `CuspDecayBound` (`.../TwistedTraceFormula/UnifModGrowthOfIsUnifModerate.lean#L17`), `SiegelSetUnitary` (`.../Divisors₂/IsSmoothModerateOfIsAutFunSm.lean#L91`)",
+          "col2": "**Rapid Decay of Cusp Forms & Siegel Sets** — Borel (1963); Godement (1964); Harish-Chandra (1968) Ch. I Lem. 10; Moeglin–Waldspurger (1995), *Spectral Decomposition and Eisenstein Series*, I.2.1–I.2.18",
+          "col3": "Specialized to $\\mathrm{GL}_a^1$ over totally complex $E$ or unitary groups over `D7`/`HSp`/CM Witt frames. `CuspRapidDecay` takes `IsUnifModerate` as a hypothesis (instead of deducing it from $\\mathcal{Z}(\\mathfrak{g})$-finiteness) and states 0th-order decay only; `SiegelSetUnitary` omits the Siegel finiteness property (`{γ : γ S ∩ S ≠ ∅}` finite). `UnitaryReduction` is proved unconditionally in-file."
+        },
+        {
+          "col1": "`DiscreteSpectrumGL` (`.../GaloisCohomology₂/IsNormalisedOfIsDiscrete.lean#L161-L172`), `DiscreteSpectrumResidual` (`.../GaloisCohomology₂/DiscreteSpectrumResidual.lean#L13-L26`), `ResidualSpectrumByClass` (`.../GaloisCohomology₂/ResidualSpectrumByClass.lean#L13-L24`), `ResidualSpectrumHilbertSum` (`.../GaloisCohomology₂/ResidualSpectrumHilbertSum.lean#L14-L26`), `DiscreteSpectrumGLTwo` (`.../Divisors₂/DiscreteSpectrumGLTwoOfCuspidalSpectrum.lean#L207`)",
+          "col2": "**Moeglin–Waldspurger Residual Spectrum** — Moeglin–Waldspurger (1989), *Ann. Sci. ÉNS* 22, Main Theorem (and Jacquet–Langlands 1970 for $n = 2$)",
+          "col3": "All restrict to **totally complex** number fields and **trivial central character on the split center $\\mathbb{R}_{>0}$** (instead of arbitrary global fields and arbitrary unitary central character). `ResidualSpectrumByClass` / `ResidualSpectrumHilbertSum` drop $\\infty$ infinitesimal characters, parameter uniqueness, and subspace-equality multiplicity one."
+        },
+        {
+          "col1": "`CuspidalMultiplicityOne` (`.../GaloisCohomology₂/CuspidalMultiplicityOne.lean#L13-L15`), `CuspidalMultiplicityOneUnitary` (`.../GaloisCohomology₂/CuspidalMultiplicityOneUnitary.lean#L13-L15`), `CuspidalMultiplicityOneLit` (`Development/WeilBound/CoreStatements/PublishedTheorems/CuspidalMultiplicityOne/CuspidalMultiplicityOneLit.lean#L13-L15`), proved in `.../SmoothVectorEstimates/CuspidalMultiplicityOne.lean#L7`",
+          "col2": "**Shalika Cuspidal Multiplicity One** — Shalika (1974), *Ann. of Math.* 100, Thm. 5.9; Piatetski-Shapiro (1979)",
+          "col3": "Restricted to **totally complex** number fields (`CuspidalMultiplicityOneUnitary`/`*Lit` also restrict to unitary `1 ≤ a`). Note `SmoothVectorEstimates` (misnamed folder) proves both weak and strong multiplicity one outright."
+        },
+        {
+          "col1": "`StrongMultOneReal` (`.../GelfandKazhdanReal.lean#L96-L98`), `JacquetShalika`, `JacquetShalikaRigidity`, `JacquetShalikaBound` (`.../GaloisCohomology₂/StrongMultiplicityOne.lean#L189-L202`; proved in `.../JacquetShalikaBound/JacquetShalikaBound.lean#L77` & `.../JacquetShalikaRigidity/JacquetShalikaRigidity.lean#L13`), `JacquetShalikaLocalBound` (`.../GaloisCohomology₂/NotIsGenericDetRepTwo.lean#L32-L37`)",
+          "col2": "**Jacquet–Shalika Rigidity & Bounds** — Jacquet–Shalika (1981), *Amer. J. Math.* 103, I Cor. 2.5 & II Thm. 4.4",
+          "col3": "`StrongMultOneReal` (totally real) concludes only abstract isomorphism `π.Iso π'` (omitting subspace equality `π.V = π'.V`); `JacquetShalika*` restrict to totally complex $E$. `JacquetShalikaLocalBound` works in arbitrary characteristic (faithfully checks `HasSatake` with irreducibility, though `IsSmooth` is implicit via `prinSeries`)."
+        },
+        {
+          "col1": "`GelfandKazhdanReal` (`.../GelfandKazhdanReal.lean#L100-L105`), `GelfandKazhdanDual` (`.../GaloisGeometry₂/GelfandKazhdanDual.lean#L10-L11`)",
+          "col2": "**Gelfand–Kazhdan Contragredient Duality** — Gelfand–Kazhdan (1975), *Lie Groups and Their Representations*, Thm. 2 ($\\widetilde{\\pi} \\simeq \\pi \\circ g^{-T}$)",
+          "col3": "Published theorem is **local** for all irreducible admissible reps of $\\mathrm{GL}_n(K)$; both Lean specs state it **globally** as existence of a nondegenerate `invT`-equivariant bilinear pairing on cuspidal subreps over totally real/complex number fields."
+        },
+        {
+          "col1": "`ClozelPurity` (`.../GaloisGeometry₂/ClozelPurity.lean#L10-L15`; proved in `.../ClozelPurity/Bridge.lean#L6`), `RegularAlgebraicPurity` (`.../GaloisGeometry₂/RegularAlgebraicPurity.lean#L14-L18` & `Development/AutomorphicSpectrum/PublishedTheorems/PublishedGlobalResults/RegularAlgebraicPurity.lean#L7`), `ClozelCohomological` (`.../GaloisGeometry₂/ClozelCohomologicalModel.lean#L10-L12`), `ClozelCohC`, `ClozelCohR`, `ClozelConjC`, `ClozelConjR` (`.../GelfandKazhdanReal.lean#L16-L37`), `WignerVanishingGL` (`.../GaloisGeometry₂/WignerVanishingGL.lean#L26-L29`)",
+          "col2": "**Clozel Purity & Cohomological Automorphic Forms** — Clozel (1990), *Motifs et formes automorphes*, §3.5 / Thm. 3.13 / Lem. 3.14 / Lem. 4.9; Borel–Wallach (1980), Ch. I Thm. 4.1 (Wigner's lemma)",
+          "col3": "Split into totally complex / CM / totally real cases (excluding mixed-signature fields). `ClozelCoh*` conclude only nonvanishing in *some* degree (no degree interval $[l_0, l_0+q_0]$); `ClozelConj*` omit rationality field $\\mathbb{Q}(\\pi)$ and uniqueness; `WignerVanishingGL` is stated globally for `CuspSub` over totally complex $E$ instead of locally for $(\\mathfrak{g}, K)$-modules."
+        },
+        {
+          "col1": "`BorelInjC`, `BorelInjR`, `BorelSerreFL` (`.../GelfandKazhdanReal.lean#L39-L58`)",
+          "col2": "**Borel–Serre Cohomology & Type (FL)** — Borel (1980/1981), *Bull. AMS* 3; Borel–Serre (1973), *Comment. Math. Helv.* 48, Thm. 11.1.1 & Prop. 11.4.2",
+          "col3": "`BorelInjC`/`R` are **heavily weakened** to total-dimension cardinal inequalities `(S.card : Cardinal) ≤ cohDim` (no canonical Hecke-equivariant injection or grading). `BorelSerreFL` restricts to torsion-free subgroups commensurable with $\\mathrm{GL}_a(\\mathcal{O}_F)$ and **weakens type `(FL)` from $\\mathbb{Z}[\\Gamma]$ to $\\mathbb{C}[\\Gamma]$** (via `IsFL`)."
+        },
+        {
+          "col1": "`EisensteinFunctionalEquation` (`.../Divisors₂/EisensteinFunctionalEquation.lean#L31`), `EisensteinIsotropicLine` (`.../Divisors₂/EisensteinIsotropicLine.lean#L84`), `EisensteinResidueLine` (`.../Divisors₂/EisensteinResidueLine.lean#L14`), `SphericalEisensteinConvergence` (`.../Divisors₂/SphericalEisensteinConvergence.lean#L12`), `EisensteinMaximalParabolic` (`.../SiegelWeil₂/EisensteinMaximalParabolic.lean#L13-L30`), `LanglandsSquareIntegrable`, `LanglandsLemmaUnitary`, `AutomorphicFormsUnitary` (`.../Divisors₂/LanglandsSquareIntegrable.lean#L10-L28`)",
+          "col2": "**Langlands Eisenstein Series & Functional Equation** — Langlands (1976), LNM 544, Ch. 7; Moeglin–Waldspurger (1995), Ch. I.3–I.4, II, IV.1.8–IV.1.10",
+          "col3": "All specialized strictly to **unitary groups** over (mostly everywhere-unramified) CM extensions with adapted Witt frames. `EisensteinIsotropicLine`/`ResidueLine` treat only spherical $j=1$ Eisenstein series with unspecified nonzero residue $R \\neq 0$; `EisensteinFunctionalEquation` omits canonical $M(s)$ and $M(-s)M(s)=1$; `EisensteinMaximalParabolic` omits the functional equation and singular-hyperplane description."
+        },
+        {
+          "col1": "`FlathFactorisation` (`.../TwistedTraceFormula/ExistsFactorisationCuspidal.lean#L36`), `FlathTensorProduct` (`.../TwistedTraceFormula/FlathTensorProduct.lean#L12`), `AdmissibleReal` (`.../GelfandKazhdanReal.lean#L107-L112`)",
+          "col2": "**Flath Restricted Tensor Product Factorization** — Flath (1979), Corvallis, Thms. 3–4; Borel–Jacquet (1979)",
+          "col3": "Specialized to unitary Hilbert-space reps of `GAd σ J` over CM extensions (via Hilbert restricted tensor product; `FlathTensorProduct` omits local admissibility and 1-dim spherical vectors; uniqueness proved separately from `FlathFactorisation`)."
+        },
+        {
+          "col1": "`LabesseWaldspurger` (`.../TwistedTraceFormula/LabesseWaldspurger.lean#L61`), `TruncatedKernelConvergence` (`.../TwistedTraceFormula/TruncatedKernelConvergence.lean#L13`), `RegularClassWeightedOrbital` (`.../TwistedTraceFormula/RegularClassWeightedOrbital.lean#L13`)",
+          "col2": "**Arthur / Labesse–Waldspurger Trace Formula (Geometric)** — Arthur (1978), *Duke Math. J.* 45, Thms. 7.1 & 8.1; Labesse–Waldspurger (2013), *La formule des traces tordue*, CRM Monogr. 31, Ch. 1 & Ch. 3",
+          "col3": "**Untwisted despite the folder and theorem names** (no automorphism $\\theta$)! Specialized to unitary groups over `D7`/`HSp`; covers ONLY $(G, M)$-family combinatorics + geometric-side truncated kernel convergence and regular semisimple weighted orbital integrals, **omitting unipotent/singular classes, the spectral side, and the trace identity $J_{\\mathrm{geom}} = J_{\\mathrm{spec}}$**."
+        },
+        {
+          "col1": "`NewformRep` (`.../GelfandKazhdanReal.lean#L159-L163`), `RepNewform` (`.../RepNewform.lean#L10-L13`)",
+          "col2": "**Atkin–Lehner / Casselman Newform Theory** — Gelbart (1975), Ch. 3 & 5; Casselman (1973), *Math. Ann.* 201, Thm. 1; Atkin–Lehner (1970); Miyake (1971)",
+          "col3": "Restricted to $F = \\mathbb{Q}$ and discrete-series weights $k \\ge 2$ (omits $k = 1$ and Maass forms); `Newform` omits $U_q$ eigenform condition at $q \\mid M$; both directions omit uniqueness, exact conductor equality, central character matching, and ramified local components."
+        },
+        {
+          "col1": "`HilbertEisOne`, `HilbertOne` (`.../Hilbert.lean#L13-L21`)",
+          "col2": "**Weight-1 Hilbert Eisenstein Series** — Shimura (1978), *Duke Math. J.* 45, Prop. 3.4; Deligne–Ribet (1980); Wiles (1988), *Invent. Math.* 94, Prop. 1.4.2 & Lem. 1.4.2; Taylor (1989)",
+          "col3": "`HilbertEisOne` requires nontrivial conductor (`∃ w, c w ≠ 0`), restricts to $(1, \\omega)$, and omits the explicit $L(0, \\omega)$ formula for the constant term; `HilbertOne` excludes $p = 2$ and gives only congruence mod $\\mathfrak{m}_{\\overline{\\mathbb{Q}}_p}$ (not mod $p^m$ or $\\mathbb{Z}_{(p)}$-integrality)."
+        }
+      ]
+    },
+    {
+      "num": 2,
+      "title": "Automorphic Galois Representations, Local–Global Compatibility & Selmer Groups",
+      "intro": "",
+      "rows": [
+        {
+          "col1": "`GaloisRepOfPolarizedCuspidal` (`.../GaloisCohomology₂/GaloisRepOfPolarizedCuspidal.lean#L90-L94`), `GaloisRepOfPolarizedPair` (`.../GaloisGeometry₂/GaloisRepOfPolarizedPair.lean#L12-L16`), `PolarizedGaloisRepPublished` (`.../GaloisGeometry₂/PolarizedGaloisRepPublished.lean#L67-L72`), `GaloisRepOfPolarizedPairLit` (`.../WeilBound/.../PolarizedGaloisRepresentations/GaloisRepOfPolarizedPairLit.lean#L10`), `GaloisRepReal` (`.../GelfandKazhdanReal.lean#L90-L94`)",
+          "col2": "**BLGGT Automorphic Galois Representations** — Barnet-Lamb–Gee–Geraghty–Taylor (BLGGT, 2014), *Ann. of Math.* 179, Thm. 2.1.1 (synthesizing Clozel, Kottwitz, Harris–Taylor, Shin, Chenevier–Harris, Caraiani)",
+          "col3": "`IsPolarized`/`PolarizedPair` **hardcode infinity sign $(-1)^a$** (BLGGT allows arbitrary constant sign $\\pm 1$); `IsConjDual` **omits pairing symmetry/skew-symmetry $P^T = \\pm P$** (`GaloisRepReal` omits polarization of $r$ entirely); compatibility at $w \\mid \\ell$ is restricted to **Iwahori-fixed / spherical** local components (omitting deeply ramified $w \\mid \\ell$)."
+        },
+        {
+          "col1": "`CaraianiLocalGlobal` (`.../GaloisGeometry₂/CaraianiLocalGlobal.lean#L15-L28`), `CaraianiLocalGlobalDual` (`.../GaloisGeometry₂/CaraianiLocalGlobalDual.lean#L16-L28`), `CaraianiAboveLHyp` (`.../GaloisGeometry₂/CaraianiAboveLHyp.lean#L36-L47`), `CaraianiPureAboveL` (`.../GaloisGeometry₂/CaraianiPureAboveL.lean#L13-L23`), `CaraianiNearbyCycles`, `CaraianiAwayL` (`.../GaloisGeometry₂/CaraianiNearbyCycles.lean#L14-L23`), `CaraianiTempered` (`.../GaloisGeometry₂/CaraianiTempered.lean#L13-L17`), `CohomologicalCsdTempered` (`.../GaloisGeometry₂/IsTemperedGLOfIsUnitaryLSeg.lean#L384-L388`), `LocalGlobalAboveL` (`.../GaloisGeometry₂/LocalGlobalAboveL.lean#L14-L25`), `LocalGlobalAboveLPst` (`.../GaloisCohomology₂/PstAndWdAtOfIsRegAlg.lean#L15-L26`)",
+          "col2": "**Caraiani Local–Global Compatibility & Ramanujan** — Caraiani (2012), *Duke Math. J.* 161, Thms. 1.1–1.2 ($\\ell \\neq p$ & temperedness); Caraiani (2014), *Algebra & Number Theory* 8, Thm. 1.1 ($\\ell = p$)",
+          "col3": "All 10 restrict to `2 ≤ a` and **strictly conjugate self-dual** $\\pi$ (not general polarized $(\\pi, \\chi)$). `CaraianiLocalGlobal`/`Dual` omit Hodge–Tate weights, crystallinity, and polarization of $R$; `CaraianiPureAboveL` restricts further to `Even a` with existential purity weight `t`; note contragredient vs. direct normalization varies across files (`CaraianiAboveLHyp`/`AwayL` use `contra σ`)."
+        },
+        {
+          "col1": "`LocalGlobalAboveLSemisimple` (`.../GaloisGeometry₂/LocalGlobalAboveLSemisimple.lean#L13-L25`)",
+          "col2": "**BLGG Semisimplified Local–Global at $\\ell = p$** — Barnet-Lamb–Gee–Geraghty (2012), *Ann. Fac. Sci. Toulouse* 21, Thm. A; II (2014), *Ann. Sci. ÉNS* 47",
+          "col3": "Assumes `IsPstAt` and `GalCut.Weak` as hypotheses and fixes infinity sign $(-1)^a$; otherwise faithful to BLGG (semisimplified unconditionally, full under `OddOrSlightlyReg`)."
+        },
+        {
+          "col1": "`ChenevierHarris` (`.../GaloisGeometry₂/ChenevierHarris.lean#L13-L32`)",
+          "col2": "**Chenevier–Harris Automorphic Galois Reps** — Chenevier–Harris (2013), *Camb. J. Math.* 1, Thm. 1.2",
+          "col3": "Restricted to `2 ≤ a` and strictly CSD `DualIsConj π` (not essentially CSD for $a \\ge 1$); omits conjugate self-duality of $r$."
+        },
+        {
+          "col1": "`ShinGaloisRep` (`.../GaloisGeometry₂/ShinGaloisRep.lean#L13-L32`)",
+          "col2": "**Shin Galois Representations & Monodromy** — Shin (2011), *Ann. of Math.* 173, Thm. 1.2 (plus Caraiani 2012, Berger 2002)",
+          "col3": "**Stronger than Shin (2011) Thm. 1.2 away from $\\ell$**: asserts full monodromy compatibility `wdOf = rc(algNorm σ')` under `OddOrSlightlyReg` alone (Shin 2011 gave semisimplification only; full monodromy needed Caraiani 2012). Also bundles `IsPstAt` (Berger 2002), restricts to strictly CSD `2 ≤ a`, and omits polarization of $R$."
+        },
+        {
+          "col1": "`TaylorYoshidaSquareIntegrable` (`.../GaloisGeometry₂/TaylorYoshidaSquareIntegrable.lean#L15-L40`)",
+          "col2": "**Taylor–Yoshida Local–Global Compatibility** — Taylor–Yoshida (2007), *J. AMS* 20, Thm. 1.2 & Cor. 1.3; Harris–Taylor (2001), Thm. VII.1.9",
+          "col3": "**Drops** Harris–Taylor / Taylor–Yoshida's hypothesis that $E$ contains an imaginary quadratic field (stating it for arbitrary CM fields $E$); restricts to strictly CSD `2 ≤ a` and omits pairing symmetry $P^T = \\pm P$ in `IsConjDual`."
+        },
+        {
+          "col1": "`SignCsd` (`.../CuspSemisimpleReal.lean#L41-L45`)",
+          "col2": "**Parity of Conjugate Self-Dual Galois Reps** — Bellaïche–Chenevier (2011), *Compos. Math.* 147, Thm. 1.2; Caraiani–Le Hung (2016) / Taïbi (2016), *Math. Res. Lett.* 23, Thm. A; Taylor (2012)",
+          "col3": "Restricted to strictly CSD (`DualIsConj π`, $\\chi = 1$); does not require $r$ irreducible (relying on Taïbi/Caraiani–Le Hung); asserts only symmetric pairing $P^T = P$, omitting Taylor's balanced-eigenvalue characterization of $r(c)$ and per-constituent uniqueness."
+        },
+        {
+          "col1": "`ThorneAdjoint` (`.../GelfandKazhdanReal.lean#L149-L157`)",
+          "col2": "**Thorne / Newton–Thorne Adjoint Selmer Vanishing** — Thorne (2022), *Pure Appl. Math. Q.* 18(5) (arXiv:2207.04925), Thm. 1.1; Newton–Thorne (2023), *JEMS* 25(5), Thm. A",
+          "col3": "Proves vanishing only for the **unitary/polarized $G_{F^+}$-adjoint** `IsAdOf` ($c \\mapsto -P^{-1}X^T P$), not the full $G_F$-adjoint $H^1_f(F, \\mathrm{ad}\\,r) = 0$; formulated directly over infinite-dimensional `Qbar p` instead of a finite extension $E/\\mathbb{Q}_p$."
+        },
+        {
+          "col1": "`Kato` (`.../QuotRepMk.lean#L65-L73`)",
+          "col2": "**Kato Euler System Selmer Finiteness** — Kato (2004), *Astérisque* 295, Thm. 14.2(2) (+ Deligne 1971, Jacquet–Shalika 1976)",
+          "col3": "**Drops the central point `2 * r ≠ k`** (making $k = 2$ vacuous and avoiding stating $L(f,\\chi,r) \\neq 0$); proves only **finiteness** of the discrete Bloch–Kato Selmer group `Sel`, omitting Kato's Euler system, Iwasawa Main Conjecture divisibility, and quantitative $L$-value / Tamagawa upper bounds."
+        },
+        {
+          "col1": "`KisinCrFull` (`.../KisinCrTrivial.lean#L9-L28`)",
+          "col2": "**Kisin Crystalline Deformation Rings** — Kisin (2008), *J. AMS* 21(2), Thm. 2.7.6",
+          "col3": "Restricted via `PotCrysType` to **potentially crystalline ($N = 0$)** and **parallel Hodge–Tate weights** `m : ℤ → ℕ` (independent of $K \\hookrightarrow E$); asserts only existence of an ideal $I \\trianglelefteq A_0[1/\\ell]$, omitting the $\\ell$-torsion-free integral quotient of $A_0$, reducedness, generic smoothness, and Krull dimension formula."
+        },
+        {
+          "col1": "`HidaGal` (`.../CyclicBaseChangeC.lean#L13-L26`)",
+          "col2": "**Deligne / Carayol / Wiles Modular Galois Reps** — Deligne (1971); Ribet (1977) Thm. 2.3; Wiles (1988), *Invent. Math.* 94, Thm. 2.1; Carayol (1986)",
+          "col3": "Restricted to classical weight $k \\ge 2$ eigenforms over $\\mathbb{Q}$ (no $k=1$, Hilbert forms, or $\\Lambda$-adic families); at $p \\mid N$ treats only $v_p(\\mathrm{cond}(\\chi)) = v_p(N)$ on inertia $I_p$ (not full WD local–global compatibility)."
+        },
+        {
+          "col1": "`DeRhamCharAlg` (`.../CuspSemisimpleReal.lean#L85-L91`), `HeckeLAdicCharacter` (`.../AutomorphicForms₂/ExistsUniqueHcharOfFiniteOrder.lean#L74-L78`), `HeckeLAdicCharacterDeRham` (`.../GaloisCohomology₂/HeckeLAdicCharacterDeRham.lean#L11-L23`; proved in `.../HeckeLAdicCharacters/Outright.lean#L7-L8`), `HeckeLAdicCharacterCrystalline` (`.../GaloisCohomology₂/HeckeLAdicCharacterCrystalline.lean#L11-L21`), `HeckeLAdicCharacterAbove` (`.../GaloisCohomology₂/HeckeLAdicCharacterAboveIff.lean#L13`), `AlgebraicCharacterWD` (`.../GaloisGeometry₂/AlgebraicCharacterWD.lean#L14-L23`), `HeckeLAdicParameterAbove` (`.../GaloisGeometry₂/HeckeLAdicParameterAbove.lean#L14-L23`)",
+          "col2": "**Algebraic Hecke Characters & $\\ell$-adic Reps** — Weil (1956); Serre (1968), *Abelian $\\ell$-adic Representations*, Ch. II–III; Henniart (1982); Schappacher (1988); Fontaine / Colmez / Saito (1997)",
+          "col3": "`DeRhamCharAlg` assumes de Rham (stronger than Henniart's Hodge–Tate, though equivalent in dim 1) and omits uniqueness of $\\chi$. `HeckeLAdicCharacter` uses `IsAlgPos` (totally positive $k \\in E^\\times$, capturing $"
+        }
+      ]
+    },
+    {
+      "num": 3,
+      "title": "$p$-adic Representation Theory & Local Langlands",
+      "intro": "",
+      "rows": [
+        {
+          "col1": "`LocalLanglandsGL` (`.../AutomorphicForms₂/LocalLanglandsGL.lean#L96-L104`), `LocalLanglandsExists` (`.../GaloisCohomology₂/LocalLanglandsExists.lean#L16-L18`), `SupercuspidalLanglands` (`.../GaloisCohomology₂/SupercuspidalLanglands.lean#L16-L20`), `ScholzeFunctorialExtension` (`.../GaloisCohomology₂/ScholzeFunctorialExtension.lean#L41-L60`)",
+          "col2": "**Local Langlands Correspondence for $\\mathrm{GL}_n$** — Harris–Taylor (2001), Ann. Math. Stud. 151; Henniart (2000), *Invent. Math.* 139; Scholze (2013), *Invent. Math.* 192",
+          "col3": "**Characteristic 0 only** (completions of number fields; excludes positive-char LRS 1993). **Omits all Rankin–Selberg pair $L$-factors $L(s, \\pi \\times \\tau)$**; checks $\\varepsilon$-factors only at fixed $s = 1/2$ for `(m+1, m)` pairs with cuspidal $\\pi$ (`SupercuspidalLanglands` checks only strictly unequal supercuspidal ranks `y.1 < x.1`). `LocalLanglandsGL` additionally bundles Zelevinsky/Langlands classification and depth-zero $\\leftrightarrow$ tame. `ScholzeFunctorialExtension` forces $N = 0$ (`mono0`, semisimplified) and gives existence only."
+        },
+        {
+          "col1": "`LocalConstantsExist` (`.../GaloisCohomology₂/LocalConstantsExist.lean#L16-L18`), `DeligneLocalConstants` (`.../GaloisCohomology₂/DeligneLocalConstants.lean#L16-L17`)",
+          "col2": "**Deligne–Tate Local $\\varepsilon$-Constants** — Deligne (1973), *Les constantes des équations fonctionnelles des fonctions $L$*, LNM 349, Thm. 4.1 & §8.12; Tate (1979), Corvallis §3.4 & §4.1.6",
+          "col3": "**MAJOR OMISSION — Missing monodromy axiom:** neither `IsDeligneEps` nor `IsDeligneMeas` mentions the monodromy operator $N$ (even `Induces` ignores `N`), completely omitting $\\det(-\\mathrm{Frob} \\mid V^I/(\\ker N)^I)$! Also: existence only (no uniqueness), char-0 number-field completions only, direct sums instead of short exact sequences, no $s$-variable, and no functional-equation duality $\\varepsilon(V,\\psi)\\varepsilon(V^\\vee(1),\\psi^{-1})=1$."
+        },
+        {
+          "col1": "`LocalArtinExists` (`.../GaloisCohomology₂/LocalArtinExists.lean#L16-L18`)",
+          "col2": "**Local Class Field Theory (Artin Map)** — Local Class Field Theory (Artin–Tate; Serre *Local Fields* Ch. XIII; Tate 1979)",
+          "col3": "Char-0 number-field completions only; omits $\\ker(a) = \\overline{[W, W]}$ directly, topological homeomorphism $W^{\\mathrm{ab}} \\simeq E_w^\\times$, uniqueness, and norm/transfer compatibility."
+        },
+        {
+          "col1": "`LocalConverseGL` (`.../GaloisCohomology₂/LocalConverseGL.lean#L12-L17`), `GammaMultiplicativeGL` (`.../GaloisCohomology₂/GammaMultiplicativeGL.lean#L16-L24`)",
+          "col2": "**Henniart Local Converse & JPSS $\\gamma$-Multiplicativity** — Henniart (1993), *Invent. Math.* 113, Thm. 1.1; Jacquet–Liu (2018); JPSS (1983), *Amer. J. Math.* 105, Thm. 3.1",
+          "col3": "Both restrict to `[CharZero k]` and fixed $s = 1/2$. `LocalConverseGL` twists only by `GL_{n-1}` (not sharp $\\lfloor n/2 \\rfloor$); `GammaMultiplicativeGL` restricts to supercuspidal $\\pi$ with $0 < m < n$ and antitone twists of unitarizable supercuspidals."
+        },
+        {
+          "col1": "`IrreducibleAdmissibleGL` (`.../Divisors₂/IrreducibleAdmissibleGL.lean#L10`), `StandardFunctorsFiniteLength` (`.../Divisors₂/StandardFunctorsFiniteLength.lean#L10`), `BernsteinZelevinskyFiniteness` (`.../TwistedTraceFormula/HasFiniteLengthOfIsIrreducible.lean#L49`), `GeometricLemma`, `ZelevinskyPolynomialRing` (`.../TwistedTraceFormula/ExistsCellOfIsSubquotient.lean#L205-L209`), `GeometricLemmaFiltration` (`.../TwistedTraceFormula/GeometricLemmaFiltration.lean#L6`), `GrothendieckRingPolynomial` (`.../TwistedTraceFormula/GrothendieckRingPolynomial.lean#L10`), `SegmentRepresentation` (`.../TwistedTraceFormula/SegmentRepresentation.lean#L15`), `SegmentRepresentationLit` (`.../WeilBound/.../SegmentRepresentations/SegmentRepresentationLit.lean#L12`), `UnitaryIrreducibleAdmissible` (`.../TwistedTraceFormula/UnitaryIrreducibleAdmissible.lean#L12`)",
+          "col2": "**Bernstein–Zelevinsky Smooth $\\mathrm{GL}_n(k)$ Theory** — Bernstein (1974); Bernstein–Zelevinsky (1976, 1977 *Ann. Sci. ÉNS* 10, Lem. 2.12); Zelevinsky (1980, *Ann. Sci. ÉNS* 13, Thms. 1.9, 7.5)",
+          "col3": "Specialized to $\\mathrm{GL}_n(k)$ (arbitrary char) or local CM unitary groups (`UnitaryIrreducibleAdmissible`). `ZelevinskyPolynomialRing` omits Hopf comultiplication and Zelevinsky involution; `SegmentRepresentation` treats only subrep $Z(\\Delta)$ (omitting quotient $L(\\Delta)$ and linkage)."
+        },
+        {
+          "col1": "`StandardCosocleGL` (`.../GaloisCohomology₂/StandardCosocleGL.lean#L10`), `LanglandsExhaustionGL` (`.../GaloisCohomology₂/LanglandsExhaustionGL.lean#L10`), `LanglandsMultisegments` (`.../GaloisCohomology₂/LanglandsMultisegments.lean#L10`), `LanglandsSumMultiplicityOne` (`.../GaloisCohomology₂/LanglandsSumMultiplicityOne.lean#L14`), `LanglandsDataDualGL` (`.../GaloisCohomology₂/LanglandsDataDualGL.lean#L16`), `LanglandsClassification₂` (`.../WeilBound/.../LanglandsClassification/LanglandsClassification2.lean#L10-L17`), `SquareIntegrableSegment` (`.../GaloisCohomology₂/SquareIntegrableSegment.lean#L10`), `EssSquareIntegrableSegments` (`.../GaloisGeometry₂/EssSquareIntegrableSegments.lean#L10`), `TemperedProductOfSquareIntegrable` (`.../GaloisGeometry₂/TemperedProductOfSquareIntegrable.lean#L9`), `GenericUnlinkedGL` (`.../GaloisCohomology₂/GenericUnlinkedGL.lean#L10`)",
+          "col2": "**Zelevinsky–Langlands Segment Classification** — Zelevinsky (1980), *Ann. Sci. ÉNS* 13, Thms. 6.1, 7.1, 7.10, 9.3, 9.7, Prop. 8.4–8.5; Silberger (1978); Waldspurger (2003)",
+          "col3": "**All restrict to `[CharZero k]`** (Zelevinsky 1980 holds in arbitrary char). `SquareIntegrableSegment` and `GenericUnlinkedGL` state only the forward direction (no converse/uniqueness); `TemperedProductOfSquareIntegrable` omits uniqueness up to permutation. **Name collision:** `WeilBound/.../LanglandsClassification/LanglandsClassification2.lean` is $p$-adic Zelevinsky classification, whereas `AbelianVarietyTheory/.../TwistedTraceFormula/LanglandsClassification.lean` is real $U(p,q)$ Langlands classification."
+        },
+        {
+          "col1": "`BernsteinUnitaryProductIrreducible` (`.../TwistedTraceFormula/BernsteinUnitaryProductIrreducible.lean#L10`), `GenericUnitaryDualGL` (`.../GaloisCohomology₂/IsComplementaryProductOfIsCuspidal.lean#L29-L32`), `UnitaryDualGL` (`.../GaloisCohomology₂/IsSquareIntegrable.lean#L26-L33`), `TotallyDisjointProductIrreducible` (`.../GaloisGeometry₂/TotallyDisjointProductIrreducible.lean#L10`), `UnlinkedProductIrreducible` (`.../GaloisGeometry₂/UnlinkedProductIrreducible.lean#L10`)",
+          "col2": "**Bernstein–Tadić Unitary Dual of $\\mathrm{GL}_n(k)$** — Bernstein (1984), LNM 1041; Tadić (1986), *Ann. Sci. ÉNS* 19, Thm. D; Bernstein–Zelevinsky (1977), Thm. 4.2",
+          "col3": "`UnitaryDualGL` and `GenericUnitaryDualGL` restrict to `[CharZero k]` and state **only the forward direction** (omitting that every such product is irreducible & unitarizable, and omitting uniqueness). Despite its name, `UnlinkedProductIrreducible` requires disjoint inertial orbits (stronger than segment unlinkedness), and `TotallyDisjointProductIrreducible` forbids $"
+        },
+        {
+          "col1": "`CuspidalGeneric`, `GenericityGL`, `WhittakerHeredity` (`.../Divisors₂/IsGenericIffIsGenericFor.lean#L128-L184`), `BorelCasselman` (`.../TwistedTraceFormula/BorelCasselman.lean#L10`), `GindikinKarpelevich` (`.../Divisors₂/GindikinKarpelevich.lean#L119`)",
+          "col2": "**Whittaker Models, Borel–Casselman & Gindikin–Karpelevich** — Rodier (1973); Shalika (1974); BZ (1977) §§4–5; Borel (1976); Casselman (1980, *Compos. Math.* 40, Thm. 3.1 & *Math. Ann.* 250)",
+          "col3": "`GenericityGL`/`WhittakerHeredity` state only the forward direction and omit Whittaker multiplicity one (`CuspidalGeneric` proved in-file for totally complex $E$). `BorelCasselman` is specialized to admissible reps of $\\mathrm{GL}_n(k)$. `GindikinKarpelevich` is specialized to char-0 $\\mathrm{GL}_n(k)$ and unramified quasi-split $U_n(L/L^+)$."
+        },
+        {
+          "col1": "`TypesNZero` (`.../CuspSemisimpleReal.lean#L29-L39`), `DepthZeroCuspidalLL` (`.../GaloisCohomology₂/DepthZeroCuspidalLL.lean#L16`), `DepthZeroWild` (`.../GaloisCohomology₂/DepthZeroWild.lean#L12`), `DepthZeroInertia` (`.../GaloisCohomology₂/DepthZeroInertia.lean#L14`), `DepthZeroTypeInertia` (`.../GaloisCohomology₂/DepthZeroTypeInertia.lean#L13`), `MoyPrasadJacquetIso` (`.../GaloisGeometry₂/MoyPrasadJacquetIsoTrivial.lean#L10`), `DepthZeroJacquetInjective` (`.../GaloisGeometry₂/DepthZeroJacquetInjective.lean#L10`), `DepthZeroSupport` (`.../GaloisCohomology₂/DepthZeroSupport.lean#L12`), `DepthZeroInduction` (`.../GaloisCohomology₂/DepthZeroInduction.lean#L10`)",
+          "col2": "**Moy–Prasad & Bushnell–Henniart Depth-Zero Types** — CEGGPS (2016), *Camb. J. Math.* 4, Thm. 3.7; Schneider–Zink (1999); Moy–Prasad (1994, 1996 *Comment. Math. Helv.* 71); Bushnell–Henniart (2005), *J. AMS* 18, Thm. 2.1",
+          "col3": "`TypesNZero` omits commutativity of the Hecke algebra $\\mathrm{End}_G(\\mathrm{c\\text{-}Ind}\\,\\xi)$. `DepthZeroInertia` & `DepthZeroTypeInertia` are **restricted to $\\mathbb{Q}_g$ ($g$ prime)** and specify **inertia charpoly only**, completely omitting Frobenius action and Bushnell–Henniart's $(-1)^{n-1}$ rectifier. `MoyPrasad*`/`DepthZero*` specialize to $\\mathrm{GL}_n$, depth 0, and (mostly) char 0."
+        },
+        {
+          "col1": "`GreenCuspidal` (`.../GaloisCohomology₂/GreenCuspidalIff.lean#L8`), `GreenRegularCharacters` (`.../GaloisCohomology₂/GreenRegularCharacters.lean#L13`), `GreenSeriesSt` (`.../PublishedFoundations/GreenSeriesSt.lean#L7`), `CuspidalMirabolic`, `CuspidalExists`, `CuspidalRestrictsToInduced` (`.../PublishedFoundations/BlockTriangularOfSubOne.lean#L215-L225`)",
+          "col2": "**Green / Deligne–Lusztig Characters of $\\mathrm{GL}_n(\\mathbb{F}_q)$** — Green (1955), *Trans. AMS* 80; Gelfand (1970); Deligne–Lusztig (1976); Zelevinsky (1981)",
+          "col3": "`GreenCuspidal`, `GreenRegularCharacters`, and `GreenSeriesSt` are **restricted to prime fields $\\mathbb{F}_g$** (not $\\mathbb{F}_{p^k}$). `GreenCuspidal`/`RegularCharacters` evaluate characters only at $1$ and regular elliptic elements (no Green polynomials); `GreenSeriesSt` gives only a dimension-matching injection (no character values at all); `CuspidalExists` gives bare existence only."
+        },
+        {
+          "col1": "`HoweDualityUnitary`, `HoweDualityFinite` (`.../Divisors₂/HoweDualityUnitary.lean#L50-L66`), `HoweDualityGL` (`.../GaloisGeometry₂/HoweDualityGL.lean#L10`), `MinguezThetaGL` (`.../GaloisGeometry₂/HypothesesAbsDet.lean#L12`), `HoweUnram` (`.../GaloisGeometry₂/HoweUnram.lean#L8`), `StoneVonNeumann` (`.../GlobalTheta/PlaneFormNondegenerate.lean#L59`, proved in-file), `KudlaSplittingSplitUnitary` (`.../TwistedTraceFormula/KudlaSplittingSplitUnitary.lean#L223`)",
+          "col2": "**$p$-adic Howe Duality, Mínguez & Kudla Splitting** — Waldspurger (1990); Gan–Takeda (2016), *J. AMS* 29, Thm. 1.1; Mínguez (2008), *Ann. Sci. ÉNS* 41, Thm. 1; MVW (1987), LNM 1291, Ch. 2 & Ch. 5; Kudla (1994), *Israel J. Math.* 87, Thm. 3.1",
+          "col3": "`HoweDualityUnitary` omits the split case $E = k \\times k$; **`HoweDualityFinite` is drastically weakened to the trivial rep (coinvariants) at inert places only**. `HoweDualityGL` gives uniqueness only; `MinguezThetaGL` fixes $\\mu = 1$ and omits multisegment formulas; `HoweUnram` restricts to `[CharZero L]` and states only vacuum cyclic generation. `KudlaSplittingSplitUnitary` omits cocycle construction, handles only split $U(\\nu,\\nu)$ (not the dual pair), and omits unipotent/Weyl formulas."
+        }
+      ]
+    },
+    {
+      "num": 4,
+      "title": "Real Reductive Groups, Discrete Series & Archimedean Representation Theory",
+      "intro": "",
+      "rows": [
+        {
+          "col1": "`HCSemisimple`, `KFiniteWellBehaved`, `ClosureStable`, `UnitaryAdmissible` (`.../AutomorphicSpectrum/.../Jets₂/IsPermissibleOfCentre.lean#L40-L60`), `HarishChandraAnalyticity` (`.../TwistedTraceFormula/AdmissibleCoefficientsAnalytic.lean#L12-L26`), `HarishChandraModules` (`.../TwistedTraceFormula/HarishChandraModulesOn.lean#L24-L43`), `KFiniteVectorsUnitary` (`.../TwistedTraceFormula/IsIrrKSubOfIsKTypeOf.lean#L64`), `GKGlobalisation` (`.../TwistedTraceFormula/IsAdmissibleSubOfFiniteDimensional.lean#L144-L161`), `IrreducibleUnitaryAdmissible` (`.../TwistedTraceFormula/IrreducibleUnitaryAdmissible.lean#L19`), `KFiniteCoefficientsAnalytic` (`.../TwistedTraceFormula/KFiniteCoefficientsAnalytic.lean#L19`), `KFiniteVectorsSmooth` (`.../TwistedTraceFormula/KFiniteVectorsSmooth.lean#L18`, proved in `.../KFiniteVectorsSmoothHypDet.lean#L206`)",
+          "col2": "**Harish-Chandra $(\\mathfrak{g}, K)$-Modules & Admissibility** — Harish-Chandra (1953, *Trans. AMS* 75; 1954, *Trans. AMS* 76); Nelson (1959); Knapp (1986), Ch. VIII; Wallach (1988), *RRG I* §3.4",
+          "col3": "Restricted to connected $\\dagger$-stable closed matrix subgroups `IsLinRed G` of $\\mathrm{GL}_n(\\mathbb{C})$ (or $U(p,q)$, or the $\\det^{1/2}$ double cover `GrpData p q`), Hilbert spaces with $K$-isometric action (vs. Banach spaces), and extrinsic matrix-space real-analyticity. `HCSemisimple` adds an unnecessary `IsPermissible` condition and omits quantitative $K$-type multiplicity bounds."
+        },
+        {
+          "col1": "`DiscreteSeriesClassification` (`.../DiscreteSeriesUnitary₂/DiscreteSeriesClassificationIff.lean#L11`), `DiscreteSeriesSU` (`.../DiscreteSeriesUnitary₂/DiscreteSeriesSUIff.lean#L8`), `DiscreteSeriesUpqExists`, `DiscreteSeriesUpqUnique`, `DiscreteSeriesExists`, `DiscreteSeriesCoverExists` (`.../AutomorphicForms₂/DiscreteSeriesUpqExistsIffDsExists.lean#L11`, `.../DiscreteSeriesUpqUniqueOfClassification.lean#L10`, `.../DsExistsOfDiscreteSeriesExists.lean#L13`, `.../DiscreteSeriesCoverExistsIff.lean#L10`), `DSExist` (`.../DiscreteSeries₂/DSExist.lean#L13`), `DiscreteSeriesCover` (`.../TwistedTraceFormula/AdmissibleDiscreteSeriesOfHasParam.lean#L35`), `DiscreteSeriesHermitianUnique` (`.../TwistedTraceFormula/DiscreteSeriesHermitianUniqueOfClassification.lean#L13`), `DiscreteSeriesLowestKType` (`.../TwistedTraceFormula/DiscreteSeriesLowestKTypeOfClassification.lean#L10`), `HolomorphicDiscreteSeries` (`.../TwistedTraceFormula/HolomorphicDiscreteSeries.lean#L43`), `DiscreteSeriesCoefficientsCuspidal` (`.../DiscreteSeriesUnitary₂/DiscreteSeriesCoefficientsCuspidalIffOneSided.lean#L11`)",
+          "col2": "**Harish-Chandra Discrete Series Classification** — Harish-Chandra (1955–56, 1966 *Acta Math.* 116, Thm. 16); Schmid (1975); Hecht–Schmid (1975, *Invent. Math.* 31); Vogan (1979, *Ann. of Math.* 109); Wallach *RRG I* §7.2",
+          "col3": "All specialized strictly to $U(p,q)$, $SU(p,q)$, $U(r+k, r+1)$, or the $\\det^{1/2}$ double cover $\\widetilde{U}(p,q)$. Characterized via Vogan-minimal lowest $K$-type (`IsDS`) + root-cone containment (omitting exact Blattner multiplicities, Harish-Chandra character formulas on non-compact Cartan subgroups, and bounded-symmetric-domain realization in `HolomorphicDiscreteSeries`)."
+        },
+        {
+          "col1": "`HarishChandraCharacters`, `CharacterRegularity`, `DiscreteSeriesCharacter`, `WeylIntegrationFormula`, `InducedCharacterSupport` (`.../TwistedTraceFormula/DiscreteSeriesCharacter.lean#L271-L301`), `DiscreteSeriesCharacterSU`, `DiscreteSeriesCharacterOfParameter` (`.../TwistedTraceFormula/DiscreteSeriesCharacterSUTrivialTwo.lean#L65-L73`), `CharacterAdditivity` (`.../TwistedTraceFormula/CharacterAdditivity.lean#L18`), `CharacterRegularityFiniteLength` (`.../TwistedTraceFormula/CharacterRegularityFiniteLength.lean#L18`), `InducedAdmissibleFiniteLength` (`.../TwistedTraceFormula/InducedAdmissibleFiniteLength.lean#L18`), `InducedCharacterVanishing` (`.../TwistedTraceFormula/InducedCharacterVanishing.lean#L18`), `InducedInfinitesimalCharacter` (`.../TwistedTraceFormula/InducedInfinitesimalCharacter.lean#L18`), `FinitelyManyWithInfinitesimalCharacter` (`.../TwistedTraceFormula/FinitelyManyWithInfinitesimalCharacter.lean#L18`), `WeylIntegrationSum` (`.../TwistedTraceFormula/WeylIntegrationSum.lean#L18`)",
+          "col2": "**Harish-Chandra Characters & Weyl Integration** — Harish-Chandra (1954, 1957, 1965 *Trans. AMS* 119 Thm. 2, 1966 *Acta Math.* 116 Thm. 16); Hirai (1968); Knapp Ch. VIII–XI; Wallach *RRG I*",
+          "col3": "All specialized strictly to $U(p,q)$ (or $SU(p,q)$). `DiscreteSeriesCharacter*` specify characters ONLY on the compact Cartan torus (omitting non-compact Cartans); `InducedCharacterSupport` states vanishing off conjugates of $M$ only (not the induced character formula on $M$); `InducedInfinitesimalCharacter` asserts `∃ χ` without the formula $\\chi = \\chi_\\sigma + s$."
+        },
+        {
+          "col1": "`HarishChandra` (`.../DiscreteSeriesUnitary₂/SubmatrixMemUJsetIff.lean#L8`), `FormalDegreeCompactDual` (`.../AutomorphicForms₂/FormalDegreeCompactDualIff.lean#L8`), `DiscreteSeriesFormalDegree` (`.../GlobalTheta/HcFormalDegreeOfDiscreteSeriesFormalDegree.lean#L11`), `FormalDegreeOfParameter` (`.../Divisors₂/FormalDegreeOfParameter.lean#L11`), `SchurOrthogonalitySquareIntegrable` (`.../TwistedTraceFormula/SchurOrthogonalitySquareIntegrable.lean#L14`, proved in-file)",
+          "col2": "**Discrete Series Formal Degrees & Schur Orthogonality** — Harish-Chandra (1956, 1966 *Acta Math.* 116 §23); Atiyah–Schmid (1977); Godement (1947); Dixmier (1977) Thm. 14.3.3",
+          "col3": "Formal-degree theorems specialized strictly to $U(p,q)$ (`HarishChandra` leaves constant `c > 0` unspecified; `FormalDegreeCompactDual` uses diagonal matrix coefficient only). `SchurOrthogonalitySquareIntegrable` omits orthogonality between two inequivalent irreps."
+        },
+        {
+          "col1": "`PseudoCoefficientExistence` (`.../TwistedTraceFormula/PseudoCoefficientExistence.lean#L29`), `PseudoCoefficientUpq` (`.../TwistedTraceFormula/PseudoCoefficientUpqTrivial.lean#L12`), `CuspidalOrbitalIntegrals` (`.../TwistedTraceFormula/CuspidalOrbitalIntegrals.lean#L19`)",
+          "col2": "**Clozel–Delorme Pseudo-Coefficients** — Clozel–Delorme (1985, 1990 *Ann. Sci. ÉNS* 23); Arthur (1989), *Invent. Math.* 97 §2; Labesse (1991), *Math. Ann.* 291, Prop. 1.2",
+          "col3": "Specialized to $U(p,q)$; state only tempered-trace isolation (omitting Clozel–Delorme's \"very cuspidal\" vanishing on non-tempered standard modules). `PseudoCoefficientUpq` uses `Orb.IsTempered` (which checks $L^{2+\\varepsilon}$ on a **single nonzero vector** rather than all $K$-finite vectors)."
+        },
+        {
+          "col1": "`LanglandsClassification` (`.../TwistedTraceFormula/LanglandsClassification.lean#L93`), `LanglandsClassificationTheorem` (`.../TwistedTraceFormula/LanglandsClassificationTheorem.lean#L18`), `LanglandsQuotientTheorem` (`.../TwistedTraceFormula/LanglandsQuotientTheorem.lean#L18`), `LanglandsLimitFormula` (`.../TwistedTraceFormula/LanglandsLimitFormula.lean#L18`), `OppositeCellIntegration` (`.../TwistedTraceFormula/OppositeCellIntegration.lean#L18`), `StandardModuleConstituents` (`.../TwistedTraceFormula/StandardModuleConstituents.lean#L21`), `TemperedSubrepresentation` (`.../TwistedTraceFormula/TemperedSubrepresentation.lean#L18`), `TemperedSubrepresentationComplex` (`.../TwistedTraceFormula/TemperedSubrepresentationComplex.lean#L12`), `ComplexPrincipalSeriesIrreducible` (`.../TwistedTraceFormula/ComplexPrincipalSeriesIrreducible.lean#L12`)",
+          "col2": "**Real Langlands Classification for $U(p,q)$** — Langlands (1973/1989); Knapp (1986), Thms. 5.20, 8.54, 14.91; Wallach *RRG I* Ch. 5; Želobenko (1969, 1970); Parthasarathy–Ranga Rao–Varadarajan (1967); Knapp–Zuckerman (1982)",
+          "col3": "All specialized strictly to $U(p,q)$ and its Levi blocks $\\prod \\mathrm{GL}_{j_i}^{\\pm 1}(\\mathbb{C})$ / $\\mathrm{SL}_{j_i}(\\mathbb{C})$. `OppositeCellIntegration` leaves the proportionality constant $c > 0$ unspecified; `StandardModuleConstituents` omits multiplicity one of the Langlands quotient; `TemperedSubrepresentation` omits discrete-series characterization of $\\tau$."
+        },
+        {
+          "col1": "`CasselmanWallach` (`.../AutomorphicForms₂/HasDRepIffHasDerivAt.lean#L98-L111`, proved in `.../WeilBound/.../CasselmanWallach/FinalB.lean#L8`), `CasselmanWallachAdm` (`.../TwistedTraceFormula/CasselmanWallachAdm.lean#L12`), `CasselmanWallachLift` (`.../TwistedTraceFormula/CasselmanWallachLift.lean#L12`)",
+          "col2": "**Casselman–Wallach Globalization** — Casselman (1989), *Canad. J. Math.* 41; Wallach (1992), *RRG II*, Thm. 11.6.7; Bernstein–Krötz (2014), *JEMS* 16",
+          "col3": "Restricted on the source to **irreducible unitary** reps of $U(p,q)$ (not general finite-length Harish-Chandra modules or general real reductive groups, no categorical equivalence); **notably stronger on the target** in `CasselmanWallach` by omitting admissibility/finite-length on the Fréchet target `E` (proved via a bespoke elliptic maximum principle `MaxPr` rather than Harish-Chandra asymptotics)."
+        },
+        {
+          "col1": "`DixmierMalliavinLie` (`.../TwistedTraceFormula/DixmierMalliavinLie.lean#L11`), `DixmierMalliavinFactorisation` (`.../TwistedTraceFormula/IsClosedEmbeddingOfLocallyCompact.lean#L14`), `Poulsen` (`.../DiscreteSeries₂/Poulsen.lean#L23`), `Zuckerman` (`.../DiscreteSeries₂/Zuckerman.lean#L13`)",
+          "col2": "**Dixmier–Malliavin, Poulsen & Zuckerman Translation** — Dixmier–Malliavin (1978), *Bull. Sci. Math.* 102, Thm. 3.1; Poulsen (1972), *J. Funct. Anal.* 9, Thm. 2.1; Zuckerman (1977), *Ann. of Math.* 106, Thm. 1.1",
+          "col3": "`DixmierMalliavinLie` is faithful (omitting vector factorization; `*Factorisation` specializes to linear groups). `Poulsen` restricts strictly to discrete series of $U(r+k, r+1)$ (not general irreducible unitary Lie group reps). `Zuckerman` restricts to discrete series of $U(r+k, r+1)$ with wall-avoidance gap `2 ≤ mu a - mu c`, tensoring ONLY with $\\Lambda^l(\\mathbb{C}^n)$ and $(\\mathbb{C}^n)^*$."
+        },
+        {
+          "col1": "`DiscreteBranchingUpq` (`.../Divisors₂/DiscreteBranchingUpq.lean#L11`), `BesselUniquenessReal` (`.../TwistedTraceFormula/BesselFormsTrivialNeBot.lean#L136`)",
+          "col2": "**Unitary Discrete Branching & Bessel Uniqueness** — He (2017), *Invent. Math.* 209, Thm. 1.1 (Gross–Prasad 1992 / Kobayashi 1998); Jiang–Sun–Zhu (2010), *GAFA* 20, Thm. A; Sun–Zhu (2012)",
+          "col3": "`DiscreteBranchingUpq` covers discrete series only for $U(p,q) \\downarrow U(p-1,q)$ (not general tempered GGP packets). **`BesselUniquenessReal` severely restricts `π₀` on $U(J_0)$ to finite-dimensional irreps** and `σ` to unitary irreps (Jiang–Sun–Zhu 2010 holds for all irreducible Casselman–Wallach pairs)."
+        },
+        {
+          "col1": "`HoweDualityReal` (`.../Divisors₂/HoweDualityReal.lean#L21`), `GLHoweDuality` (`.../TwistedTraceFormula/IrreducibleDistinctUnitary.lean#L139`), `MetaplecticRepresentation` (`.../TwistedTraceFormula/MetaplecticRepresentation.lean#L94`), `RealMetaplecticRepresentation` (`.../TwistedTraceFormula/RealMetaplecticRepresentation.lean#L351`)",
+          "col2": "**Real Howe Duality & Metaplectic Representation** — Howe (1989, *J. AMS* 2 Thm. 1 & *Trans. AMS* 313 Thm. 2.1.2); Shale (1962); Weil (1964); Folland (1989), Ch. 4",
+          "col3": "**`HoweDualityReal` is drastically weakened to the trivial representation on $U(X)$ only** (finite length + unique maximal proper submodule of coinvariants, no general correspondence). `GLHoweDuality` excludes $n=0$ or $n'=0$; `MetaplecticRepresentation` vs. `RealMetaplecticRepresentation` split Gaussian determinant formula vs. infinitesimal $\\mathfrak{sp}_{2n}(\\mathbb{R})$ action across two separate specs."
+        },
+        {
+          "col1": "`WeylDimensionGL` (`.../GlobalTheta/FiniteDimensionalNablaSq.lean#L11`, both conjuncts proved), `WeylBranching` (`.../PublishedFoundations/FiniteIntertwining.lean#L129`), `InducedSimpleLowestAlcove` (`.../GlobalTheta/WeylDualWeylLatticesAgreeOfLowestAlcove.lean#L19`)",
+          "col2": "**Weyl Dimension, Branching & Lowest-Alcove Modules** — Weyl (1925/26, 1939); Goodman–Wallach Thm. 8.1.1; Andersen (1980) / Jantzen (2003), *Representations of Algebraic Groups*, Part II Cor. 5.6",
+          "col3": "All three specialized strictly to $\\mathrm{GL}_N$ (and $U(N)$ for branching) realized on custom polynomial Weyl/dual-Weyl modules `delSq`/`nablaSq`; otherwise faithful."
+        }
+      ]
+    },
+    {
+      "num": 5,
+      "title": "Theta Correspondence, Siegel–Weil Formulas & Doubling Method",
+      "intro": "",
+      "rows": [
+        {
+          "col1": "`WeilRepresentationExists` (`.../Divisors₂/WeilRepresentationExists.lean#L12`), `WeilRepresentationUnitaryPair` (`.../AutomorphicForms₂/WeilRepresentationUnitaryPair.lean#L12`)",
+          "col2": "**Weil Representation for Unitary Dual Pairs** — Weil (1964), *Acta Math.* 111; Kudla (1994), *Israel J. Math.* 87, Thm. 3.1",
+          "col3": "Restricted to unitary dual pairs over CM fields (`WeilRepresentationUnitaryPair` restricted further to `D7`/`HSp` and fixed `IsStdChar D ψ (-1)` in the lattice/theta model). `WeilRepresentationExists` omits $L^2$-unitarity and uniqueness; `WeilRepresentationUnitaryPair` omits explicit local Weil indices and non-split/archimedean formulas."
+        },
+        {
+          "col1": "`WeilSiegelOneVector` (`.../GlobalTheta/IsSchwartzBruhatOfProd.lean#L65`), `WeilSiegelFormula`, `WeilThetaConvergence`, `WeilEisensteinSiegelConvergence` (`.../Divisors₂/WeilSiegelFormula.lean#L18`, `.../WeilThetaConvergence.lean#L18`, `.../WeilEisensteinSiegelConvergence.lean#L18`), `WeilSiegelFormulaUnitary` (`.../TwistedTraceFormula/WeilSiegelFormulaUnitary.lean#L56`)",
+          "col2": "**Convergent Siegel–Weil Formula (Weil 1965)** — Weil (1965), *Acta Math.* 113, Thms. 2 & 5 (convergent Siegel–Weil formula for unitary groups)",
+          "col3": "`WeilSiegelOneVector` restricts to $n = 1$, $M \\ge 3$, evaluated at $g = 1$. The other 4 restrict strictly to the **bespoke `D7` / `HSp` host** (and `WeilSiegelFormula`/`WeilEisensteinSiegelConvergence` evaluate at $g = 1$ only)."
+        },
+        {
+          "col1": "`SiegelWeilAnisotropicCM` (`.../Divisors₂/ExistsRationalDblCoord.lean#L141`), `SiegelWeilAnisotropicHermitian` (`.../Divisors₂/SiegelWeilAnisotropicHermitian.lean#L12`), `SiegelWeilAnisotropicWitt` (`.../Divisors₂/SiegelWeilAnisotropicWitt.lean#L14`), `SiegelWeilAnisotropicStd` (`.../Divisors₂/SiegelWeilAnisotropicStd.lean#L17`), `SiegelWeilAnisotropicUnitary` (`.../TwistedTraceFormula/SiegelWeilAnisotropicUnitary.lean#L109`), `SiegelWeilUnitaryConvergent` (`.../SiegelWeil₂/SiegelWeilUnitaryConvergent.lean#L18`), `SiegelWeilUnitarySchrodinger` (`.../SiegelWeil₂/SiegelWeilUnitarySchrodinger.lean#L107`), `SiegelWeilUnitarySchrodingerLit` (`.../WeilBound/.../SiegelWeilSchrodinger/SiegelWeilUnitarySchrodingerLit.lean#L12`)",
+          "col2": "**Ichino / Kudla–Rallis Convergent Siegel–Weil** — Ichino (2007), *Math. Z.* 255(4), Thm. 1.1; Kudla–Rallis (1988), *Crelle* 387 & 391",
+          "col3": "All require **everywhere-unramified CM extensions** (and `Std`/`Unitary`/`Convergent`/`Schrodinger*` restrict further to `D7`/`HSp`). `SiegelWeilAnisotropicCM` drops the $m \\le n$ factor-of-2 range; `Convergent` & `Schrodinger*` restrict to Fock vectors in $n < m \\le 2n$ with $n + r < m$ (`*Lit` strips integrability & Eisenstein convergence)."
+        },
+        {
+          "col1": "`RegularisedSiegelWeilFirstTerm` (`.../TwistedTraceFormula/RegularisedSiegelWeilFirstTerm.lean#L201`), `RegularisedSiegelWeilFirstTermIdentity₂` (`.../AutomorphicSpectrum/.../SiegelWeil₂/RegularisedSiegelWeilFirstTermIdentity2.lean#L52`), `FirstTermIdentityHecke` (`.../SiegelWeil₂/FirstTermIdentityHecke.lean#L29`), `FirstTermIdentityResidues` (`.../SiegelWeil₂/FirstTermIdentityResidues.lean#L17`), `FirstTermIdentitySchrodinger` (`.../SiegelWeil₂/FirstTermIdentitySchrodinger.lean#L17`), `RegularisingElement` (`.../SiegelWeil₂/RegularisingElement.lean#L17`), `EisensteinResidue` (`.../SiegelWeil₂/EisensteinResidue.lean#L17`)",
+          "col2": "**Regularized Siegel–Weil First-Term Identity** — Ichino (2004), *Math. Z.* 247, Thms. 1.1, 4.1 & §§2–4; Kudla–Rallis (1994), *Ann. of Math.* 140, Thm. 5.1 & Prop. 5.5.3; Gan–Qiu–Takeda (2014), *Invent. Math.* 198",
+          "col3": "All restricted to `D7`/`HSp`, exclude the boundary case $T' = 0$ ($m = 2n$), and leave the **proportionality constant `κ ≠ 0` completely unspecified** (unlike Ichino's exact Tamagawa constant). Most use archimedean Gelfand-center regularization instead of Ichino's finite-place Hecke operator; `FirstTermIdentityHecke` chooses the regularizing place *inside* `∀ Φ Φ'`; `FirstTermIdentityResidues` only assumes residue existence; `RegularisedSiegelWeilFirstTermIdentity₂` weakens convergence to unspecified `Far` half-planes."
+        },
+        {
+          "col1": "`DoublingMethod` (`.../TwistedTraceFormula/EisRegularAtOfEisPoleLE.lean#L36`), `SiegelEisDoubling` (`.../AutomorphicSpectrum/.../SiegelWeil₂/SiegelEisensteinDoublingOfContinuation.lean#L17-L32`), `SiegelEisensteinContinuation` (`.../SiegelWeil₂/SiegelEisensteinContinuationOfDoublingMethod.lean#L14`), `SiegelEisensteinSimplePole` (`.../SiegelWeil₂/SiegelEisensteinSimplePoleOfDoublingMethod.lean#L14`), `SiegelEisensteinPolesStd` (`.../SiegelWeil₂/SiegelEisensteinPolesStd.lean#L29`), `SiegelEisensteinDoubled` (`.../Divisors₂/SiegelEisensteinDoubled.lean#L12`), `UnramifiedDoublingGL` (`.../TwistedTraceFormula/PairwiseDisjointCell.lean#L314`)",
+          "col2": "**Piatetski-Shapiro–Rallis Doubling Method** — Piatetski-Shapiro–Rallis (1987), LNM 1254; Shimura (1997); Tan (1999), *Canad. J. Math.* 51, Thm. 1.1 & 3.2; Lapid–Rallis (2005), *Ann. of Math.* 161",
+          "col3": "Restricted to `D7`/`HSp` (or char-0 $\\mathrm{GL}_n$ for `UnramifiedDoublingGL`), unitary $\\mu$ with `ResEta`, omitting functional equations and Euler-product factorizations. `SiegelEisDoubling` omits the doubling basic identity itself and uses `EisConvFar`; `SiegelEisensteinSimplePole` checks only the single point $(b-n)/2$; `SiegelEisensteinPolesStd` omits Tan's exact finite candidate pole set."
+        },
+        {
+          "col1": "`RallisCoinvariants` (`.../Divisors₂/RallisCoinvariants.lean#L11`), `DegeneratePrincipalSeriesUnitary` (`.../Divisors₂/DegeneratePrincipalSeriesUnitary.lean#L11`), `ComplementaryThetaInert` (`.../Divisors₂/ComplementaryThetaInert.lean#L11`), `RallisTowerUnitary` (`.../Divisors₂/RallisTowerUnitary.lean#L14`), `RallisInnerProductConvergent` (`.../TwistedTraceFormula/LowerLiftsZeroOfWittIdxEqZero.lean#L41`)",
+          "col2": "**Rallis Tower & Inner Product Formula** — Rallis (1984, *Compos. Math.* 51 Thm. I.1.1 & *Amer. J. Math.* 106); Kudla–Rallis (1992, 1994); Lee–Zhu (1998); Li (1992); Yamana (2014); Gan–Qiu–Takeda (2014)",
+          "col3": "`DegeneratePrincipalSeriesUnitary` omits $m = n$ and full composition series; `RallisTowerUnitary` states only the cuspidality half (omitting eventual nonvanishing and constant-term formula); `RallisInnerProductConvergent` restricts to `D7`/`HSp`, uses Laurent constant term `ValueAt`, and stops at the global doubling zeta integral (no $L$-value factorization)."
+        }
+      ]
+    },
+    {
+      "num": 6,
+      "title": "$p$-adic Hodge Theory, $p$-Divisible Groups & Prismatic Dieudonné Theory",
+      "intro": "",
+      "rows": [
+        {
+          "col1": "`FontaineBcris` (`.../GaloisCohomology₂/OneSubPhiOntoOfFilZero.lean#L15-L20`), `FontaineEtale` (`.../GaloisCohomology₂/ExistsLeKsOfGood.lean#L12-L30`), `TateDualCrystalline` (`.../GaloisGeometry₂/TateDualCrystalline.lean#L46`), `HtCard` (`.../AutomorphicForms₂/HtCard.lean#L10`)",
+          "col2": "**Fontaine $p$-adic Period Rings & Crystalline Reps** — Fontaine (1982, 1990 Grothendieck Festschrift II Thm. A.1.2.6, 1994 *Astérisque* 223 Exp. II–III)",
+          "col3": "`FontaineEtale` **omits the equivalence of categories with étale $(\\varphi, \\Gamma_K)$-modules** and restricts its characterization of $E_{\\mathrm{ur}}^{H_K}$ to $K \\subset K_0(\\mu_{\\ell^m})$. `FontaineBcris` bundles 7 algebraic clauses (omitting $B_{\\mathrm{cris}}^{G_K}=K_0$, $B_{\\mathrm{dR}}^{G_K}=K$, DVR structure of $B_{\\mathrm{dR}}^+$). `TateDualCrystalline` covers only $A^\\vee(1)$ (not full Tannakian closure). `HtCard` wraps $\\dim D_{\\mathrm{dR}} = a$ inside the bespoke `D7`/`WDSide` interface."
+        },
+        {
+          "col1": "`DeRhamPotSemistable` (`.../AutomorphicForms₂/DeRhamPotSemistable.lean#L13`), `DeRhamPotSemistableLit` (`.../WeilBound/.../PotentialSemistability/DeRhamPotSemistableLit.lean#L10`)",
+          "col2": "**Berger $p$-adic Monodromy Theorem** — Berger (2002), *Invent. Math.* 148, Thm. 0.7 (Fontaine's $p$-adic monodromy conjecture; André / Kedlaya / Mebkhout)",
+          "col3": "Restricted to finite extensions `K : FinExt l` of $\\mathbb{Q}_\\ell$ (vs. arbitrary complete mixed-char DVR with perfect residue field); omits the equivalence of categories with filtered $(\\varphi, N, G_K)$-modules."
+        },
+        {
+          "col1": "`BhattScholzeIntegral` (`.../GaloisCohomology₂/BhattScholzeIntegral.lean#L12`), `BhattScholzeCrystallineLattices` (`.../GaloisCohomology₂/BhattScholzeCrystallineLattices.lean#L12`)",
+          "col2": "**Bhatt–Scholze Prismatic $F$-Crystals** — Bhatt–Scholze (2023), *Camb. J. Math.* 11, Thms. 1.2 & 5.6",
+          "col3": "Restricted to finite extensions $K/\\mathbb{Q}_\\ell$; **one-sided only** — states existence of an `FCrys` realizing every crystalline lattice plus full faithfulness on realizing morphisms, **omitting the converse** that every prismatic $F$-crystal yields a crystalline lattice."
+        },
+        {
+          "col1": "`FarguesExact` (`.../AutomorphicSpectrum/.../Algebra₂/FarguesExact.lean#L10`), `FarguesHodgeTate` (`.../AutomorphicSpectrum/.../Algebra₂/FarguesHodgeTate.lean#L10`)",
+          "col2": "**Fargues–Tate Exactness & Hodge–Tate Map** — Tate (1967); Fargues (2010, *Crelle* 645 Prop. 8; 2011, *Ann. Sci. ÉNS* 44); Scholze–Weinstein (2013), *Camb. J. Math.* 1, Prop. 3.2.4",
+          "col3": "Replace integral middle exactness (and the map $\\alpha_G^\\vee$) with saturated orthogonality $\\ker(\\alpha_{G^D}^*) = (\\ker\\alpha_G)^\\perp$ under the Cartier pairing; **`FarguesHodgeTate` weakens the cokernel bound at $p = 2$ by a factor of $2$** (`v(4)` instead of `v(2)`); no Galois equivariance; Hopf-algebra `PDivGroup`."
+        },
+        {
+          "col1": "`PDivisibleGroupsOverOC` (`.../Divisors₂/PDivisibleGroupsOverOC.lean#L17`), `ScholzeWeinsteinB` (`.../Divisors₂/ScholzeWeinsteinB.lean#L13`)",
+          "col2": "**Scholze–Weinstein Classification over $\\mathcal{O}_C$** — Scholze–Weinstein (2013), *Camb. J. Math.* 1, Thm. B (and 2020 *Berkeley Lectures*, Thm. 14.1.1)",
+          "col3": "`ScholzeWeinsteinB` formulates essential surjectivity via saturated $\\mathcal{O}$-submodules instead of $C$-subspaces (`PDivisibleGroupsOverOC` uses $C$-subspaces); no Galois action or exactness/Cartier-duality functoriality stated."
+        },
+        {
+          "col1": "`PrismaticDieudonne` (`.../Divisors₂/PrismaticDieudonneAt.lean#L42`), `PrismaticDieudonneHodge` (`.../Divisors₂/InjectiveOfSmulMemRange.lean#L62`), `PrismaticDieudonnePerfd` (`.../Divisors₂/PrismaticDieudonnePerfd.lean#L59`), `PrismaticDieudonneIntegers`, `PrismaticFiltered` (`.../AutomorphicSpectrum/.../Divisibility₂/PrismaticFilteredAtOfIntegersAt.lean#L42-L85`)",
+          "col2": "**Prismatic Dieudonné Theory** — Scholze–Weinstein (2020), Thm. 17.5.2; Anschütz–Le Bras (2023), *Forum Math. Pi* 11, Thms. 1.4.4, 4.7.4; Lau (2018, 2021)",
+          "col3": "**None states essential surjectivity / equivalence of categories.** Restricted to $\\mathcal{O}_C$ (or custom `CycPerfd` in `PrismaticDieudonnePerfd`, which **omits the Frobenius-surjectivity-mod-$p$ perfectoid axiom** and drops full faithfulness altogether!). `PrismaticDieudonneIntegers` omits full faithfulness and Frobenius compatibility of duality; `PrismaticFiltered` & `PrismaticDieudonneHodge` check full faithfulness **only on the single Hom-set $\\mathrm{Hom}(\\mathbb{Q}_p/\\mathbb{Z}_p, \\mu_{p^\\infty})$**."
+        }
+      ]
+    },
+    {
+      "num": 7,
+      "title": "Abelian Schemes, Dieudonné Theory, Toroidal Compactifications & Moduli",
+      "intro": "",
+      "rows": [
+        {
+          "col1": "`principalPolarisationOneSection` (`.../AbelianLaws/PrincipalPolarisationOneSection.lean#L11`), `AbMulNSt` (`.../Landherr₂/DimEqZero.lean#L10`), `RosatiTracePosSt` (`.../RosatiTraces/RosatiTracePosStIff.lean#L16`), `TateCharPolySt` (`.../RosatiTraces/TateCharPolyStIffIsCharPoly.lean#L15`), `AbelianAmpleAcyclic` (`.../Divisors₂/AbelianAmpleAcyclic.lean#L14`), `AmpleVanishing` (`.../Divisors₂/IsL2OnDiagonalOfIsL2Metric.lean#L297`), `CubeTheorem` (`.../Divisors₂/CubeTheorem.lean#L16`)",
+          "col2": "**Classical Abelian Varieties (Weil / Mumford)** — Weil (1948); Mumford (1970), *Abelian Varieties*, §§6, 16, 19 Thm. 4, 21 Thm. 1; Moret-Bailly (1985), Ch. I",
+          "col3": "`principalPolarisationOneSection` states $h^0(L)=1$ over alg. closed $K$ only (no $H^{>0}=0$ or $n>1$). `AbMulNSt` (oddly housed in `Landherr₂/`) gives only cardinality $n^{2g}$, not the group isomorphism $(\\mathbb{Z}/n\\mathbb{Z})^{2g}$. `RosatiTracePosSt` & `TateCharPolySt` restrict unnecessarily to **principally polarized** `PolAV` (`RosatiTracePosSt` omits existence of $\\varphi'$ and $t$; `TateCharPolySt` uses finite torsion levels instead of $T_\\ell(A)$). `CubeTheorem` is faithful."
+        },
+        {
+          "col1": "`AmpleOfGenericSt`, `KernelFiniteFlatSt`, `PolExtSt` (`.../RelativeAmpleness/RelAmpleAndKTrivIff.lean#L156-L168`), `ZarhinStatement` (`.../AutomorphicSpectrum/.../Algebra₂/ZarhinStatement.lean#L21`)",
+          "col2": "**Relative Ampleness, Polarizations & Zarhin's Trick** — Raynaud (1970) Ch. XI Thm. 1.13; Mumford GIT Ch. 6 §2; Zarhin (1974), *Izv. Akad. Nauk* 38; Moret-Bailly (1985) Ch. IX Lem. 1.1",
+          "col3": "`KernelFiniteFlatSt` omits group-subscheme structure and degree $\\chi(L)^2$ on Noetherian affine base. `ZarhinStatement` restricts base to a rank-1 valuation ring of an alg. closed field, adds an explicit `RelAmple` hypothesis, and asserts only that $A$ is a retract of *some* principally polarized `P` (not identifying $(A \\times A^\\vee)^4$)."
+        },
+        {
+          "col1": "`FreeQuotientScheme` (`.../AutomorphicSpectrum/.../Algebra₂/RegularHypothesesAndConclusion.lean#L75`), `QuotientByFiniteFlatStatement` (`.../AutomorphicSpectrum/.../Algebra₂/QuotientByFiniteFlatStatement.lean#L21`), `IdentityComponentOpen` (`.../Divisors₂/IdentityComponentOpen.lean#L7`)",
+          "col2": "**SGA 3 Group-Scheme Quotients** — SGA 3 (Demazure–Grothendieck 1970), Exp. V Thm. 4.1, Exp. $\\mathrm{VI_A}$ Thm. 3.2, Exp. $\\mathrm{VI_B}$ Thm. 3.10; Mumford (1970) §12",
+          "col3": "`FreeQuotientScheme` restricts to free group actions and omits universal categorical quotient, $\\mathcal{O}_Y = (q_*\\mathcal{O}_X)^G$, base change, and uniqueness. `QuotientByFiniteFlatStatement` restricts to affine bases with explicit `RelAmple L`, omitting universal quotient property, $H$-torsor structure, uniqueness, and relation between $L$ and $L'$. `IdentityComponentOpen` is faithful."
+        },
+        {
+          "col1": "`AbelianDeRham` (`.../Divisors₂/CrysToDRBijective.lean#L24-L65`; proved conditionally in `.../WeilBound/.../PoincareDeRhamDuality/DeRhamPerfectPairing/PoincareDeRhamDualityOfCube.lean#L45`), `AbelianDeRhamStructure` (`.../Divisors₂/AbelianDeRhamStructure.lean#L15-L23`), `AbelianHodgeDeRham` (`.../Divisors₂/AbelianHodgeDeRham.lean#L15`), `DualAbelianScheme`, `CrystallineDeRham`, `AbelianDualCrystal` (`.../Divisors₂/ExistsCrystalPairing.lean#L25-L39`), `CrystallineSmoothLift` (`.../Divisors₂/BijectiveCechDeRhamComparisonDegreeOne.lean#L130`), `ConjugateFiltration` (`.../Divisors₂/ConjugateFiltration.lean#L17`), `PoincareDeRhamDuality` (`.../Divisors₂/PoincareDeRhamDuality.lean#L15`), `DeRhamVectorExtension` (`.../Divisors₂/DeRhamVectorExtension.lean#L48`), `PeriodComparison` (`.../Divisors₂/PeriodComparison.lean#L17`), `GaussManinPeriods` (`.../Divisors₂/GaussManinPeriods.lean#L37`)",
+          "col2": "**Abelian de Rham, Crystalline & Gauss–Manin Comparisons** — Grothendieck (1962, 1966); Oda (1969); Katz (1970); Berthelot (1974) Ch. V Thm. 2.3.2; Mazur–Messing (1974), LNM 370; Berthelot–Ogus (1978); Berthelot–Breen–Messing (1982), LNM 930",
+          "col3": "**All restricted to affine bases `Sp R` and degrees 1 & 2 only** (omitting $\\bigwedge^* H^1 \\cong H^*$ in higher degrees). `CrystallineSmoothLift`/`CrystallineDeRham` drop $p$-nilpotency of $R$; `ConjugateFiltration` omits the Cartier isomorphism; `AbelianDeRham.Duality` checks only principal polarizations (`KTriv`); `PeriodComparison` is up to undetermined sign `ε : ℤˣ`; `GaussManinPeriods` tests horizontality via Taylor expansions into nilpotent PD algebras. Note `WeilBound/.../PoincareDeRhamDuality/` **proves `AbelianDeRham`, NOT `PoincareDeRhamDuality`**."
+        },
+        {
+          "col1": "`AbelianDieudonne` (`.../Divisors₂/AbelianDieudonne.lean#L16`), `BarsottiTateDieudonne` (`.../Divisors₂/ExistsUniquePairsToTower.lean#L101-L131`), `GrothendieckMessing` (`.../Divisors₂/CanonicalOfAbelianDeRham.lean#L59`), `GrothendieckDeformation` (`.../Divisors₂/GrothendieckDeformation.lean#L12`), `AbelianLifting` (`.../Divisors₂/AbelianLifting.lean#L15`), `AbelianUnobstructed` (`.../Divisors₂/AbelianUnobstructed.lean#L15`), `AbelianSchemeLifts` (`.../Divisors₂/IsNoetherianRingDualNumber.lean#L31`)",
+          "col2": "**Grothendieck–Messing Deformation & Dieudonné Crystals** — Messing (1972), LNM 264 Ch. V Thm. 1.6; Grothendieck (1974); Oort (1971); Norman–Oort (1980); BBM (1982)",
+          "col3": "**Severe weakenings:** `BarsottiTateDieudonne.WittModule` **completely omits Frobenius $F$, Verschiebung $V$, and equivalence of categories** (giving only a free $W(k)$-functor reducing to `RigExt`); `AbelianDieudonne` omits full faithfulness, equivalence, and $F/V$-compatibility on $A$. `GrothendieckMessing`/`Deformation`/`AbelianLifting` apply to abelian schemes (not general $p$-divisible groups), require a reference lift `A'`, and the latter two drop $p$-nilpotency; `AbelianSchemeLifts` classifies smooth *scheme* lifts (without group structure) over Noetherian square-zero thickenings."
+        },
+        {
+          "col1": "`SemiAbelianHomExtension` (`.../SemiabelianTori/GeometricallyConnectedSplitTorusAff.lean#L15`), `SemistableReductionSt` (`.../SemistableReduction₂/SemistableReductionSt.lean#L15`), `RaynaudExtension`, `GrothendieckOrthogonality` (`.../Divisors₂/HenselianLocalRingOfIsAdicComplete.lean#L224-L260`), `NeronModelExists` (`.../Divisors₂/NeronModelExists.lean#L19`), `SemiAbelianLieSeminegative` (`.../Divisors₂/InterNumDetNonposSplitTorus.lean#L23`), `NeronLieSeminegative` (`.../Divisors₂/NeronLieSeminegative.lean#L19`), `SerreTateGoodReductionSt`, `NeronOggShafarevichSt`, `PotentialGoodReductionSt`, `CMPotentialGoodReductionSt` (`.../Divisors₂/TateUnramifiedOfTorsionUnramified.lean#L108-L131`), `FormalAlgebraisation` (`.../Divisors₂/FormalAlgebraisation.lean#L43`)",
+          "col2": "**SGA 7 Semistable Reduction, Néron Models & Serre–Tate** — SGA 7₁ Exp. IX (Thms. 2.4, 3.6, §§5–7); Néron (1964) / BLR (1990) Thm. 1.4/3; Serre–Tate (1968), *Ann. of Math.* 88, Thms. 1, 2, 6; Faltings–Chai (1990) I.2.7 & Ch. II; Fujita (1978) / Kawamata (1981); EGA III₁ §5.4",
+          "col3": "`SemistableReductionSt` restricts to finite extensions of $\\mathbb{Q}_p$ and principally polarized `PolAV` (not general DVRs or Néron identity component). **`NeronModelExists` restricts to smooth projective curves over fields (omitting DVRs and $\\operatorname{Spec}\\mathcal{O}_K$!)**. `RaynaudExtension` requires split special-fiber torus and integrally closed Noetherian complete domain; `GrothendieckOrthogonality` omits the monodromy pairing on character groups; `CMPotentialGoodReductionSt` requires finite residue field and CM by a *field*. `SemiAbelianHomExtension` and `FormalAlgebraisation` are faithful."
+        },
+        {
+          "col1": "`CanonKeySt` (`.../ThetaCharacteristics/ThetaCharZero.lean#L14`), `MoretBaillyModel` (`.../Divisors₂/IsThetaMeanSquareNorm.lean#L53`)",
+          "col2": "**Moret-Bailly Models & Formule Clé** — Moret-Bailly (1985), *Astérisque* 129 (*formule clé* & Ch. VIII–X); Faltings–Chai (1990) Ch. I §5; Bost (1996), *Sém. Bourbaki* 795, §4.2; Gaudron–Rémond (2014)",
+          "col3": "`CanonKeySt` restricts base rings to fields or DVRs (rather than general schemes $S$) and encodes the isomorphism as a unit-valued invariant on framed objects. `MoretBaillyModel` is a custom combined package of Moret-Bailly models with Bost's Arakelov degree/slope bound for theta sections."
+        },
+        {
+          "col1": "`ToroidalCompactification` (`.../Divisors₂/DenseInterior.lean#L146`), `ToroidalForFanKS` (`.../Divisors₂/ToroidalCompactificationBis.lean#L45`), `ToroidalPolChartsKS` (`.../Divisors₂/ToroidalPolChartsKS.lean#L13`), `ToroidalCharts` (`.../AutomorphicForms₂/AdmissibleBaseChartRing.lean#L51`), `ToroidalChartsForFan` (`.../AutomorphicForms₂/ToroidalChartsForFan.lean#L60`), `DeRhamCanonicalExtension` (`.../Divisors₂/ToroidalCompactification.lean#L241`), `CanonicalExtensionRankOne` (`.../Divisors₂/ExistsHorizontalGeneratorOfCharts.lean#L32`, proved in-file), `MumfordConstruction` (`.../AutomorphicForms₂/MumfordConstruction.lean#L11`), `SiegelToroidalIntegral` (`.../AutomorphicForms₂/SiegelToroidalIntegral.lean#L145`), `SiegelToroidalPolCharts` (`.../Divisors₂/SiegelToroidalPolCharts.lean#L13`)",
+          "col2": "**PEL Shimura Toroidal Compactifications & Mumford Degeneration** — AMRT (1975); Mumford (1972); Faltings–Chai (1990), Ch. III Thm. 7.1, Ch. IV Thm. 6.7, Ch. V Thm. 5.8; Lan (2013), LMS Monogr. 36, Thms. 4.5.1.10, 6.4.1.1, 7.3.3.4; Deligne (1970)",
+          "col3": "**All PEL toroidal & Mumford statements are restricted to the bespoke `Host E`** ($\\sqrt{-d}$ with prime $d \\equiv 7 \\pmod{16}$, $E/E^+$ unramified, uniform signature $(p,q)$, unimodular lattice, odd split level $M \\ge 3$) and **characteristic-0 number-field bases only** (NOT Lan 2013's integral models!). `MumfordConstruction` omits categorical equivalence $\\mathrm{DD} \\simeq \\mathrm{DEG}$; `DeRhamCanonicalExtension` **omits the nilpotent-residue condition** characterizing Deligne's extension; `SiegelToroidal*` restrict to odd $n \\ge 3$ and omit boundary stratification, Hecke/$\\mathrm{Sp}_{2g}$-equivariance, and $q$-expansion principle."
+        },
+        {
+          "col1": "`HilbertBlumenthal`, `DelignePappasModel`, `HilbertQExpansion`, `GoetzkyKoecher`, `HilbertKodairaSpencer`, `RealMultDeRhamRank` (`.../Divisors₂/HilbertKodairaSpencer.lean#L53-L100`)",
+          "col2": "**Hilbert–Blumenthal Moduli & $q$-Expansion Principle** — Götzky (1928); Koecher (1954); Rapoport (1978), *Compos. Math.* 36; Katz (1978); Deligne–Pappas (1994), *Compos. Math.* 90, Thm. 2.2 & Cor. 2.9",
+          "col3": "`HilbertQExpansion` and `GoetzkyKoecher` restrict to **level 1 and parallel scalar weight $k \\in \\mathbb{N}$**, and `HilbertQExpansion` uses `Subring ℂ` (char-0 only, excluding mod-$p$ $q$-expansion principle). `HilbertKodairaSpencer` restricts to affine `Sp R` and the Rapoport locus; `RealMultDeRhamRank` matches Deligne–Pappas Cor. 2.9 faithfully."
+        }
+      ]
+    },
+    {
+      "num": 8,
+      "title": "Complex, Algebraic & Arakelov Geometry",
+      "intro": "",
+      "rows": [
+        {
+          "col1": "`ResolutionCharZero` (`.../AutomorphicSpectrum/.../Geometry₂/ConclusionOfSmooth.lean#L53`), `PrincipalisationCharZero` (`.../AutomorphicSpectrum/.../Geometry₂/NotSubsetOfDenseCompl.lean#L57`), `ResK`, `ProjResolution`, `Principalization` (`.../AutomorphicSpectrum/.../PublishedGlobalResults/PrincipalizationOfPrincipalisation.lean#L15-L35`), `Principalisation` (`.../Divisors₂/GeometricallyConnectedOfIsIsoRestrict.lean#L118`), `AnalyticLogResolution` (`.../Divisors₂/LogResolutionProjectiveLine.lean#L12`)",
+          "col2": "**Hironaka Resolution of Singularities (Char. 0)** — Hironaka (1964), *Ann. of Math.* 79, Main Thms. I & II; Bierstone–Milman (1997); Kollár (2007), Thms. 3.26 & 3.36",
+          "col3": "All omit functoriality and equivariance. `ResolutionCharZero` allows **arbitrary (non-smooth) blowup centers** and adds separatedness; **`PrincipalisationCharZero` never constrains the total transform `E'` in its conclusion** (dropping joint SNC with the initial boundary `E`!); `ProjResolution` completely omits blowups and SNC exceptional locus; `Principalization`/`Principalisation`/`AnalyticLogResolution` restrict to integral smooth projective varieties without an ambient boundary `E`."
+        },
+        {
+          "col1": "`RegularAlteration` (`.../Divisors₂/RegularAlteration.lean#L10`)",
+          "col2": "**de Jong Alterations** — de Jong (1996), *Publ. Math. IHÉS* 83, Thm. 4.1 & §8.2",
+          "col3": "Restricted to `IsArithVar p d` over `Sp ℤ` (char-0 generic fiber); omits SNC boundary divisor, semistable reduction over a DVR, and Galois group actions."
+        },
+        {
+          "col1": "`GagaSections` (`.../AutomorphicSpectrum/.../Geometry₂/GagaSections.lean#L10`), `SerreHolomorphicSections` (`.../Divisors₂/SerreHolomorphicSections.lean#L15`)",
+          "col2": "**Serre GAGA for Projective Line Bundles** — Serre (1956), *Ann. Inst. Fourier* 6 (GAGA), Thm. 1; SGA 1 Exp. XII Thm. 4.4",
+          "col3": "Restricted strictly to **$H^0$ of line bundles on smooth proper/projective** complex schemes (omitting $H^{q>0}$, general coherent sheaves, morphisms, and categorical equivalence; `GagaSections` states surjectivity only, via test-map holomorphy without constructing $X^{\\mathrm{an}}$)."
+        },
+        {
+          "col1": "`NefRR` (`.../AutomorphicSpectrum/.../Geometry₂/NefRR.lean#L8`), `NefNumerics`, `NefProductNonneg`, `NefBigIff`, `NefRiemannRoch` (`.../Divisors₂/ExistsAlgClosedBaseChange.lean#L15-L32`; proved in `.../WeilBound/.../NefNumerics/NefRiemannRoch/NefLineBundleNumericalTheoremsProof.lean#L11`)",
+          "col2": "**Kleiman–Snapper–Fujita Nef Line Bundle Numerics** — Kleiman (1966), *Ann. of Math.* 84; Snapper (1959); Fujita (1983); Lazarsfeld (2004), *Positivity I*, Thms. 1.4.40, 2.2.16",
+          "col3": "`NefNumerics` is very faithful over algebraically closed fields. `NefRR` restricts to multi-projective $\\mathbb{Q}$-varieties and ambient $\\mathcal{O}(a)$, counts sections on the **normalization** $\\widetilde{X}_{\\mathbb{Q}}$, and weakens $O(\\tau^{D-1})$ error + higher cohomology to $o(\\tau^D)$ limit only."
+        },
+        {
+          "col1": "`KawamataViehweg` (`.../Divisors₂/KawamataViehweg.lean#L16`), `NadelVanishingPair`, `IsolatedNonKltDivisor`, `NadelVanishingAndNonKltDivisor` (`.../Divisors₂/IsLogCanonicalMultipleCanonical.lean#L545-L574`; proved from `Principalisation` in `.../WeilBound/.../NadelVanishingPairs/NadelVanishingLemmas/NadelVanishingPairsOfPrincipalisation.lean#L16`), `PointSeparationPair` (`.../Divisors₂/PointSeparationPair.lean#L15`)",
+          "col2": "**Kawamata–Viehweg, Nadel Vanishing & Angehrn–Siu** — Kawamata (1982); Viehweg (1982); Deligne–Illusie (1987); Nadel (1990); Lazarsfeld *Positivity II* Thm. 9.4.8 & §10.4; Angehrn–Siu (1995), *Invent. Math.* 122",
+          "col3": "`KawamataViehweg` handles only **integral** nef-and-big line bundles on smooth projective char-0 varieties (no $\\mathbb{Q}$-divisors/round-ups). `NadelVanishingPair` proves the algebraic version (via Deligne–Illusie mod $p^2$) and **weakens the conclusion to bare existence of some ideal sheaf `J` with the right support** (omitting canonical identification as $\\mathcal{J}(X,\\Delta)$)."
+        },
+        {
+          "col1": "`DbarCompleteKaehler` (`.../Divisors₂/IsCompleteOfCompactBalls.lean#L358`), `DemaillyEstimates` (`.../Divisors₂/DemaillyEstimates.lean#L26`), `DemaillyRegularisation` (`.../Divisors₂/DemaillyRegularisation.lean#L27`), `L2ExtensionLogCanonical` (`.../Divisors₂/L2ExtensionLogCanonical.lean#L32`), `AnalyticSetDimension` (`.../Divisors₂/PointDimensionLtProjectiveLine.lean#L27`)",
+          "col2": "**Demailly $L^2$ Estimates & Ohsawa–Takegoshi Extension** — Andreotti–Vesentini (1965); Hörmander (1965); Demailly (1982, 1992, 1994); Ohsawa–Takegoshi (1987) / Demailly (2000) / Guan–Zhou (2015); Grauert–Remmert (1984)",
+          "col3": "`DbarCompleteKaehler` restricts to bidegree $(n,1)$, line bundles, and smooth uniformly strictly positive weights. `Demailly*` restrict to algebraic compact manifolds and quasi-psh functions (omitting Lelong-number preservation / Kiselman transform). **`L2ExtensionLogCanonical` restricts to 0-dimensional transverse zero sets** with a custom non-sharp constant `34 / δ * (2^(n+1) π^n / (n-1)!)`."
+        },
+        {
+          "col1": "`ChernDegree`, `ArBirational` (`.../AutomorphicForms₂/ArBirational.lean#L13-L25`), `ArDegree` (`.../AutomorphicForms₂/ArBirational.lean#L25`), `ChernDegreeComplex` (`.../Divisors₂/ChernDegreeComplex.lean#L12`), `ChernWeilNumbers` (`.../AutomorphicForms₂/ChernWeilNumbers.lean#L10`), `GoodTopChernForm` (`.../AutomorphicForms₂/GoodTopChernForm.lean#L10`), `GoodChernNumbers`, `GoodChernWeil`, `FlagPushForward`, `MumfordProportionality` (`.../AutomorphicForms₂/MumfordProportionality.lean#L16-L66`)",
+          "col2": "**Chern–Weil Theory & Mumford Proportionality** — Chern (1946); Grothendieck (1958) / Fulton §3.2; Mumford (1977), *Invent. Math.* 42, Thms. 1.4 & 3.2",
+          "col3": "`GoodTopChernForm` compares top Chern numbers only (no current identity in $H^{2k}$); `FlagPushForward` handles top degrees in char 0 only; **`MumfordProportionality` is heavily specialized to tautological bundles on flag bundles over toroidal compactifications of `Host E` PEL unitary Shimura varieties**."
+        },
+        {
+          "col1": "`PoincareLelong` (`.../AutomorphicSpectrum/.../Metrics₂/PoincareLelong.lean#L6`), `PoincareLelongInv` (`.../AutomorphicSpectrum/.../Metrics₂/PoincareLelongInv.lean#L9`), `PoincareLelongC` (`.../AutomorphicSpectrum/.../Metrics₂/SheetDensityEqSetSheetDensity.lean#L81`)",
+          "col2": "**Poincaré–Lelong Current Identity** — Lelong (1957); Griffiths–Harris (1978); Gillet–Soulé (1990) §1.3; Bost–Gillet–Soulé (1994), *J. AMS* 7, §§1.4, 3.2",
+          "col3": "Restricted to multi-projective embeddings, ambient pullback bundles, effective global polynomial sections, product test forms, and a custom `Classical.choose` Segre-projection sheet integral (`ptsIntegral`/`setIntegral`). `PoincareLelong`/`Inv` restrict to $\\mathbb{Q}$-defined varieties (`Inv` adds $F_\\infty$-conjugation invariance)."
+        },
+        {
+          "col1": "`ArithChowRing` (`.../Divisors₂/ConstantOneMemNonvanishing.lean#L153`), `PairingExists`, `Projection`, `CyclePairing` (`.../AutomorphicSpectrum/.../Divisibility₂/PairingExists.lean#L39-L49`), `ArCalc`, `ArExists`, `ArChange`, `ArShift`, `ArMix`, `ArProj`, `ArIso`, `ArMetric` (`.../Divisors₂/EqOfIsometricTrivShift.lean#L115-L161`), `HeightProjection`, `CycleHeights` (`.../Divisors₂/ResidueDegreeOfIsClosedImmersion.lean#L102-L109`), `HeightPairingExists` (`.../Divisors₂/PairingMulFirstChern.lean#L38`), `ChowFormExists`, `ChowFormHyperplaneSection`, `ChowFormIntExists` (`.../Divisors₂/IsMultiHomogeneousFixFirstBlock.lean#L104-L122`), `FubiniStudyChowHeight` (`.../Divisors₂/FubiniStudyChowHeight.lean#L17`)",
+          "col2": "**Gillet–Soulé Arithmetic Intersection & Chow Heights** — Gillet–Soulé (1990), *Publ. Math. IHÉS* 72 & *Ann. of Math.* 131; Bismut–Gillet–Soulé (1988); Bost–Gillet–Soulé (1994), *J. AMS* 7, §§2.3, 4.3; Chow–van der Waerden (1937); Philippon (1991/95)",
+          "col3": "**`ArithChowRing` uses $\\mathbb{Q}$-coefficients only and axiomatizes Bott–Chern & Whitney sum ONLY in degree 2 ($c_2$)**, existentially without canonicality. **`PairingExists`/`Projection` require smoothness over ALL of $\\operatorname{Spec}\\mathbb{Z}$** (excluding bad reduction and ramified $\\mathcal{O}_K$), use diagonal $c_1(N)^e$ in recursion, and omit the degenerate pushforward case $\\dim \\pi(Y) < \\dim Y$. `ChowForm*` restrict to char 0."
+        },
+        {
+          "col1": "`BismutKoehlerTorsion`, `BismutKoehlerTorsionWith`, `BismutKoehlerGlobal`, `TorsionAnomaly`, `GilletRoesslerSoule`, `ArithRiemannRoch` (`.../Divisors₂/IsL2OnDiagonalOfIsL2Metric.lean#L195-L301`)",
+          "col2": "**Bismut–Köhler Torsion & Arithmetic Riemann–Roch** — Bismut–Köhler (1992), *J. Algebraic Geom.* 1, Thms. 3.9–3.12; Gillet–Soulé (1992); Gillet–Rössler–Soulé (2008), *Ann. Inst. Fourier* 58, Thm. 1",
+          "col3": "**All severely restricted to flat-Kähler complex-torus / abelian fibrations** with period charts and **acyclic line bundles** (NOT arbitrary projective morphisms, non-flat Kähler fibrations, or higher-rank vector bundles). `GilletRoesslerSoule` existentially bundles `BottChern` and `ArChow`."
+        },
+        {
+          "col1": "`ArithHilbertSamuel` (`.../Divisors₂/SmallSecTensTriv.lean#L14`), `VolGe` (`.../Divisors₂/VolGe.lean#L12`), `VolNef`, `VolHomog` (`.../Divisors₂/VolHomog.lean#L12-L15`), `AbsoluteSiegel` (`.../Divisors₂/AbsoluteSiegel.lean#L11`), `ProperIntersectionLength` (`.../Divisors₂/TopSelfEqLengthOfSmooth.lean#L19`, proved in-file)",
+          "col2": "**Arithmetic Hilbert–Samuel, Volume & Absolute Siegel** — Gillet–Soulé (1992); Zhang (1995); Yuan (2008), *Invent. Math.* 173, Thm. 2.2; Moriwaki (2009); Chen (2008, 2010); Roy–Thunder (1996, *Crelle* 476 Thm. 2.1); Serre (1965) / Fulton Prop. 7.1",
+          "col3": "`ArithHilbertSamuel`/`Vol*` count sup-norm integral sections `smallSec` (asymptotically equivalent to $\\widehat{\\chi}$). `AbsoluteSiegel` produces only 1 small vector (not a full basis of $m$ independent vectors) with coarser constant $\\frac{1}{2}\\log m$ instead of the sharp Hermite/ball-volume constant."
+        },
+        {
+          "col1": "`NormalCompletionSt` (`.../AutomorphicForms₂/NormalCompletionSt.lean#L7`), `exists_unit_finite_lift`, `exists_mem_mul_eq_of_mem_pow` (`PositivityTheory/PublishedTheorems/UnitKilling/UnitAnnihilation/UnitAnnihilators/ExistsUnitKillsOfIdempotent.lean#L25-L65`, proved in-file)",
+          "col2": "**Zariski–Nagata Normal Completion, Nakayama & Krull** — Zariski (1948) / Nagata (1953) / EGA IV₂ Thm. 7.8.3(v); Nakayama (1951); Krull (1938), *Crelle* 179",
+          "col3": "`NormalCompletionSt` restricts to rings essentially of finite type over char-0 Dedekind domains (vs. arbitrary excellent rings). The `PositivityTheory` lemmas are proved specializations of non-local Nakayama and global Krull intersection for $M = A$."
+        }
+      ]
+    },
+    {
+      "num": 9,
+      "title": "Galois Cohomology, Class Field Theory, Algebraic $K$-Theory & Complex Multiplication",
+      "intro": "",
+      "rows": [
+        {
+          "col1": "`PoitouTateDuality`, `PoitouTateOdd` (`.../GaloisCohomology₂/ExistsPrimitiveRootPow.lean#L13-L43`), `PoitouTateTotallyComplex` (`.../GaloisCohomology₂/PoitouTateNineTermTransgressionZeroApply.lean#L288`), `PoitouTateNormalised` (`.../GaloisCohomology₂/PoitouTateNormalised.lean#L12`; proved in `.../WeilBound/.../PoitouTateDuality/PoitouTateNineTerm/PoitouTateNormalisedHolds.lean#L18`)",
+          "col2": "**Poitou–Tate Nine-Term Duality** — Tate (1962); Poitou (1967); Milne *ADT* I.4.10; NSW Thms. 8.6.7, 8.6.10",
+          "col3": "Excludes **$\\ell = 2$ with real places** (`l ≠ 2 ∨ IsTotallyComplex F`, omitting archimedean Tate cohomology $\\widehat{H}^r$); restricts to prime-power moduli $\\mathbb{Z}/\\ell^r\\mathbb{Z}$; uses **existential** connecting maps `δ₁, δ₂` and an **abstract isomorphism** `Sha2 ≃ₗ Dual Sha1` rather than canonical Cassels–Poitou–Tate duality."
+        },
+        {
+          "col1": "`GlobalEulerChar` (proved in `.../WeilBound/.../GlobalEulerCharacteristic/GlobalEulerCharOfLemmaX.lean#L13`), `GlobalFiniteness` (proved in `.../WeilBound/.../GlobalFiniteness/GlobalFiniteness.lean#L10`), `CohDimTwo`, `CohDimTwoGlobal`, `CohDimTwoLocal` (`.../GaloisCohomology₂/CohDimTwoLocalOfLocalFiniteness.lean#L10-L26`)",
+          "col2": "**Global Galois Euler Characteristic & Cohomological Dimension** — Tate (1962); Milne *ADT* I.4.15, I.4.18, I.5.1; Serre *Galois Cohomology*; NSW Thms. 7.1.8, 8.3.20, 8.7.4",
+          "col3": "`GlobalEulerChar` is faithful for all primes including $\\ell = 2$ with real places. `GlobalFiniteness` omits $H^{\\ge 3}$ finiteness for $\\ell = 2$ with real places (and drops the totally-complex $\\ell = 2$ vanishing branch, recovered separately in `VanishAll`). `CohDimTwoGlobal` restricts to totally complex fields (omitting odd $\\ell$ over non-totally-complex fields); `CohDimTwoLocal` restricts to char-0 number-field completions."
+        },
+        {
+          "col1": "`BlochKatoLocal`, `DimFormula`, `RationalDuality`, `IntegralDuality` (`.../GaloisCohomology₂/RationalDualityOfAllCoefficients.lean#L21-L62`)",
+          "col2": "**Bloch–Kato Local $H^1_f$ Orthogonality & Duality** — Bloch–Kato (1990), Grothendieck Festschrift I, Prop. 3.8 & Cor. 3.8.4",
+          "col3": "Restricted to $\\mathbb{Q}_\\ell$-coefficients / $\\mathbb{Z}_\\ell$-lattices over finite extensions `K : FinExt l` (vs. arbitrary finite coefficient fields $L/\\mathbb{Q}_\\ell$, though the file derives it from `bkACore`/`bkBCore` over general `LL`)."
+        },
+        {
+          "col1": "`TameQuotient`, `TameSymbol`, `TameLocal` (`.../GaloisCohomology₂/ContinuousCycMod.lean#L116-L155`; proved in `.../GaloisCohomology₂/ExistsCoprimePowOfMemIneKer.lean#L598-L1076`), `BrauerDegreeZero` (`.../GaloisCohomology₂/BrauerDegreeZero.lean#L12`), `ChebotarevDegreeOne` (`.../GaloisCohomology₂/ChebotarevDegreeOneIffCheb.lean#L12`), `ChebotarevOpenNormal` (`.../GaloisCohomology₂/ChebotarevOpenNormalIffDegreeOne.lean#L11`), `ChevalleyUnits` (`.../GaloisCohomology₂/ChevalleyUnits.lean#L7`)",
+          "col2": "**Tame Inertia, Brauer, Chebotarev & Chevalley** — Iwasawa (1955); Serre *Local Fields* Ch. XIV; NSW §7.5; Brauer (1947), *Ann. of Math.* 48, Thm. 1; Chebotarev (1926); Chevalley (1951), *J. Math. Soc. Japan* 3, Thm. 1",
+          "col3": "`TameQuotient` describes only the pro-$\\ell$ tame quotient over number-field completions; `TameSymbol` restricts to $q_v \\equiv 1 \\pmod{\\ell^n}$ and unramified $y$. `BrauerDegreeZero` drops the $p$-elementary subgroup restriction and states only the degree-0 corollary. **`Chebotarev*` completely omit density** (stating only existence outside any finite set $S$ of degree-1 primes). `ChevalleyUnits` specializes to $m$-th power unit subgroups."
+        },
+        {
+          "col1": "`GlobalArtinReciprocity` (`.../AutomorphicForms₂/ExistsUniqueHcharOfFiniteOrder.lean#L70`), `RayClassFieldSt`, `RayClassFieldMaximalSt` (`.../PublishedFoundations/NonemptyAlgHomOfIsRayOfDvd.lean#L17-L35`), `RayCharacterArtin` (`.../GaloisCohomology₂/ExistsIdealsPrimeToEqSpan.lean#L18`), `PrincipalIdealSt` (`.../AutomorphicForms₂/IsPrincipalMapOfAlgHom.lean#L13`), `QuadraticClassFieldTheory` (`.../TwistedTraceFormula/QuadraticClassFieldTheory.lean#L241`), `FerreroWashington` (`.../FerreroWashington.lean#L7`)",
+          "col2": "**Global Class Field Theory & Ferrero–Washington** — Takagi (1920); Artin (1927); Furtwängler (1929); Hasse (1930); Chevalley (1940); Artin–Tate (1967); Ferrero–Washington (1979), *Ann. of Math.* 109",
+          "col3": "`GlobalArtinReciprocity` omits complex-conjugation compatibility at real places. `RayClassFieldSt` uses **narrow** moduli only, whereas `RayCharacterArtin` uses **wide** moduli only (unramified at real places). `PrincipalIdealSt` restricts to totally complex fields. `QuadraticClassFieldTheory` restricts to quadratic extensions using `FinFam × InfFam` instead of topological ideles. `FerreroWashington` adds $\\mu_\\ell \\subset K$ (or $\\mu_4$ if $\\ell=2$) and states uniform boundedness of $"
+        },
+        {
+          "col1": "`ComplexMultiplicationJSt` (`.../PublishedFoundations/ComplexMultiplicationJPremises.lean#L38`), `IdealInvariantsOneOrbitSt` (`.../GlobalTheta/ExistsMemIdealInvariants.lean#L14`), `EllipticMainTheoremCM`, `HilbertClassFieldJ` (`.../Divisors₂/ExistsEqOfNatCastMulMem.lean#L56-L66`), `SingularModuliClassField` (`.../Divisors₂/SingularModuliClassField.lean#L9`), `WeberRayFieldSt` (`.../WeberRayClassFields/WeberRayFieldSt.lean#L10`), `CMCurveGoodOutsidePrimeSt` (`.../Divisors₂/CmCurveGoodOutsidePrimePremises.lean#L35`)",
+          "col2": "**Complex Multiplication & Class Fields via $j$-Invariants** — Weber (1908); Shimura–Taniyama (1961); Shimura (1971), Thms. 5.4, 5.7, 6.23; Gross (1980), LNM 776, §§11–12; Silverman *ATAEC* Ch. II",
+          "col3": "All CM/$j$-invariant theorems restrict to **maximal orders** $\\mathcal{O}_K$ (no ring class fields; `ComplexMultiplicationJSt` omits integrality of $j(\\mathfrak{a})$; `SingularModuliClassField` omits Shimura reciprocity). `WeberRayFieldSt` restricts to `discr K < -4` (excluding $\\mathbb{Q}(i), \\mathbb{Q}(\\sqrt{-3})$) and rational ideals `(n)`. `CMCurveGoodOutsidePrimeSt` omits the $\\mathbb{Q}$-curve isogenies and Grössencharakter of $A(p)$."
+        },
+        {
+          "col1": "`TateHonda` (`.../GaloisGeometry₂/TateHonda.lean#L14`), `SmoothNearbyCycles` (`.../GaloisGeometry₂/SmoothNearbyCycles.lean#L12`)",
+          "col2": "**Honda–Tate Theory & Smooth Nearby Cycles** — Tate (1966), *Invent. Math.* 2, Thm. 1; Honda (1968) / Tate (1968/69), *Sém. Bourbaki* 352; Deligne (1973), SGA 7 XIII Prop. 2.1.7",
+          "col3": "`TateHonda` omits injectivity in Tate (1966) Thm. 1(a), and omits simplicity, bijection, Brauer-invariant exponent formula, and Weil converse in Honda–Tate. `SmoothNearbyCycles` restricts to **constant torsion sheaves** $\\Lambda$ on stalks (not arbitrary constructible sheaves / derived isomorphism $f^* R\\Psi \\simeq R\\Psi f^*$)."
+        },
+        {
+          "col1": "`KPlusExists`, `KAcyclicHomology`, `KMilnor`, `KHurewicz`, `KStability` (`.../KAcyclicHomology.lean#L9-L23`), `KFinGen`, `KBorelRank`, `KFiniteField`, `KLocalisation`, `KDwyerFriedlander` (`.../KArith.lean#L11-L33`)",
+          "col2": "**Algebraic $K$-Theory (Quillen / Borel / Dwyer–Friedlander)** — Quillen (1970, 1972 *Ann. of Math.* 96, 1973 LNM 341); Borel (1974), *Ann. Sci. ÉNS* 7; Soulé (1979); Dwyer–Friedlander (1985), *Trans. AMS* 292, Thm. 8.7; Hausmann–Husemoller (1979); Milnor (1957); Arlettaz (1991, 1992); van der Kallen (1980), *Invent. Math.* 60, Thm. 4.11",
+          "col3": "`Plus` models only $K_{\\ge 1}$ of commutative rings (omitting $K_0$, universal property, uniqueness, infinite loop space). **`KLocalisation` and `KDwyerFriedlander` are severely weakened to bare existence of uncharacterized homomorphisms** (not canonical maps; `KLocalisation` is a single 3-term piece; `KDwyerFriedlander` restricts to totally complex $L$ with $\\sqrt{-1} \\in L$ if $\\ell = 2$). `KMilnor` states homology iso only (not weak homotopy equivalence); `KAcyclicHomology` omits local coefficients; `KStability` uses conservative bound $2i+s+2 \\le n$; `KHurewicz` uses $R_{k+2}$ instead of sharp $R_{k+1}$."
+        },
+        {
+          "col1": "`RadfordShufflePolynomial` (`.../TwistedTraceFormula/RadfordShufflePolynomialHolds.lean#L675`, proved unconditionally in-file)",
+          "col2": "**Radford Shuffle Algebra Polynomial Generators** — Radford (1979), *J. Algebra* 58, Thm. 3.1.1",
+          "col3": "Faithful over char-0 fields (`[Field K] [CharZero K]`)."
+        }
+      ]
+    },
+    {
+      "num": 10,
+      "title": "Analytic Number Theory, Hermitian Forms, Arithmetic Volumes & Geometry of Numbers",
+      "intro": "",
+      "rows": [
+        {
+          "col1": "`HeckeTateFunctionalEquation`, `HeckeTateFunctionalEquationCM`, `HeckeEntire` (`.../Divisors₂/HeckeTateFunctionalEquationCM.lean#L238-L251`), `HeckeFunctionalEquationAbs` (`.../Divisors₂/HeckeFunctionalEquationAbs.lean#L10`), `HeckeLEntireAndNonzeroAtOne` (`.../TwistedTraceFormula/HeckeLEntireAndNonzeroAtOne.lean#L28`), `HeckeLPartialContinuation` (`.../TwistedTraceFormula/HeckeLPartialContinuationHolds.lean#L15`, proved in-file), `PartialZetaFunctionalEquation` (`.../Divisors₂/PartialZetaFunctionalEquation.lean#L11`), `SiegelKlingen`, `DeligneRibet`, `SiegelKlingenDeligneRibet` (`.../Divisors₂/SiegelKlingenDeligneRibet.lean#L40-L52`)",
+          "col2": "**Hecke–Tate $L$-Functions & Deligne–Ribet Integrality** — Hecke (1917, 1918, 1920); Tate (1950); Siegel (1937/69); Klingen (1962); Deligne–Ribet (1980), *Invent. Math.* 59, Thm. 0.4",
+          "col3": "`HeckeTate*` restrict to totally complex/CM fields and unitary characters with nontrivial algebraic infinity type (omitting poles and real places; `*Abs` drops explicit Gauss-sum root numbers). `HeckeLEntire*`/`PartialContinuation` omit $\\Gamma$-factors, functional equations, and pole residues. `PartialZetaFunctionalEquation` restricts to totally real fields. **`DeligneRibet` restricts conductors to pure prime powers $(\\ell^n)$ and states single-value integrality only (no Kummer congruences across weights or $p$-adic $L$-function)**."
+        },
+        {
+          "col1": "`ExplChi` (`.../AutomorphicForms₂/ExplChi.lean#L12`), `ExplZeta` (`.../AutomorphicForms₂/ExplZeta.lean#L12`), `ZeroCount` (`.../AutomorphicForms₂/ZeroCount.lean#L12`), `LogDerOne` (`.../AutomorphicForms₂/LogDerOne.lean#L12`), `PageThm` (`.../AutomorphicForms₂/PageThm.lean#L12`), `Jutila` (`.../AutomorphicForms₂/Jutila.lean#L12`), `Linnik` (`.../PublishedFoundations/PrimesInProgressionNonempty.lean#L9`)",
+          "col2": "**Explicit Formulas, Page, Linnik & Jutila Zero-Density** — von Mangoldt (1895); Landau (1908, 1918); Page (1935); Linnik (1944); Davenport *MNT* Chs. 14, 16, 17, 19; Jutila (1977), *Math. Scand.* 41, Thm. 1",
+          "col3": "`ExplChi`/`ExplZeta` use a coarser error absorbing jump terms; `ZeroCount` gives upper bound only (not Riemann–von Mangoldt asymptotic); `LogDerOne` specializes to $s = 1$; **`PageThm` omits simplicity of the exceptional zero**; **`Jutila` counts distinct pairs via `.encard` without multiplicity** and excludes $q=1$; `Linnik` is the qualitative existential form (no explicit exponent $L$)."
+        },
+        {
+          "col1": "`Landherr`, `HasseNorm` (`.../AdelicLattices₂/AlgebraMapNormOfBasisOneSqrt.lean#L10-L27`), `LandherrSt` (`.../Landherr₂/LandherrStIffLandherr.lean#L12`), `HasseNormSt` (`.../Landherr₂/ExistsNormTensor.lean#L12`), `HermitianHassePrinciple` (`.../GlobalTheta/HermitianHassePrincipleHolds.lean#L437`, proved in-file), `HermitianLocalGlobal` (`.../TwistedTraceFormula/ExistsOrthonormalOfUnimodular.lean#L395`, proved in-file), `DefQuatExists` (`.../CuspSemisimpleReal.lean#L69`)",
+          "col2": "**Hasse Norm, Landherr & ABHN Principles** — Hasse (1931, 1933); Landherr (1936), *Abh. Math. Sem. Hamburg* 11; Jacobson (1940); Albert–Brauer–Hasse–Noether",
+          "col3": "`HasseNorm` and `HermitianHassePrinciple` are faithful in full generality. `Landherr`/`LandherrSt`/`HermitianLocalGlobal` restrict global congruence to **CM fields** (Landherr 1936 covers arbitrary quadratic extensions of number fields, and `HermitianLocalGlobal` omits existence with prescribed local invariants). `DefQuatExists` specializes ABHN to existence of a finite-split totally definite quaternion algebra over even-degree totally real $F$."
+        },
+        {
+          "col1": "`FinitenessOfHermitianClasses` (`.../AdelicLattices₂/ExistsFiniteUnitaryClassesOfDualEqSmul.lean#L13`, proved in-file), `UnitaryFiniteCovolume` (`.../DefiniteCompactness/ExistsCompactOfDefinite.lean#L11`), `MaxMass` (`.../DiscreteSeriesUnitary₂/MaxMass.lean#L10`), `PrasadVolumeSU` (`.../Divisors₂/PrasadVolumeSU.lean#L62`), `TamagawaNumberSU` (`.../Divisors₂/TamagawaNumberSU.lean#L13`), `TamagawaSpecialUnitary` (`.../Divisors₂/TamagawaSpecialUnitary.lean#L11`), `GaussBonnetUnitary` (`.../Divisors₂/OfPositiveTrivial.lean#L73`), `StrongApproxSU` (`.../TwistedTraceFormula/NotIsCompactUnivFv.lean#L33`)",
+          "col2": "**Unitary Tamagawa Numbers, Prasad Volume & Strong Approximation** — Borel–Harish-Chandra (1962); Borel (1963); Shimura (1964, 1999); Gan–Hanke–Yu (2001), *Duke Math. J.* 107; Prasad (1989), *Publ. Math. IHÉS* 69, Thm. 3.7; Weil / Ono / Kottwitz (1988), *Ann. of Math.* 127; Harder (1971) / Serre (1971); Kneser (1965) / Platonov (1969)",
+          "col3": "All restricted to unitary / special unitary groups over CM fields. **`MaxMass` leaves the overall constant `c : ℝ` completely unspecified** (capturing only the bad-prime factor over unramified CM fields). `PrasadVolumeSU` & `TamagawaSpecialUnitary` specialize strictly to self-dual lattices over everywhere-unramified CM fields (and indefinite place for `PrasadVolumeSU`). `GaussBonnetUnitary` states only non-negative integrality `∃ n : ℕ` (without identifying $n ="
+        },
+        {
+          "col1": "`SuccMinTransference` (`.../BesselIntegrals/ExistsLinearIndependentNormLe.lean#L10`), `exists_int_vecMul_lt` (`.../AdelicLattices₂/ExistsShortOfTraceDet.lean#L8`, proved)",
+          "col2": "**Minkowski & Banaszczyk Lattice Transference** — Banaszczyk (1993), *Math. Ann.* 296, Thm. 2.1; Minkowski (1896)",
+          "col3": "Faithful (Banaszczyk omits Thm. 2.2 covering-radius bound)."
+        }
+      ]
+    },
+    {
+      "num": 11,
+      "title": "Companion Background Theory Formalized Outside `PublishedTheorems`",
+      "intro": "Beyond the six `PublishedTheorems` folders, the following peer-reviewed theorems are formalized as standalone specification/proof subtrees elsewhere in `lean/src/` and treated identically as collapsible existing theory in the DAG:",
+      "rows": [
+        {
+          "col1": "`Row0b` (`Development/AutomorphicArithmetic/Foundations/GaloisRepresentations/TypeConditions/WeightsConjBis.lean#L69-L73`, discharged by `galoisLocalGlobalStrong_recParameter` in `.../IntegralStructures/RowSrc.lean#L6`)",
+          "col2": "**BLGGT / Caraiani Strong Local–Global Compatibility** — Barnet-Lamb–Gee–Geraghty–Taylor (2014), *Ann. of Math.* 179, Thm. 2.1.1; Caraiani (2012, 2014); Shin (2011); Chenevier–Harris (2013)",
+          "col3": "Specialized to regular algebraic polarized cuspidal automorphic reps of $\\mathrm{GL}_a$ over CM fields (`PolarizedPair`); verifies Weil–Deligne compatibility away from $\\ell$ via `AwayB` (toral, tame, or large-prime `IsQpBig` cases) and crystalline/potentially-semistable Hodge–Tate compatibility above $\\ell$ via `AboveB`. Discharges `OpenLiteratureStatements.{caraianiLocalGlobalDual, galoisRepOfPolarizedPairLit}` in `MainConclusion.lean`."
+        },
+        {
+          "col1": "`RecTExists` (`Development/AutomorphicArithmetic/Foundations/LocalLanglands/IsRecTOfIsRec.lean#L78-L80`, proved in `.../LocalCentralUnits/RecTExists.lean#L20`)",
+          "col2": "**Local Langlands Correspondence with Tame Types** — Harris–Taylor (2001), Ann. Math. Stud. 151; Henniart (2000), *Invent. Math.* 139; Scholze (2013), *Invent. Math.* 192; Bushnell–Henniart (2005), *J. AMS* 18",
+          "col3": "Restricted to characteristic-$0$ number-field completions; packages `LawsT` (dimension, Artin map, Zelevinsky segment sums, twists/central character/contragredient/injectivity on `Good` reps, depth-zero tameness, and `TypeLaw` matching inertia charpoly on prime-field $\\mathbb{Q}_g$ cuspidal inflations without Frobenius or $(-1)^{n-1}$ rectifier). Discharges `OpenLiteratureStatements.localLanglandsExists` in `MainConclusion.lean`."
+        },
+        {
+          "col1": "`BaseChangeIsobaricN` (`Development/WeilBound/RepresentationTheoryGL/ArchimedeanBaseChange/ArchimedeanBaseChangeProof/BaseChangeIsobaricNOf.lean#L39-L46`), `DefiniteN` (`Development/AutomorphicArithmetic/Foundations/BaseChangeIdentities/Narrow.lean#L28-L35`, proved in `.../DefiniteNHolds.lean`), `BaseChangeIsobaricTransfer`, `BaseChangeDefiniteUnitaryGroup` (`.../LocalTypeDictionary/DiscreteSpectrumResidualClassification.lean#L8-L9`)",
+          "col2": "**Unitary-to-$\\mathrm{GL}_n$ Isobaric Base Change** — Labesse (2011), *Changement de base CM et séries discrètes*, Cor. 5.3 / Thm. 5.4; Arthur–Clozel (1989); Mok (2015); KMSW (2014)",
+          "col3": "Restricted to everywhere-unramified CM extensions $E/E^+$ and definite unitary groups $U(n)$; matches spherical/inert Satake parameters, split local components, and archimedean infinitesimal characters to an isobaric sum of conjugate-self-dual discrete $\\mathrm{GL}_{N_i}$ representations."
+        },
+        {
+          "col1": "`LocalFiniteness`, `LocalTateDuality`, `UnramifiedOrthogonality`, `LocalEulerChar`, `GreenbergWiles`, `GlobalFiniteness`, `GlobalEulerChar`, `ShaDuality` (`ReciprocityTheory/Hypotheses/GalCoh.lean#L195-L246`), `LocalFinitenessK`, `LocalTateDualityK`, `LocalEulerCharK` (`Formalism/GaloisCohomology/LocalTateDualityK.lean#L41-L61`)",
+          "col2": "**Local & Global Tate Duality, Euler Char & Greenberg–Wiles** — Tate (1962); Milne *ADT* Ch. I §§2, 4–5; Wiles (1995), *Ann. of Math.* 141, Prop. 1.6; Neukirch–Schmidt–Wingberg Ch. VII–VIII",
+          "col3": "Prime-power finite discrete modules over $\\mathbb{Z}/\\ell^r\\mathbb{Z}$ for number fields and finite extensions $K/\\mathbb{Q}_\\ell$; `LocalTateDuality`/`LocalTateDualityK` assert cup-product bijectivities and $H^2(\\mu_{\\ell^r}) \\simeq \\mathbb{Z}/\\ell^r\\mathbb{Z}$ (omitting canonical invariant-map normalization); `GreenbergWiles` uses discrete cardinality ratios."
+        },
+        {
+          "col1": "`MoriwakiBigStatement`, `MoriwakiHSStatement` (`ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/ArakelovGeometry/MoriwakiSt.lean#L18-L36`), `HSUse` (`Development/WeilBound/CoreStatements/AutomorphicKernels/MoriwakiBigness/HilbertSamuelApplications/SmallGeneratedCountUpperOfUse.lean#L12-L13`, proved in `.../MoriwakiBigTheorem/Outright.lean#L9-L15`)",
+          "col2": "**Moriwaki Arithmetic Bigness & Hilbert–Samuel** — Moriwaki (2009), *J. Reine Angew. Math.* 630; Yuan (2008), *Invent. Math.* 173, Thm. 2.2; Chen (2008, 2010); Gillet–Soulé (1992)",
+          "col3": "Formulated over multi-projective arithmetic varieties (`MRing ι`, `IsArithVar`) with abstract `IntersectionSystem` and sup-norm small-section counts (`smallSectionCount` / `arVolP`) for conjugation-invariant semipositive Hermitian line bundles nef on fibers and generic fiber."
+        },
+        {
+          "col1": "`FunctorialResolutionCharZero`, `FunctorialPrincipalizationCharZero` (`Development/ResolutionOfSingularities/Statements.lean#L150,L260`), `ResKStatement` (`ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/BirationalGeometry/BlowupProjections/BlowupProjStatement.lean#L66-L70`, proved in `.../ResolutionCharZero/PlugResK.lean`)",
+          "col2": "**Functorial Resolution & Principalization (Char. 0)** — Hironaka (1964), *Ann. of Math.* 79; Bierstone–Milman (1997); Kollár (2007), Thms. 3.26 & 3.36",
+          "col3": "`FunctorialResolutionCharZero`/`FunctorialPrincipalizationCharZero` are faithful functorial embedded blowup formulations over char-0 fields; `ResKStatement` specializes to projective varieties $X \\hookrightarrow \\mathbb{P}^M_K$ yielding an SNC resolution embedded in $\\mathbb{P}^M_K \\times \\mathbb{P}^r_K$."
+        },
+        {
+          "col1": "`EtaleChapterEFour` (`Development/EtaleCohomology/EtaleSheaves/EtaleChapterEFour.lean#L3-L4`, proved in `.../H0TwistOverClosedField.lean#L114`)",
+          "col2": "**Finiteness of Twisted Étale Cohomology** — Deligne (1977), SGA 4½ (*Th. finitude*); Artin–Grothendieck–Verdier, SGA 4 Exp. XIV–XVI",
+          "col3": "Packages finiteness of $H^n_{\\mathrm{ét}}(X, \\mathbb{Z}/q\\mathbb{Z}(i))$ for proper schemes over fields ($q$ invertible) via the 28-clause inductive axiomatization `GlobalTheory.EtC.{A1..E4}`."
+        },
+        {
+          "col1": "`HolomorphicLefschetzFormula` (`Development/AutomorphicArithmetic/Foundations/GaloisRepresentations/LefschetzSigmaSums/HodgeTraceFromLefschetzAndGroupSide.lean#L102-L111`, proved in `.../EtaleClopenDescent/LefschetzFixedPointFiniteEtaleCorrespondence.lean#L255`)",
+          "col2": "**Holomorphic Lefschetz Fixed-Point Formula** — Atiyah–Bott (1968), *Ann. of Math.* 88, Thm. 4.12; Verdier (SGA 5 Exp. III)",
+          "col3": "Specialized to finite étale correspondences $c_1, c_2 : Y \\to Z$ on smooth projective $\\mathbb{C}$-schemes with transverse isolated fixed points ($\\det(I - A_y) \\neq 0$) acting on Hodge cohomology $H^b(Z, \\Omega^a_{Z/\\mathbb{C}})$."
+        },
+        {
+          "col1": "`SiegelWeilStd` (`Development/WeilBound/ThetaLifts/LatticeBasics/HypothesesS.lean#L11`), `EisBL` (`Development/WeilBound/ThetaLifts/LatticeBasics/HypothesesE.lean#L46`)",
+          "col2": "**Standard Siegel–Weil & Eisenstein Continuation** — Ichino (2007); Kudla–Rallis (1988, 1994); Langlands (1976)",
+          "col3": "Unitary-group Siegel–Weil & Eisenstein continuation interface wrappers specialized to the CM Hermitian lattice setup used in the theta-lift pipeline."
+        },
+        {
+          "col1": "`Cheb` (`Development/AbelianVarietyTheory/Definitions/NonGaloisDescent/GaloisSideTwistedSelmerAuxiliaryPrimes.lean#L11-L14`)",
+          "col2": "**Chebotarev Degree-1 Frobenius Primes** — Chebotarev (1926)",
+          "col3": "Qualitative existence outside any finite prime set $A$ of an unramified degree-1 prime with Frobenius in a prescribed coset $gU$ of an open normal subgroup $U \\trianglelefteq G_F$ (omits natural/Dirichlet density)."
+        }
+      ]
+    }
+  ],
+  "section12": {
+    "title": "Formalizations in `PublishedTheorems` That Cannot Be Traced to Existing Peer-Reviewed Literature",
+    "rows": [
+      {
+        "col1": "`PrimesInProgressionsRelative` (`.../AutomorphicSpectrum/.../PublishedGlobalResults/PrimesInProgressionsRelative.lean#L10`), `TZRat` (`.../AutomorphicForms₂/IsExcRat.lean#L17`), `QuadraticHeckeZeroEstimates` (`.../AutomorphicForms₂/QuadraticHeckeZeroEstimates.lean#L12`)",
+        "category": "Project-packaged composite analytic NT statements",
+        "reason": "Hybrid custom packages combining Landau–Page + Gallagher/Fogels/Lagarias–Odlyzko/Thorner–Zaman with severely weakened $1 - \\beta \\gg N^{-2}/\\log N$ bounds, real-line-only zero-free regions, custom two-term error sums, hardcoded `1 - 1/(8 log M)` thresholds, or principal-ray-class-only fudge sets `S` over imaginary quadratic fields; none corresponds verbatim to a single peer-reviewed theorem."
+      },
+      {
+        "col1": "`BesselXiIntegrable` (`.../BesselIntegrals/BesselXiIntegrable.lean#L6`), `MatrixLemma` (`.../Divisors₂/MatrixLemma.lean#L8`), `ArithRiemannRochAbelian` (`.../Divisors₂/IsL2OnDiagonalOfIsL2Metric.lean#L205`), `ThetaRationalInvariance` (`.../GlobalTheta/ThetaRationalInvarianceHolds.lean#L10`, proved in-file)",
+        "category": "Bespoke quantitative / project-tailored `Published.*` statements",
+        "reason": "`BesselXiIntegrable` existentially asserts a majorant `Ξ` with custom decay `2(k+r)(r+1)+1` on `U(r+k, r+1)`; `MatrixLemma` hardcodes the exact constant `14` in a custom `SemiFib` period-length bound (inspired by Masser–Wüstholz / Bost / Gaudron–Rémond, but not verbatim); `ArithRiemannRochAbelian` is a custom principally-polarized abelian-over-arithmetic-surface expansion; `ThetaRationalInvariance` is a `D7`/`WeilO`-specific holomorphic theta transformation law."
+      },
+      {
+        "col1": "`LeviBlockCentreFinite` (`.../Divisors₂/LeviBlockCentreFinite.lean#L18`), `LeviCentreFiniteUnitary` (`.../Divisors₂/LeviCentreFiniteUnitary.lean#L13`), `LeviCentreInducedUnitary` (`.../Divisors₂/LeviCentreInducedUnitary.lean#L13`), `CentreFiniteUnitary` (`.../Divisors₂/MemSpanCentreTranslates.lean#L10`), `Reading` (`.../GaloisCohomology₂/TrivialOnInertiaOfUnr.lean#L76`), `exists_unit_kills_of_idempotent`, `exists_unit_kills` (`PositivityTheory/PublishedTheorems/UnitKilling/UnitAnnihilation/UnitAnnihilators/ExistsUnitKillsOfIdempotent.lean#L5-L101`)",
+        "category": "Custom internal glue / interface `Prop`s & lemmas",
+        "reason": "Bespoke unitary-Levi $\\mathcal{Z}(\\mathfrak{g})$-finiteness adapters (motivated by MW I.2.17/I.3.2), `Reading` translating BLGGT/Caraiani for real-shifted reps into the abstract record `NAut N`, and a custom Nakayama+Krull formal-thickening glue lemma."
+      },
+      {
+        "col1": "`CompanionTheory/EightfoldTheory/VariationTheory/PublishedTheorems/ImportsAlt.lean`, `PositivityTheory/PublishedTheorems/TowerLemmas/FormalTowerLemmas/Imports.lean`, `PositivityTheory/PublishedTheorems/WeilRepresentations/ZariskiDensity/QiCoreDefs.lean`",
+        "category": "Import barrels",
+        "reason": "Export zero declarations; purely re-export modules located outside `PublishedTheorems`."
+      },
+      {
+        "col1": "**Boilerplate `_root_.GlobalTheory.T.*` re-export wrappers** (in `Development/WeilBound/.../PublishedTheorems/NadelVanishingPairs/NadelVanishingLemmas/` and `.../NefNumerics/NefRiemannRoch/`)",
+        "category": "Auto-generated wrapper modules",
+        "reason": "Forwarding wrappers (`first \\"
+      },
+      {
+        "col1": "**Internal proof-decomposition `Prop` predicates** across `Development/WeilBound/CoreStatements/PublishedTheorems/` (e.g., `A0`..`A13`, `B1`..`B5`, `C1`..`C7`, `D0`..`D5`, `E2a`/`E2b`, `MaxPr` in `.../CasselmanWallach/FunctionalCalculusLaws.lean` & `SmoothSeminormAndSobolevBounds.lean`; `L0`..`L8`, `G1`..`G4` in `.../JacquetShalikaBound/FormQuasiInvariantMirabolic.lean`; `Q1`..`KY` in `.../JacquetShalikaRigidity/ColumnConjugationMeasure.lean`; `S1`..`S9`, `G0`..`G9`, `def GlobalTheory` in `.../SmoothVectorEstimates/MirabolicColumnBlock.lean` & `WhittakerVanishingImpliesZero.lean`; `GlobalEulerCharCoprime`/`Narrow` [unused]/`RatioOneKilled`/`MultKilled`/`PosKilled` in `GlobalEulerCharacteristic/`; `Ptfs*` in `PoitouTateDuality/`; `SurjAll`/`AddEps`/`ResSurj`/`Bounds` in `PoincareDeRhamDuality/`)",
+        "category": "Internal proof-scaffolding `Prop`s",
+        "reason": "Project-specific intermediate proof steps and cohomology-model transport contracts in `PoitouTateDuality/`, plus custom helper predicates (`SelfTw`, `adSys`, `IsNormChar`, `WeakBC`, `IsFL`, `IsGalRepOfR`, `IsoTwist`, `IsQuadCharOf`, `IsBC`, `Kato.IsSel`, `Kato.IsLat`, `Clauses`, `Compat`, etc.)."
+      },
+      {
+        "col1": "**Sanity-check, non-vacuity, counterexample & infrastructure modules** (`ProjLineLimit.lean`, `InvLogIntervalIntegrable.lean`, and helpers in `Divisors₂/`, `GaloisCohomology₂/`, `GaloisGeometry₂/`, `SiegelWeil₂/`, `TwistedTraceFormula/`, e.g., `.../TwistedTraceFormula/NegOneNotSqSqrtTwo.lean`, `.../TwistedTraceFormula/SumSquaresNeThreeThreeAdic.lean`, `.../AdelicLattices₂/ThreeNeSqAddSq.lean`, `.../AutomorphicForms₂/AbsPowOneNotIsAlgRat.lean`, `.../TwistedTraceFormula/ExistsStandardIndModule.lean`)",
+        "category": "Non-vacuity tests, elementary checks & internal infrastructure",
+        "reason": "Verify hypotheses are inhabited (e.g., rank-0/rank-1 cases, $-1 \\notin (\\mathbb{Q}(\\sqrt{2}))^2$, $3$ not a sum of two squares in $\\mathbb{Q}_3$, Fubini–Study on $\\mathbb{P}^1$, $e^{1/s}$ counterexamples) or build internal data structures; not literature theorems."
+      },
+      {
+        "col1": "**Mangled / cross-domain misnamed files & symbols** in `WeilBound/.../PublishedTheorems/` & `TwistedTraceFormula/` (e.g., `.../CasselmanWallach/EtaleCohomologyNegativeVanishingDegreeZero.lean` [proves `CasselmanWallach` `maxPr`], `.../CasselmanWallach/PageTheorem.lean` [Sobolev extension `D2`], `.../CasselmanWallach/ZetaClassicalZeroFreeRegion.lean` [`D3` $K/\\mathfrak{g}$-equivariance], `faceMap_comp_succAbove_castSucc` / `liftZP_newton` / `liftZP_unit` / `lift_levelP_alt₂`, `.../JacquetShalikaRigidity/KatoClassHeckeEulerFactorRelation.lean` [unipotent measure modulus `N2`], `.../JacquetShalikaRigidity/CubicPeriodConstant.lean` [mirabolic Fourier identity `P3`], `.../TwistedTraceFormula/MulMemRiemannRochSpaceAdd.lean` [Arthur $(G,M)$-family `H0` identity], `BetaSesquilinearity` in `.../PoitouTateDuality/PtfsDefs.lean#L18`)",
+        "category": "Automated-refactoring misnomers",
+        "reason": "Names suggest famous unrelated theorems (étale cohomology, Page's theorem, zeta zero-free region, Kato classes, Riemann–Roch, simplicial face maps, Hensel lifting), but their Lean contents are unrelated internal proof lemmas for Casselman–Wallach, Jacquet–Shalika, Poitou–Tate, or Arthur's $(G, M)$-families."
+      }
+    ]
+  }
+}

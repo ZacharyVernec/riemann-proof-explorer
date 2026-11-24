@@ -26,12 +26,13 @@ INDEX_SCRIPT = ROOT / "analysis" / "build_index.py"
 DECL_START_RE = re.compile(
     r"^(?:@\[[^\]]*\]\s*)*"
     r"(?:set_option\s+[^\n]*?\s+in\s+)?"
+    r"(?:(?:public|meta)\s+)*"
     r"(?:(private|protected)\s+)?"
-    r"(?:(?:noncomputable|partial|unsafe|scoped|local)\s+)*"
+    r"(?:(?:noncomputable|partial|unsafe|scoped|local|public|meta)\s+)*"
     r"(theorem|lemma|def|structure|class|inductive|abbrev|axiom|opaque|instance)\b\s*([^\s:(\[{]*)"
 )
 DECL_KIND_RE = re.compile(
-    r"\b(?:(private|protected)\s+)?(?:(?:noncomputable|partial|unsafe|scoped|local)\s+)*"
+    r"\b(?:(?:public|meta)\s+)*(?:(private|protected)\s+)?(?:(?:noncomputable|partial|unsafe|scoped|local|public|meta)\s+)*"
     r"(theorem|lemma|def|structure|class|inductive|abbrev|axiom|opaque|instance)\b"
 )
 VAR_START_RE = re.compile(r"^variable\b")
@@ -43,7 +44,7 @@ TC_BRACKET_RE = re.compile(
 )
 EQUIV_RE = re.compile(r"≃ₗᵢ|≃\+\*|≃ₗ|≃L|≃ₐ|≃ₜ|≃ᵢ|≃ᵐ|≃o|≃\+|≃\*|≃|≅|↔")
 TOP_STOP_RE = re.compile(
-    r"^(?:@\[|end(?:\s|$)|namespace\s|section(?:\s|$)|attribute\s|open\s|set_option\s|variable\s|universe\s|omit\s|include\s)"
+    r"^(?:@\[|end(?:\s|$)|namespace\s|public\s+(?:section|namespace|import|meta)|meta\s+import|import\s|module(?:\s|$)|section(?:\s|$)|attribute\s|open\s|set_option\s|variable\s|universe\s|omit\s|include\s)"
 )
 TOKEN_SPLIT_RE = re.compile(r"[\s;(<\[{]+")
 
@@ -548,12 +549,12 @@ def bucket_cross_out_dom(n: int) -> str:
     return "5+"
 
 
-def scan_chunk(chunk: list[tuple[int, str, str]]) -> tuple[dict[str, dict], list[int]]:
+def scan_chunk(task: tuple[list[tuple[int, str, str]], str]) -> tuple[dict[str, dict], list[int]]:
     """Scan a chunk of (mod_id, rel_path, top_dir) tuples."""
+    chunk, src_str = task
     by_dom: dict[str, dict] = {}
     simp_mod_ids: list[int] = []
 
-    src_str = str(SRC_DIR)
     for mod_id, rel_path, top_dir in chunk:
         acc = by_dom.get(top_dir)
         if acc is None:
@@ -808,8 +809,11 @@ def scan_chunk(chunk: list[tuple[int, str, str]]) -> tuple[dict[str, dict], list
                                     acc["strategy_total_cnt"][key] += len(hits)
                 continue
 
-            if stripped.startswith(("import ", "namespace ", "section", "end ", "universe ")):
+            if stripped.startswith(("module", "import ", "public import", "meta import", "public section", "public meta", "namespace ", "section", "end ", "universe ")):
                 pending_attrs.clear()
+                if stripped in ("module", "public section") or stripped.startswith(("module ", "import ", "public import", "meta import", "public section ")):
+                    i += 1
+                    continue
             elif not stripped.endswith(" in"):
                 pending_attrs.clear()
             i += 1
@@ -1022,13 +1026,83 @@ def serialize_domain(
     }
 
 
+def render_histograms_md(
+    payload: dict,
+    version_label: str = "",
+    rel_src_label: str = "src/",
+) -> str:
+    """Render CODEBASE_HISTOGRAMS.md dynamically from computed histogram distributions."""
+    m = payload["meta"]
+    all_dom = payload["by_domain"]["ALL"]
+    s = all_dom["summary"]
+    ver_note = f" (`{version_label}`)" if version_label else ""
+    lines: list[str] = []
+    a = lines.append
+    a(f"# Codebase Structural Histograms{ver_note}")
+    a("")
+    a(
+        f"Empirical structural analysis across `{rel_src_label}` (**{m['total_modules']:,} reachable modules**, **{m['total_declarations']:,} declarations**, **{m['total_theorems_lemmas']:,} theorems & lemmas**) paired with the interactive explorer in [histograms.html](histograms.html)."
+    )
+    a("")
+    a("---")
+    a("")
+    a("## 1. Corpus Totals & Proof Glue")
+    a("")
+    a("| Metric | Count / Share |")
+    a("|---|---:|")
+    a(f"| Reachable Lean modules | {s['modules']:,} |")
+    a(f"| Total declarations | {s['declarations']:,} |")
+    a(f"| Theorems & lemmas | {s['theorems_lemmas']:,} |")
+    a(f"| Tactic proofs (`by ...`) | {s['tactic_proofs']:,} |")
+    a(f"| Term-mode proofs | {s['term_proofs']:,} |")
+    a(f"| Attribute-tagged declarations | {s['attr_tagged_decls']:,} |")
+    a(f"| Modules defining `@[simp]` | {s['simp_modules']:,} |")
+    a("")
+    a("### Proof Shape Distribution")
+    a("")
+    a("| Proof Shape | Count | Share of Thm/Lem |")
+    a("|---|---:|---:|")
+    tot_tl = max(1, s["theorems_lemmas"])
+    for ps in all_dom["proof_shapes"]:
+        a(f"| {ps['label']} (`{ps['key']}`) | {ps['count']:,} | {100.0 * ps['count'] / tot_tl:.1f}% |")
+    a("")
+    a("### Domain Breakdown")
+    a("")
+    a("| Domain | Modules | Declarations |")
+    a("|---|---:|---:|")
+    for dm in payload["domains"]:
+        if dm["key"] == "ALL":
+            continue
+        a(f"| `{dm['key']}` | {dm['modules']:,} | {dm['declarations']:,} |")
+    a("")
+    a("### Top Attributes & Typeclasses")
+    a("")
+    a("| Attribute | Count | Typeclass Binder | Signature Occurrences |")
+    a("|---|---:|---|---:|")
+    attrs = all_dom["decl_attrs"][:10]
+    tcs = all_dom["typeclasses"]["top_all"][:10]
+    for idx in range(max(len(attrs), len(tcs))):
+        at_s = f"`@[{attrs[idx]['tag']}]` | {attrs[idx]['count']:,}" if idx < len(attrs) else " | "
+        tc_s = f"`[{tcs[idx]['name']}]` | {tcs[idx]['count']:,}" if idx < len(tcs) else " | "
+        a(f"| {at_s} | {tc_s} |")
+    a("")
+    return "\n".join(lines) + "\n"
+
+
 def main() -> None:
+    global SRC_DIR, DB_PATH, OUT_DIR, JSON_PATH, JS_PATH
     parser = argparse.ArgumentParser(description="Build Lean 4 structural histograms.")
     parser.add_argument(
         "--rebuild-index",
         action="store_true",
         help="Re-run analysis/build_index.py before extracting histograms.",
     )
+    parser.add_argument("--src-dir", type=Path, default=SRC_DIR)
+    parser.add_argument("--db-path", type=Path, default=DB_PATH)
+    parser.add_argument("--meta-path", type=Path, default=None)
+    parser.add_argument("--out-dir", type=Path, default=OUT_DIR)
+    parser.add_argument("--version-label", type=str, default="")
+    parser.add_argument("--rel-src-label", type=str, default="src/")
     parser.add_argument(
         "--workers",
         type=int,
@@ -1036,19 +1110,25 @@ def main() -> None:
         help="Number of worker processes.",
     )
     args = parser.parse_args()
+    SRC_DIR = args.src_dir.resolve()
+    DB_PATH = args.db_path.resolve()
+    OUT_DIR = args.out_dir.resolve()
+    JSON_PATH = OUT_DIR / "histograms_data.json"
+    JS_PATH = OUT_DIR / "histograms_data.js"
 
     t0 = time.time()
     if args.rebuild_index or not DB_PATH.exists():
         print("Running analysis/build_index.py...")
         subprocess.run([sys.executable, str(INDEX_SCRIPT)], check=True)
 
-    # Load modules & edges from SQLite
-    conn = sqlite3.connect(str(DB_PATH))
+    # Load reachable modules & edges from SQLite
+    conn = sqlite3.connect(f"file:{DB_PATH}?mode=ro", uri=True)
     mod_rows = conn.execute(
         """
-        SELECT id, name, rel_path, top_dir, depth2_dir, in_degree, out_degree,
+        SELECT id, name, rel_path, top_dir, depth2_dir, in_degree_main, out_degree,
                n_theorems, n_lemmas, n_defs, n_structures, n_other_decls
         FROM modules
+        WHERE reachable_from_main = 1
         ORDER BY rel_path, id
         """
     ).fetchall()
@@ -1067,14 +1147,16 @@ def main() -> None:
     out_subtheories: dict[int, set[str]] = defaultdict(set)
     out_domains: dict[int, set[str]] = defaultdict(set)
     for src_id, dst_id in conn.execute("SELECT src_id, dst_id FROM edges"):
-        src_row = mod_by_id[src_id]
-        dst_row = mod_by_id[dst_id]
+        src_row = mod_by_id.get(src_id)
+        dst_row = mod_by_id.get(dst_id)
+        if src_row is None or dst_row is None:
+            continue
         in_subtheories[dst_id].add(src_row[4])
         out_subtheories[src_id].add(dst_row[4])
         out_domains[src_id].add(dst_row[3])
     conn.close()
 
-    print(f"Loaded {len(mod_items)} modules from SQLite in {time.time() - t0:.2f}s")
+    print(f"Loaded {len(mod_items)} reachable modules from SQLite in {time.time() - t0:.2f}s")
 
     # Discover domains dynamically sorted by (-module_count, top_dir)
     ordered_domains = [d for d, _ in sorted(dom_counts.items(), key=lambda x: (-x[1], x[0]))]
@@ -1082,7 +1164,8 @@ def main() -> None:
     # Scan Lean source files in parallel
     t1 = time.time()
     chunk_size = 1000
-    chunks = [mod_items[i : i + chunk_size] for i in range(0, len(mod_items), chunk_size)]
+    src_str = str(SRC_DIR)
+    chunks = [(mod_items[i : i + chunk_size], src_str) for i in range(0, len(mod_items), chunk_size)]
     acc_by_dom: dict[str, dict] = {d: empty_domain_acc() for d in ordered_domains}
     all_acc = empty_domain_acc()
     simp_mod_ids: set[int] = set()
@@ -1217,6 +1300,11 @@ def main() -> None:
     JSON_PATH.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     JS_PATH.write_text(
         "window.__HISTOGRAMS_DATA__ = " + json.dumps(payload, separators=(",", ":"), ensure_ascii=False) + ";\n",
+        encoding="utf-8",
+    )
+    MD_PATH = OUT_DIR / "CODEBASE_HISTOGRAMS.md"
+    MD_PATH.write_text(
+        render_histograms_md(payload, version_label=args.version_label, rel_src_label=args.rel_src_label),
         encoding="utf-8",
     )
 

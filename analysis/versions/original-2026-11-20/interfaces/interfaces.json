@@ -1,5 +1,6 @@
 {
   "meta": {
+    "version_label": "original-2026-11-20",
     "total_files": 175187,
     "reachable_files": 175187,
     "total_lines": 17374215,
@@ -734545,7 +734546,7 @@
     {
       "rel_path": "ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/BirationalGeometry/ToroidalCompactification/UniformisationConclusion.lean",
       "module_name": "ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.UniformisationConclusion",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/BirationalGeometry/ToroidalCompactification/UniformisationConclusion.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/BirationalGeometry/ToroidalCompactification/UniformisationConclusion.lean",
       "top_dir": "ReciprocityTheory",
       "depth2_dir": "ReciprocityTheory/ReductiveGroups",
       "role": "Top-Impact PEL-Shimura Uniformisation Contract",
@@ -734738,7 +734739,7 @@
     {
       "rel_path": "ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/ExtensionDescent/UnifUniqSt.lean",
       "module_name": "ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.UnifUniqSt",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/ExtensionDescent/UnifUniqSt.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/ExtensionDescent/UnifUniqSt.lean",
       "top_dir": "ReciprocityTheory",
       "depth2_dir": "ReciprocityTheory/ReductiveGroups",
       "role": "Axiomatic Specification Contract",
@@ -734806,7 +734807,7 @@
     {
       "rel_path": "ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/BirationalGeometry/ToroidalCompactification/HeckeKer.lean",
       "module_name": "ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.HeckeKer",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/BirationalGeometry/ToroidalCompactification/HeckeKer.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/BirationalGeometry/ToroidalCompactification/HeckeKer.lean",
       "top_dir": "ReciprocityTheory",
       "depth2_dir": "ReciprocityTheory/ReductiveGroups",
       "role": "Toroidal Level & Hecke Compatibility Contract",
@@ -734945,7 +734946,7 @@
     {
       "rel_path": "ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/ExtensionDescent/SecBaseChangeAnySt.lean",
       "module_name": "ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.SecBaseChangeAnySt",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/ExtensionDescent/SecBaseChangeAnySt.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/ExtensionDescent/SecBaseChangeAnySt.lean",
       "top_dir": "ReciprocityTheory",
       "depth2_dir": "ReciprocityTheory/ReductiveGroups",
       "role": "Abelian Scheme Cohomology & Base Change Contract",
@@ -735059,7 +735060,7 @@
     {
       "rel_path": "ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/BirationalGeometry/ToroidalCompactification/IsHolPeriods.lean",
       "module_name": "ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsHolPeriods",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/BirationalGeometry/ToroidalCompactification/IsHolPeriods.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/BirationalGeometry/ToroidalCompactification/IsHolPeriods.lean",
       "top_dir": "ReciprocityTheory",
       "depth2_dir": "ReciprocityTheory/ReductiveGroups",
       "role": "Complex-Analytic Shimura Uniformisation Contract",
@@ -735174,7 +735175,7 @@
     {
       "rel_path": "Formalism/SharpRestriction/Divisibility/GeneratorPowers/ThExprUniqOfChartIndep2.lean",
       "module_name": "Formalism.SharpRestriction.Divisibility.GeneratorPowers.ThExprUniqOfChartIndep2",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/Formalism/SharpRestriction/Divisibility/GeneratorPowers/ThExprUniqOfChartIndep2.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/Formalism/SharpRestriction/Divisibility/GeneratorPowers/ThExprUniqOfChartIndep2.lean",
       "top_dir": "Formalism",
       "depth2_dir": "Formalism/SharpRestriction",
       "role": "Differential Operator Chart-Independence",
@@ -735241,7 +735242,7 @@
     {
       "rel_path": "Formalism/LocalRingCardinality/RhoDetPrimeEqMuTildeMulChiPow.lean",
       "module_name": "Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/Formalism/LocalRingCardinality/RhoDetPrimeEqMuTildeMulChiPow.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/Formalism/LocalRingCardinality/RhoDetPrimeEqMuTildeMulChiPow.lean",
       "top_dir": "Formalism",
       "depth2_dir": "Formalism/LocalRingCardinality",
       "role": "Master Arithmetic-Automorphic Data Structure",
@@ -735468,7 +735469,7 @@
     {
       "rel_path": "Formalism/LocalRingCardinality/AdicCompletionLocal/LocTied.lean",
       "module_name": "Formalism.LocalRingCardinality.AdicCompletionLocal.LocTied",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/Formalism/LocalRingCardinality/AdicCompletionLocal/LocTied.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/Formalism/LocalRingCardinality/AdicCompletionLocal/LocTied.lean",
       "top_dir": "Formalism",
       "depth2_dir": "Formalism/LocalRingCardinality",
       "role": "p-adic Period Ring Identification",
@@ -735526,7 +735527,7 @@
     {
       "rel_path": "ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/ExtensionDescent/GlobalSectionsRankAlgClosed.lean",
       "module_name": "ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.GlobalSectionsRankAlgClosed",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/ExtensionDescent/GlobalSectionsRankAlgClosed.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/ExtensionDescent/GlobalSectionsRankAlgClosed.lean",
       "top_dir": "ReciprocityTheory",
       "depth2_dir": "ReciprocityTheory/ReductiveGroups",
       "role": "Abelian Scheme Foundations Contract",
@@ -735727,7 +735728,7 @@
     {
       "rel_path": "Formalism/SharpRestriction/LevelLetterCocycles/LocCoh.lean",
       "module_name": "Formalism.SharpRestriction.LevelLetterCocycles.LocCoh",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/Formalism/SharpRestriction/LevelLetterCocycles/LocCoh.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/Formalism/SharpRestriction/LevelLetterCocycles/LocCoh.lean",
       "top_dir": "Formalism",
       "depth2_dir": "Formalism/SharpRestriction",
       "role": "Local Bloch-Kato & Tate Duality Core",
@@ -735905,7 +735906,7 @@
     {
       "rel_path": "ReciprocityTheory/AnalyticForms/RegularLocalRings/FinalTheorems.lean",
       "module_name": "ReciprocityTheory.AnalyticForms.RegularLocalRings.FinalTheorems",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/ReciprocityTheory/AnalyticForms/RegularLocalRings/FinalTheorems.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/ReciprocityTheory/AnalyticForms/RegularLocalRings/FinalTheorems.lean",
       "top_dir": "ReciprocityTheory",
       "depth2_dir": "ReciprocityTheory/AnalyticForms",
       "role": "Quasi-Excellent Resolution & Log-Resolution Interface",
@@ -736088,7 +736089,7 @@
     {
       "rel_path": "Formalism/LocalToGlobal/IndefiniteReal/LinksStage.lean",
       "module_name": "Formalism.LocalToGlobal.IndefiniteReal.LinksStage",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/Formalism/LocalToGlobal/IndefiniteReal/LinksStage.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/Formalism/LocalToGlobal/IndefiniteReal/LinksStage.lean",
       "top_dir": "Formalism",
       "depth2_dir": "Formalism/LocalToGlobal",
       "role": "Indefinite Theta-Lift Stage Interface",
@@ -736359,7 +736360,7 @@
     {
       "rel_path": "Formalism/PairingDivisors/StatementH.lean",
       "module_name": "Formalism.PairingDivisors.StatementH",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/Formalism/PairingDivisors/StatementH.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/Formalism/PairingDivisors/StatementH.lean",
       "top_dir": "Formalism",
       "depth2_dir": "Formalism/PairingDivisors",
       "role": "Arakelov Height & Local Valuation Bound Interface",
@@ -736520,7 +736521,7 @@
     {
       "rel_path": "Formalism/GaloisCohomology/LocalTateDualityK.lean",
       "module_name": "Formalism.GaloisCohomology.LocalTateDualityK",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/Formalism/GaloisCohomology/LocalTateDualityK.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/Formalism/GaloisCohomology/LocalTateDualityK.lean",
       "top_dir": "Formalism",
       "depth2_dir": "Formalism/GaloisCohomology",
       "role": "Local & Global Galois Cohomology Duality",
@@ -736632,7 +736633,7 @@
     {
       "rel_path": "Formalism/SatakeDualWeyl/KpqSubgroupCompact.lean",
       "module_name": "Formalism.SatakeDualWeyl.KpqSubgroupCompact",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/Formalism/SatakeDualWeyl/KpqSubgroupCompact.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/Formalism/SatakeDualWeyl/KpqSubgroupCompact.lean",
       "top_dir": "Formalism",
       "depth2_dir": "Formalism/SatakeDualWeyl",
       "role": "Unitary Hecke Algebra & Compact Subgroup Library",
@@ -736974,7 +736975,7 @@
     {
       "rel_path": "CompanionTheory/EightfoldTheory/VariationTheory/AutomorphicForms/Newform.lean",
       "module_name": "CompanionTheory.EightfoldTheory.VariationTheory.AutomorphicForms.Newform",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/CompanionTheory/EightfoldTheory/VariationTheory/AutomorphicForms/Newform.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/CompanionTheory/EightfoldTheory/VariationTheory/AutomorphicForms/Newform.lean",
       "top_dir": "CompanionTheory",
       "depth2_dir": "CompanionTheory/EightfoldTheory",
       "role": "Re-Export Facade",
@@ -737017,7 +737018,7 @@
     {
       "rel_path": "Formalism/RealPlaceAnalysis/ThirdArithmeticHolds.lean",
       "module_name": "Formalism.RealPlaceAnalysis.ThirdArithmeticHolds",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/Formalism/RealPlaceAnalysis/ThirdArithmeticHolds.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/Formalism/RealPlaceAnalysis/ThirdArithmeticHolds.lean",
       "top_dir": "Formalism",
       "depth2_dir": "Formalism/RealPlaceAnalysis",
       "role": "Lie Algebra & Quantum Determinant Identities",
@@ -737199,7 +737200,7 @@
     {
       "rel_path": "GroundTheory/HeightsAndTheta/Heights/DiscreteValuationNumbers/StatementsFlagIndependence.lean",
       "module_name": "GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsFlagIndependence",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/GroundTheory/HeightsAndTheta/Heights/DiscreteValuationNumbers/StatementsFlagIndependence.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/GroundTheory/HeightsAndTheta/Heights/DiscreteValuationNumbers/StatementsFlagIndependence.lean",
       "top_dir": "GroundTheory",
       "depth2_dir": "GroundTheory/HeightsAndTheta",
       "role": "Intersection / Pairing Number Flag Independence",
@@ -737289,7 +737290,7 @@
     {
       "rel_path": "ReciprocityTheory/DualLattices/TowerZeroSurjective.lean",
       "module_name": "ReciprocityTheory.DualLattices.TowerZeroSurjective",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/ReciprocityTheory/DualLattices/TowerZeroSurjective.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/ReciprocityTheory/DualLattices/TowerZeroSurjective.lean",
       "top_dir": "ReciprocityTheory",
       "depth2_dir": "ReciprocityTheory/DualLattices",
       "role": "p-adic Tower & Hodge-Tate Link Interface",
@@ -737381,7 +737382,7 @@
     {
       "rel_path": "GroundTheory/HeightsAndTheta/Heights/KernelsLattice.lean",
       "module_name": "GroundTheory.HeightsAndTheta.Heights.KernelsLattice",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/GroundTheory/HeightsAndTheta/Heights/KernelsLattice.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/GroundTheory/HeightsAndTheta/Heights/KernelsLattice.lean",
       "top_dir": "GroundTheory",
       "depth2_dir": "GroundTheory/HeightsAndTheta",
       "role": "Arakelov Hermitian Vector Bundle & Slope Interface",
@@ -737523,7 +737524,7 @@
     {
       "rel_path": "Development/AbelianVarietyTheory/Definitions/Jets/SumIoPr.lean",
       "module_name": "Development.AbelianVarietyTheory.Definitions.Jets.SumIoPr",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/Development/AbelianVarietyTheory/Definitions/Jets/SumIoPr.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/Development/AbelianVarietyTheory/Definitions/Jets/SumIoPr.lean",
       "top_dir": "Development",
       "depth2_dir": "Development/AbelianVarietyTheory",
       "role": "Archimedean Branching & Representation Algebra",
@@ -737642,7 +737643,7 @@
     {
       "rel_path": "PositivityTheory/AutomorphicForms/PublishedInputs/CuspidalContinuity/ArchimedeanCuspidal/KFiniteVectors/KFiniteThetaLifts/RationalPrimesBelowPlaces.lean",
       "module_name": "PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.KFiniteVectors.KFiniteThetaLifts.RationalPrimesBelowPlaces",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/PositivityTheory/AutomorphicForms/PublishedInputs/CuspidalContinuity/ArchimedeanCuspidal/KFiniteVectors/KFiniteThetaLifts/RationalPrimesBelowPlaces.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/PositivityTheory/AutomorphicForms/PublishedInputs/CuspidalContinuity/ArchimedeanCuspidal/KFiniteVectors/KFiniteThetaLifts/RationalPrimesBelowPlaces.lean",
       "top_dir": "PositivityTheory",
       "depth2_dir": "PositivityTheory/AutomorphicForms",
       "role": "Quadratic Base Change GL(3) x GL(2) Interface",
@@ -737814,7 +737815,7 @@
     {
       "rel_path": "PositivityTheory/AutomorphicForms/PublishedInputs/CuspidalContinuity/ArchimedeanCuspidal/VerticalStrips/UnramifiedEulerProductIntegral.lean",
       "module_name": "PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.VerticalStrips.UnramifiedEulerProductIntegral",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/PositivityTheory/AutomorphicForms/PublishedInputs/CuspidalContinuity/ArchimedeanCuspidal/VerticalStrips/UnramifiedEulerProductIntegral.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/PositivityTheory/AutomorphicForms/PublishedInputs/CuspidalContinuity/ArchimedeanCuspidal/VerticalStrips/UnramifiedEulerProductIntegral.lean",
       "top_dir": "PositivityTheory",
       "depth2_dir": "PositivityTheory/AutomorphicForms",
       "role": "Rankin-Selberg GL(2) x GL(2) & Non-Dihedral Criteria",
@@ -738207,7 +738208,7 @@
     {
       "rel_path": "GroundTheory/AutomorphicForms/MultiplicityOne/Injective.lean",
       "module_name": "GroundTheory.AutomorphicForms.MultiplicityOne.Injective",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/GroundTheory/AutomorphicForms/MultiplicityOne/Injective.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/GroundTheory/AutomorphicForms/MultiplicityOne/Injective.lean",
       "top_dir": "GroundTheory",
       "depth2_dir": "GroundTheory/AutomorphicForms",
       "role": "Whittaker Multiplicity-One Proof",
@@ -738273,7 +738274,7 @@
     {
       "rel_path": "CompanionTheory/SpectralGeometry/CountingDefinitions/AdelicEulerProducts/IsEulerProd.lean",
       "module_name": "CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/CompanionTheory/SpectralGeometry/CountingDefinitions/AdelicEulerProducts/IsEulerProd.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/CompanionTheory/SpectralGeometry/CountingDefinitions/AdelicEulerProducts/IsEulerProd.lean",
       "top_dir": "CompanionTheory",
       "depth2_dir": "CompanionTheory/SpectralGeometry",
       "role": "Adelic Siegel-Weil Euler Product Interface",
@@ -738437,7 +738438,7 @@
     {
       "rel_path": "CompanionTheory/SpectralGeometry/LocalGlobalProofs/AdelicAnalysis/TensorLocallyCompactRingStatement.lean",
       "module_name": "CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.TensorLocallyCompactRingStatement",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/CompanionTheory/SpectralGeometry/LocalGlobalProofs/AdelicAnalysis/TensorLocallyCompactRingStatement.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/CompanionTheory/SpectralGeometry/LocalGlobalProofs/AdelicAnalysis/TensorLocallyCompactRingStatement.lean",
       "top_dir": "CompanionTheory",
       "depth2_dir": "CompanionTheory/SpectralGeometry",
       "role": "Topological Ring Tensor Bridge",
@@ -738495,7 +738496,7 @@
     {
       "rel_path": "GroundTheory/LocalFields/QuadraticAbelian/WeilRepQuadratic.lean",
       "module_name": "GroundTheory.LocalFields.QuadraticAbelian.WeilRepQuadratic",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/GroundTheory/LocalFields/QuadraticAbelian/WeilRepQuadratic.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/GroundTheory/LocalFields/QuadraticAbelian/WeilRepQuadratic.lean",
       "top_dir": "GroundTheory",
       "depth2_dir": "GroundTheory/LocalFields",
       "role": "Local Quadratic Extension & Norm Character Library",
@@ -738780,7 +738781,7 @@
     {
       "rel_path": "Formalism/PeriodIntegrals/DSInfCharCap.lean",
       "module_name": "Formalism.PeriodIntegrals.DSInfCharCap",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/Formalism/PeriodIntegrals/DSInfCharCap.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/Formalism/PeriodIntegrals/DSInfCharCap.lean",
       "top_dir": "Formalism",
       "depth2_dir": "Formalism/PeriodIntegrals",
       "role": "Discrete Series Capelli Infinitesimal Character",
@@ -738886,7 +738887,7 @@
     {
       "rel_path": "Formalism/GL3MeanSquares/PrimeCountAsymptoticInProgressions.lean",
       "module_name": "Formalism.GL3MeanSquares.PrimeCountAsymptoticInProgressions",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/Formalism/GL3MeanSquares/PrimeCountAsymptoticInProgressions.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/Formalism/GL3MeanSquares/PrimeCountAsymptoticInProgressions.lean",
       "top_dir": "Formalism",
       "depth2_dir": "Formalism/GL3MeanSquares",
       "role": "Siegel-Zero-Aware Prime Distribution & Character Cancellation",
@@ -739086,7 +739087,7 @@
     {
       "rel_path": "PositivityTheory/AutomorphicForms/PublishedInputs/CuspidalContinuity/ArchimedeanCuspidal/SquareIntegrable/SSmooth.lean",
       "module_name": "PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.SquareIntegrable.SSmooth",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/PositivityTheory/AutomorphicForms/PublishedInputs/CuspidalContinuity/ArchimedeanCuspidal/SquareIntegrable/SSmooth.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/PositivityTheory/AutomorphicForms/PublishedInputs/CuspidalContinuity/ArchimedeanCuspidal/SquareIntegrable/SSmooth.lean",
       "top_dir": "PositivityTheory",
       "depth2_dir": "PositivityTheory/AutomorphicForms",
       "role": "Local GL(2) Whittaker / Schwartz-Bruhat Interface",
@@ -739233,7 +739234,7 @@
     {
       "rel_path": "Development/AbelianVarietyTheory/Definitions/AutomorphicMembership/Brauer.lean",
       "module_name": "Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.Brauer",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/Development/AbelianVarietyTheory/Definitions/AutomorphicMembership/Brauer.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/Development/AbelianVarietyTheory/Definitions/AutomorphicMembership/Brauer.lean",
       "top_dir": "Development",
       "depth2_dir": "Development/AbelianVarietyTheory",
       "role": "Master Literature Package",
@@ -739346,7 +739347,7 @@
     {
       "rel_path": "Development/AbelianVarietyTheory/Definitions/NonGaloisDescent/Langlands.lean",
       "module_name": "Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.Langlands",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/Development/AbelianVarietyTheory/Definitions/NonGaloisDescent/Langlands.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/Development/AbelianVarietyTheory/Definitions/NonGaloisDescent/Langlands.lean",
       "top_dir": "Development",
       "depth2_dir": "Development/AbelianVarietyTheory",
       "role": "Local Langlands & Galois Transport Interface",
@@ -739476,7 +739477,7 @@
     {
       "rel_path": "Development/AutomorphicArithmetic/AutomorphicVarieties/AutomorphicForms/LocIsotypic.lean",
       "module_name": "Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.LocIsotypic",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicArithmetic/AutomorphicVarieties/AutomorphicForms/LocIsotypic.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/Development/AutomorphicArithmetic/AutomorphicVarieties/AutomorphicForms/LocIsotypic.lean",
       "top_dir": "Development",
       "depth2_dir": "Development/AutomorphicArithmetic",
       "role": "Local-Global Compatibility Interface",
@@ -739648,7 +739649,7 @@
     {
       "rel_path": "Development/AutomorphicArithmetic/AutomorphicVarieties/AutomorphicForms/RealTransport/RealTransport.lean",
       "module_name": "Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.RealTransport.RealTransport",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicArithmetic/AutomorphicVarieties/AutomorphicForms/RealTransport/RealTransport.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/Development/AutomorphicArithmetic/AutomorphicVarieties/AutomorphicForms/RealTransport/RealTransport.lean",
       "top_dir": "Development",
       "depth2_dir": "Development/AutomorphicArithmetic",
       "role": "CM Base Change & Quadratic Transport Interface",
@@ -739779,7 +739780,7 @@
     {
       "rel_path": "Formalism/HermitianCurvature/StatementTBB.lean",
       "module_name": "Formalism.HermitianCurvature.StatementTBB",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/Formalism/HermitianCurvature/StatementTBB.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/Formalism/HermitianCurvature/StatementTBB.lean",
       "top_dir": "Formalism",
       "depth2_dir": "Formalism/HermitianCurvature",
       "role": "Bergman-Kernel Curvature & Inductive Energy Estimates",
@@ -740030,7 +740031,7 @@
     {
       "rel_path": "ReciprocityTheory/ThetaQuasiPeriods/ThetaQuasiPeriodStatement.lean",
       "module_name": "ReciprocityTheory.ThetaQuasiPeriods.ThetaQuasiPeriodStatement",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/ReciprocityTheory/ThetaQuasiPeriods/ThetaQuasiPeriodStatement.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/ReciprocityTheory/ThetaQuasiPeriods/ThetaQuasiPeriodStatement.lean",
       "top_dir": "ReciprocityTheory",
       "depth2_dir": "ReciprocityTheory/ThetaQuasiPeriods",
       "role": "Riemann Theta Function Axioms",
@@ -740173,7 +740174,7 @@
     {
       "rel_path": "GroundTheory/GlobalFields/IdeleGroups/IdeleNorms.lean",
       "module_name": "GroundTheory.GlobalFields.IdeleGroups.IdeleNorms",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/GroundTheory/GlobalFields/IdeleGroups/IdeleNorms.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/GroundTheory/GlobalFields/IdeleGroups/IdeleNorms.lean",
       "top_dir": "GroundTheory",
       "depth2_dir": "GroundTheory/GlobalFields",
       "role": "Adelic & Idelic Norm Product Formula Library",
@@ -740237,7 +740238,7 @@
         {
           "kind": "def",
           "name": "normOneSubgroup",
-          "line_no": 241,
+          "line_no": 199,
           "summary": "Norm-1 subgroup C_K^1 of the idele class group (in namespace IdeleClassGroup)."
         }
       ],
@@ -740447,7 +740448,7 @@
     {
       "rel_path": "CompanionTheory/HarishChandraModules/LowKTypeMultiplicity/DiscreteSeriesCharacters/DiscreteSeriesInfinitesimalCharacter.lean",
       "module_name": "CompanionTheory.HarishChandraModules.LowKTypeMultiplicity.DiscreteSeriesCharacters.DiscreteSeriesInfinitesimalCharacter",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/CompanionTheory/HarishChandraModules/LowKTypeMultiplicity/DiscreteSeriesCharacters/DiscreteSeriesInfinitesimalCharacter.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/CompanionTheory/HarishChandraModules/LowKTypeMultiplicity/DiscreteSeriesCharacters/DiscreteSeriesInfinitesimalCharacter.lean",
       "top_dir": "CompanionTheory",
       "depth2_dir": "CompanionTheory/HarishChandraModules",
       "role": "Harish-Chandra Infinitesimal Character Proof",
@@ -740679,7 +740680,7 @@
     {
       "rel_path": "BuildAid/D3.lean",
       "module_name": "BuildAid.D3",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/BuildAid/D3.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/BuildAid/D3.lean",
       "top_dir": "BuildAid",
       "depth2_dir": "BuildAid",
       "role": "Build Directive",
@@ -740718,7 +740719,7 @@
     {
       "rel_path": "GroundTheory/ProfiniteCohomology/PoitouTate/PoitouTateNineTermGs.lean",
       "module_name": "GroundTheory.ProfiniteCohomology.PoitouTate.PoitouTateNineTermGs",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/GroundTheory/ProfiniteCohomology/PoitouTate/PoitouTateNineTermGs.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/GroundTheory/ProfiniteCohomology/PoitouTate/PoitouTateNineTermGs.lean",
       "top_dir": "GroundTheory",
       "depth2_dir": "GroundTheory/ProfiniteCohomology",
       "role": "Global Galois Cohomology & Poitou-Tate Duality Proof",
@@ -740799,7 +740800,7 @@
     {
       "rel_path": "Development/AbelianVarietyTheory/PublishedTheorems/Divisors₂/IrreducibleAdmissibleGL.lean",
       "module_name": "Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IrreducibleAdmissibleGL",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/Development/AbelianVarietyTheory/PublishedTheorems/Divisors₂/IrreducibleAdmissibleGL.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/Development/AbelianVarietyTheory/PublishedTheorems/Divisors₂/IrreducibleAdmissibleGL.lean",
       "top_dir": "Development",
       "depth2_dir": "Development/AbelianVarietyTheory",
       "role": "Published Theorem Specification",
@@ -740855,7 +740856,7 @@
     {
       "rel_path": "Lemmata/GeneralBFact/Imports.lean",
       "module_name": "Lemmata.GeneralBFact.Imports",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/Lemmata/GeneralBFact/Imports.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/Lemmata/GeneralBFact/Imports.lean",
       "top_dir": "Lemmata",
       "depth2_dir": "Lemmata/GeneralBFact",
       "role": "Standalone Matrix Lemma",
@@ -740907,7 +740908,7 @@
     {
       "rel_path": "Development/AutomorphicArithmetic/AutomorphicVarieties/SmallClassNumbers/CorGKOf.lean",
       "module_name": "Development.AutomorphicArithmetic.AutomorphicVarieties.SmallClassNumbers.CorGKOf",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicArithmetic/AutomorphicVarieties/SmallClassNumbers/CorGKOf.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/Development/AutomorphicArithmetic/AutomorphicVarieties/SmallClassNumbers/CorGKOf.lean",
       "top_dir": "Development",
       "depth2_dir": "Development/AutomorphicArithmetic",
       "role": "Selmer / Galois Cohomology Realization",
@@ -741016,7 +741017,7 @@
     {
       "rel_path": "Development/AutomorphicArithmetic/CharacterBoxes/ClaimStrip.lean",
       "module_name": "Development.AutomorphicArithmetic.CharacterBoxes.ClaimStrip",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicArithmetic/CharacterBoxes/ClaimStrip.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/Development/AutomorphicArithmetic/CharacterBoxes/ClaimStrip.lean",
       "top_dir": "Development",
       "depth2_dir": "Development/AutomorphicArithmetic",
       "role": "Analytic Reduction Bridge",
@@ -741123,7 +741124,7 @@
     {
       "rel_path": "Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean",
       "module_name": "Development.AutomorphicArithmetic.CharacterBoxes.MainConclusion",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean",
       "top_dir": "Development",
       "depth2_dir": "Development/AutomorphicArithmetic",
       "role": "Top-Level Bottleneck Theorem",
@@ -741222,7 +741223,7 @@
     {
       "rel_path": "Formalism/GammaFactorNonvanishing/CritLine.lean",
       "module_name": "Formalism.GammaFactorNonvanishing.CritLine",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/Formalism/GammaFactorNonvanishing/CritLine.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/Formalism/GammaFactorNonvanishing/CritLine.lean",
       "top_dir": "Formalism",
       "depth2_dir": "Formalism/GammaFactorNonvanishing",
       "role": "Critical-Line Reflection Proof",
@@ -741315,7 +741316,7 @@
     {
       "rel_path": "PositivityTheory/Representations/BoundaryCones/ArchimedeanCones/ConeOverlaps/OpenConeCriteria/OpenConeFormulation/IsOpenConeInvariant.lean",
       "module_name": "PositivityTheory.Representations.BoundaryCones.ArchimedeanCones.ConeOverlaps.OpenConeCriteria.OpenConeFormulation.IsOpenConeInvariant",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/PositivityTheory/Representations/BoundaryCones/ArchimedeanCones/ConeOverlaps/OpenConeCriteria/OpenConeFormulation/IsOpenConeInvariant.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/PositivityTheory/Representations/BoundaryCones/ArchimedeanCones/ConeOverlaps/OpenConeCriteria/OpenConeFormulation/IsOpenConeInvariant.lean",
       "top_dir": "PositivityTheory",
       "depth2_dir": "PositivityTheory/Representations",
       "role": "Archimedean Positive-Definite Cone Openness",
@@ -741374,7 +741375,7 @@
     {
       "rel_path": "Supplements/Kernels/MainTheoremsAll.lean",
       "module_name": "Supplements.Kernels.MainTheoremsAll",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/Supplements/Kernels/MainTheoremsAll.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/Supplements/Kernels/MainTheoremsAll.lean",
       "top_dir": "Supplements",
       "depth2_dir": "Supplements/Kernels",
       "role": "Root Interface Barrel",
@@ -741423,7 +741424,7 @@
     {
       "rel_path": "Development/WeilBound/RepresentationTheoryGL/RegularisedSiegelWeil/ThetaIdempotents/HeckeEta.lean",
       "module_name": "Development.WeilBound.RepresentationTheoryGL.RegularisedSiegelWeil.ThetaIdempotents.HeckeEta",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/Development/WeilBound/RepresentationTheoryGL/RegularisedSiegelWeil/ThetaIdempotents/HeckeEta.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/Development/WeilBound/RepresentationTheoryGL/RegularisedSiegelWeil/ThetaIdempotents/HeckeEta.lean",
       "top_dir": "Development",
       "depth2_dir": "Development/WeilBound",
       "role": "Theta Idempotent & Meromorphic Pole Interface",
@@ -741506,7 +741507,7 @@
     {
       "rel_path": "Development/WeilBound/CoreStatements/TemperedRepresentationTheory/PlaneSupports/PlaneSupp.lean",
       "module_name": "Development.WeilBound.CoreStatements.TemperedRepresentationTheory.PlaneSupports.PlaneSupp",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/Development/WeilBound/CoreStatements/TemperedRepresentationTheory/PlaneSupports/PlaneSupp.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/Development/WeilBound/CoreStatements/TemperedRepresentationTheory/PlaneSupports/PlaneSupp.lean",
       "top_dir": "Development",
       "depth2_dir": "Development/WeilBound",
       "role": "Adelic Unitary Group Generation Interface",
@@ -741619,7 +741620,7 @@
     {
       "rel_path": "CompanionTheory/AutomorphicTheory/TemperedLocalSpectra/ObstructionLifting/H1StructureDimLe.lean",
       "module_name": "CompanionTheory.AutomorphicTheory.TemperedLocalSpectra.ObstructionLifting.H1StructureDimLe",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/CompanionTheory/AutomorphicTheory/TemperedLocalSpectra/ObstructionLifting/H1StructureDimLe.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/CompanionTheory/AutomorphicTheory/TemperedLocalSpectra/ObstructionLifting/H1StructureDimLe.lean",
       "top_dir": "CompanionTheory",
       "depth2_dir": "CompanionTheory/AutomorphicTheory",
       "role": "Picard / Abelian Duality & Descent Interface",
@@ -741820,7 +741821,7 @@
     {
       "rel_path": "Development/AutomorphicSpectrum/Definitions/GlobalGeometry/BdryChart.lean",
       "module_name": "Development.AutomorphicSpectrum.Definitions.GlobalGeometry.BdryChart",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicSpectrum/Definitions/GlobalGeometry/BdryChart.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/Development/AutomorphicSpectrum/Definitions/GlobalGeometry/BdryChart.lean",
       "top_dir": "Development",
       "depth2_dir": "Development/AutomorphicSpectrum",
       "role": "Complex Boundary Chart Interface",
@@ -741910,7 +741911,7 @@
     {
       "rel_path": "Development/DiscreteGroups/PiInvariants/CompactSupportTwists/PiVecExHolds.lean",
       "module_name": "Development.DiscreteGroups.PiInvariants.CompactSupportTwists.PiVecExHolds",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/Development/DiscreteGroups/PiInvariants/CompactSupportTwists/PiVecExHolds.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/Development/DiscreteGroups/PiInvariants/CompactSupportTwists/PiVecExHolds.lean",
       "top_dir": "Development",
       "depth2_dir": "Development/DiscreteGroups",
       "role": "Cuspidal Vector Square-Integrability Proof",
@@ -741976,7 +741977,7 @@
     {
       "rel_path": "Development/EtaleCohomology/EtaleSheaves/H0TwistOverClosedField.lean",
       "module_name": "Development.EtaleCohomology.EtaleSheaves.H0TwistOverClosedField",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/Development/EtaleCohomology/EtaleSheaves/H0TwistOverClosedField.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/Development/EtaleCohomology/EtaleSheaves/H0TwistOverClosedField.lean",
       "top_dir": "Development",
       "depth2_dir": "Development/EtaleCohomology",
       "role": "Etale Cohomology Finiteness Reduction",
@@ -742154,7 +742155,7 @@
     {
       "rel_path": "Formalism/ZetaRealNonvanish.lean",
       "module_name": "Formalism.ZetaRealNonvanish",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/Formalism/ZetaRealNonvanish.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/Formalism/ZetaRealNonvanish.lean",
       "top_dir": "Formalism",
       "depth2_dir": "Formalism",
       "role": "Mellin Transform & Landau Nonvanishing Setup",
@@ -742282,7 +742283,7 @@
     {
       "rel_path": "Development/ResolutionOfSingularities/Statements.lean",
       "module_name": "Development.ResolutionOfSingularities.Statements",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/Development/ResolutionOfSingularities/Statements.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/Development/ResolutionOfSingularities/Statements.lean",
       "top_dir": "Development",
       "depth2_dir": "Development/ResolutionOfSingularities",
       "role": "Resolution of Singularities Specification",
@@ -742555,7 +742556,7 @@
     {
       "rel_path": "Statements.lean",
       "module_name": "Statements",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/Statements.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/Statements.lean",
       "top_dir": "(root)",
       "depth2_dir": "(root)",
       "role": "Apex Specification",
@@ -742637,7 +742638,7 @@
     {
       "rel_path": "Supplements/Kernels/MainTheorems.lean",
       "module_name": "Supplements.Kernels.MainTheorems",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/Supplements/Kernels/MainTheorems.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/Supplements/Kernels/MainTheorems.lean",
       "top_dir": "Supplements",
       "depth2_dir": "Supplements/Kernels",
       "role": "Top-Level Bottleneck Bridge",
@@ -742731,7 +742732,7 @@
     {
       "rel_path": "Main.lean",
       "module_name": "Main",
-      "file_url": "file:///home/ubuntu/riemann_proof/lean/src/Main.lean",
+      "file_url": "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/Main.lean",
       "top_dir": "(root)",
       "depth2_dir": "(root)",
       "role": "Apex Entrypoint",

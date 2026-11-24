@@ -15,7 +15,7 @@
     "verified_cut_dominators": 40,
     "total_main_to_leaf_paths_exact": "97485885444945919175668",
     "total_main_to_leaf_paths_log10": 22.989,
-    "elapsed_seconds": 31.26
+    "elapsed_seconds": 31.92
   },
   "leaf_and_entry_audit": {
     "leaf_count": 5927,
@@ -21142,6 +21142,7 @@
     }
   },
   "dominators": {
+    "skeleton_threshold": 300,
     "subtree_size_counts": {
       "gt_1": 64465,
       "ge_10": 11438,

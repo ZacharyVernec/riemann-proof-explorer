@@ -12,10 +12,11 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
 
-ROOT = Path("/home/ubuntu/riemann_proof")
+ROOT = Path(__file__).resolve().parents[2]
+SCRIPT_DIR = Path(__file__).resolve().parent
 DB_PATH = ROOT / "analysis" / "data" / "graph.sqlite"
 META_PATH = ROOT / "analysis" / "data" / "meta.json"
-OUT_DIR = ROOT / "analysis" / "size_treemap"
+OUT_DIR = SCRIPT_DIR
 OUT_JSON = OUT_DIR / "hierarchy_sizes.json"
 
 MAX_TOP_FILES_LINES = 10
@@ -240,7 +241,7 @@ def bucket_lines(rows: list[tuple[Any, ...]]) -> list[dict[str, Any]]:
     ]
 
 
-def build_data() -> dict[str, Any]:
+def build_data(rel_src_label: str = "src/", version_label: str = "") -> dict[str, Any]:
     t0 = time.time()
     conn = sqlite3.connect(f"file:{DB_PATH}?mode=ro", uri=True)
 
@@ -250,6 +251,7 @@ def build_data() -> dict[str, Any]:
                lines, bytes, n_theorems, n_lemmas, n_defs, n_structures, n_other_decls,
                dist_from_main, height_from_leaves
         FROM modules
+        WHERE reachable_from_main = 1
         ORDER BY rel_path
         """
     ).fetchall()
@@ -300,9 +302,11 @@ def build_data() -> dict[str, Any]:
         for ch in children_map.get(d, ()):
             merge_acc(acc, subtree_acc[ch])
 
+    root_name = rel_src_label.rstrip("/") or "src"
+
     def build_node(d: str) -> dict[str, Any]:
         depth = 0 if not d else d.count("/") + 1
-        name = "lean/src" if not d else d.rsplit("/", 1)[-1]
+        name = root_name if not d else d.rsplit("/", 1)[-1]
         top_dir = "(root)" if not d else d.split("/", 1)[0]
         node: dict[str, Any] = {
             "name": name,
@@ -328,22 +332,28 @@ def build_data() -> dict[str, Any]:
     tree = build_node("")
 
     # Sanity check against meta.json
-    assert tree["files"] == meta["total_files"], (tree["files"], meta["total_files"])
-    assert tree["lines"] == meta["total_lines"], (tree["lines"], meta["total_lines"])
-    assert tree["bytes"] == meta["total_bytes"], (tree["bytes"], meta["total_bytes"])
+    assert tree["files"] == meta["reachable_files"], (tree["files"], meta["reachable_files"])
+    assert tree["lines"] == meta.get("reachable_lines", meta["total_lines"]), (
+        tree["lines"],
+        meta.get("reachable_lines", meta["total_lines"]),
+    )
+    if meta.get("unreachable_files", 0) == 0:
+        assert tree["bytes"] == meta["total_bytes"], (tree["bytes"], meta["total_bytes"])
+    else:
+        assert 0 < tree["bytes"] <= meta["total_bytes"]
 
-    # Verify dir_stats level=1, 2, 3 consistency
+    # Verify dir_stats level=1 consistency
     ds_lvl1 = {
         r[0]: r[1:]
         for r in conn.execute(
-            "SELECT dir_key, files, lines, bytes, theorems+lemmas, defs+structures FROM dir_stats WHERE level=1"
+            "SELECT dir_key, reachable_files, reachable_lines, bytes, theorems+lemmas, defs+structures FROM dir_stats WHERE level=1 AND reachable_files > 0"
         )
     }
     assert len(ds_lvl1) == len(top_groups)
 
-    total_files = meta["total_files"]
-    total_lines = meta["total_lines"]
-    total_bytes = meta["total_bytes"]
+    total_files = tree["files"]
+    total_lines = tree["lines"]
+    total_bytes = tree["bytes"]
     total_tl = tree["theorems_lemmas"]
     total_ds = tree["defs_structures"]
 
@@ -508,8 +518,9 @@ def build_data() -> dict[str, Any]:
 
     result = {
         "generated_at": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "version_label": version_label,
         "source_db": str(DB_PATH),
-        "src_root": str(ROOT / "lean" / "src"),
+        "src_root": rel_src_label.rstrip("/") or "src",
         "build_seconds": round(time.time() - t0, 2),
         "meta": meta,
         "tree_stats": {
@@ -604,25 +615,109 @@ def embed_into_html(data: dict[str, Any], html_path: Path = HTML_PATH) -> None:
     html_path.write_text(new_html, encoding="utf-8")
 
 
+def render_size_analysis_md(data: dict[str, Any], version_label: str = "", rel_src_label: str = "src/") -> str:
+    """Render SIZE_ANALYSIS.md dynamically from computed hierarchy breakdown."""
+    t = data["tree"]
+    ts = data["tree_stats"]
+    mm = data["summary"]["file_distributions"]["micro_module_markers"]
+    ver_note = f" (`{version_label}`)" if version_label else ""
+    lines: list[str] = []
+    a = lines.append
+    a(f"# Codebase Size & Hierarchical Complexity Analysis{ver_note}")
+    a("")
+    a(
+        f"Quantitative breakdown of `{rel_src_label}` (**{t['files']:,} reachable modules**, **{t['lines']:,} lines**, **{t['bytes'] / (1024*1024):.1f} MiB**, **{ts['total_dir_nodes']:,} directory nodes** across max depth **{ts['max_dir_depth']}**) paired with [treemap_sunburst.html](treemap_sunburst.html)."
+    )
+    a("")
+    a("## 1. Top-Level Directory Breakdown")
+    a("")
+    a("| Top Directory | Files (%) | Lines (%) | Theorems & Lemmas | Defs & Structs | Median Lines | 1-Decl Modules |")
+    a("|---|---:|---:|---:|---:|---:|---:|")
+    for td in data["summary"]["top_dirs"]:
+        a(
+            f"| `{td['top_dir']}` | {td['files']:,} ({td['pct_files']:.2f}%) | "
+            f"{td['lines']:,} ({td['pct_lines']:.2f}%) | {td['theorems_lemmas']:,} | "
+            f"{td['defs_structures']:,} | {td['median_lines_per_file']} | {td['one_decl_files']:,} ({td['pct_one_decl']:.1f}%) |"
+        )
+    a("")
+    a("## 2. Module Granularity & Micro-Modules")
+    a("")
+    a(f"- **Single-declaration files:** `{mm['files_with_1_decl']:,}` (**{mm['pct_1_decl']}%**)")
+    a(f"- **Files with ≤ 2 declarations:** `{mm['files_with_le_2_decls']:,}` (**{mm['pct_le_2_decls']}%**)")
+    a(f"- **Zero-declaration modules (import barrels / directives):** `{mm['files_with_0_decls']:,}`")
+    a(f"- **Statement wrapper files (`Statement` / statements dirs):** `{mm['statement_wrapper_files']:,}` ({mm['pct_statement_wrappers']}%)")
+    a("")
+    a("## 3. Largest Individual Modules (by Line Count)")
+    a("")
+    a("| Module | Top Dir | Lines | Decls | Dist / Height |")
+    a("|---|---|---:|---:|---|")
+    for f in data["summary"]["top25_files_by_lines"][:15]:
+        a(
+            f"| `{f['rel_path']}` | `{f['top_dir']}` | {f['lines']:,} | {f['all_decls']:,} | {f['dist_from_main']} / {f['height_from_leaves']} |"
+        )
+    a("")
+    return "\n".join(lines) + "\n"
+
+
+def make_explorer_payload(data: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "generated_at": data["generated_at"],
+        "version_label": data.get("version_label", ""),
+        "src_root": data["src_root"],
+        "meta": {
+            "total_files": data["tree"]["files"],
+            "total_lines": data["tree"]["lines"],
+            "total_bytes": data["tree"]["bytes"],
+            "reachable_files": data["meta"]["reachable_files"],
+            "max_dist_from_main": data["meta"]["max_dist_from_main"],
+            "max_height_from_leaves": data["meta"]["max_height_from_leaves"],
+        },
+        "tree_stats": data["tree_stats"],
+        "summary": {
+            "top_dirs": data["summary"]["top_dirs"],
+        },
+        "tree": data["tree"],
+    }
+
+
 def main() -> None:
+    global DB_PATH, META_PATH, OUT_DIR, OUT_JSON
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--db-path", type=Path, default=DB_PATH)
+    parser.add_argument("--meta-path", type=Path, default=META_PATH)
+    parser.add_argument("--out-dir", type=Path, default=OUT_DIR)
+    parser.add_argument("--version-label", type=str, default="")
+    parser.add_argument("--rel-src-label", type=str, default="src/")
     parser.add_argument("--pretty", action="store_true", help="Pretty-print JSON with indent=2")
-    parser.add_argument("--embed-html", action="store_true", help="Embed hierarchy payload into treemap_sunburst.html")
+    parser.add_argument("--embed-html", action="store_true", help="Deprecated no-op (use hierarchy_data.js)")
     args = parser.parse_args()
 
+    DB_PATH = args.db_path
+    META_PATH = args.meta_path
+    OUT_DIR = args.out_dir
+    OUT_JSON = OUT_DIR / "hierarchy_sizes.json"
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    data = build_data()
+
+    data = build_data(rel_src_label=args.rel_src_label, version_label=args.version_label)
     if args.pretty:
         OUT_JSON.write_text(json.dumps(data, indent=2), encoding="utf-8")
     else:
         OUT_JSON.write_text(json.dumps(data, separators=(",", ":")), encoding="utf-8")
 
+    payload = make_explorer_payload(data)
+    raw_js = json.dumps(payload, separators=(",", ":")).replace("</", "<\\/")
+    out_js = OUT_DIR / "hierarchy_data.js"
+    out_js.write_text(f"window.__HIERARCHY_DATA__ = {raw_js};\n", encoding="utf-8")
+
+    out_md = OUT_DIR / "SIZE_ANALYSIS.md"
+    out_md.write_text(
+        render_size_analysis_md(data, version_label=args.version_label, rel_src_label=args.rel_src_label),
+        encoding="utf-8",
+    )
+
     size_mb = OUT_JSON.stat().st_size / (1024 * 1024)
-    print(f"Wrote {OUT_JSON} ({size_mb:.2f} MB) in {data['build_seconds']}s")
-    if args.embed_html:
-        embed_into_html(data)
-        html_mb = HTML_PATH.stat().st_size / (1024 * 1024)
-        print(f"Embedded data into {HTML_PATH} ({html_mb:.2f} MB)")
+    js_mb = out_js.stat().st_size / (1024 * 1024)
+    print(f"Wrote {OUT_JSON} ({size_mb:.2f} MB), {out_js} ({js_mb:.2f} MB), and {out_md} in {data['build_seconds']}s")
     print(f"Tree nodes: {data['tree_stats']}")
     print("Top dirs:")
     for td in data["summary"]["top_dirs"]:

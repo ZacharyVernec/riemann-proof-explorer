@@ -1,0 +1,69 @@
+%%{init: {'theme': 'base', 'themeVariables': {'fontFamily': 'Inter, system-ui, sans-serif'}}}%%
+flowchart TD
+  %% Directed edge A --> B means A imports B (A depends on B)
+  %% Heavy (>=1000): bold ==> | Medium (50..999): --> | Light (<50): -.->
+
+  subgraph LEGEND["Legend: Edge A → B means A imports B (depends on B)"]
+    direction LR
+    L_src["Importer"] ==>|"≥ 1,000 imports"| L_dst["Imported"]
+    L_src2["Importer"] -->|"50–999 imports"| L_dst2["Imported"]
+    L_src3["Importer"] -.->|"< 50 / weaker reverse"| L_dst3["Imported"]
+  end
+
+  _root_["(root)<br/>min dist 0 · max height 93"]
+  Development["Development<br/>min dist 1 · max height 92"]
+  CompanionTheory["CompanionTheory<br/>min dist 3 · max height 69"]
+  PositivityTheory["PositivityTheory<br/>min dist 3 · max height 45"]
+  Formalism["Formalism<br/>min dist 3 · max height 56"]
+  ReciprocityTheory["ReciprocityTheory<br/>min dist 2 · max height 47"]
+  GroundTheory["GroundTheory<br/>min dist 2 · max height 41"]
+  Lemmata["Lemmata<br/>min dist 4 · max height 10"]
+
+  Development ==>|"32,714"| Formalism
+  Development ==>|"22,116"| ReciprocityTheory
+  Development ==>|"6,514"| GroundTheory
+  GroundTheory ==>|"1,774"| ReciprocityTheory
+  Development ==>|"1,423"| CompanionTheory
+  CompanionTheory ==>|"1,143"| Formalism
+  CompanionTheory ==>|"1,034 (rev of 1,423)"| Development
+  ReciprocityTheory -->|"614"| Formalism
+  PositivityTheory -->|"597"| Development
+  Formalism -->|"474 (rev of 614)"| ReciprocityTheory
+  Formalism -->|"267 (rev of 32,714)"| Development
+  Development -->|"259 (rev of 597)"| PositivityTheory
+  CompanionTheory -->|"207"| ReciprocityTheory
+  CompanionTheory -->|"123"| GroundTheory
+  Formalism -->|"114"| Lemmata
+  PositivityTheory -->|"104"| GroundTheory
+  PositivityTheory -->|"65"| Formalism
+  GroundTheory -->|"62 (rev of 6,514)"| Development
+  ReciprocityTheory -.->|"38"| Lemmata
+  Development -.->|"34"| Lemmata
+  ReciprocityTheory -.->|"30 (rev of 22,116)"| Development
+  Lemmata -.->|"21 (rev of 114)"| Formalism
+  PositivityTheory -.->|"18"| ReciprocityTheory
+  GroundTheory -.->|"10"| Formalism
+  Formalism -.->|"8 (rev of 1,143)"| CompanionTheory
+  Lemmata -.->|"5 (rev of 38)"| ReciprocityTheory
+  ReciprocityTheory -.->|"5 (rev of 1,774)"| GroundTheory
+  Lemmata -.->|"4 (rev of 34)"| Development
+  GroundTheory -.->|"3 (rev of 123)"| CompanionTheory
+  _root_ -->|"2"| Development
+  Development -.->|"2"| _root_
+  Formalism -.->|"2 (rev of 10)"| GroundTheory
+
+  style _root_ fill:#334155,stroke:#94a3b8,stroke-width:2px,color:#ffffff
+  style Development fill:#1d4ed8,stroke:#60a5fa,stroke-width:2px,color:#ffffff
+  style CompanionTheory fill:#047857,stroke:#34d399,stroke-width:2px,color:#ffffff
+  style PositivityTheory fill:#86198f,stroke:#e879f9,stroke-width:2px,color:#ffffff
+  style Formalism fill:#c2410c,stroke:#fb923c,stroke-width:2px,color:#ffffff
+  style ReciprocityTheory fill:#0f766e,stroke:#2dd4bf,stroke-width:2px,color:#ffffff
+  style GroundTheory fill:#a16207,stroke:#facc15,stroke-width:2px,color:#ffffff
+  style Lemmata fill:#6b21a8,stroke:#c084fc,stroke-width:2px,color:#ffffff
+  style LEGEND fill:#0f172a,stroke:#475569,color:#e2e8f0
+  style L_src fill:#1e293b,stroke:#64748b,color:#f8fafc
+  style L_dst fill:#1e293b,stroke:#64748b,color:#f8fafc
+  style L_src2 fill:#1e293b,stroke:#64748b,color:#f8fafc
+  style L_dst2 fill:#1e293b,stroke:#64748b,color:#f8fafc
+  style L_src3 fill:#1e293b,stroke:#64748b,color:#f8fafc
+  style L_dst3 fill:#1e293b,stroke:#64748b,color:#f8fafc

@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import argparse
 import json
 import math
 import random
@@ -12,9 +13,10 @@ from collections import Counter, defaultdict, deque
 from pathlib import Path
 from typing import Any
 
-DB_PATH = Path("/home/ubuntu/riemann_proof/analysis/data/graph.sqlite")
-META_PATH = Path("/home/ubuntu/riemann_proof/analysis/data/meta.json")
-OUT_DIR = Path("/home/ubuntu/riemann_proof/analysis/proof_spine")
+ROOT = Path(__file__).resolve().parents[2]
+DB_PATH = ROOT / "analysis" / "data" / "graph.sqlite"
+META_PATH = ROOT / "analysis" / "data" / "meta.json"
+OUT_DIR = Path(__file__).resolve().parent
 METRICS_PATH = OUT_DIR / "spine_metrics.json"
 
 
@@ -41,20 +43,23 @@ def load_graph() -> tuple[list[tuple[Any, ...]], list[list[int]], list[list[int]
                external_imports, reachable_from_main, dist_from_main, height_from_leaves,
                in_degree, in_degree_main, out_degree
         FROM modules
+        WHERE reachable_from_main = 1
         ORDER BY id
         """
     ).fetchall()
+    db_to_idx = {r[0]: idx for idx, r in enumerate(nodes)}
     n = len(nodes)
     adj_out: list[list[int]] = [[] for _ in range(n)]
     adj_in: list[list[int]] = [[] for _ in range(n)]
     for s, d in conn.execute("SELECT src_id, dst_id FROM edges ORDER BY src_id, dst_id"):
-        u = s - 1
-        v = d - 1
-        adj_out[u].append(v)
-        adj_in[v].append(u)
+        u = db_to_idx.get(s)
+        v = db_to_idx.get(d)
+        if u is not None and v is not None:
+            adj_out[u].append(v)
+            adj_in[v].append(u)
     conn.close()
 
-    main_candidates = [r[0] - 1 for r in nodes if r[1] == "Main"]
+    main_candidates = [idx for idx, r in enumerate(nodes) if r[1] == "Main"]
     assert len(main_candidates) == 1, f"Expected 1 Main node, got {main_candidates}"
     return nodes, adj_out, adj_in, main_candidates[0]
 
@@ -500,6 +505,8 @@ def compute_paths_and_bridges(
 def node_record(
     idx: int,
     nodes: list[tuple[Any, ...]],
+    in_deg: list[int],
+    out_deg: list[int],
     decls_map: dict[int, list[dict[str, Any]]] | None = None,
     extra: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
@@ -520,8 +527,8 @@ def node_record(
         "external_imports": json.loads(r[14]),
         "dist_from_main": r[16],
         "height_from_leaves": r[17],
-        "in_degree": r[18],
-        "out_degree": r[20],
+        "in_degree": in_deg[idx],
+        "out_degree": out_deg[idx],
     }
     if decls_map is not None:
         dlist = decls_map.get(r[0], [])
@@ -533,20 +540,35 @@ def node_record(
 
 
 def main() -> None:
+    global DB_PATH, META_PATH, OUT_DIR, METRICS_PATH
+    parser = argparse.ArgumentParser(description="Structural DAG analysis for Lean proof graph")
+    parser.add_argument("--db-path", type=Path, default=DB_PATH)
+    parser.add_argument("--meta-path", type=Path, default=META_PATH)
+    parser.add_argument("--out-dir", type=Path, default=OUT_DIR)
+    args = parser.parse_args()
+    DB_PATH = args.db_path
+    META_PATH = args.meta_path
+    OUT_DIR = args.out_dir
+    METRICS_PATH = OUT_DIR / "spine_metrics.json"
+
     t0 = time.time()
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     meta = json.loads(META_PATH.read_text())
 
     nodes, adj_out, adj_in, main_idx = load_graph()
     n = len(nodes)
+    in_deg = [len(adj_in[i]) for i in range(n)]
+    out_deg = [len(adj_out[i]) for i in range(n)]
     edge_count = sum(len(x) for x in adj_out)
-    assert n == meta["total_files"] == 175187
-    assert edge_count == meta["total_internal_edges"] == 753261
+    assert n == meta["reachable_files"], f"n={n} != reachable_files={meta['reachable_files']}"
+    assert edge_count == meta["reachable_internal_edges"], (
+        f"edge_count={edge_count} != reachable_internal_edges={meta['reachable_internal_edges']}"
+    )
 
     # 1. Reachability, RPO, DAG & Height verification
     dist, height, postorder, rpo, rpo_num = verify_bfs_and_rpo(nodes, adj_out, main_idx)
-    zero_in = [nodes[i][1] for i in range(n) if nodes[i][18] == 0]
-    leaves = [i for i in range(n) if nodes[i][20] == 0]
+    zero_in = [nodes[i][1] for i in range(n) if in_deg[i] == 0]
+    leaves = [i for i in range(n) if out_deg[i] == 0]
 
     # 2. Stratigraphic Layering
     top_dirs_all = sorted({r[4] for r in nodes})
@@ -588,7 +610,7 @@ def main() -> None:
         idxs = [i for i in range(n) if nodes[i][4] == td]
         ds = sorted(dist[i] for i in idxs)
         hs = sorted(height[i] for i in idxs)
-        leaf_cnt = sum(1 for i in idxs if nodes[i][20] == 0)
+        leaf_cnt = sum(1 for i in idxs if out_deg[i] == 0)
         top_dir_profiles.append(
             {
                 "top_dir": td,
@@ -646,8 +668,8 @@ def main() -> None:
         if sum(nodes[i][9:14]) == 0:
             leaf_zero_decl += 1
 
-    top_leaf_importers = sorted(leaves, key=lambda i: (-nodes[i][18], -nodes[i][7], i))[:20]
-    top_leaf_lines = sorted(leaves, key=lambda i: (-nodes[i][7], -nodes[i][18], i))[:15]
+    top_leaf_importers = sorted(leaves, key=lambda i: (-in_deg[i], -nodes[i][7], i))[:20]
+    top_leaf_lines = sorted(leaves, key=lambda i: (-nodes[i][7], -in_deg[i], i))[:15]
 
     # Rankings for Dominators, Hubs, Bridges
     top_dom_idxs = sorted(range(n), key=lambda i: (-dom_size[i], i))[:100]
@@ -660,11 +682,12 @@ def main() -> None:
         "ge_5000": sum(1 for s in dom_size if s >= 5000),
     }
 
-    # Dominator skeleton: all nodes with dom_size >= 300 (so we capture clean multi-level spine)
-    skeleton_idxs = sorted([i for i in range(n) if dom_size[i] >= 300], key=lambda i: (dom_depth[i], -dom_size[i], i))
+    # Dominator skeleton: adaptive threshold scaled with codebase size
+    skel_thresh = 300 if n >= 170000 else max(20, int(n * 0.0017))
+    skeleton_idxs = sorted([i for i in range(n) if dom_size[i] >= skel_thresh], key=lambda i: (dom_depth[i], -dom_size[i], i))
 
-    top_in_idxs = sorted(range(n), key=lambda i: (-nodes[i][18], -nodes[i][7], i))[:30]
-    top_out_idxs = sorted(range(n), key=lambda i: (-nodes[i][20], -nodes[i][18], i))[:30]
+    top_in_idxs = sorted(range(n), key=lambda i: (-in_deg[i], -nodes[i][7], i))[:30]
+    top_out_idxs = sorted(range(n), key=lambda i: (-out_deg[i], -in_deg[i], i))[:30]
 
     top_cross_brandes_idxs = sorted(range(n), key=lambda i: (-br["bc_cross_top"][i], i))[:30]
     top_cross_prod_idxs = sorted(
@@ -722,6 +745,8 @@ def main() -> None:
         node_record(
             i,
             nodes,
+            in_deg,
+            out_deg,
             decls_map,
             {
                 "idom_name": nodes[idom[i]][1],
@@ -736,6 +761,8 @@ def main() -> None:
         node_record(
             i,
             nodes,
+            in_deg,
+            out_deg,
             decls_map,
             {
                 "importers": [nodes[u][1] for u in adj_in[i]],
@@ -749,6 +776,8 @@ def main() -> None:
         node_record(
             i,
             nodes,
+            in_deg,
+            out_deg,
             decls_map,
             {
                 "rank": rank,
@@ -781,8 +810,8 @@ def main() -> None:
             "dom_subtree_lines": dom_lines[i],
             "dist_from_main": dist[i],
             "height_from_leaves": height[i],
-            "in_degree": nodes[i][18],
-            "out_degree": nodes[i][20],
+            "in_degree": in_deg[i],
+            "out_degree": out_deg[i],
         }
         for i in skeleton_idxs
     ]
@@ -791,6 +820,8 @@ def main() -> None:
         node_record(
             i,
             nodes,
+            in_deg,
+            out_deg,
             decls_map,
             {
                 "step": step,
@@ -810,8 +841,8 @@ def main() -> None:
             "top_dir": nodes[i][4],
             "dist_from_main": dist[i],
             "height_from_leaves": height[i],
-            "in_degree": nodes[i][18],
-            "out_degree": nodes[i][20],
+            "in_degree": in_deg[i],
+            "out_degree": out_deg[i],
             "crit_ways": crit["crit_ways"][i],
             "dom_subtree_size": dom_size[i],
         }
@@ -845,19 +876,19 @@ def main() -> None:
             "dom_subtree_size": dom_size[i],
         }
 
-    top_in_records = [node_record(i, nodes, decls_map, {"rank": r, **hub_extra(i)}) for r, i in enumerate(top_in_idxs, 1)]
-    top_out_records = [node_record(i, nodes, decls_map, {"rank": r, **hub_extra(i)}) for r, i in enumerate(top_out_idxs, 1)]
+    top_in_records = [node_record(i, nodes, in_deg, out_deg, decls_map, {"rank": r, **hub_extra(i)}) for r, i in enumerate(top_in_idxs, 1)]
+    top_out_records = [node_record(i, nodes, in_deg, out_deg, decls_map, {"rank": r, **hub_extra(i)}) for r, i in enumerate(top_out_idxs, 1)]
     top_cross_brandes_records = [
-        node_record(i, nodes, decls_map, {"rank": r, **hub_extra(i)}) for r, i in enumerate(top_cross_brandes_idxs, 1)
+        node_record(i, nodes, in_deg, out_deg, decls_map, {"rank": r, **hub_extra(i)}) for r, i in enumerate(top_cross_brandes_idxs, 1)
     ]
     top_cross_prod_records = [
-        node_record(i, nodes, decls_map, {"rank": r, **hub_extra(i)}) for r, i in enumerate(top_cross_prod_idxs, 1)
+        node_record(i, nodes, in_deg, out_deg, decls_map, {"rank": r, **hub_extra(i)}) for r, i in enumerate(top_cross_prod_idxs, 1)
     ]
     top_d2_prod_records = [
-        node_record(i, nodes, decls_map, {"rank": r, **hub_extra(i)}) for r, i in enumerate(top_d2_prod_idxs, 1)
+        node_record(i, nodes, in_deg, out_deg, decls_map, {"rank": r, **hub_extra(i)}) for r, i in enumerate(top_d2_prod_idxs, 1)
     ]
     top_stress_records = [
-        node_record(i, nodes, decls_map, {"rank": r, **hub_extra(i)}) for r, i in enumerate(top_stress_idxs, 1)
+        node_record(i, nodes, in_deg, out_deg, decls_map, {"rank": r, **hub_extra(i)}) for r, i in enumerate(top_stress_idxs, 1)
     ]
 
     # Top-dir transition matrix
@@ -868,9 +899,9 @@ def main() -> None:
 
     metrics = {
         "audit": {
-            "total_files": n,
+            "total_files": meta["total_files"],
             "reachable_from_main": n,
-            "unreachable_from_main": 0,
+            "unreachable_from_main": meta.get("unreachable_files", meta["total_files"] - n),
             "total_internal_edges": edge_count,
             "is_dag": True,
             "zero_in_degree_sources": zero_in,
@@ -880,7 +911,7 @@ def main() -> None:
             "chk_passes": chk_passes,
             "verified_cut_dominators": len(verified_top40),
             "total_main_to_leaf_paths_exact": str(br["total_m2l_paths"]),
-            "total_main_to_leaf_paths_log10": round(math.log10(br["total_m2l_paths"]), 3),
+            "total_main_to_leaf_paths_log10": round(math.log10(br["total_m2l_paths"]), 3) if br["total_m2l_paths"] > 0 else 0.0,
             "elapsed_seconds": round(time.time() - t0, 2),
         },
         "leaf_and_entry_audit": {
@@ -896,8 +927,8 @@ def main() -> None:
             "leaves_by_top_dir": dict(leaf_by_top.most_common()),
             "top_20_leaf_depth2_dirs": [{"depth2_dir": k, "count": v} for k, v in leaf_by_d2.most_common(20)],
             "top_20_leaf_external_imports": [{"import": k, "count": v} for k, v in leaf_ext_counts.most_common(20)],
-            "top_20_most_imported_leaves": [node_record(i, nodes, decls_map) for i in top_leaf_importers],
-            "top_15_largest_leaves": [node_record(i, nodes, decls_map) for i in top_leaf_lines],
+            "top_20_most_imported_leaves": [node_record(i, nodes, in_deg, out_deg, decls_map) for i in top_leaf_importers],
+            "top_15_largest_leaves": [node_record(i, nodes, in_deg, out_deg, decls_map) for i in top_leaf_lines],
             "entry_layers_dist_le_3": entry_layer,
             "build_aid_modules": build_aid_records,
         },
@@ -921,6 +952,7 @@ def main() -> None:
             "intra_dir_longest": crit["intra_dir_longest"],
         },
         "dominators": {
+            "skeleton_threshold": skel_thresh,
             "subtree_size_counts": top_dom_non_trivial_counts,
             "top_100_bottlenecks": dom_records,
             "skeleton_ge_300": skeleton_records,

@@ -166,7 +166,7 @@ def load_graph(db_path: Path) -> tuple[list[str], list[str], list[str], list[str
     cur = conn.cursor()
 
     mod_rows = cur.execute(
-        "SELECT id, name, rel_path, dir_path, top_dir FROM modules ORDER BY rel_path ASC, id ASC"
+        "SELECT id, name, rel_path, dir_path, top_dir FROM modules WHERE reachable_from_main = 1 ORDER BY rel_path ASC, id ASC"
     ).fetchall()
     n_mod = len(mod_rows)
     if n_mod == 0:
@@ -549,7 +549,9 @@ def resolve_symbol_allowed_ancestors(
     conn = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
     cur = conn.cursor()
 
-    mod_rows = cur.execute("SELECT id, rel_path FROM modules ORDER BY rel_path ASC, id ASC").fetchall()
+    mod_rows = cur.execute(
+        "SELECT id, rel_path FROM modules WHERE reachable_from_main = 1 ORDER BY rel_path ASC, id ASC"
+    ).fetchall()
     db_to_idx = {db_id: idx for idx, (db_id, _) in enumerate(mod_rows)}
 
     target_syms = set(sym_to_lit.keys())
@@ -681,7 +683,7 @@ def parse_module_published_proofs(
 
     decl_starts = list(
         re.finditer(
-            r"^[ \t]*(?:@\[.*?\]\s*)*(?:(?:private|protected|noncomputable|local|scoped)\s+)*(theorem|lemma)\s+([^\s:(\[{]+)",
+            r"^[ \t]*(?:@\[.*?\]\s*)*(?:set_option\s+[^\n]*?\s+in\s+)*(?:(?:public|meta|private|protected|noncomputable|local|scoped)\s+)*(theorem|lemma)\s+([^\s:(\[{]+)",
             txt,
             re.M,
         )
@@ -805,8 +807,9 @@ def find_dead_bridge_imports(
 
     rp = rel_path[rhec_nid]
     lines = (SRC_DIR / rp).read_text(encoding="utf-8", errors="replace").splitlines()
-    imports = [l for l in lines if l.startswith("import ")]
-    body_lines = [l for l in lines if not l.startswith("import ") and l.strip()]
+    import_re = re.compile(r"^(?:(?:public|meta)\s+)?import\s+")
+    imports = [l for l in lines if import_re.match(l)]
+    body_lines = [l for l in lines if not import_re.match(l) and l.strip()]
     body_text = "\n".join(body_lines)
 
     if len(imports) < 50 or len(body_lines) > 40 or "theorem " not in body_text:
@@ -815,7 +818,7 @@ def find_dead_bridge_imports(
     conn = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
     cur = conn.cursor()
     mod_decls: dict[int, list[str]] = defaultdict(list)
-    db_mods = cur.execute("SELECT id, name FROM modules").fetchall()
+    db_mods = cur.execute("SELECT id, name FROM modules WHERE reachable_from_main = 1").fetchall()
     db_to_nid = {db_id: name_to_nid[nm] for db_id, nm in db_mods if nm in name_to_nid}
     for db_mid, dname in cur.execute("SELECT module_id, name FROM declarations"):
         nid = db_to_nid.get(db_mid)
@@ -1617,17 +1620,89 @@ def build_simplified_view(
     }
 
 
+def render_full_dag_md(
+    summary: dict[str, Any],
+    meta: dict[str, Any],
+    version_label: str = "",
+    rel_src_label: str = "src/",
+) -> str:
+    """Render FULL_DAG.md dynamically from layout_summary and meta.json."""
+    decl_total = sum(meta.get("reachable_decl_counts", meta.get("decl_counts", {})).values())
+    n_mod = summary["node_count"]
+    n_edges = summary["edge_count"]
+    n_layers = summary["num_layers"]
+    col = summary["collapsed"]
+    fh = summary["full_hasse"]
+    eh = summary["existing_hasse"]
+    simp = summary["simplified"]
+    payload = summary["payload"]
+
+    ver_note = f" (`{version_label}`)" if version_label else ""
+    lines: list[str] = []
+    a = lines.append
+    a(f"# Full Lean Module Dependency DAG{ver_note}")
+    a("")
+    a(
+        f"This document summarizes the deterministic Sugiyama layout, binary data packaging, graph-simplification modes, and WebGL visualization for `{rel_src_label}` (**{n_mod:,} reachable modules**, **{n_edges:,} internal import edges**, **{n_layers} layers**) in [full_dag.html](full_dag.html)."
+    )
+    a("")
+    a("> **Direction Convention:** Every node represents a `.lean` module under the source tree. A directed edge **`A -> B`** means **`A` imports `B`** (`A` depends on `B`). Top-level theorem modules sit at the top (`layer 0`), and foundational leaves sit below.")
+    a("")
+    a("---")
+    a("")
+    a("## 1. Scale & Simplification Modes")
+    a("")
+    a("| View Mode | Active Controls | Nodes | Edges | Layers |")
+    a("|---|---|---:|---:|---:|")
+    a(f"| **Full DAG** | Default (`C=off, H=off, L=off`) | {n_mod:,} | {n_edges:,} | {n_layers} |")
+    a(f"| **Full Hasse** | `H` (Transitive reduction) | {n_mod:,} | {fh['edge_count']:,} | {n_layers} |")
+    a(f"| **Existing-Theory Collapse** | `C` ({col['supernode_count']} literature supernodes) | {col['node_count']:,} | {col['edge_count']:,} | {col['num_layers']} |")
+    a(f"| **Existing-Theory Hasse** | `C + H` | {col['node_count']:,} | {eh['edge_count']:,} | {col['num_layers']} |")
+    for skey, sinfo in simp.items():
+        a(f"| **Chain/Leaf Simplified (`{skey}`)** | `L` | {sinfo['node_count']:,} | {sinfo['edge_count']:,} | {sinfo['num_layers']} |")
+    a("")
+    a(
+        f"- **Existing-Theory Contraction:** Collapses **{col['collapsed_module_count']:,}** modules ({100.0 * col['collapsed_module_count'] / max(1, n_mod):.1f}% of reachable codebase, anchored at **{col['frontier_module_count']:,}** proof-root frontier modules) into **{col['supernode_count']} Literature Supernodes**, leaving **{col['active_node_count']:,}** novel/shared interface modules."
+    )
+    a(f"- **Declarations Indexed (Reachable):** **{decl_total:,}** Lean declarations across `{rel_src_label}`.")
+    a(
+        f"- **Binary Packaging (`LDAG` v{payload['format_version']}):** `{payload['raw_binary_bytes']:,}` raw bytes → `{payload['gzip_bytes']:,}` gzip bytes → `{payload['js_file_bytes']:,}` JS bytes (`full_dag_data.js`)."
+    )
+    a("")
+    a("## 2. Domain Breakdown & Top Imported Hubs")
+    a("")
+    a("| Top-Level Directory | Modules |")
+    a("|---|---:|")
+    for dom in summary["domains"]:
+        a(f"| `{dom['name']}` | {dom['modules']:,} |")
+    a("")
+    a("| Top Imported Hub Module | In-Degree | Out-Degree | Layer |")
+    a("|---|---:|---:|---:|")
+    for hub in summary["top_in_degree_hubs"][:15]:
+        a(f"| `{hub['rel_path']}` | {hub['in_degree']:,} | {hub['out_degree']:,} | {hub['layer']} |")
+    a("")
+    return "\n".join(lines) + "\n"
+
+
 def main() -> None:
+    global SRC_DIR
     parser = argparse.ArgumentParser(
         description="Build deterministic Sugiyama layout and binary payload for the full Lean DAG."
     )
     parser.add_argument("--rebuild-index", action="store_true", help="Re-run analysis/build_index.py first")
+    parser.add_argument("--src-dir", type=Path, default=SRC_DIR, help="Path to Lean src root")
     parser.add_argument("--db-path", type=Path, default=DEFAULT_DB_PATH, help="Path to graph.sqlite")
+    parser.add_argument("--meta-path", type=Path, default=None, help="Path to meta.json (defaults alongside db-path)")
     parser.add_argument("--out-dir", type=Path, default=DEFAULT_OUT_DIR, help="Output directory")
     parser.add_argument("--inventory-path", type=Path, default=DEFAULT_INVENTORY_PATH, help="Path to PUBLISHED_THEOREMS_INVENTORY.md")
+    parser.add_argument("--version-label", type=str, default="")
+    parser.add_argument("--rel-src-label", type=str, default="src/")
     parser.add_argument("--y-iters", type=int, default=25, help="Max L1 vertical rank-tightening sweeps")
     parser.add_argument("--x-sweeps", type=int, default=16, help="Horizontal barycenter + PAV sweeps")
     args = parser.parse_args()
+    SRC_DIR = args.src_dir
+    meta_path = args.meta_path or (args.db_path.parent / "meta.json")
+    meta_json = json.loads(meta_path.read_text(encoding="utf-8")) if meta_path.exists() else {}
 
     t0 = time.time()
     if args.rebuild_index or not args.db_path.exists():
@@ -2216,9 +2291,15 @@ def main() -> None:
     summary_path = args.out_dir / "layout_summary.json"
     summary_path.write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
 
+    md_path = args.out_dir / "FULL_DAG.md"
+    md_path.write_text(
+        render_full_dag_md(summary, meta_json, version_label=args.version_label, rel_src_label=args.rel_src_label),
+        encoding="utf-8",
+    )
+
     print(
         f"Wrote {data_js_path} ({data_js_path.stat().st_size:,} bytes; "
-        f"gz={len(gz_bytes):,}, raw={len(raw_buf):,}) and {summary_path} in {time.time() - t0:.2f}s"
+        f"gz={len(gz_bytes):,}, raw={len(raw_buf):,}), {summary_path}, and {md_path} in {time.time() - t0:.2f}s"
     )
 
 

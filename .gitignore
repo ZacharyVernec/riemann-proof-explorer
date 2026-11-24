@@ -11,5 +11,9 @@ __pycache__/
 *.swo
 *~
 
-# Generated SQLite index (regenerable via analysis/build_index.py)
+# Generated SQLite index (regenerable via analysis/build_index.py / build_all.py)
 analysis/data/graph.sqlite
+analysis/**/graph.sqlite
+
+# Downloaded Lean repo versions
+lean_versions/

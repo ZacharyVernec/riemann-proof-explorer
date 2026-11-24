@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 /**
  * Dual-mode Markdown report renderer:
- *   1. Browser: loaded via <script src="../render_reports.js" data-md="REPORT.md"></script>
- *      Fetches the sibling .md file on page load and re-renders <main> live.
- *   2. Node.js CLI / Git pre-commit hook: `node analysis/render_reports.js`
- *      Regenerates all report HTML files on disk from their source .md files.
+ *   1. Browser: loaded via <script src="../render_reports.js" data-md="REPORT.md" data-report="dir/REPORT.md"></script>
+ *      - For the default Lean version on HTTP(S): fetches sibling .md and re-renders live.
+ *      - For any non-default Lean version (file:// or HTTP): loads versions/<vid>/<report>.md.js via RHVersion.
+ *   2. Node.js CLI / Git pre-commit hook: `node analysis/render_reports.js [--stage]`
+ *      - Regenerates all 8 canonical HTML reports (default version fallback) and per-version *.md.js wrappers.
  */
 (function () {
   "use strict";
@@ -19,6 +20,11 @@
     padding: 24px 20px 60px;
   }
   nav.top-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
     margin-bottom: 20px;
     padding-bottom: 10px;
     border-bottom: 1px solid #ddd;
@@ -136,7 +142,7 @@
 `;
 
   function escapeHtml(str, quote) {
-    let s = str
+    let s = String(str)
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;");
@@ -155,7 +161,39 @@
     return clean.replace(/[\s-]+/g, "-") || "section";
   }
 
-  function renderInline(text) {
+  const FALLBACK_BLOB_BASE =
+    "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/";
+
+  function makeUrlRewriter(urlOpts) {
+    const opts = urlOpts || {};
+    const srcBlobBase = (opts.sourceBlobBase || "").replace(/\/+$/, "");
+    const localSrcPrefix = opts.localSrcDir
+      ? "file:///home/ubuntu/riemann_proof/" + String(opts.localSrcDir).replace(/^\/+|\/+$/g, "") + "/"
+      : null;
+    const LOCAL_PREFIX = "file:///home/ubuntu/riemann_proof/";
+
+    return function rewriteUrl(url) {
+      if (url.startsWith(LOCAL_PREFIX + "analysis/")) {
+        return "../" + url.slice((LOCAL_PREFIX + "analysis/").length);
+      }
+      if (localSrcPrefix && url.startsWith(localSrcPrefix) && srcBlobBase) {
+        return srcBlobBase + "/" + url.slice(localSrcPrefix.length);
+      }
+      if (url.startsWith(LOCAL_PREFIX + "lean/src/") && srcBlobBase) {
+        return srcBlobBase + "/" + url.slice((LOCAL_PREFIX + "lean/src/").length);
+      }
+      const mVerSrc = url.match(/^file:\/\/\/home\/ubuntu\/riemann_proof\/lean_versions\/[^/]+\/src\/(.*)$/);
+      if (mVerSrc && srcBlobBase) {
+        return srcBlobBase + "/" + mVerSrc[1];
+      }
+      if (url.startsWith(LOCAL_PREFIX)) {
+        return FALLBACK_BLOB_BASE + url.slice(LOCAL_PREFIX.length);
+      }
+      return url;
+    };
+  }
+
+  function renderInline(text, rewriteUrl) {
     const tokens = [];
 
     function saveToken(renderedHtml) {
@@ -180,19 +218,13 @@
     text = text.replace(/\$\$(.+?)\$\$/g, (m) => saveToken(escapeHtml(m, false)));
     text = text.replace(/\$([^$\n]+?)\$/g, (m) => saveToken(escapeHtml(m, false)));
 
-    const LOCAL_PREFIX = "file:///home/ubuntu/riemann_proof/";
-    const GITHUB_BLOB_BASE =
-      "https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/";
-
-    function rewriteUrl(url) {
-      if (url.startsWith(LOCAL_PREFIX + "analysis/")) {
-        return "../" + url.slice((LOCAL_PREFIX + "analysis/").length);
-      }
-      if (url.startsWith(LOCAL_PREFIX)) {
-        return GITHUB_BLOB_BASE + url.slice(LOCAL_PREFIX.length);
-      }
-      return url;
-    }
+    // 1c. Images ![alt](url)
+    text = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (_, altRaw, urlRaw) => {
+      const url = rewriteUrl(urlRaw.trim());
+      return saveToken(
+        `<img src="${escapeHtml(url, true)}" alt="${escapeHtml(altRaw, true)}" style="max-width:100%;height:auto;">`
+      );
+    });
 
     // 2. Links [label](url)
     text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, labelRaw, urlRaw) => {
@@ -259,7 +291,9 @@
     });
   }
 
-  function convertMarkdown(mdText) {
+  function convertMarkdown(mdText, urlOpts) {
+    const rewriteUrl = makeUrlRewriter(urlOpts);
+    const rInline = (t) => renderInline(t, rewriteUrl);
     const lines = mdText.replace(/\r\n?/g, "\n").split("\n");
     const n = lines.length;
     let i = 0;
@@ -310,18 +344,17 @@
         continue;
       }
 
-      // Heading
-      const mHead = stripped.match(/^(#{1,6})\s+(.+)$/);
+      // ATX Heading
+      const mHead = line.match(/^(#{1,6})\s+(.*)$/);
       if (mHead) {
-        const level = mHead[1].length;
-        const rawH = mHead[2].trim();
-        if (level === 1 && !foundTitle) {
-          title = rawH.replace(/`([^`]+)`/g, "$1");
+        const lvl = mHead[1].length;
+        const hText = mHead[2].trim();
+        if (!foundTitle && lvl === 1) {
+          title = hText.replace(/`/g, "");
           foundTitle = true;
         }
-        const renderedH = renderInline(rawH);
-        const slug = slugify(renderedH);
-        out.push(`<h${level} id="${slug}">${renderedH}</h${level}>`);
+        const idAttr = slugify(hText);
+        out.push(`<h${lvl} id="${escapeHtml(idAttr, true)}">${rInline(hText)}</h${lvl}>`);
         i++;
         continue;
       }
@@ -333,7 +366,7 @@
           bqLines.push(lines[i].trim().replace(/^>\s?/, ""));
           i++;
         }
-        out.push(`<blockquote><p>${renderInline(bqLines.join(" "))}</p></blockquote>`);
+        out.push(`<blockquote><p>${rInline(bqLines.join(" "))}</p></blockquote>`);
         continue;
       }
 
@@ -352,7 +385,7 @@
         for (let c = 0; c < numCols; c++) {
           const al = c < aligns.length ? aligns[c] : "left";
           const style = al !== "left" ? ` style="text-align:${al}"` : "";
-          tHtml.push(`<th${style}>${renderInline(headers[c])}</th>`);
+          tHtml.push(`<th${style}>${rInline(headers[c])}</th>`);
         }
         tHtml.push("</tr></thead><tbody>");
         for (const row of rows) {
@@ -361,7 +394,7 @@
             const cellVal = c < row.length ? row[c] : "";
             const al = c < aligns.length ? aligns[c] : "left";
             const style = al !== "left" ? ` style="text-align:${al}"` : "";
-            tHtml.push(`<td${style}>${renderInline(cellVal)}</td>`);
+            tHtml.push(`<td${style}>${rInline(cellVal)}</td>`);
           }
           tHtml.push("</tr>");
         }
@@ -384,7 +417,7 @@
             if (curr.startsWith("  ") && listHtml[listHtml.length - 1].endsWith("</li>")) {
               const last = listHtml[listHtml.length - 1];
               listHtml[listHtml.length - 1] =
-                last.slice(0, -5) + " " + renderInline(curr.trim()) + "</li>";
+                last.slice(0, -5) + " " + rInline(curr.trim()) + "</li>";
               i++;
               continue;
             }
@@ -393,7 +426,7 @@
           const indent = mItem[1].length;
           const itemOrdered = mItem[2].endsWith(".");
           if (indent === 0 && itemOrdered !== isOrdered) break;
-          let itemText = renderInline(mItem[3].trim());
+          let itemText = rInline(mItem[3].trim());
           i++;
 
           const subItems = [];
@@ -403,15 +436,15 @@
             const mSub = nxt.match(/^(\s+)([-*]|\d+\.)\s+(.+)$/);
             if (mSub && mSub[1].length > indent) {
               subTag = mSub[2].endsWith(".") ? "ol" : "ul";
-              subItems.push(`<li>${renderInline(mSub[3].trim())}</li>`);
+              subItems.push(`<li>${rInline(mSub[3].trim())}</li>`);
               i++;
             } else if (nxt.startsWith("   ") && !mSub) {
               if (subItems.length > 0) {
                 const lastSub = subItems[subItems.length - 1];
                 subItems[subItems.length - 1] =
-                  lastSub.slice(0, -5) + " " + renderInline(nxt.trim()) + "</li>";
+                  lastSub.slice(0, -5) + " " + rInline(nxt.trim()) + "</li>";
               } else {
-                itemText += " " + renderInline(nxt.trim());
+                itemText += " " + rInline(nxt.trim());
               }
               i++;
             } else {
@@ -452,7 +485,7 @@
         i++;
       }
       if (paraLines.length > 0) {
-        out.push(`<p>${renderInline(paraLines.join(" "))}</p>`);
+        out.push(`<p>${rInline(paraLines.join(" "))}</p>`);
       } else {
         i++;
       }
@@ -483,6 +516,10 @@
     const mdHref =
       (scriptEl && scriptEl.getAttribute("data-md")) ||
       window.location.pathname.split("/").pop().replace(/\.html$/i, ".md");
+    const reportRelPath = (scriptEl && scriptEl.getAttribute("data-report")) || "";
+    const reportDir = reportRelPath && reportRelPath.includes("/")
+      ? reportRelPath.split("/").slice(0, -1).join("/")
+      : "";
 
     function runMathWhenReady() {
       const target = document.querySelector("main");
@@ -495,22 +532,59 @@
       }
     }
 
-    if (mdHref && window.location.protocol !== "file:") {
+    function applyRenderedMarkdown(mdText, urlOpts) {
+      const { title, bodyHtml } = convertMarkdown(mdText, urlOpts);
+      document.title = title;
+      if (mainEl) {
+        mainEl.innerHTML = bodyHtml;
+        if (window.RHVersion && !window.RHVersion.isDefault && reportDir) {
+          // Point relative .svg / .html links inside non-default reports to versioned assets
+          mainEl.querySelectorAll("img[src]").forEach((img) => {
+            const src = img.getAttribute("src") || "";
+            if (src && !/^(https?:|data:|\/|\.\.)/.test(src)) {
+              img.setAttribute("src", window.RHVersion.versionAssetUrl(reportDir + "/" + src));
+            }
+          });
+          mainEl.querySelectorAll("a[href]").forEach((a) => {
+            const href = (a.getAttribute("href") || "").trim();
+            if (!href || /^(https?:|mailto:|javascript:|data:|#|\/)/i.test(href)) return;
+            const pathOnly = href.split(/[?#]/)[0];
+            if (!/\.(svg|json|md|dot|mmd)$/i.test(pathOnly)) return;
+            if (href.startsWith("../")) {
+              a.setAttribute("href", window.RHVersion.versionAssetUrl(href.slice(3)));
+            } else {
+              a.setAttribute("href", window.RHVersion.versionAssetUrl(reportDir + "/" + href));
+            }
+          });
+        }
+        if (window.RHVersion) window.RHVersion.rewriteLinks(mainEl);
+      }
+      runMathWhenReady();
+    }
+
+    const rhv = window.RHVersion;
+    const curVer = rhv && rhv.current ? rhv.current : null;
+    const urlOpts = curVer
+      ? { sourceBlobBase: curVer.source_blob_base, localSrcDir: curVer.local_src_dir }
+      : {};
+
+    if (rhv && !rhv.isDefault && reportRelPath) {
+      // Load pre-packaged .md.js wrapper for offline + HTTP support across older versions
+      rhv.loadDataScript(reportRelPath + ".js", "__REPORT_MD__", (payload) => {
+        if (payload && typeof payload.markdown === "string") {
+          applyRenderedMarkdown(payload.markdown, urlOpts);
+        } else {
+          runMathWhenReady();
+        }
+      });
+    } else if (mdHref && window.location.protocol !== "file:") {
       fetch(mdHref, { cache: "no-store" })
         .then((res) => {
           if (!res.ok) throw new Error(`HTTP ${res.status}`);
           return res.text();
         })
-        .then((mdText) => {
-          const { title, bodyHtml } = convertMarkdown(mdText);
-          document.title = title;
-          if (mainEl) mainEl.innerHTML = bodyHtml;
-          runMathWhenReady();
-        })
-        .catch(() => {
-          // Keep pre-rendered HTML fallback silently if fetch fails
-          runMathWhenReady();
-        });
+        .then((mdText) => applyRenderedMarkdown(mdText, urlOpts))
+        .catch(() => runMathWhenReady());
     } else {
       runMathWhenReady();
     }
@@ -528,6 +602,16 @@
     const analysisDir = __dirname;
     const repoRoot = path.resolve(analysisDir, "..");
 
+    const versionsPath = path.join(analysisDir, "versions.json");
+    const versions = fs.existsSync(versionsPath)
+      ? JSON.parse(fs.readFileSync(versionsPath, "utf8"))
+      : [];
+    const defaultVer = versions.find((v) => v.is_default) || versions[0] || {
+      id: "default",
+      source_blob_base: FALLBACK_BLOB_BASE + "lean/src/",
+      local_src_dir: "lean/src",
+    };
+
     const REPORTS = [
       "blueprint/BLUEPRINT.md",
       "dependency_graph/README.md",
@@ -542,12 +626,40 @@
     const stageMode = process.argv.includes("--stage");
     const generatedPaths = [];
 
+    // 1. Emit per-version .md.js wrappers for offline/cross-version browser switching
+    for (const ver of versions) {
+      const verDir = path.join(analysisDir, "versions", ver.id);
+      if (!fs.existsSync(verDir)) continue;
+      for (const relMd of REPORTS) {
+        const verMdPath = path.join(verDir, relMd);
+        if (!fs.existsSync(verMdPath)) continue;
+        const mdText = fs.readFileSync(verMdPath, "utf8");
+        const wrapperObj = { version: ver.id, markdown: mdText };
+        const safeJs =
+          "window.__REPORT_MD__ = " +
+          JSON.stringify(wrapperObj).replace(/<\//g, "<\\/") +
+          ";\n";
+        const jsOutPath = verMdPath + ".js";
+        const prevJs = fs.existsSync(jsOutPath) ? fs.readFileSync(jsOutPath, "utf8") : null;
+        if (prevJs !== safeJs) {
+          fs.writeFileSync(jsOutPath, safeJs, "utf8");
+        }
+        generatedPaths.push(path.relative(repoRoot, jsOutPath));
+      }
+    }
+
+    // 2. Render canonical HTML fallback pages (matching default version)
+    const defaultUrlOpts = {
+      sourceBlobBase: defaultVer.source_blob_base,
+      localSrcDir: defaultVer.local_src_dir,
+    };
+
     for (const relMd of REPORTS) {
       const mdPath = path.join(analysisDir, relMd);
       if (!fs.existsSync(mdPath)) continue;
 
       const mdText = fs.readFileSync(mdPath, "utf8");
-      const { title, bodyHtml } = convertMarkdown(mdText);
+      const { title, bodyHtml } = convertMarkdown(mdText, defaultUrlOpts);
       const mdName = path.basename(mdPath);
       const htmlPath = mdPath.replace(/\.md$/i, ".html");
 
@@ -565,13 +677,17 @@ ${SIMPLE_CSS}</style>
 </head>
 <body>
 <nav class="top-nav">
-  <a href="../index.html">&larr; Back to Analysis Portal</a> &middot;
-  <a href="${escapeHtml(mdName, true)}">Raw Markdown (${escapeHtml(mdName, false)})</a>
+  <div>
+    <a href="../index.html">&larr; Back to Analysis Portal</a> &middot;
+    <a href="${escapeHtml(mdName, true)}" data-version-href="${escapeHtml(relMd, true)}">Raw Markdown (${escapeHtml(mdName, false)})</a>
+  </div>
+  <span data-version-picker></span>
 </nav>
+<script src="../version_picker.js"></script>
 <main>
 ${bodyHtml}
 </main>
-<script src="../render_reports.js" data-md="${escapeHtml(mdName, true)}"></script>
+<script src="../render_reports.js" data-md="${escapeHtml(mdName, true)}" data-report="${escapeHtml(relMd, true)}"></script>
 </body>
 </html>
 `;

@@ -289,16 +289,21 @@
 </style>
 </head>
 <body>
-<nav class="top-nav">
-  <a href="../index.html">&larr; Back to Analysis Portal</a> &middot;
-  <a href="CODEBASE_HISTOGRAMS.html">Methodology &amp; Findings Report</a> &middot;
-  <a href="histograms_data.json">Raw JSON</a>
+<nav class="top-nav" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+  <div>
+    <a href="../index.html">&larr; Back to Analysis Portal</a> &middot;
+    <a href="CODEBASE_HISTOGRAMS.html">Methodology &amp; Findings Report</a> &middot;
+    <a href="CODEBASE_HISTOGRAMS.md" data-version-href="codebase_histograms/CODEBASE_HISTOGRAMS.md">Raw .md</a> &middot;
+    <a href="../versions/community-307cef33/codebase_histograms/histograms_data.json" data-version-href="codebase_histograms/histograms_data.json">Raw JSON</a>
+  </div>
+  <span data-version-picker></span>
 </nav>
+<script src="../version_picker.js"></script>
 
 <header>
   <h1>Codebase Structural Histograms</h1>
-  <p class="subtitle">
-    Empirical distributions of attributes, proof glue, typeclass hypotheses, proof strategies, equivalence bridges, non-<code>@[simp]</code> import fan-in, and declaration structure across <code>lean/src/</code>.
+  <p class="subtitle" id="histSubtitle">
+    Empirical distributions of attributes, proof glue, typeclass hypotheses, proof strategies, equivalence bridges, non-<code>@[simp]</code> import fan-in, and declaration structure.
   </p>
   <div class="kpi-grid" id="kpiGrid"></div>
 </header>
@@ -404,20 +409,21 @@
 </main>
 
 <footer>
-  Generated deterministically by <a href="build_histograms.py">build_histograms.py</a> from <code>lean/src/</code> and <code>analysis/data/graph.sqlite</code>.
+  Generated deterministically by <code>build_histograms.py</code> from Lean sources and <code>graph.sqlite</code>.
 </footer>
 
 <div class="tooltip" id="tooltip"></div>
 
-<script src="histograms_data.js"></script>
 <script>
-(function () {
+function initHistograms(DATA) {
   "use strict";
-
-  const DATA = window.__HISTOGRAMS_DATA__;
   if (!DATA) {
-    document.body.innerHTML = "<p style='padding:24px'>Missing histograms_data.js. Run <code>python3 analysis/codebase_histograms/build_histograms.py</code>.</p>";
+    document.body.innerHTML = "<p style='padding:24px'>Missing histograms_data.js. Run <code>python3 analysis/build_all.py</code>.</p>";
     return;
+  }
+  if (window.RHVersion && RHVersion.current) {
+    document.getElementById("histSubtitle").innerHTML =
+      `Empirical distributions across <code>${RHVersion.current.label}</code> — attributes, proof glue, typeclass hypotheses, proof strategies, equivalence bridges, non-<code>@[simp]</code> fan-in, and declaration structure.`;
   }
 
   const TIER_COLORS = {
@@ -1326,7 +1332,8 @@
   }
 
   renderAll();
-})();
+}
+RHVersion.loadDataScript("codebase_histograms/histograms_data.js", "__HISTOGRAMS_DATA__", initHistograms);
 </script>
 </body>
 </html>

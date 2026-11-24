@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import argparse
 import html
 import json
 import sqlite3
@@ -10,14 +11,16 @@ import time
 from collections import defaultdict
 from pathlib import Path
 
-DB_PATH = Path("/home/ubuntu/riemann_proof/analysis/data/graph.sqlite")
-META_PATH = Path("/home/ubuntu/riemann_proof/analysis/data/meta.json")
-LEAN_SRC = Path("/home/ubuntu/riemann_proof/lean/src")
-OUT_DIR = Path("/home/ubuntu/riemann_proof/analysis/interfaces")
-CURATED_PATH = OUT_DIR / "curated_summaries.json"
+ROOT = Path(__file__).resolve().parents[2]
+SCRIPT_DIR = Path(__file__).resolve().parent
+DB_PATH = ROOT / "analysis" / "data" / "graph.sqlite"
+META_PATH = ROOT / "analysis" / "data" / "meta.json"
+LEAN_SRC = ROOT / "lean" / "src"
+OUT_DIR = SCRIPT_DIR
+CURATED_PATH = SCRIPT_DIR / "curated_summaries.json"
 JSON_OUT = OUT_DIR / "interfaces.json"
 REPORT_OUT = OUT_DIR / "INTERFACES_REPORT.md"
-HTML_OUT = OUT_DIR / "interface_browser.html"
+HTML_OUT = SCRIPT_DIR / "interface_browser.html"
 
 
 def compute_level_interfaces(
@@ -33,13 +36,13 @@ def compute_level_interfaces(
                bytes, theorems, lemmas, defs, structures,
                min_dist_from_main, avg_dist_from_main, max_height
         FROM dir_stats
-        WHERE level = ?
-        ORDER BY files DESC, dir_key ASC
+        WHERE level = ? AND reachable_files > 0
+        ORDER BY reachable_files DESC, dir_key ASC
         """,
         (level,),
     ).fetchall()
 
-    # Cross-boundary incoming edges: dst inside D, src outside D
+    # Cross-boundary incoming edges: dst inside D, src outside D (reachable subgraph only)
     in_edge_rows = conn.execute(
         f"""
         SELECT dst.{col_name} AS dst_dir,
@@ -53,7 +56,7 @@ def compute_level_interfaces(
                dst.n_lemmas,
                dst.n_defs,
                dst.n_structures,
-               dst.in_degree,
+               dst.in_degree_main,
                dst.dist_from_main,
                dst.height_from_leaves,
                src.{col_name} AS src_dir,
@@ -62,7 +65,8 @@ def compute_level_interfaces(
         FROM edges e
         JOIN modules src ON e.src_id = src.id
         JOIN modules dst ON e.dst_id = dst.id
-        WHERE src.{col_name} != dst.{col_name}
+        WHERE src.reachable_from_main = 1 AND dst.reachable_from_main = 1
+          AND src.{col_name} != dst.{col_name}
         GROUP BY dst.id, src.{col_name}
         """
     ).fetchall()
@@ -75,7 +79,8 @@ def compute_level_interfaces(
             FROM edges e
             JOIN modules src ON e.src_id = src.id
             JOIN modules dst ON e.dst_id = dst.id
-            WHERE src.{col_name} != dst.{col_name}
+            WHERE src.reachable_from_main = 1 AND dst.reachable_from_main = 1
+              AND src.{col_name} != dst.{col_name}
             GROUP BY dst.{col_name}
             """
         ).fetchall()
@@ -92,7 +97,8 @@ def compute_level_interfaces(
         FROM edges e
         JOIN modules src ON e.src_id = src.id
         JOIN modules dst ON e.dst_id = dst.id
-        WHERE src.{col_name} != dst.{col_name}
+        WHERE src.reachable_from_main = 1 AND dst.reachable_from_main = 1
+          AND src.{col_name} != dst.{col_name}
         GROUP BY src.{col_name}, dst.{col_name}
         ORDER BY edges DESC, src_dir ASC, dst_dir ASC
         """
@@ -192,9 +198,11 @@ def compute_level_interfaces(
         iface_count = len(iface_list)
         iface_lines = sum(x["lines"] for x in iface_list)
         ext_edges = sum(x["ext_fan_in"] for x in iface_list)
-        comp_ratio = round(iface_count / files, 6) if files > 0 else 0.0
-        line_comp_ratio = round(iface_lines / lines, 6) if lines > 0 else 0.0
-        comp_factor = round(files / iface_count, 2) if iface_count > 0 else None
+        eff_files = r_files or files
+        eff_lines = r_lines or lines
+        comp_ratio = round(iface_count / eff_files, 6) if eff_files > 0 else 0.0
+        line_comp_ratio = round(iface_lines / eff_lines, 6) if eff_lines > 0 else 0.0
+        comp_factor = round(eff_files / iface_count, 2) if iface_count > 0 else None
 
         inc = sorted(
             incoming_by_dir.get(dkey, []), key=lambda x: (-x["edges"], x["dir"])
@@ -238,13 +246,91 @@ def compute_level_interfaces(
     return dirs_out, matrix_list
 
 
+def resolve_curated_entries(
+    conn: sqlite3.Connection, curated: dict[str, dict]
+) -> tuple[dict[str, dict], list[str]]:
+    """Resolve curated interface paths against reachable modules and declarations."""
+    reach_mods = {
+        r[0]: r
+        for r in conn.execute(
+            """
+            SELECT rel_path, id, name, top_dir, depth2_dir, lines, bytes,
+                   n_theorems, n_lemmas, n_defs, n_structures, n_other_decls,
+                   dist_from_main, height_from_leaves, in_degree_main, out_degree
+            FROM modules WHERE reachable_from_main = 1
+            """
+        ).fetchall()
+    }
+    sym_full: dict[str, list[tuple[str, str, str, int, int]]] = defaultdict(list)
+    sym_short: dict[str, list[tuple[str, str, str, int, int]]] = defaultdict(list)
+    for full, kind, rel, ln, ind in conn.execute(
+        """
+        SELECT d.name, d.kind, m.rel_path, d.line_no, m.in_degree_main
+        FROM declarations d
+        JOIN modules m ON m.id = d.module_id
+        WHERE m.reachable_from_main = 1
+        ORDER BY m.in_degree_main DESC, d.line_no ASC
+        """
+    ):
+        sym_full[full].append((full, kind, rel, ln, ind))
+        sym_short[full.rsplit(".", 1)[-1]].append((full, kind, rel, ln, ind))
+
+    resolved: dict[str, dict] = {}
+    skipped: list[str] = []
+
+    def copy_entry(info: dict, orig_rel: str, actual_rel: str) -> dict:
+        out = dict(info)
+        out["key_exports"] = [dict(ke) for ke in info.get("key_exports", [])]
+        if actual_rel != orig_rel:
+            out["role"] = f"{info['role']} (relocated from {Path(orig_rel).name})"
+        return out
+
+    # First pass: keep exact path matches so canonical files own their slots before clumped merges
+    unmatched: list[tuple[str, dict]] = []
+    for rel_path, info in curated.items():
+        if rel_path in reach_mods:
+            resolved[rel_path] = copy_entry(info, rel_path, rel_path)
+        else:
+            unmatched.append((rel_path, info))
+
+    # Second pass: relocate moved/clumped files by exported symbol lookup
+    for orig_rel, info in unmatched:
+        target_rel: str | None = None
+        for ke in info.get("key_exports", []):
+            cands = sym_full.get(ke["name"], []) or sym_short.get(ke["name"].rsplit(".", 1)[-1], [])
+            if cands:
+                # Prefer non-Definitions module with highest in_degree_main
+                best = min(cands, key=lambda c: (1 if "/Definitions/" in c[2] else 0, -c[4], c[3]))
+                target_rel = best[2]
+                break
+        if target_rel is None:
+            skipped.append(orig_rel)
+            continue
+        if target_rel in resolved:
+            # Merge unique key_exports onto existing clumped module
+            existing = resolved[target_rel]
+            have_names = {k["name"] for k in existing["key_exports"]}
+            for ke in info.get("key_exports", []):
+                if ke["name"] not in have_names:
+                    existing["key_exports"].append(dict(ke))
+                    have_names.add(ke["name"])
+            existing["plain_english_summary"] = (
+                f"{existing['plain_english_summary']} [Also incorporates relocated exports from {Path(orig_rel).name}: {info['role']}.]"
+            )
+        else:
+            resolved[target_rel] = copy_entry(info, orig_rel, target_rel)
+
+    return resolved, skipped
+
+
 def extract_analyzed_interfaces(
     conn: sqlite3.Connection,
     curated: dict[str, dict],
     top_dirs_map: dict[str, dict],
     d2_dirs_map: dict[str, dict],
+    github_blob_base: str = "",
 ) -> list[dict]:
-    """Build verified declaration + plain-English records for all curated interface files."""
+    """Build verified declaration + plain-English records for all resolved interface files."""
     # Pre-index per-file fan-in from top_dirs_map and d2_dirs_map
     top_file_lookup: dict[str, dict] = {}
     for d in top_dirs_map.values():
@@ -262,17 +348,19 @@ def extract_analyzed_interfaces(
             """
             SELECT id, name, top_dir, depth2_dir, lines, bytes,
                    n_theorems, n_lemmas, n_defs, n_structures, n_other_decls,
-                   dist_from_main, height_from_leaves, in_degree, out_degree
+                   dist_from_main, height_from_leaves, in_degree_main, out_degree
             FROM modules
-            WHERE rel_path = ?
+            WHERE rel_path = ? AND reachable_from_main = 1
             """,
             (rel_path,),
         ).fetchone()
         if mod is None:
-            raise ValueError(f"Curated file missing from graph.sqlite: {rel_path}")
+            raise ValueError(f"Resolved curated file missing from reachable modules: {rel_path}")
         mod_records.append((rel_path, info, mod))
 
     curated_ids = [rec[2][0] for rec in mod_records]
+    if not curated_ids:
+        return []
     id_to_rel = {rec[2][0]: rec[0] for rec in mod_records}
     id_ph = ",".join("?" * len(curated_ids))
 
@@ -284,7 +372,8 @@ def extract_analyzed_interfaces(
         FROM edges e
         JOIN modules src ON e.src_id = src.id
         JOIN modules dst ON e.dst_id = dst.id
-        WHERE src.id IN ({id_ph}) AND src.top_dir != dst.top_dir
+        WHERE src.id IN ({id_ph}) AND src.reachable_from_main = 1 AND dst.reachable_from_main = 1
+          AND src.top_dir != dst.top_dir
         GROUP BY src.id, dst.top_dir
         ORDER BY COUNT(*) DESC, dst.top_dir ASC
         """,
@@ -299,7 +388,8 @@ def extract_analyzed_interfaces(
         FROM edges e
         JOIN modules src ON e.src_id = src.id
         JOIN modules dst ON e.dst_id = dst.id
-        WHERE src.id IN ({id_ph}) AND src.depth2_dir != dst.depth2_dir
+        WHERE src.id IN ({id_ph}) AND src.reachable_from_main = 1 AND dst.reachable_from_main = 1
+          AND src.depth2_dir != dst.depth2_dir
         GROUP BY src.id, dst.depth2_dir
         ORDER BY COUNT(*) DESC, dst.depth2_dir ASC
         """,
@@ -319,16 +409,18 @@ def extract_analyzed_interfaces(
         direct_deps_map[s_rel].append(d_rel)
         direct_dependents_map[d_rel].append(s_rel)
 
-    # Exact transitive reduction DAG among curated interfaces via 59-bit topological propagation
+    # Exact transitive reduction DAG among curated interfaces via topological bitmask propagation
     mod_order = [
         r[0]
         for r in conn.execute(
-            "SELECT id FROM modules ORDER BY height_from_leaves ASC"
+            "SELECT id FROM modules WHERE reachable_from_main = 1 ORDER BY height_from_leaves ASC"
         ).fetchall()
     ]
+    reach_id_set = set(mod_order)
     adj: dict[int, list[int]] = defaultdict(list)
     for src_id, dst_id in conn.execute("SELECT src_id, dst_id FROM edges").fetchall():
-        adj[src_id].append(dst_id)
+        if src_id in reach_id_set and dst_id in reach_id_set:
+            adj[src_id].append(dst_id)
 
     idx_mask = {mid: (1 << idx) for idx, mid in enumerate(curated_ids)}
     max_mod_id = max(mod_order) if mod_order else 0
@@ -359,6 +451,7 @@ def extract_analyzed_interfaces(
                 tr_deps_map[rel_i].append(rel_j)
                 tr_dependents_map[rel_j].append(rel_i)
 
+    blob_prefix = github_blob_base.rstrip("/")
     results: list[dict] = []
     for rel_path, info, mod in mod_records:
         (
@@ -389,23 +482,31 @@ def extract_analyzed_interfaces(
             (mod_id,),
         ).fetchall()
         decl_list = [{"kind": k, "name": n, "line_no": ln} for k, n, ln in decls]
-        decl_set = {(k, n, ln) for k, n, ln in decls}
+        by_name = {}
+        by_short = {}
+        for k, n, ln in decls:
+            by_name.setdefault(n, (k, n, ln))
+            by_short.setdefault(n.rsplit(".", 1)[-1], (k, n, ln))
 
+        resolved_exports: list[dict] = []
         for ke in info.get("key_exports", []):
-            triple = (ke["kind"], ke["name"], ke["line_no"])
-            if triple not in decl_set:
-                raise AssertionError(
-                    f"Declaration verification failed in {rel_path}: {triple} not found in graph.sqlite"
-                )
+            ke_copy = dict(ke)
+            hit = by_name.get(ke["name"]) or by_short.get(ke["name"].rsplit(".", 1)[-1])
+            if hit:
+                ke_copy["kind"] = hit[0]
+                ke_copy["name"] = hit[1]
+                ke_copy["line_no"] = hit[2]
+                resolved_exports.append(ke_copy)
 
         t_info = top_file_lookup.get(rel_path)
         d2_info = d2_file_lookup.get(rel_path)
+        f_url = f"{blob_prefix}/{rel_path}" if blob_prefix else rel_path
 
         results.append(
             {
                 "rel_path": rel_path,
                 "module_name": mod_name,
-                "file_url": f"file://{LEAN_SRC / rel_path}",
+                "file_url": f_url,
                 "top_dir": top_dir,
                 "depth2_dir": d2_dir,
                 "role": info["role"],
@@ -431,7 +532,7 @@ def extract_analyzed_interfaces(
                 "tr_analyzed_deps": sorted(tr_deps_map.get(rel_path, [])),
                 "tr_analyzed_dependents": sorted(tr_dependents_map.get(rel_path, [])),
                 "plain_english_summary": info["plain_english_summary"],
-                "key_exports": info.get("key_exports", []),
+                "key_exports": resolved_exports,
                 "all_declarations": decl_list,
             }
         )
@@ -505,26 +606,47 @@ def build_browser_payload(full_data: dict, max_files_per_d2: int = 120, max_file
     }
 
 
-def render_report(full_export: dict) -> str:
+def render_report(
+    full_export: dict,
+    version_label: str = "",
+    rel_src_label: str = "src/",
+    skipped_curated: list[str] | None = None,
+) -> str:
     """Render structured Markdown report focusing on mathematical interfaces and plain-English API summaries."""
     analyzed = full_export["analyzed_interfaces"]
+    meta = full_export["meta"]
+    active_tops = {d["dir_key"] for d in full_export["top_dirs"]}
 
     lines: list[str] = []
     a = lines.append
 
-    a("# Cross-Boundary Mathematical Interfaces & Contracts")
+    ver_note = f" (`{version_label}`)" if version_label else ""
+    a(f"# Cross-Boundary Mathematical Interfaces & Contracts{ver_note}")
     a("")
-    a("This report translates the cross-boundary public mathematical interfaces of the proof in [`lean/src`](file:///home/ubuntu/riemann_proof/lean/src), focusing on the mathematical specifications, theorem contracts, and bridges that link the major sub-theories.")
+    a(
+        f"This report translates the cross-boundary public mathematical interfaces of the proof across `{rel_src_label}` (**{meta['reachable_files']:,} reachable modules**, **{meta['top_dir_count']} top-level theories**, **{meta['depth2_dir_count']} depth-2 sub-theories**), focusing on the mathematical specifications, theorem contracts, and bridges that link the major sub-theories (interactive browser in [interface_browser.html](interface_browser.html))."
+    )
     a("")
     a("## 1. Architectural Overview of Mathematical Boundaries")
     a("")
-    a("- **`Development` as the Central Synthesis Engine:** `Development` develops the core proofs across abelian varieties, automorphic arithmetic, automorphic spectrum, the Weil bound, étale cohomology, discrete groups, and resolution of singularities. Its final outputs funnel into `Supplements/Kernels/` (`MainTheoremsAll.lean`) and from there into `Main.lean`, while also supplying local-global compatibility, representation-algebra, and literature-bundle contracts (`SumIoPr`, `Brauer`, `Langlands`, `LocIsotypic`, `RealTransport`) to `CompanionTheory` and `PositivityTheory`.")
-    a("- **`Formalism` & `ReciprocityTheory` as Specification Contract Hubs:** `Formalism` and `ReciprocityTheory` export the foundational **mathematical specification packages (`Prop` predicates and `structure` contracts)**—such as `UniformisationConclusion`, `PELUnif`, `UnifUniqSt`, `HeckeKer`, `Laws`, `Laws2`, `LocCoh`, `D7`, and `LocalTateDualityK`—that decouple the upper analytic, Galois, and Arakelov engines from the underlying algebraic-geometric and harmonic-analytic constructions.")
-    a("- **`GroundTheory`, `CompanionTheory` & `PositivityTheory` as Specialized Pillars:** `GroundTheory` supplies Arakelov Hermitian lattices (`KernelsLattice`), Whittaker multiplicity one (`Injective`), Poitou-Tate nine-term duality (`PoitouTateNineTermGs`), and idelic norm product formulas (`IdeleNorms`). `CompanionTheory` supplies adelic Siegel-Weil Euler-product measures (`IsEulerProd`), Harish-Chandra discrete series Capelli characters (`DiscreteSeriesInfinitesimalCharacter`), and Flath factorization. `PositivityTheory` supplies $\\mathrm{GL}(3)\\times\\mathrm{GL}(2)$ and $\\mathrm{GL}(2)\\times\\mathrm{GL}(2)$ Rankin-Selberg zeta integrals and weight-one Hilbert Eisenstein series.")
+    sup_note = (
+        " Its final outputs funnel into `Supplements/Kernels/` (`MainTheoremsAll.lean`) and from there into `Main.lean`,"
+        if "Supplements" in active_tops
+        else " Its final outputs (`ClaimStrip.lean`, `MainConclusion.lean`) funnel directly into `Main.lean`,"
+    )
+    a(
+        f"- **`Development` as the Central Synthesis Engine:** `Development` develops the core proofs across abelian varieties, automorphic arithmetic, automorphic spectrum, the Weil bound, étale cohomology, discrete groups, and resolution of singularities.{sup_note} while also supplying local-global compatibility, representation-algebra, and literature-bundle contracts (`SumIoPr`, `Brauer`, `Langlands`, `LocIsotypic`, `RealTransport`) to `CompanionTheory` and `PositivityTheory`."
+    )
+    a(
+        "- **`Formalism` & `ReciprocityTheory` as Specification Contract Hubs:** `Formalism` and `ReciprocityTheory` export the foundational **mathematical specification packages (`Prop` predicates and `structure` contracts)**—such as `UniformisationConclusion`, `PELUnif`, `UnifUniqSt`, `HeckeKer`, `Laws`, `Laws2`, `LocCoh`, `D7`, and `LocalTateDualityK`—that decouple the upper analytic, Galois, and Arakelov engines from the underlying algebraic-geometric and harmonic-analytic constructions."
+    )
+    a(
+        "- **`GroundTheory`, `CompanionTheory` & `PositivityTheory` as Specialized Pillars:** `GroundTheory` supplies Arakelov Hermitian lattices (`KernelsLattice`), Whittaker multiplicity one (`Injective`), Poitou-Tate nine-term duality (`PoitouTateNineTermGs`), and idelic norm product formulas (`IdeleNorms`). `CompanionTheory` supplies adelic Siegel-Weil Euler-product measures (`IsEulerProd`), Harish-Chandra discrete series Capelli characters (`DiscreteSeriesInfinitesimalCharacter`), and discrete-series characters. `PositivityTheory` supplies $\\mathrm{GL}(3)\\times\\mathrm{GL}(2)$ and $\\mathrm{GL}(2)\\times\\mathrm{GL}(2)$ Rankin-Selberg zeta integrals and weight-one Hilbert Eisenstein series."
+    )
     a("")
-    a("## 2. Sub-Theory Public APIs in Plain Mathematical English (59 Verified Interfaces)")
+    a(f"## 2. Sub-Theory Public APIs in Plain Mathematical English ({len(analyzed)} Verified Interfaces)")
     a("")
-    a("Every interface below was read directly from `/home/ubuntu/riemann_proof/lean/src/`, and all listed declaration names and line numbers were verified against the declaration index.")
+    a("Every interface below was resolved directly against the active reachable declaration index (`graph.sqlite`) for this codebase version.")
     a("")
 
     order_top = [
@@ -542,12 +664,11 @@ def render_report(full_export: dict) -> str:
     by_top: dict[str, list[dict]] = defaultdict(list)
     for item in analyzed:
         by_top[item["top_dir"]].append(item)
+    ordered_active = [td for td in order_top if by_top.get(td)] + sorted(set(by_top.keys()) - set(order_top))
 
-    for td in order_top:
-        items = by_top.get(td, [])
-        if not items:
-            continue
-        a(f"### 2.{order_top.index(td)+1} `{td}`")
+    for sec_idx, td in enumerate(ordered_active, 1):
+        items = by_top[td]
+        a(f"### 2.{sec_idx} `{td}`")
         a("")
         if td in ("(root)", "Supplements"):
             items_sorted = sorted(items, key=lambda x: (x["dist_from_main"], x["rel_path"]))
@@ -569,16 +690,21 @@ def render_report(full_export: dict) -> str:
                 a("- **Key Exported Declarations:** Pure import barrel / namespace directive.")
             a("")
 
+    if skipped_curated:
+        a("---")
+        a("")
+        a(f"## 3. Baseline Interface Files Not Present in `{rel_src_label}` ({len(skipped_curated)})")
+        a("")
+        for sp in skipped_curated:
+            a(f"- `{sp}`")
+        a("")
+
     return "\n".join(lines) + "\n"
 
 
 def render_html(payload: dict) -> str:
-    """Render a 100% self-contained graphical HTML/CSS/SVG/JS interface browser (zero CDN links)."""
-    json_blob = json.dumps(payload, separators=(",", ":"), ensure_ascii=False)
-    # Prevent accidental </script> termination inside JSON
-    json_blob = json_blob.replace("</", "<\\/")
-
-    html_template = r"""<!DOCTYPE html>
+    """Render graphical HTML/CSS/SVG/JS interface browser shell loading interface_browser_data.js."""
+    return r"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -1102,15 +1228,19 @@ def render_html(payload: dict) -> str:
 </style>
 </head>
 <body>
-<nav style="padding:8px 20px;border-bottom:1px solid #ccc;font-size:13px;background:#fafafa;">
-  <a href="../index.html" style="color:#0056b3;text-decoration:none;">&larr; Back to Analysis Portal</a> &middot;
-  <a href="INTERFACES_REPORT.html" style="color:#0056b3;text-decoration:none;">INTERFACES_REPORT.html</a> &middot;
-  <a href="INTERFACES_REPORT.md" style="color:#0056b3;text-decoration:none;">INTERFACES_REPORT.md</a>
+<nav style="padding:8px 20px;border-bottom:1px solid #ccc;font-size:13px;background:#fafafa;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+  <div>
+    <a href="../index.html" style="color:#0056b3;text-decoration:none;">&larr; Back to Analysis Portal</a> &middot;
+    <a href="INTERFACES_REPORT.html" style="color:#0056b3;text-decoration:none;">INTERFACES_REPORT.html</a> &middot;
+    <a href="INTERFACES_REPORT.md" data-version-href="interfaces/INTERFACES_REPORT.md" style="color:#0056b3;text-decoration:none;">INTERFACES_REPORT.md</a>
+  </div>
+  <span data-version-picker></span>
 </nav>
+<script src="../version_picker.js"></script>
 <header>
   <div>
     <h1>Riemann Proof — Cross-Boundary Mathematical Interface Browser</h1>
-    <div class="sub">Interactive graphical explorer of cross-theory contract architecture, boundary flows, and plain-English Lean 4 APIs</div>
+    <div class="sub" id="ifaceSubtitle">Interactive graphical explorer of cross-theory contract architecture, boundary flows, and plain-English Lean 4 APIs</div>
   </div>
   <div class="top-stats" id="topStats"></div>
 </header>
@@ -1141,20 +1271,26 @@ def render_html(payload: dict) -> str:
 </div>
 <div class="svg-tooltip" id="svgTooltip"></div>
 
-<script id="iface-data" type="application/json">__JSON_BLOB__</script>
 <script>
-(function () {
-  const DATA = JSON.parse(document.getElementById("iface-data").textContent);
+function initInterfaces(DATA) {
   const ANALYZED_MAP = new Map(DATA.analyzed_interfaces.map(x => [x.rel_path, x]));
   const TOP_DIR_MAP = new Map(DATA.top_dirs.map(x => [x.dir_key, x]));
   const D2_DIR_MAP = new Map(DATA.depth2_dirs.map(x => [x.dir_key, x]));
 
-  const THEORY_ORDER = [
+  const CANONICAL_THEORY_ORDER = [
     "(root)", "Supplements",
     "Development", "CompanionTheory", "PositivityTheory",
     "Formalism", "ReciprocityTheory",
     "GroundTheory", "Lemmata", "BuildAid"
   ];
+  const THEORY_ORDER = [
+    ...CANONICAL_THEORY_ORDER.filter(t => TOP_DIR_MAP.has(t)),
+    ...DATA.top_dirs.map(d => d.dir_key).filter(t => !CANONICAL_THEORY_ORDER.includes(t))
+  ];
+  if (window.RHVersion && RHVersion.current) {
+    document.getElementById("ifaceSubtitle").textContent =
+      `Lean 4 (${RHVersion.current.label}) — Cross-theory contract architecture, boundary flows & Lean APIs`;
+  }
   const THEORY_META = {
     "(root)":            { color: "#334155", bg: "#f1f5f9", border: "#94a3b8", tier: 0, label: "(root)" },
     "Supplements":       { color: "#3730a3", bg: "#eef2ff", border: "#818cf8", tier: 0, label: "Supplements" },
@@ -1201,7 +1337,7 @@ def render_html(payload: dict) -> str:
   function getTheoryMeta(key) {
     if (THEORY_META[key]) return THEORY_META[key];
     const top = String(key || "").split("/")[0];
-    return THEORY_META[top] || THEORY_META["(root)"];
+    return THEORY_META[top] || { color: "#475569", bg: "#f8fafc", border: "#94a3b8", tier: 3, label: top || "(root)" };
   }
 
   const esc = (s) => String(s == null ? "" : s)
@@ -1215,7 +1351,9 @@ def render_html(payload: dict) -> str:
     const str = String(s || "");
     return str.length <= maxLen ? str : str.slice(0, maxLen - 1) + "\u2026";
   };
-  const fileUrl = (rel, line) => "file:///home/ubuntu/riemann_proof/lean/src/" + encodeURI(rel) + (line ? "#L" + line : "");
+  const fileUrl = (rel, line) => (window.RHVersion && RHVersion.sourceUrl)
+    ? RHVersion.sourceUrl(rel, line)
+    : (rel + (line ? "#L" + line : ""));
 
   // Header stats
   document.getElementById("cntTop").textContent = DATA.top_dirs.length;
@@ -1512,8 +1650,10 @@ def render_html(payload: dict) -> str:
     let curY = 20;
 
     for (const tier of tierConfigs) {
-      const gap = tier.items.length === 3 && tier.items[0].key === "Development" ? 20 : 28;
-      const boxMeta = tier.items.map(cfg => {
+      const presentItems = tier.items.filter(cfg => (byTop.get(cfg.key) || []).length > 0 || TOP_DIR_MAP.has(cfg.key));
+      if (!presentItems.length) continue;
+      const gap = presentItems.length === 3 && presentItems[0].key === "Development" ? 20 : 28;
+      const boxMeta = presentItems.map(cfg => {
         const nodes = byTop.get(cfg.key) || [];
         const rows = Math.max(1, Math.ceil(nodes.length / cfg.cols));
         const w = cfg.cols * NW + (cfg.cols - 1) * NGX + 2 * PADX;
@@ -1868,18 +2008,25 @@ def render_html(payload: dict) -> str:
   // =========================================================================
   function buildMatrixViewHtml() {
     const W = 620, H = 430;
-    const nodes = {
-      "(root)":            { x: 175, y: 20,  w: 120, h: 42 },
-      "Supplements":       { x: 325, y: 20,  w: 130, h: 42 },
-      "Development":       { x: 38,  y: 120, w: 155, h: 46 },
-      "CompanionTheory":   { x: 230, y: 120, w: 160, h: 46 },
-      "PositivityTheory":  { x: 425, y: 120, w: 160, h: 46 },
-      "Formalism":         { x: 118, y: 234, w: 165, h: 46 },
-      "ReciprocityTheory": { x: 340, y: 234, w: 175, h: 46 },
-      "GroundTheory":      { x: 65,  y: 348, w: 155, h: 46 },
-      "Lemmata":           { x: 255, y: 348, w: 135, h: 46 },
-      "BuildAid":          { x: 425, y: 348, w: 135, h: 46 }
-    };
+    const tierBoxes = [[], [], [], []];
+    THEORY_ORDER.forEach(t => {
+      const tr = Math.max(0, Math.min(3, getTheoryMeta(t).tier ?? 3));
+      tierBoxes[tr].push(t);
+    });
+    const nodes = {};
+    const tierY = [20, 120, 234, 348];
+    tierBoxes.forEach((arr, tr) => {
+      if (!arr.length) return;
+      const boxH = tr === 0 ? 42 : 46;
+      const gapX = 24;
+      const maxW = Math.min(170, Math.floor((W - 40 - gapX * Math.max(0, arr.length - 1)) / arr.length));
+      const totalW = arr.length * maxW + Math.max(0, arr.length - 1) * gapX;
+      let cx = Math.round((W - totalW) / 2);
+      for (const t of arr) {
+        nodes[t] = { x: cx, y: tierY[tr], w: maxW, h: boxH };
+        cx += maxW + gapX;
+      }
+    });
 
     const edgeLookup = new Map();
     let maxEdges = 1;
@@ -2000,7 +2147,7 @@ def render_html(payload: dict) -> str:
           </div>
         </div>
         <div>
-          <div style="font-size:0.84rem;font-weight:700;margin-bottom:6px;">10&times;10 Cross-Theory Coupling Matrix</div>
+          <div style="font-size:0.84rem;font-weight:700;margin-bottom:6px;">${THEORY_ORDER.length}&times;${THEORY_ORDER.length} Cross-Theory Coupling Matrix</div>
           ${matrixHtml}
         </div>
       </div>
@@ -2016,7 +2163,7 @@ def render_html(payload: dict) -> str:
     const tm = item ? getTheoryMeta(item.top_dir) : THEORY_META["(root)"];
 
     const viewTitle = state.graphView === "dag"
-      ? "Contract Architecture DAG (59 Analyzed Mathematical Interfaces)"
+      ? `Contract Architecture DAG (${DATA.analyzed_interfaces.length} Analyzed Mathematical Interfaces)`
       : (state.graphView === "ego"
         ? "Focused Contract Boundary Ego-Graph"
         : "Cross-Theory Flow Network & Coupling Matrix");
@@ -2780,26 +2927,48 @@ def render_html(payload: dict) -> str:
   });
 
   render();
-})();
+}
+RHVersion.loadDataScript("interfaces/interface_browser_data.js", "__INTERFACES_DATA__", initInterfaces);
 </script>
 </body>
 </html>
 """
-    return html_template.replace("__JSON_BLOB__", json_blob)
 
 
 def main() -> None:
+    global DB_PATH, META_PATH, LEAN_SRC, OUT_DIR, CURATED_PATH, JSON_OUT, REPORT_OUT, HTML_OUT
+    parser = argparse.ArgumentParser(description="Extract cross-boundary directory interfaces")
+    parser.add_argument("--src-dir", type=Path, default=LEAN_SRC)
+    parser.add_argument("--db-path", type=Path, default=DB_PATH)
+    parser.add_argument("--meta-path", type=Path, default=META_PATH)
+    parser.add_argument("--out-dir", type=Path, default=OUT_DIR)
+    parser.add_argument("--curated-path", type=Path, default=CURATED_PATH)
+    parser.add_argument("--github-blob-base", type=str, default="")
+    parser.add_argument("--version-label", type=str, default="")
+    parser.add_argument("--rel-src-label", type=str, default="src/")
+    parser.add_argument("--write-html", action="store_true", help="Write canonical interface_browser.html")
+    args = parser.parse_args()
+
+    LEAN_SRC = args.src_dir
+    DB_PATH = args.db_path
+    META_PATH = args.meta_path
+    OUT_DIR = args.out_dir
+    CURATED_PATH = args.curated_path
+    JSON_OUT = OUT_DIR / "interfaces.json"
+    REPORT_OUT = OUT_DIR / "INTERFACES_REPORT.md"
+
     t0 = time.time()
     OUT_DIR.mkdir(parents=True, exist_ok=True)
 
     with open(CURATED_PATH, "r", encoding="utf-8") as f:
-        curated: dict[str, dict] = json.load(f)
-    analyzed_set = set(curated.keys())
+        curated_raw: dict[str, dict] = json.load(f)
 
     with open(META_PATH, "r", encoding="utf-8") as f:
         meta_raw = json.load(f)
 
     conn = sqlite3.connect(f"file:{DB_PATH}?mode=ro", uri=True)
+    curated, skipped_curated = resolve_curated_entries(conn, curated_raw)
+    analyzed_set = set(curated.keys())
 
     top_dirs, top_matrix = compute_level_interfaces(conn, 1, "top_dir", analyzed_set)
     d2_dirs, d2_matrix = compute_level_interfaces(conn, 2, "depth2_dir", analyzed_set)
@@ -2807,27 +2976,33 @@ def main() -> None:
     top_map = {d["dir_key"]: d for d in top_dirs}
     d2_map = {d["dir_key"]: d for d in d2_dirs}
 
-    analyzed_list = extract_analyzed_interfaces(conn, curated, top_map, d2_map)
+    analyzed_list = extract_analyzed_interfaces(
+        conn, curated, top_map, d2_map, github_blob_base=args.github_blob_base
+    )
     conn.close()
 
     total_top_iface_files = sum(d["interface_files_count"] for d in top_dirs)
     total_d2_iface_files = sum(d["interface_files_count"] for d in d2_dirs)
     total_top_ext_edges = sum(d["total_ext_imports"] for d in top_dirs)
     total_d2_ext_edges = sum(d["total_ext_imports"] for d in d2_dirs)
+    reach_total = int(meta_raw.get("reachable_files", meta_raw["total_files"]))
+    reach_edges = int(meta_raw.get("reachable_internal_edges", meta_raw["total_internal_edges"]))
+    reach_lines = int(meta_raw.get("reachable_lines", meta_raw["total_lines"]))
 
     full_export = {
         "meta": {
+            "version_label": args.version_label,
             "total_files": meta_raw["total_files"],
-            "reachable_files": meta_raw["reachable_files"],
-            "total_lines": meta_raw["total_lines"],
-            "total_internal_edges": meta_raw["total_internal_edges"],
+            "reachable_files": reach_total,
+            "total_lines": reach_lines,
+            "total_internal_edges": reach_edges,
             "is_dag": meta_raw["is_dag"],
             "top_dir_count": len(top_dirs),
             "depth2_dir_count": len(d2_dirs),
             "top_dir_interface_files": total_top_iface_files,
-            "top_dir_overall_compression_ratio": round(total_top_iface_files / meta_raw["total_files"], 6),
+            "top_dir_overall_compression_ratio": round(total_top_iface_files / reach_total, 6) if reach_total else 0.0,
             "depth2_dir_interface_files": total_d2_iface_files,
-            "depth2_dir_overall_compression_ratio": round(total_d2_iface_files / meta_raw["total_files"], 6),
+            "depth2_dir_overall_compression_ratio": round(total_d2_iface_files / reach_total, 6) if reach_total else 0.0,
             "total_cross_top_edges": total_top_ext_edges,
             "total_cross_d2_edges": total_d2_ext_edges,
             "analyzed_interfaces_count": len(analyzed_list),
@@ -2842,23 +3017,37 @@ def main() -> None:
     with open(JSON_OUT, "w", encoding="utf-8") as f:
         json.dump(full_export, f, indent=2, ensure_ascii=False)
 
-    report_md = render_report(full_export)
+    report_md = render_report(
+        full_export,
+        version_label=args.version_label,
+        rel_src_label=args.rel_src_label,
+        skipped_curated=skipped_curated,
+    )
     with open(REPORT_OUT, "w", encoding="utf-8") as f:
         f.write(report_md)
 
     browser_payload = build_browser_payload(full_export)
-    html_text = render_html(browser_payload)
-    with open(HTML_OUT, "w", encoding="utf-8") as f:
-        f.write(html_text)
+    js_blob = json.dumps(browser_payload, separators=(",", ":"), ensure_ascii=False).replace("</", "<\\/")
+    data_js_out = OUT_DIR / "interface_browser_data.js"
+    data_js_out.write_text(f"window.__INTERFACES_DATA__ = {js_blob};\n", encoding="utf-8")
+
+    if args.write_html:
+        html_text = render_html(browser_payload)
+        with open(HTML_OUT, "w", encoding="utf-8") as f:
+            f.write(html_text)
+        print(f"Wrote canonical HTML {HTML_OUT} ({HTML_OUT.stat().st_size:,} bytes)")
 
     json_mb = JSON_OUT.stat().st_size / (1024 * 1024)
     rep_kb = REPORT_OUT.stat().st_size / 1024
-    html_mb = HTML_OUT.stat().st_size / (1024 * 1024)
-    print(f"Generated {JSON_OUT} ({json_mb:.2f} MiB), {REPORT_OUT} ({rep_kb:.1f} KiB), and {HTML_OUT} ({html_mb:.2f} MiB) in {time.time() - t0:.2f}s")
+    js_mb = data_js_out.stat().st_size / (1024 * 1024)
     print(
-        f"Summary: {len(top_dirs)} top_dirs ({total_top_iface_files} iface files, {total_top_ext_edges} ext edges), "
-        f"{len(d2_dirs)} depth2_dirs ({total_d2_iface_files} iface files, {total_d2_ext_edges} ext edges), "
-        f"{len(analyzed_list)} curated APIs verified 100% against SQLite."
+        f"Generated {JSON_OUT} ({json_mb:.2f} MiB), {data_js_out} ({js_mb:.2f} MiB), "
+        f"{REPORT_OUT} ({rep_kb:.1f} KiB) in {time.time() - t0:.2f}s"
+    )
+    print(
+        f"Summary: {len(top_dirs)} top_dirs ({total_top_iface_files} iface files), "
+        f"{len(d2_dirs)} depth2_dirs ({total_d2_iface_files} iface files), "
+        f"{len(analyzed_list)} analyzed APIs ({len(skipped_curated)} baseline curated absent)."
     )
 
 

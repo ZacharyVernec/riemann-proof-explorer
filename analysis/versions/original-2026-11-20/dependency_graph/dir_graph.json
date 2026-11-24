@@ -1,8 +1,21 @@
 {
+  "top_order": [
+    "(root)",
+    "Supplements",
+    "Development",
+    "CompanionTheory",
+    "PositivityTheory",
+    "Formalism",
+    "ReciprocityTheory",
+    "GroundTheory",
+    "Lemmata",
+    "BuildAid"
+  ],
   "meta": {
-    "repo_root": "/home/ubuntu/riemann_proof/lean/src",
+    "repo_root": "lean/src",
     "total_files": 175187,
     "reachable_files": 175187,
+    "unreachable_files": 0,
     "total_lines": 17374215,
     "total_bytes": 1030531854,
     "total_internal_edges": 753261,

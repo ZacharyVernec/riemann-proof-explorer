@@ -23,6 +23,29 @@
     padding-bottom: 16px;
     margin-bottom: 24px;
   }
+  .header-top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .version-meta {
+    margin-top: 10px;
+    padding: 8px 12px;
+    background: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.9em;
+    color: #333;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 18px;
+    align-items: center;
+  }
+  .version-meta a {
+    font-weight: 500;
+  }
   h1 {
     margin: 0 0 8px;
     font-size: 1.75em;
@@ -49,22 +72,6 @@
     background: #f4f4f4;
     padding: 0.15em 0.35em;
     border-radius: 3px;
-  }
-  table {
-    border-collapse: collapse;
-    width: 100%;
-    margin: 12px 0 28px;
-    font-size: 0.92em;
-  }
-  th, td {
-    border: 1px solid #ccc;
-    padding: 7px 10px;
-    text-align: left;
-    vertical-align: top;
-  }
-  th {
-    background: #f5f5f5;
-    font-weight: 600;
   }
   ul {
     margin: 0.5em 0 1em;
@@ -123,31 +130,39 @@
 </head>
 <body>
   <header>
-    <h1>Riemann Hypothesis &amp; GRH Proof — Mathematical Architecture Portal</h1>
-    <p>
-      Offline exploration suite mapping the mathematical structure, theorem milestones, cross-theory contracts, and logical dependency chains of the proof.
-    </p>
+    <div class="header-top">
+      <div>
+        <h1>Riemann Hypothesis &amp; GRH Proof — Mathematical Architecture Portal</h1>
+        <p>
+          Offline exploration suite mapping the mathematical structure, theorem milestones, cross-theory contracts, and logical dependency chains of the proof.
+        </p>
+      </div>
+      <span data-version-picker></span>
+    </div>
+    <div class="version-meta" id="version-meta">
+      Loading codebase version metrics&hellip;
+    </div>
   </header>
 
   <section>
     <div class="section-item">
       <h2>1. Top-Down Mathematical Blueprint</h2>
-      <p>Traces the proof from the final RH and GRH theorems down through 45 verified mathematical milestones in plain English.</p>
+      <p>Traces the proof from the final RH and GRH theorems down through key mathematical milestones in plain English (<span id="bp-meta-count">stages 0–4</span>).</p>
       <ul>
-        <li><strong>5 Stages (Stages 0–4):</strong> Final RH/GRH exports &rarr; functional-equation reflection &rarr; <code>MainConclusion</code> bridges &rarr; 6 major theory pillars &rarr; foundational machinery.</li>
+        <li><strong>5 Stages (Stages 0–4):</strong> Final RH/GRH exports &rarr; functional-equation reflection &rarr; main bridge conclusions &rarr; major theory pillars &rarr; foundational machinery.</li>
         <li><strong>Unconditional Discharge:</strong> Shows how abstract literature and open-image bundles (<code>OpenLiteratureStatements</code>, <code>OpenImageCondition</code>) are instantiated unconditionally in <code>MainConclusion.lean</code> &amp; <code>VwinOfRow.lean</code>.</li>
       </ul>
       <div class="links">
         <a class="btn primary" href="blueprint/blueprint.html">Interactive Blueprint Explorer</a>
         <a class="btn" href="blueprint/BLUEPRINT.html">BLUEPRINT.html</a>
-        <a class="btn" href="blueprint/BLUEPRINT.md">BLUEPRINT.md</a>
-        <a class="btn" href="blueprint/blueprint_data.json">blueprint_data.json</a>
+        <a class="btn" href="blueprint/BLUEPRINT.md" data-version-href="blueprint/BLUEPRINT.md">BLUEPRINT.md</a>
+        <a class="btn" href="versions/community-307cef33/blueprint/blueprint_data.json" data-version-href="blueprint/blueprint_data.json">blueprint_data.json</a>
       </div>
     </div>
 
     <div class="section-item">
       <h2>2. Cross-Boundary Mathematical Interfaces</h2>
-      <p>Isolates the public mathematical contracts and theorem specifications exported across theory boundaries, with 59 source-verified API translations.</p>
+      <p>Isolates the public mathematical contracts and theorem specifications exported across theory boundaries, with source-verified API translations.</p>
       <ul>
         <li><strong>Specification Contracts:</strong> Details the foundational structures (<code>PELUnif</code>, <code>UnifUniqSt</code>, <code>Laws</code>, <code>LocCoh</code>, <code>D7</code>, <code>LocalTateDualityK</code>) that decouple the major theory engines.</li>
         <li><strong>Theory Bridges:</strong> Explains how analytic character boxes, local-global Galois representations, theta lifts, and Arakelov height bounds interface with one another.</li>
@@ -155,8 +170,8 @@
       <div class="links">
         <a class="btn primary" href="interfaces/interface_browser.html">Interactive Interface Browser</a>
         <a class="btn" href="interfaces/INTERFACES_REPORT.html">INTERFACES_REPORT.html</a>
-        <a class="btn" href="interfaces/INTERFACES_REPORT.md">INTERFACES_REPORT.md</a>
-        <a class="btn" href="interfaces/interfaces.json">interfaces.json</a>
+        <a class="btn" href="interfaces/INTERFACES_REPORT.md" data-version-href="interfaces/INTERFACES_REPORT.md">INTERFACES_REPORT.md</a>
+        <a class="btn" href="versions/community-307cef33/interfaces/interfaces.json" data-version-href="interfaces/interfaces.json">interfaces.json</a>
       </div>
     </div>
 
@@ -164,14 +179,14 @@
       <h2>3. Proof Spine &amp; Bottleneck Analysis</h2>
       <p>Maps the mandatory mathematical bottlenecks (Cooper-Harvey-Kennedy dominator tree rooted at <code>Main</code>), the deep critical dependency chain, and cross-theory bridge theorems.</p>
       <ul>
-        <li><strong>Mandatory Bottlenecks:</strong> Traces how <code>MainConclusion</code>, <code>RowSrc</code> (local-global Galois compatibility), <code>TopMainZj</code> (modularity/Selmer window bounds), and <code>TopCovolSlim2Use</code> (Arakelov covolumes) govern the proof DAG.</li>
-        <li><strong>Critical Chain:</strong> Follows the deepest mathematical dependency chain from <code>Main.lean</code> through weight-one geometric realization, Kodaira-Spencer models, and the Theorem of the Cube down to <code>SplitTorusAff.lean</code>.</li>
+        <li><strong>Mandatory Bottlenecks:</strong> Traces how key dominators (local-global Galois compatibility <code>Row0b</code>, modularity/Selmer window bounds <code>VWin</code>, and Arakelov covolume bounds) govern the proof DAG.</li>
+        <li><strong>Critical Chain:</strong> Follows the deepest mathematical dependency chain from <code>Main.lean</code> down to foundational algebraic-geometry leaves such as <code>SplitTorusAff.lean</code>.</li>
       </ul>
       <div class="links">
         <a class="btn primary" href="proof_spine/spine_dashboard.html">Interactive Spine Dashboard</a>
         <a class="btn" href="proof_spine/PROOF_SPINE_REPORT.html">PROOF_SPINE_REPORT.html</a>
-        <a class="btn" href="proof_spine/PROOF_SPINE_REPORT.md">PROOF_SPINE_REPORT.md</a>
-        <a class="btn" href="proof_spine/spine_metrics.json">spine_metrics.json</a>
+        <a class="btn" href="proof_spine/PROOF_SPINE_REPORT.md" data-version-href="proof_spine/PROOF_SPINE_REPORT.md">PROOF_SPINE_REPORT.md</a>
+        <a class="btn" href="versions/community-307cef33/proof_spine/spine_metrics.json" data-version-href="proof_spine/spine_metrics.json">spine_metrics.json</a>
       </div>
     </div>
 
@@ -185,21 +200,21 @@
       <div class="links">
         <a class="btn primary" href="dependency_graph/dependency_explorer.html">Interactive Dependency Explorer</a>
         <a class="btn" href="dependency_graph/README.html">README.html</a>
-        <a class="btn" href="dependency_graph/top_level_graph.svg">Top-Level SVG</a>
-        <a class="btn" href="dependency_graph/depth2_major_graph.svg">Depth-2 SVG</a>
+        <a class="btn" href="dependency_graph/top_level_graph.svg" data-version-href="dependency_graph/top_level_graph.svg">Top-Level SVG</a>
+        <a class="btn" href="dependency_graph/depth2_major_graph.svg" data-version-href="dependency_graph/depth2_major_graph.svg">Depth-2 SVG</a>
       </div>
     </div>
 
     <div class="section-item">
       <h2>5. Inventory of Existing Published &amp; Background Theory</h2>
-      <p>Audits all 6 <code>PublishedTheorems</code> directories and companion background-theory formalizations across 12 topical tables, comparing Lean statements against peer-reviewed literature and documenting the proof-subtree identification methodology.</p>
+      <p>Audits active <code>PublishedTheorems</code> directories and companion background-theory formalizations across 12 topical tables, comparing Lean statements against peer-reviewed literature and documenting the proof-subtree identification methodology.</p>
       <ul>
         <li><strong>Literature Comparison:</strong> Documents bespoke CM host restrictions (<code>D7</code>, <code>Host E</code>), domain/characteristic specializations, weakened equivalences, and companion formalized theorems (BLGGT/Caraiani, Local Langlands, Hironaka resolution, Moriwaki bigness, Poitou–Tate).</li>
         <li><strong>Scaffolding &amp; Identification:</strong> Separates literature-derived theorems from internal proof-decomposition predicates and defines the frontier-cut rules used to collapse existing-theory proofs in the full DAG.</li>
       </ul>
       <div class="links">
         <a class="btn primary" href="published_theorems/PUBLISHED_THEOREMS_INVENTORY.html">PUBLISHED_THEOREMS_INVENTORY.html</a>
-        <a class="btn" href="published_theorems/PUBLISHED_THEOREMS_INVENTORY.md">PUBLISHED_THEOREMS_INVENTORY.md</a>
+        <a class="btn" href="published_theorems/PUBLISHED_THEOREMS_INVENTORY.md" data-version-href="published_theorems/PUBLISHED_THEOREMS_INVENTORY.md">PUBLISHED_THEOREMS_INVENTORY.md</a>
       </div>
     </div>
 
@@ -214,31 +229,81 @@
       <div class="links">
         <a class="btn primary" href="full_dag/full_dag.html">Interactive Full DAG Viewer</a>
         <a class="btn" href="full_dag/FULL_DAG.html">FULL_DAG.html</a>
-        <a class="btn" href="full_dag/FULL_DAG.md">FULL_DAG.md</a>
-        <a class="btn" href="full_dag/layout_summary.json">layout_summary.json</a>
+        <a class="btn" href="full_dag/FULL_DAG.md" data-version-href="full_dag/FULL_DAG.md">FULL_DAG.md</a>
+        <a class="btn" href="versions/community-307cef33/full_dag/layout_summary.json" data-version-href="full_dag/layout_summary.json">layout_summary.json</a>
       </div>
     </div>
 
     <div class="section-item">
       <h2>7. Codebase Structural Histograms</h2>
-      <p>Interactive empirical histograms across all 175,187 modules and 1,061,375 declarations in <code>lean/src/</code>, testing Lean 4 comprehension heuristics against measured codebase signals.</p>
+      <p>Interactive empirical histograms (<span id="hist-meta-counts">modules &amp; declarations</span>), testing Lean 4 comprehension heuristics against measured codebase signals.</p>
       <ul>
-        <li><strong>Glue &amp; Attributes:</strong> Proof-shape classification (1-line tactics and <code>first | exact …</code> forwarding wrappers vs. multi-step proofs), declaration <code>@[…]</code> tags, and file-scoped <code>attribute [local instance]</code> directives.</li>
-        <li><strong>Typeclasses, Moves &amp; Bridges:</strong> Signature-only typeclass tiers, conceptual proof steps (<code>have</code>, <code>obtain</code>, <code>induction</code>, <code>by_contra</code>, <code>classical</code>) vs. solvers, and bundled equivalence constructors (<code>≃ₗ</code>, <code>≃+*</code>, <code>≃ₐ</code>, <code>≅</code>).</li>
+        <li><strong>Glue &amp; Attributes:</strong> Proof-shape classification (1-line tactics and forwarding wrappers vs. multi-step proofs), declaration <code>@[&hellip;]</code> tags, and file-scoped <code>attribute [local instance]</code> directives.</li>
+        <li><strong>Typeclasses, Moves &amp; Bridges:</strong> Signature-only typeclass tiers, conceptual proof steps (<code>have</code>, <code>obtain</code>, <code>induction</code>, <code>by_contra</code>, <code>classical</code>) vs. solvers, and bundled equivalence constructors (<code>&#8771;&#8343;</code>, <code>&#8771;+*</code>, <code>&#8771;&#8336;</code>, <code>&#8773;</code>).</li>
         <li><strong>Fan-In &amp; File Order:</strong> Non-<code>@[simp]</code> import fan-in distributions, top hub modules, and top-to-bottom declaration quintiles.</li>
       </ul>
       <div class="links">
         <a class="btn primary" href="codebase_histograms/histograms.html">Interactive Structural Histograms</a>
         <a class="btn" href="codebase_histograms/CODEBASE_HISTOGRAMS.html">CODEBASE_HISTOGRAMS.html</a>
-        <a class="btn" href="codebase_histograms/CODEBASE_HISTOGRAMS.md">CODEBASE_HISTOGRAMS.md</a>
-        <a class="btn" href="codebase_histograms/histograms_data.json">histograms_data.json</a>
+        <a class="btn" href="codebase_histograms/CODEBASE_HISTOGRAMS.md" data-version-href="codebase_histograms/CODEBASE_HISTOGRAMS.md">CODEBASE_HISTOGRAMS.md</a>
+        <a class="btn" href="versions/community-307cef33/codebase_histograms/histograms_data.json" data-version-href="codebase_histograms/histograms_data.json">histograms_data.json</a>
       </div>
     </div>
   </section>
 
   <footer>
-    <div>Mathematical Blueprint: <a href="blueprint/BLUEPRINT.html">blueprint/BLUEPRINT.html</a> &middot; Interfaces: <a href="interfaces/INTERFACES_REPORT.html">interfaces/INTERFACES_REPORT.html</a></div>
-    <div>Entry files: <a href="https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/Main.lean">lean/src/Main.lean</a> &middot; <a href="https://github.com/ZacharyVernec/riemann-proof-explorer/blob/main/lean/src/Statements.lean">lean/src/Statements.lean</a></div>
+    <div>
+      Mathematical Blueprint: <a href="blueprint/BLUEPRINT.html">blueprint/BLUEPRINT.html</a> &middot;
+      Interfaces: <a href="interfaces/INTERFACES_REPORT.html">interfaces/INTERFACES_REPORT.html</a> &middot;
+      Treemap &amp; Sunburst: <a href="size_treemap/treemap_sunburst.html">size_treemap/treemap_sunburst.html</a>
+    </div>
+    <div>
+      Entry files:
+      <a id="footer-main-link" href="https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Main.lean" target="_blank" rel="noopener">Main.lean</a> &middot;
+      <a id="footer-stmt-link" href="https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Statements.lean" target="_blank" rel="noopener">Statements.lean</a>
+    </div>
   </footer>
+
+<script src="version_picker.js"></script>
+<script>
+(function () {
+  "use strict";
+  const fmt = (n) => Number(n).toLocaleString("en-US");
+  const ver = window.RHVersion ? RHVersion.current : null;
+  if (ver && window.RHVersion) {
+    const mainL = document.getElementById("footer-main-link");
+    const stmtL = document.getElementById("footer-stmt-link");
+    if (mainL) mainL.href = RHVersion.sourceUrl("Main.lean");
+    if (stmtL) stmtL.href = RHVersion.sourceUrl("Statements.lean");
+
+    RHVersion.loadDataScript("data/meta_summary.js", "__META_SUMMARY__", (m) => {
+      const box = document.getElementById("version-meta");
+      if (!box || !m) return;
+      const declsTotal = Object.values(m.reachable_decl_counts || m.decl_counts || {}).reduce((a, b) => a + b, 0);
+      const unreachNote = m.unreachable_files
+        ? `<span><strong>Excluded standalone/unreachable:</strong> ${fmt(m.unreachable_files)}</span>`
+        : "";
+      const repoHtml = ver.repo_url
+        ? `<a href="${ver.repo_url}" target="_blank" rel="noopener">${ver.repo_name}</a>`
+        : ver.repo_name;
+      box.innerHTML = [
+        `<span><strong>Repository:</strong> ${repoHtml}</span>`,
+        `<span><strong>Reachable modules:</strong> ${fmt(m.reachable_files)}</span>`,
+        unreachNote,
+        `<span><strong>Internal edges:</strong> ${fmt(m.reachable_internal_edges)}</span>`,
+        `<span><strong>Declarations:</strong> ${fmt(declsTotal)}</span>`,
+        `<span><strong>Max height:</strong> ${fmt(m.max_reachable_height_from_leaves ?? m.max_height_from_leaves)}</span>`,
+        `<span><strong>Strict DAG:</strong> ${m.is_dag ? "Yes" : "No"}</span>`
+      ].filter(Boolean).join("");
+      const histEl = document.getElementById("hist-meta-counts");
+      if (histEl) histEl.textContent = `${fmt(m.reachable_files)} reachable modules and ${fmt(declsTotal)} declarations`;
+      if (m.blueprint_nodes) {
+        const bpEl = document.getElementById("bp-meta-count");
+        if (bpEl) bpEl.textContent = `${m.blueprint_nodes} verified milestones across stages 0–4`;
+      }
+    });
+  }
+})();
+</script>
 </body>
 </html>

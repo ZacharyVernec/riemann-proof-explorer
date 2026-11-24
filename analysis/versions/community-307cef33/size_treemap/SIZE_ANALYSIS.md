@@ -1,0 +1,44 @@
+# Codebase Size & Hierarchical Complexity Analysis (`community-307cef33`)
+
+Quantitative breakdown of `src/` (**59,836 reachable modules**, **16,014,995 lines**, **1009.7 MiB**, **2,783 directory nodes** across max depth **9**) paired with [treemap_sunburst.html](treemap_sunburst.html).
+
+## 1. Top-Level Directory Breakdown
+
+| Top Directory | Files (%) | Lines (%) | Theorems & Lemmas | Defs & Structs | Median Lines | 1-Decl Modules |
+|---|---:|---:|---:|---:|---:|---:|
+| `Development` | 41,263 (68.96%) | 11,657,315 (72.79%) | 411,731 | 83,308 | 157 | 7,176 (17.4%) |
+| `Formalism` | 9,901 (16.55%) | 2,765,150 (17.27%) | 119,761 | 45,423 | 171 | 699 (7.1%) |
+| `GroundTheory` | 5,217 (8.72%) | 868,235 (5.42%) | 36,401 | 10,744 | 99 | 1,733 (33.2%) |
+| `ReciprocityTheory` | 2,393 (4.00%) | 494,752 (3.09%) | 22,446 | 6,096 | 152 | 200 (8.4%) |
+| `CompanionTheory` | 685 (1.14%) | 178,444 (1.11%) | 7,555 | 1,679 | 153 | 81 (11.8%) |
+| `PositivityTheory` | 226 (0.38%) | 44,166 (0.28%) | 2,177 | 755 | 102.5 | 25 (11.1%) |
+| `Lemmata` | 149 (0.25%) | 6,857 (0.04%) | 194 | 6 | 39 | 120 (80.5%) |
+| `(root)` | 2 (0.00%) | 76 (0.00%) | 5 | 4 | 38 | 0 (0.0%) |
+
+## 2. Module Granularity & Micro-Modules
+
+- **Single-declaration files:** `10,034` (**16.77%**)
+- **Files with ≤ 2 declarations:** `15,899` (**26.57%**)
+- **Zero-declaration modules (import barrels / directives):** `351`
+- **Statement wrapper files (`Statement` / statements dirs):** `4,199` (7.02%)
+
+## 3. Largest Individual Modules (by Line Count)
+
+| Module | Top Dir | Lines | Decls | Dist / Height |
+|---|---|---:|---:|---|
+| `Formalism/HermitianCurvature/HermitianCurvatureProofs/IsAdmissibleSplittingCharPairMulTwist.lean` | `Formalism` | 17,282 | 1,253 | 8 / 25 |
+| `Formalism/SharpRestriction/CuspSpanNormBounds/LatticeGluingRadicals.lean` | `Formalism` | 9,170 | 611 | 5 / 20 |
+| `Formalism/HermitianCurvature/HermitianCurvatureProofs/UnipotentCoordinatesMeasurePreserving.lean` | `Formalism` | 6,632 | 556 | 7 / 22 |
+| `Formalism/HermitianCurvature/HermitianCurvatureProofs/CoordinateCommuteRaisingConstant.lean` | `Formalism` | 5,702 | 694 | 7 / 12 |
+| `Formalism/SharpRestriction/GrowthBounds/WittFrameLocaliserOrders.lean` | `Formalism` | 5,665 | 402 | 8 / 12 |
+| `Formalism/SharpRestriction/LevelLetterCocycles/FrobeniusPowUniformizerFactorisation.lean` | `Formalism` | 4,620 | 339 | 5 / 12 |
+| `Formalism/SharpRestriction/GrowthBounds/LatticeSystems.lean` | `Formalism` | 4,426 | 264 | 7 / 27 |
+| `Formalism/LocalToGlobal/KernelLattices/KernelLocalFactors/InterlaceDifferenceShiftInvariant.lean` | `Formalism` | 4,247 | 354 | 7 / 34 |
+| `Formalism/SharpRestriction/LevelLetterCocycles/BaseChangePreservesUnitaryOf.lean` | `Formalism` | 4,185 | 270 | 7 / 13 |
+| `Formalism/SharpRestriction/GrowthBounds/CountingStatementReduction.lean` | `Formalism` | 3,928 | 300 | 7 / 17 |
+| `Formalism/HermitianCurvature/HermitianCurvatureProofs/LevelFormSesquilinearFiniteClass.lean` | `Formalism` | 3,316 | 251 | 8 / 29 |
+| `Formalism/HermitianCurvature/HermitianCurvatureProofs/StationaryPhaseModel.lean` | `Formalism` | 3,302 | 215 | 10 / 2 |
+| `Formalism/HermitianCurvature/HermitianCurvatureProofs/OrbitalIntegralReduction.lean` | `Formalism` | 3,273 | 206 | 8 / 7 |
+| `Formalism/SharpRestriction/GrowthBounds/TopChoiceBounds.lean` | `Formalism` | 3,269 | 173 | 7 / 28 |
+| `Formalism/HermitianCurvature/HermitianCurvatureProofs/NormDiagonalEntryDilationGeneratorLeOne.lean` | `Formalism` | 3,268 | 279 | 7 / 17 |
+

@@ -1,27 +1,44 @@
-# Topical Hierarchy & Sub-Theory Organization
+# Codebase Size & Hierarchical Complexity Analysis (`community-307cef33`)
 
-This document maps the topical organization of the mathematical proof across its major directories and sub-theories.
+Quantitative breakdown of `src/` (**59,836 reachable modules**, **16,014,995 lines**, **1009.7 MiB**, **2,783 directory nodes** across max depth **9**) paired with [treemap_sunburst.html](treemap_sunburst.html).
 
-## 1. Top-Level Mathematical Domains
+## 1. Top-Level Directory Breakdown
 
-| Domain | Mathematical Scope |
-|---|---|
-| [Main.lean](file:///home/ubuntu/riemann_proof/lean/src/Main.lean) & [Statements.lean](file:///home/ubuntu/riemann_proof/lean/src/Statements.lean) | Standalone target specifications and final proofs of the Riemann Hypothesis, right half-plane nonvanishing for Dirichlet $L$-functions, and the Generalized Riemann Hypothesis. |
-| [Supplements](file:///home/ubuntu/riemann_proof/lean/src/Supplements) | Top-level assembly kernels uniting the critical-line theorem track with the explicit small-class-number Selmer bound over $\mathbb{Q}(\sqrt{-3})$. |
-| [Development](file:///home/ubuntu/riemann_proof/lean/src/Development) | Primary proof synthesis across abelian varieties, automorphic arithmetic, automorphic spectrum, the Weil bound & Moriwaki bigness, étale cohomology, discrete groups, and resolution of singularities. |
-| [Formalism](file:///home/ubuntu/riemann_proof/lean/src/Formalism) | Analytic and algebraic specification contracts: local-to-global theta lifts, sharp restriction, period integrals, Hermitian curvature, $\mathrm{GL}_3$ mean squares, and local Bloch-Kato cohomology. |
-| [ReciprocityTheory](file:///home/ubuntu/riemann_proof/lean/src/ReciprocityTheory) | Reductive groups, PEL Shimura toroidal compactifications, Mumford semiabelian uniformisations, $L^2$ $\bar\partial$-estimates, dual lattices, and semistable reduction. |
-| [GroundTheory](file:///home/ubuntu/riemann_proof/lean/src/GroundTheory) | Arakelov heights and theta functions, automorphic multiplicity one, profinite Poitou-Tate cohomology, global/local fields, $p$-adic Hodge theory, and arithmetic geometry. |
-| [CompanionTheory](file:///home/ubuntu/riemann_proof/lean/src/CompanionTheory) | Spectral geometry, real reductive groups and Flath factorization, Harish-Chandra discrete series characters, and tempered local spectra. |
-| [PositivityTheory](file:///home/ubuntu/riemann_proof/lean/src/PositivityTheory) | Automorphic positivity estimates, Rankin-Selberg $\mathrm{GL}_3 \times \mathrm{GL}_2$ and $\mathrm{GL}_2 \times \mathrm{GL}_2$ zeta integrals, and parallel weight-one Hilbert Eisenstein series. |
-| [Lemmata](file:///home/ubuntu/riemann_proof/lean/src/Lemmata) | Standalone linear-algebraic and matrix-determinant identities (such as Cauchy-Binet and dual Weyl pullbacks). |
+| Top Directory | Files (%) | Lines (%) | Theorems & Lemmas | Defs & Structs | Median Lines | 1-Decl Modules |
+|---|---:|---:|---:|---:|---:|---:|
+| `Development` | 41,263 (68.96%) | 11,657,315 (72.79%) | 411,731 | 83,308 | 157 | 7,176 (17.4%) |
+| `Formalism` | 9,901 (16.55%) | 2,765,150 (17.27%) | 119,761 | 45,423 | 171 | 699 (7.1%) |
+| `GroundTheory` | 5,217 (8.72%) | 868,235 (5.42%) | 36,401 | 10,744 | 99 | 1,733 (33.2%) |
+| `ReciprocityTheory` | 2,393 (4.00%) | 494,752 (3.09%) | 22,446 | 6,096 | 152 | 200 (8.4%) |
+| `CompanionTheory` | 685 (1.14%) | 178,444 (1.11%) | 7,555 | 1,679 | 153 | 81 (11.8%) |
+| `PositivityTheory` | 226 (0.38%) | 44,166 (0.28%) | 2,177 | 755 | 102.5 | 25 (11.1%) |
+| `Lemmata` | 149 (0.25%) | 6,857 (0.04%) | 194 | 6 | 39 | 120 (80.5%) |
+| `(root)` | 2 (0.00%) | 76 (0.00%) | 5 | 4 | 38 | 0 (0.0%) |
 
-## 2. Core Sub-Theories (`Depth 2` & `Depth 3`)
+## 2. Module Granularity & Micro-Modules
 
-- **[Development/AbelianVarietyTheory](file:///home/ubuntu/riemann_proof/lean/src/Development/AbelianVarietyTheory):** Polarized abelian schemes, divisor and line-bundle proofs (`DivisorProofs`), inertia eigenvalues (`InertiaEigenvalues`), Iwasawa decompositions (`IwasawaDecomposition`), twisted operators (`TwistedOperators`), flag measures (`FlagMeasures`), Satake parameters (`SatakeParameters`), moduli and degeneration proofs, and the master catalog of literature specifications (`PublishedTheorems`).
-- **[Development/AutomorphicArithmetic](file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicArithmetic):** Windowed Chebyshev character boxes (`CharacterBoxes`), modularity-lifting threshold arguments and Kato's Euler system (`AutomorphicVarieties`), $\ell$-adic Galois representations and weight-one geometric realization (`Foundations`), unitary theta-correspondence pair lifts (`ThetaCorrespondence`), and Capelli differential operator identities (`IntegralCasts`).
-- **[Development/AutomorphicSpectrum](file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicSpectrum):** Block decomposition of smooth representations (`BlockDecomposition`), good root-tower and Arakelov volume theorems (`GeometryProofs`, `DivisibilityProofs`), and metric/Hermitian height comparisons (`MetricProofs`).
-- **[Development/WeilBound](file:///home/ubuntu/riemann_proof/lean/src/Development/WeilBound):** Moriwaki arithmetic bigness and Hilbert-Samuel volume chains (`CoreStatements/AutomorphicKernels/MoriwakiBigness`), $p$-adic Hodge / étale cohomology comparisons, regularized Siegel-Weil and theta idempotents (`RepresentationTheoryGL`), and literature proof bridges (`CoreStatements/PublishedTheorems`).
-- **[Formalism/LocalToGlobal](file:///home/ubuntu/riemann_proof/lean/src/Formalism/LocalToGlobal) & [Formalism/SharpRestriction](file:///home/ubuntu/riemann_proof/lean/src/Formalism/SharpRestriction):** Indefinite and definite theta-lift stages, Siegel lattice theory, growth and cusp-span norm bounds, local Bloch-Kato finite-part cohomology (`LevelLetterCocycles`), and the windowed Landau nonvanishing criterion (`TotientGaloisClasses`).
-- **[ReciprocityTheory/ReductiveGroups](file:///home/ubuntu/riemann_proof/lean/src/ReciprocityTheory/ReductiveGroups):** PEL-type Shimura toroidal compactifications (`ToroidalCompactification`), Mumford semiabelian degeneration and descent (`ExtensionDescent`), and split algebraic tori (`SemiabelianSchemes`).
-- **[GroundTheory/HeightsAndTheta](file:///home/ubuntu/riemann_proof/lean/src/GroundTheory/HeightsAndTheta):** Arakelov Hermitian vector bundles, Bost-Zhang small-height slope inequalities (`KernelsLattice`), complex analytic sets, arithmetic Bézout intersections, and Hilbert-Samuel growth bounds.
+- **Single-declaration files:** `10,034` (**16.77%**)
+- **Files with ≤ 2 declarations:** `15,899` (**26.57%**)
+- **Zero-declaration modules (import barrels / directives):** `351`
+- **Statement wrapper files (`Statement` / statements dirs):** `4,199` (7.02%)
+
+## 3. Largest Individual Modules (by Line Count)
+
+| Module | Top Dir | Lines | Decls | Dist / Height |
+|---|---|---:|---:|---|
+| `Formalism/HermitianCurvature/HermitianCurvatureProofs/IsAdmissibleSplittingCharPairMulTwist.lean` | `Formalism` | 17,282 | 1,253 | 8 / 25 |
+| `Formalism/SharpRestriction/CuspSpanNormBounds/LatticeGluingRadicals.lean` | `Formalism` | 9,170 | 611 | 5 / 20 |
+| `Formalism/HermitianCurvature/HermitianCurvatureProofs/UnipotentCoordinatesMeasurePreserving.lean` | `Formalism` | 6,632 | 556 | 7 / 22 |
+| `Formalism/HermitianCurvature/HermitianCurvatureProofs/CoordinateCommuteRaisingConstant.lean` | `Formalism` | 5,702 | 694 | 7 / 12 |
+| `Formalism/SharpRestriction/GrowthBounds/WittFrameLocaliserOrders.lean` | `Formalism` | 5,665 | 402 | 8 / 12 |
+| `Formalism/SharpRestriction/LevelLetterCocycles/FrobeniusPowUniformizerFactorisation.lean` | `Formalism` | 4,620 | 339 | 5 / 12 |
+| `Formalism/SharpRestriction/GrowthBounds/LatticeSystems.lean` | `Formalism` | 4,426 | 264 | 7 / 27 |
+| `Formalism/LocalToGlobal/KernelLattices/KernelLocalFactors/InterlaceDifferenceShiftInvariant.lean` | `Formalism` | 4,247 | 354 | 7 / 34 |
+| `Formalism/SharpRestriction/LevelLetterCocycles/BaseChangePreservesUnitaryOf.lean` | `Formalism` | 4,185 | 270 | 7 / 13 |
+| `Formalism/SharpRestriction/GrowthBounds/CountingStatementReduction.lean` | `Formalism` | 3,928 | 300 | 7 / 17 |
+| `Formalism/HermitianCurvature/HermitianCurvatureProofs/LevelFormSesquilinearFiniteClass.lean` | `Formalism` | 3,316 | 251 | 8 / 29 |
+| `Formalism/HermitianCurvature/HermitianCurvatureProofs/StationaryPhaseModel.lean` | `Formalism` | 3,302 | 215 | 10 / 2 |
+| `Formalism/HermitianCurvature/HermitianCurvatureProofs/OrbitalIntegralReduction.lean` | `Formalism` | 3,273 | 206 | 8 / 7 |
+| `Formalism/SharpRestriction/GrowthBounds/TopChoiceBounds.lean` | `Formalism` | 3,269 | 173 | 7 / 28 |
+| `Formalism/HermitianCurvature/HermitianCurvatureProofs/NormDiagonalEntryDilationGeneratorLeOne.lean` | `Formalism` | 3,268 | 279 | 7 / 17 |
+
