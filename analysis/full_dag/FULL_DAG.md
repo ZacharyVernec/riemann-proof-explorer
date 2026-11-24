@@ -1,8 +1,8 @@
 # Full Lean Module Dependency DAG
 
-This document describes the repeatable layout pipeline, binary data packaging, and WebGL visualization behind the interactive full-graph viewer:
+This document describes the repeatable layout pipeline, binary data packaging, graph-simplification modes, and WebGL visualization behind the interactive full-graph viewer:
 
-- **Interactive Viewer:** [full_dag.html](full_dag.html) (pan and zoom across all modules and import edges, with an interactive **Collapse existing theory** toggle)
+- **Interactive Viewer:** [full_dag.html](full_dag.html) (pan and zoom across all modules and import edges, with three composable simplification switches: **Collapse existing theory** `C`, **Hide redundant imports** `H`, and **Collapse chains & leaves** `L`)
 - **Layout Generator:** [build_full_dag.py](build_full_dag.py)
 - **Layout Summary:** [layout_summary.json](layout_summary.json)
 - **SQLite Indexer:** [build_index.py](../build_index.py)
@@ -43,8 +43,11 @@ The pipeline executes five stages:
 1. **Source Indexing (`analysis/build_index.py`):** Walks `lean/src` in sorted relative-path order, parses `import` statements, builds the deduplicated internal module import graph, and writes `analysis/data/graph.sqlite` and `analysis/data/meta.json`.
 2. **Acyclicity Verification (`load_graph` + Kahn's topological sort):** Loads all modules ordered deterministically by `(rel_path, id)` and runs Kahn's topological algorithm from roots ($\text{in\_degree} = 0$). If any import cycle exists, the pipeline aborts immediately with an error.
 3. **Deterministic 3-Stage Sugiyama Layout (`compute_layout`):** Assigns integer layer coordinates $y(u)$ and continuous non-overlapping horizontal coordinates $x(u)$, then scales vertical spacing dynamically to preserve a readable widescreen aspect ratio.
-4. **Existing-Theory Proof Collapse & Weighted Layout (`build_collapsed_dag`):** Applies the inventory-driven proof-frontier cut, contracts proof-only subtrees into axiom-sink **Literature Supernodes** with contracted import weights, and computes a compact weighted Sugiyama layout for the collapsed view.
-5. **Canonical Re-Indexing & `LDAG` v2 Packaging:** Re-indexes both full and collapsed nodes in `(y, x, rel_path)` order, packs typed arrays and LEB128 varint adjacency lists into a 4-byte-aligned `LDAG` v2 binary buffer (reusing active-to-active edges across views), compresses deterministically (`gzip` with `mtime=0`), and emits [full_dag_data.js](full_dag_data.js) alongside [layout_summary.json](layout_summary.json).
+4. **Graph Simplification & Multi-View Weighted Layouts (`build_collapsed_dag`, `compute_transitive_reduction`, `simplify_chains_and_leaves`):**
+   - Applies the inventory-driven proof-frontier cut to contract peer-reviewed background proofs into **83 Literature Supernodes** (`existing`).
+   - Computes exact transitive reduction (Hasse diagrams) on both the full DAG (`full_hasse`) and existing-theory DAG (`existing_hasse`), packing 1-bit-per-edge masks for zero-jump in-place toggling.
+   - Runs a 2-phase fixed-point chain/leaf collapse (`simplify_chains_and_leaves`) across all four `(existing, hasse)` combinations (`full_simp`, `full_hasse_simp`, `existing_simp`, `existing_hasse_simp`), computing weighted Sugiyama layouts using edge weights $w_E = \text{mult} + \text{chain}$.
+5. **Canonical Re-Indexing & `LDAG` v3 Packaging:** Re-indexes every node-bearing layout in `(y, x, sort_key)` order, packs typed arrays, LEB128 delta-varint CSR adjacency lists, 1-bit Hasse masks, sparse weighted-anchor records, and 1-bit-flagged weighted edge streams into a 4-byte-aligned `LDAG` v3 binary buffer, compresses deterministically (`gzip` with `mtime=0`), and emits [full_dag_data.js](full_dag_data.js) alongside [layout_summary.json](layout_summary.json).
 
 ---
 
@@ -96,13 +99,21 @@ Finally, layer vertical spacing $\Delta y$ is computed dynamically from the tota
 
 - **Zero Hardcoded Names or Counts:** Every top-level directory (`top_dir`) is discovered dynamically from `graph.sqlite`, sorted deterministically by `(-module_count, top_dir)`, and colored from a fixed high-contrast light-theme categorical palette (with a deterministic golden-angle HSL fallback if a refactor introduces more than 10 top-level directories).
 - **Deterministic Tie-Breaking & Bit-Exact Output:** Node ordering ties break on `rel_path`, canonical IDs are sorted by `(layer, x, rel_path)`, and gzip compression uses `mtime=0`, ensuring repeated runs on unchanged sources emit byte-identical outputs.
-- **Invariant Checks:** For both the full DAG and the collapsed DAG, the generator verifies zero self-loops, exact topological completeness (`len(topo) == N`), strict downward edge monotonicity ($y(u) < y(v)$ and $\text{id}(u) < \text{id}(v)$), intra-layer non-overlap ($\Delta x \ge 1.0$), and exact collapsed module conservation ($\text{active\_nodes} + \sum_T |S_T| = 175{,}187$) before writing output.
+- **Invariant Checks:** Across all 8 composable views, the generator verifies zero self-loops, exact topological completeness (`len(topo) == N`), strict downward edge monotonicity ($y(u) < y(v)$ and $\text{id}(u) < \text{id}(v)$), intra-layer non-overlap ($\Delta x \ge 1.0$), exact Hasse bitmask counts (`386,211` for `full_hasse`, `305,256` for `existing_hasse`), zero remaining unprotected simple leaves or `(1,1)` pass-through nodes after fixed-point simplification, and exact module conservation ($\sum_{v \in V} w(v) + \sum_{e \in E} \text{chain}(e) = 175{,}187$) before writing output.
 
 ---
 
-## 5. Existing-Theory Proof Collapse, Weighted Contraction & Rendering Architecture
+## 5. Simplification Modes, Weights & `LDAG` v3 Architecture
 
-### Existing-Theory Proof-Frontier Cut
+The viewer provides three orthogonal, composable toggles that switch smoothly between **8 pre-verified graph views**:
+
+1. **Collapse existing theory (`C`):** Contracts established peer-reviewed mathematical proofs into **83 Literature Supernodes**.
+2. **Hide redundant imports (`H`):** Applies exact transitive reduction (the Hasse diagram), hiding shortcut import edges that are already implied by longer dependency paths.
+3. **Collapse chains & leaves (`L`):** Folds private simple-leaf subtrees upward into weighted parent anchor nodes (`Anchor [w]`) and contracts pass-through `(1,1)` chains onto weighted dependency edges.
+
+---
+
+### 5.1 Existing-Theory Proof-Frontier Cut ("Collapse existing theory")
 
 The **"Collapse existing theory"** toggle in [full_dag.html](full_dag.html) (keyboard shortcut `C`) lets readers hide the subtrees of the Lean codebase proving already-established peer-reviewed mathematics while preserving every novel theorem, shared interface specification, and statement contract.
 
@@ -112,8 +123,6 @@ Following the identification methodology documented in [PUBLISHED_THEOREMS_INVEN
 2. Enforces the SQLite defining-module ancestor guard and scans final conclusion heads of `theorem`/`lemma` declarations while excluding `*/Definitions/*`, assumed hypothesis-bundle projections/dispatchers (`HypothesesU`, `OpenImageCondition`, `OpenLiteratureStatements`, etc.), novel headline modules, and `20` multi-topic re-export barrels (`ProvedMore`, `InputsOf`, `Multi`, `BridgesMore`, etc.).
 3. Performs reachability from `Main` without crossing outgoing edges of detected proof roots while applying **targeted dead-import pruning** on `RiemannHypothesisOfEveryCharacter.lean` (ignoring `54` provably unreferenced imports whose targets lie strictly below the baseline published-theorem frontier so proof-only interiors cannot leak past the cut without falsely collapsing unrelated legacy modules).
 
-### Literature Supernodes & Disjoint Ownership Conservation
-
 Modules unreachable from `Main` past the proof-frontier cut form the **proof-only interior** $C$ (`39,314` modules), while the reached proof-root modules form the **frontier** $F$ (`420` modules). Merging frontier proof roots by literature topic while keeping outgoing `Supernode -> Shared Active` edges breaks DAG acyclicity whenever alternative proofs sit at different heights around shared definitions. To preserve a strict DAG:
 
 - Frontier modules $F$ are grouped by their primary inventory row into **83 Literature Supernodes** $S_T$ rendered as **diamond axiom sinks** ($\text{out\_degree} = 0$).
@@ -121,32 +130,67 @@ Modules unreachable from `Main` past the proof-frontier cut form the **proof-onl
 
 $$|A| + \sum_{T} |S_T| = 135{,}453 + 39{,}734 = 175{,}187.$$
 
-Each supernode displays its canonical literature title and exact collapsed module count in brackets alongside the diamond node (for example, `BLGGT / Caraiani Strong Local–Global Compatibility [13,455]`).
+Each supernode displays its canonical literature title and exact collapsed module count in brackets alongside the diamond node (for example, `BLGGT / Caraiani Strong Local–Global Compatibility [13,455]`). Contracting multiple frontier proof imports from an active module $u \in A$ to the same Literature Supernode $S_T$ induces edge multiplicity weights $w(u, v) = |\{(u, f) \in E : f \in F_T\}|$ (`6,289` contracted supernode edges representing `7,125` raw frontier imports, with `711` edges having $w \ge 2$, up to $w_{\max} = 8$).
 
-### Post-Collapse Edge Weights & Compact Layout
+---
 
-Contracting multiple frontier proof imports from an active module $u \in A$ to the same Literature Supernode $S_T$ induces integer **edge weights** measuring proof-import multiplicity:
+### 5.2 Transitive Reduction ("Hide redundant imports" / Hasse Diagram)
 
-$$w(u, v) = \begin{cases} |\{(u, f) \in E : f \in F_T\}| \ge 1 & \text{if } v = S_T \text{ is a Literature Supernode,} \\ 1 & \text{if } v \in A \text{ is an active module.} \end{cases}$$
+In Lean source files, modules frequently `import` both a downstream module $B$ and an ancestor $C$ that $B$ already imports (`A -> B -> C` alongside shortcut `A -> C`). Nearly half of all edges in the import graph are transitively redundant shortcuts of this form.
 
-In the current build, `6,289` contracted supernode edges represent `7,125` raw frontier imports, with **`711` edges carrying weight $w \ge 2$** (up to $w_{\max} = 8$). Both Stage 2 ($L_1$ weighted rank tightening with total gradient $\sum_{(p,u)} w(p,u) - \sum_{(u,c)} w(u,c)$) and Stage 3 (inverse-span barycenter weighted by $w(u, v) / \lvert y(u) - y(v) \rvert$) use these weights when computing the compact **177-layer** collapsed Sugiyama layout.
+The **"Hide redundant imports"** toggle (`H` hotkey) displays the DAG's **exact transitive reduction** (its Hasse diagram), keeping an edge $(u, v)$ if and only if no indirect directed path $u \to \dots \to v$ of length $\ge 2$ exists:
 
-### Compact Offline Payload (`LDAG` v2 in `full_dag_data.js`)
+- **Algorithm (`compute_transitive_reduction`):** Processes nodes in topological order using striped arbitrary-precision integer bitsets (stripe width $B = 16{,}384$) to compute, for each node $u$, its 1-step reachability bitset $R_1(u)$ and its $\ge 2$-step reachability bitset $R_2(u) = \bigvee_{(u, v) \in E} R_1(v)$. Edge $(u, v)$ is redundant iff $v \in R_2(u)$.
+- **Edge Reduction:**
+  - On the **Full DAG**, transitive reduction removes **367,050** redundant shortcut edges (`48.73%`), leaving **386,211** essential covering edges (`full_hasse`).
+  - On the **Existing-Theory DAG**, transitive reduction removes **287,744** redundant edges (`48.52%`), leaving **305,256** essential covering edges (`existing_hasse`).
+- **In-Place Zero-Jump Filtering:** When *Collapse chains & leaves* is off, toggling *Hide redundant imports* keeps the exact node set, coordinates, and current pan/zoom unchanged. Both views reuse the base node VBO while filtering the CSR edges via compact 1-bit-per-edge masks (`full_hasse_mask` = `94,158` B; `existing_hasse_mask` = `74,125` B).
 
-Because browser `fetch()` requests to local files fail under `file://` CORS restrictions, the pipeline embeds the gzipped binary container as a Base64-encoded global assignment (`window.__FULL_DAG_GZ_B64__`) in `full_dag_data.js` and decompresses it client-side using the browser's built-in `DecompressionStream("gzip")`.
+---
 
-Inside the decompressed 4-byte-aligned little-endian `LDAG` v2 container:
-- **Header JSON:** Counts, bounds, `layer_dy`, and discovered group palette metadata for both the full graph and the `"collapsed"` subgraph.
-- **Typed Node Arrays & String Blobs:** `layer_offsets` (`Uint32Array[num_layers+1]`), `node_x` (`Float32Array[N]`), `node_group` (`Uint8Array[N]`), clamped `node_in_deg` / `node_out_deg` (`Uint16Array[N]`), `node_dir_id` (`Uint32Array[N]`), and newline-delimited unique directory paths and short module names.
-- **Delta-Varint CSR Edges (Shared Across Views):** Outgoing neighbor counts and monotonically increasing target deltas encoded as unsigned LEB128 varints (yielding `1,809,565` raw bytes for all `753,261` edges prior to gzip).
-- **Compact Collapsed Diff Sections:** Reuses the full CSR active-to-active edges with zero duplication, storing only `c_layer_offsets` (`Uint32Array`), `c_node_x` (`Float32Array`), `c_node_full_id` (`Int32Array`, mapping non-negative IDs to full nodes and negative IDs `-(sIdx + 1)` to Literature Supernodes), supernode counts/frontier counts/domains/titles, delta-varint `(target_delta, weight)` supernode edges (`159,866` raw bytes), and `54` canonical dead-edge pairs. On first toggle, `full_dag.html` lazily reconstructs the collapsed CSR and weighted edge buffers in memory.
+### 5.3 Chain & Simple-Leaf Collapse ("Collapse chains & leaves")
 
-### WebGL1 + 2D Canvas Hybrid Renderer (`full_dag.html`)
+In the raw direct-import DAG, **21,928 modules (`12.52%`)** have at most one dependent (`in_degree <= 1`) and at most one internal dependency (`out_degree <= 1`): **3,965** simple leaves and **17,963** pass-through `(1,1)` nodes. Once transitively redundant shortcut edges are removed, that rises to **68,724 modules (`39.23%`)**, exposing **11,489** multi-node linear chains (up to `18` modules long, including `8,832` length-2 `*Statement.lean -> *.lean` wrapper pairs).
 
-- **On-Demand WebGL Rendering:** Edges are uploaded into a stratified 8-bucket vertex buffer (`gl.LINES`) with endpoint colors interpolated between importer and dependency domains, and nodes are uploaded into a vertex buffer (`gl.POINTS`) rendered as anti-aliased discs scaled smoothly with `sqrt(zoom)` and strictly capped below $0.76 \cdot \text{zoom}$ at zoomed-in scales so adjacent nodes never overlap.
-- **Zoom-Adaptive Edge Opacity & Responsive Pan/Zoom:** Edge opacity scales continuously with zoom so dense structural bundles remain legible at overview while individual links sharpen as you zoom in. During active drag/wheel gestures, if a full edge draw exceeded 20 ms, a stratified subset of buckets renders immediately and restores 100% of edges 90 ms after motion stops.
-- **Binary-Search Viewport Culling & Progressive Overlay:** Because nodes are canonically ordered by `(layer, x)` in both views, the 2D overlay locates visible nodes per frame in $O(K_{\text{vis}} \log W)$ time via `layer_offsets` and binary search on `node_x`, drawing collision-free labels for visible landmarks/hubs/supernodes (plus directory or root-count subtitles at deep zoom) and directional arrowheads when zoomed into local neighborhoods.
-- **Clean Light-Theme Navigation Interface:** The viewer exposes the full-viewport DAG canvas, mouse-wheel/pinch zoom, drag/keyboard pan, a collapsible bottom-left legend, zoom controls, and the single top-right **"Collapse existing theory"** toggle (`C` hotkey).
+The **"Collapse chains & leaves"** toggle (`L` hotkey) runs `simplify_chains_and_leaves`, a deterministic 2-phase fixed-point contraction loop:
+
+1. **Phase 1 — Simple-Leaf Folding into Node Weight (`in = 1, out = 0`):** Iteratively peels every unprotected node $u$ with a single importer $p$ and zero internal dependencies upward into $p$, transferring both $u$'s node weight $w(u)$ and any contracted chain weight on edge $(p, u)$ to $p$:
+   $$w(p) \leftarrow w(p) + w(u) + \text{chain}(p, u).$$
+   Private hanging leaf-trees collapse recursively into a single weighted anchor node (for example, `Main` absorbs `Statements` to reach weight `2`, while `FirstDeRhamHomologyProjectiveOverTensorIntegers` absorbs `24` leaves to reach weight `25`). When *Collapse existing theory* is also active, the **83 Literature Supernodes** are protected from absorption so diamond landmarks always remain visible.
+2. **Phase 2 — Pass-Through `(1,1)` Chain Contraction into Edge Weight:** Iteratively contracts every unprotected node $u$ with `in(u) = 1, out(u) = 1` along $p \to u \to c$ into a direct edge $(p, c)$, merging parallel paths when $(p, c)$ already exists:
+   $$\text{mult}(p, c) \mathrel{+}= \max\!\big(\text{mult}(p, u),\, \text{mult}(u, c)\big), \qquad \text{chain}(p, c) \mathrel{+}= \text{chain}(p, u) + \text{chain}(u, c) + w(u).$$
+   The combined edge weight used for layout attraction and stroke rendering is $w_E(e) = \text{mult}(e) + \text{chain}(e)$.
+3. **Fixed-Point Iteration & Composition with Hasse:** Phases 1 and 2 repeat until no unprotected `(1, <=1)` nodes remain (catching cascading leaves exposed when parallel-edge merges reduce a node's `in_degree` from `2` to `1`). When both *Hide redundant imports* and *Collapse chains & leaves* are active, transitive reduction runs **first** so shortcut-hidden chains (`*Statement -> Impl` pairs, `18`-node Gram–Schmidt frame chains, etc.) are exposed and collapsed while retaining their contracted weighted edges.
+
+**Exact Module Conservation:** Across all four simplified views, every original Lean module is accounted for either inside a surviving node's weight (active anchor or Literature Supernode) or inside a surviving edge's contracted chain count:
+
+$$\sum_{v \in V} w(v) + \sum_{e \in E} \text{chain}(e) = 175{,}187.$$
+
+*(Each simplified view runs a full weighted Sugiyama layout with edge weights $w_E = \text{mult} + \text{chain}$, enforcing strict DAG monotonicity and $\Delta x \ge 1.0$.)*
+
+---
+
+### 5.4 Node Labeling & Weight Encoding (Option A)
+
+To keep labels readable across zoom levels while communicating exact collapse counts:
+
+- **Weighted Anchor Nodes (`Anchor [w]`):** Any active module whose node weight exceeds `1` renders with an increased disc diameter ($w_{\text{base}} + 0.55 \ln(w)$) and a crisp **inner white halo ring** (`alphaByte = 128` in the node shader). Its primary label follows Option A—the surviving anchor module's short name plus a bold domain-colored `[w]` suffix (for example, `Main [2]`, `CayDensEx [25]`, matching the `[count]` convention on Literature Supernodes).
+- **Deep-Zoom Breakdown Subtitles (`zoom >= 55`):** When zoomed in on an anchor node with $k = w - 1$ absorbed modules:
+  - Single-leaf absorption ($k = 1$) names the absorbed module directly (e.g., `+1 leaf (Statements)`).
+  - Multi-module absorption reports `+k leaves` or `+k collapsed (L leaves, C chain)` alongside the module's directory path.
+- **Weighted Edges & Badges:** Contracted edges render with increased WebGL opacity, 2D variable-thickness strokes scaled by $\log_2(w_E)$, weight-scaled deep-zoom arrowheads, and collision-free edge badges at `zoom >= 6` (`×m` for multiplicity, `+c` for contracted chain modules, or `×m +c` when both are non-trivial).
+
+---
+
+### 5.5 Compact Offline Payload (`LDAG` v3 in `full_dag_data.js`)
+
+Because browser `fetch()` requests to local files fail under `file://` CORS restrictions, the pipeline embeds the gzipped binary container as a Base64-encoded global assignment (`window.__FULL_DAG_GZ_B64__`) in `full_dag_data.js` and decompresses it client-side using `DecompressionStream("gzip")`.
+
+Inside the decompressed 4-byte-aligned little-endian `LDAG` v3 container (`19,365,504` raw bytes / `9,305,882` B gzipped / `12,407,877` B JS payload):
+- **Header JSON:** Bounds, layer metrics, and discovered domain palette for the base `full` graph, `collapsed`, `full_hasse`, `existing_hasse`, and all four `simplified` views.
+- **Full & Existing-Theory Sections (`v1` + `v2`):** `layerOffsets`, `nodeX`, `nodeGroup`, `nodeInDeg`/`nodeOutDeg`, `nodeDirId`, string tables (`dir_blob`, `name_blob`), delta-varint CSR `edge_buf` (`1,809,565` B), collapsed supernode metadata (`c_super_edges_buf` = `159,866` B), and `54` canonical dead-edge pairs.
+- **Hasse Bitmasks (`v3`):** `full_hasse_mask` (`94,158` B) and `existing_hasse_mask` (`74,125` B) bit-packed in exact base CSR edge order; decoded lazily into filtered edge VBOs without duplicating node buffers.
+- **4 Simplified View Sections (`v3`):** For each of `full_simp`, `full_hasse_simp`, `existing_simp`, and `existing_hasse_simp`: `layerOffsets`, `nodeX`, `nodeFullId`, sparse `16`-byte `<IIHHi` weighted-anchor records (`node_id, weight, abs_leaves, abs_chains, rep_full_id`), and 1-bit-flagged LEB128 CSR edge streams (`4,719,947` B total across all 4 views, storing only a `(delta << 1) | has_weights` code for unit edges and appending `(mult, chain)` varints only when `mult != 1` or `chain != 0`).
 
 ---
 
@@ -173,11 +217,47 @@ The interactive viewer ([full_dag.html](full_dag.html)) displays a compact, coll
 - **Future Refactor Fallback:** If a future refactor adds more than 10 top-level directories, `group_color()` in [build_full_dag.py](build_full_dag.py) assigns deterministic golden-angle HSL colors (`hue = ((idx - 10) * 0.618033988749895) % 1`, saturation `0.72`, lightness `0.42`) for indices `idx >= 10`.
 - **Edges:** Import links linearly interpolate RGB color from the importer node (`A`) to the dependency node (`B`), with zoom-adaptive opacity and deep-zoom directional arrowheads pointing toward dependencies.
 - **Node Size & Zoomed Rim:** Disc diameter grows gently with in-degree (and root modules with `in_degree = 0` are emphasized) and `sqrt(zoom)`. When zoomed in (disc diameter above ~5.5 CSS px), each disc gains a subtly darkened border rim (`col * 0.55`) to keep adjacent nodes distinct.
-- **Collapsed Existing-Theory Mode (LDAG v2):** When the **Collapse existing theory** toggle (`C`) is enabled, diamond markers (`◆`) with lightened centers and `log1p(collapsedCount)` sizing represent contracted Literature Supernodes colored by their dominant `top_dir` and labeled `<Literature Title> [<collapsedCount>]`. Contracted supernode edges carry import-multiplicity weights $w \ge 1$ rendered via WebGL opacity multipliers, 2D overlay variable-thickness strokes scaled by $\log_2(w)$, weight-scaled deep-zoom arrowheads, and `×w` badges (`w >= 2`), while the legend automatically displays a diamond key row.
+- **Top-Right Toggle Bar & Hotkeys:**
+  - **Collapse existing theory (`C`):** Replaces peer-reviewed proof subtrees with **83 Literature Supernodes** (`◆` diamond axiom sinks).
+  - **Hide redundant imports (`H`):** Displays the exact Hasse diagram (transitive reduction), removing shortcut edges implied by longer paths. When *Collapse chains & leaves* is off, edges toggle **in place** without altering camera pan/zoom.
+  - **Collapse chains & leaves (`L`):** Folds private simple leaves upward into weighted anchor nodes (`Anchor [w]`, ringed discs) and contracts `(1,1)` pass-through chains onto weighted dependency edges.
+- **Collapsed Legend Keys:** When active, the legend dynamically displays `◆ Collapsed existing theory`, a ringed-circle key for `Weighted node [w] (absorbed leaves)`, and a thickened bar for `Weighted edge (×mult / +chain)`.
+- **Node & Edge Visual Scaling:** Disc diameter grows with in-degree and absorbed node weight; contracted edges scale in WebGL opacity, 2D line width ($\log_2 w_E$), arrowhead size, and deep-zoom `×m` / `+c` / `×m +c` badges.
 
 ---
 
 ## 7. Current Graph & Layout Summary
+
+### 8-View Summary Matrix
+
+| View (`Existing`, `Hasse`, `Chains/Leaves`) | Nodes | Edges | Layers | Layer Spacing | Avg $\Delta y$ | Avg $\lvert\Delta x\rvert$ | Weighted Anchors ($w > 1$) | Weighted Edges ($w_E \ge 2$) | Module Conservation ($\sum w_V + \sum \text{chain}_E$) |
+| :--- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| **Full DAG** (`F, F, F`) | 175,187 | 753,261 | 203 | 9.3166 | 17.288 | 121.839 | — | — | `175,187 + 0 = 175,187` |
+| **Full + Hide redundant imports** (`F, T, F`) | 175,187 | 386,211 | 203 | 9.3166 | *(in-place)* | *(in-place)* | — | — | `175,187 + 0 = 175,187` |
+| **Existing Theory** (`T, F, F`) | 135,536 | 593,000 | 177 | 8.9466 | 16.342 | 96.408 | 83 supernodes | 711 | `175,187 + 0 = 175,187` |
+| **Existing + Hide redundant imports** (`T, T, F`) | 135,536 | 305,256 | 177 | 8.9466 | *(in-place)* | *(in-place)* | 83 supernodes | *(in-place)* | `175,187 + 0 = 175,187` |
+| **Full + Chains & Leaves** (`F, F, T`) | 148,009 | 712,764 | 202 | 6.3202 | 17.803 | 111.004 | 2,609 (`max w=25`) | 9,680 (`max w=152`) | `152,920 + 22,267 = 175,187` |
+| **Full + Hasse + Chains & Leaves** (`F, T, T`) | 104,622 | 307,224 | 151 | 6.2397 | 9.430 | 80.710 | 2,449 (`max w=28`) | 42,592 (`max w=154`) | `109,360 + 65,827 = 175,187` |
+| **Existing + Chains & Leaves** (`T, F, T`) | 115,374 | 563,733 | 177 | 6.1701 | 16.835 | 88.081 | 2,125 + 83 super | 8,336 (`max w=112`) | `158,897 + 16,290 = 175,187` |
+| **Existing + Hasse + Chains & Leaves** (`T, T, T`) | 83,150 | 247,282 | 151 | 5.2306 | 9.058 | 68.454 | 1,995 + 83 super | 32,629 (`max w=95`) | `126,554 + 48,633 = 175,187` |
+
+### Top Weighted Anchor Nodes & Contracted Edges (`full_hasse_simp`)
+
+| Top Weighted Anchor Node (`Anchor [w]`) | Weight $w$ | Breakdown (`leaves` / `chains`) | Primary Absorbed Leaf |
+| :--- | ---: | :---: | :--- |
+| `UnitTraceSumBounds/Imports` | 28 | 19 / 8 | `CBFiLower` |
+| `DivisorProofs/FirstDeRhamHomologyProjectiveOverTensorIntegers` | 25 | 24 / 0 | `AnnihilatorLiftOfMulEqP` |
+| `ArchimedeanOrbitMeasures/CayDensEx` | 25 | 12 / 12 | `Imports` |
+| `DivisorProofs/EtaleLocalVanishingCohomology` | 24 | 23 / 0 | `EtaleUniquePrimeLeMapMaximal` |
+| `DivisorProofs/ExistsStrictHenselisation` | 24 | 23 / 0 | `ExistsNumDen` |
+
+| Top Contracted Edge (`src → dst`) | Combined Weight $w_E$ | Multiplicity (`×mult`) | Contracted Chain (`+chain`) |
+| :--- | ---: | ---: | ---: |
+| `IsolateSpecHolds → IsolateSpec` | 154 | ×76 | +78 |
+| `AbelianHodgeDeRham → H1CommutesBaseChange` | 126 | ×38 | +88 |
+| `RsOf → UnramifiedEulerProductIntegral` | 95 | ×31 | +64 |
+| `RsPoleOfInputs → ColumnConjugationMeasure` | 90 | ×44 | +46 |
+| `HasRepresentingSchemePinchedBase → UnitsPatch` | 74 | ×23 | +51 |
 
 ### Full DAG Summary
 
@@ -194,7 +274,7 @@ The interactive viewer ([full_dag.html](full_dag.html)) displays a compact, coll
 | Adjacent-Layer Edges ($\Delta y = 1$) | 190,823 |
 | Short-Span Edges ($\Delta y \le 5$) | 352,622 |
 | World Aspect Ratio | 1.85 : 1 |
-| `LDAG` v2 Payload (`full_dag_data.js`) | 5,446,505 bytes (`4,084,854` B gzipped / `10,715,720` B raw) |
+| `LDAG` v3 Payload (`full_dag_data.js`) | 12,407,877 bytes (`9,305,882` B gzipped / `19,365,504` B raw) |
 
 ### Collapsed DAG Summary ("Collapse Existing Theory")
 

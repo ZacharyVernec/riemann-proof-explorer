@@ -710,15 +710,778 @@
       }
     ]
   },
+  "full_hasse": {
+    "edge_count": 386211,
+    "redundant_edge_count": 367050,
+    "bitmask_bytes": 94158
+  },
+  "existing_hasse": {
+    "edge_count": 305256,
+    "redundant_edge_count": 287744,
+    "bitmask_bytes": 74125
+  },
+  "simplified": {
+    "full_simp": {
+      "node_count": 148009,
+      "edge_count": 712764,
+      "num_layers": 202,
+      "layer_dy": 6.3202,
+      "min_intra_layer_gap": 1.0,
+      "bounds": {
+        "xmin": -1175.083740234375,
+        "xmax": 1175.083740234375,
+        "ymin": 0.0,
+        "ymax": 1270.3602
+      },
+      "aspect_ratio": 1.85,
+      "leaves_removed": 5576,
+      "chains_removed": 21602,
+      "weighted_node_count": 2609,
+      "max_node_weight": 25,
+      "weighted_edge_count": 9680,
+      "chain_edge_count": 9680,
+      "max_edge_weight": 152,
+      "max_edge_mult": 75,
+      "max_edge_chain": 77,
+      "total_node_weight": 152920,
+      "total_edge_chain_weight": 22267,
+      "layout_metrics": {
+        "is_dag": true,
+        "y_iters_requested": 25,
+        "y_iters_run": 12,
+        "x_sweeps_run": 16,
+        "init_avg_y_span": 19.381,
+        "final_avg_y_span": 17.803,
+        "span_eq_1_edges": 169521,
+        "span_le_5_edges": 321864,
+        "init_avg_x_span": 314.468,
+        "final_avg_x_span": 111.004,
+        "layer_widths": {
+          "min": 1,
+          "median": 614,
+          "p95": 1766,
+          "max": 2317
+        }
+      },
+      "top_weighted_nodes": [
+        {
+          "rel_path": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/FirstDeRhamHomologyProjectiveOverTensorIntegers.lean",
+          "weight": 25,
+          "absorbed_leaves": 24,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/AnnihilatorLiftOfMulEqP.lean"
+        },
+        {
+          "rel_path": "Formalism/PeriodIntegrals/UnitaryGroupMassFormula/ArchimedeanOrbitMeasures/CayDensEx.lean",
+          "weight": 25,
+          "absorbed_leaves": 12,
+          "absorbed_chains": 12,
+          "rep_rel_path": "Formalism/PeriodIntegrals/UnitaryGroupMassFormula/ArchimedeanOrbitMeasures/Imports.lean"
+        },
+        {
+          "rel_path": "Formalism/SharpRestriction/GlobalSchurBounds/GlobalRankLatticeProofs/UnitTraceSumBounds/Imports.lean",
+          "weight": 24,
+          "absorbed_leaves": 17,
+          "absorbed_chains": 6,
+          "rep_rel_path": "Formalism/SharpRestriction/GlobalSchurBounds/GlobalRankLatticeProofs/UnitTraceSumBounds/CBFiLower.lean"
+        },
+        {
+          "rel_path": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/EtaleLocalVanishingCohomology.lean",
+          "weight": 24,
+          "absorbed_leaves": 21,
+          "absorbed_chains": 2,
+          "rep_rel_path": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/HermitianLocalContinuousCongruenceSection.lean"
+        },
+        {
+          "rel_path": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/IndEtaleLocalizedPiecesTrans.lean",
+          "weight": 22,
+          "absorbed_leaves": 21,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/ExistsNumDen.lean"
+        },
+        {
+          "rel_path": "Development/WeilBound/RepresentationTheoryGL/UnitaryDualProof/HermitianForms/UnitaryLattices/IsotropicAtoms/ChartRestriction.lean",
+          "weight": 22,
+          "absorbed_leaves": 21,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Development/AutomorphicSpectrum/Proofs/BlockDecomposition/AnnihilatorCompactWithinNhds.lean"
+        },
+        {
+          "rel_path": "Development/AbelianVarietyTheory/Proofs/InertiaEigenvalues/UntiltFrobeniusSeriesOntoAndIndependentZeros.lean",
+          "weight": 21,
+          "absorbed_leaves": 14,
+          "absorbed_chains": 6,
+          "rep_rel_path": "Development/AbelianVarietyTheory/Proofs/InertiaEigenvalues/NewtonPolygonDominantIndexXSubCMul.lean"
+        },
+        {
+          "rel_path": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/MatchedThetaDescentRegular.lean",
+          "weight": 20,
+          "absorbed_leaves": 7,
+          "absorbed_chains": 12,
+          "rep_rel_path": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/ToEndDApply.lean"
+        },
+        {
+          "rel_path": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/SchwartzSeminormL2BoundStatement.lean",
+          "weight": 20,
+          "absorbed_leaves": 19,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/NormLeLintegralTaylorTailIteratedDeriv.lean"
+        },
+        {
+          "rel_path": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/DerivativeBoundAllPoints.lean",
+          "weight": 19,
+          "absorbed_leaves": 18,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/ExistsTranscendenceBasisAlgebraic.lean"
+        }
+      ],
+      "top_weighted_edges": [
+        {
+          "src": "Development/AutomorphicArithmetic/Foundations/GaloisRepresentations/TranscendenceTraces/IsolateSpecHolds.lean",
+          "dst": "Development/AutomorphicArithmetic/Foundations/GaloisRepresentations/TranscendenceTraces/IsolateSpec.lean",
+          "weight": 152,
+          "mult": 75,
+          "chain": 77
+        },
+        {
+          "src": "Development/WeilBound/CoreStatements/AutomorphicKernels/AbelianDeRham/AbelianHodgeDeRham/AbelianHodgeDeRham.lean",
+          "dst": "Development/WeilBound/CoreStatements/TemperedRepresentationTheory/HodgeWedgeFields/H1CommutesBaseChange.lean",
+          "weight": 124,
+          "mult": 62,
+          "chain": 62
+        },
+        {
+          "src": "PositivityTheory/AutomorphicForms/PublishedInputs/CuspidalContinuity/ArchimedeanCuspidal/VerticalStrips/RsOf.lean",
+          "dst": "PositivityTheory/AutomorphicForms/PublishedInputs/CuspidalContinuity/ArchimedeanCuspidal/VerticalStrips/UnramifiedEulerProductIntegral.lean",
+          "weight": 112,
+          "mult": 56,
+          "chain": 56
+        },
+        {
+          "src": "Development/WeilBound/CoreStatements/PublishedTheorems/JacquetShalikaRigidity/RsPoleOfInputs.lean",
+          "dst": "Development/WeilBound/CoreStatements/PublishedTheorems/JacquetShalikaRigidity/ColumnConjugationMeasure.lean",
+          "weight": 70,
+          "mult": 35,
+          "chain": 35
+        },
+        {
+          "src": "Development/WeilBound/CoreStatements/PadicHodgeComparison/EtaleCohomologyComparison/KummerCupProducts/EtaleChernClassEqKummerClass.lean",
+          "dst": "Development/WeilBound/CoreStatements/PadicHodgeComparison/EtaleCohomologyComparison/KummerCupProducts/FirstChernCompatibleSystem.lean",
+          "weight": 70,
+          "mult": 35,
+          "chain": 35
+        },
+        {
+          "src": "Development/AutomorphicSpectrum/Proofs/TwistedProofs/UnramDoublingInert.lean",
+          "dst": "Development/AbelianVarietyTheory/Proofs/TwistedOperators/HasLenOfLatLen.lean",
+          "weight": 68,
+          "mult": 34,
+          "chain": 34
+        },
+        {
+          "src": "Development/WeilBound/CoreStatements/PadicHodgeComparison/EtaleCohomologyComparison/HodgeTateResidues/LatLink.lean",
+          "dst": "Development/WeilBound/CoreStatements/PadicHodgeComparison/EtaleCohomologyComparison/PerfectoidPullbacks/LevelChainValuations/LatCDefs.lean",
+          "weight": 65,
+          "mult": 33,
+          "chain": 32
+        },
+        {
+          "src": "PositivityTheory/AutomorphicForms/PublishedInputs/CuspidalContinuity/ArchimedeanCuspidal/StripEstimates/EulOf.lean",
+          "dst": "PositivityTheory/AutomorphicForms/PublishedInputs/CuspidalContinuity/ArchimedeanCuspidal/StripEstimates/FaceMapCompSuccAboveCastSucc.lean",
+          "weight": 64,
+          "mult": 30,
+          "chain": 34
+        },
+        {
+          "src": "Development/EtaleCohomology/EtaleTrace/FinLCover.lean",
+          "dst": "Development/EtaleCohomology/EtaleTrace/LCoverCut.lean",
+          "weight": 62,
+          "mult": 27,
+          "chain": 35
+        },
+        {
+          "src": "Development/AutomorphicArithmetic/AutomorphicVarieties/AutomorphicForms/TemperedLocalComponents/PRepNew.lean",
+          "dst": "Development/AutomorphicArithmetic/AutomorphicVarieties/AutomorphicForms/AutomorphicRankinSelberg/StripInt.lean",
+          "weight": 62,
+          "mult": 31,
+          "chain": 31
+        }
+      ]
+    },
+    "full_hasse_simp": {
+      "node_count": 104622,
+      "edge_count": 307224,
+      "num_layers": 151,
+      "layer_dy": 6.2397,
+      "min_intra_layer_gap": 1.0,
+      "bounds": {
+        "xmin": -865.751953125,
+        "xmax": 865.751953125,
+        "ymin": 0.0,
+        "ymax": 935.955
+      },
+      "aspect_ratio": 1.85,
+      "leaves_removed": 6018,
+      "chains_removed": 64547,
+      "weighted_node_count": 2449,
+      "max_node_weight": 28,
+      "weighted_edge_count": 42592,
+      "chain_edge_count": 42592,
+      "max_edge_weight": 154,
+      "max_edge_mult": 76,
+      "max_edge_chain": 88,
+      "total_node_weight": 109360,
+      "total_edge_chain_weight": 65827,
+      "layout_metrics": {
+        "is_dag": true,
+        "y_iters_requested": 25,
+        "y_iters_run": 14,
+        "x_sweeps_run": 16,
+        "init_avg_y_span": 10.908,
+        "final_avg_y_span": 9.43,
+        "span_eq_1_edges": 124673,
+        "span_le_5_edges": 188978,
+        "init_avg_x_span": 180.044,
+        "final_avg_x_span": 80.71,
+        "layer_widths": {
+          "min": 1,
+          "median": 802,
+          "p95": 1451,
+          "max": 1702
+        }
+      },
+      "top_weighted_nodes": [
+        {
+          "rel_path": "Formalism/SharpRestriction/GlobalSchurBounds/GlobalRankLatticeProofs/UnitTraceSumBounds/Imports.lean",
+          "weight": 28,
+          "absorbed_leaves": 19,
+          "absorbed_chains": 8,
+          "rep_rel_path": "Formalism/SharpRestriction/GlobalSchurBounds/GlobalRankLatticeProofs/UnitTraceSumBounds/CBFiLower.lean"
+        },
+        {
+          "rel_path": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/FirstDeRhamHomologyProjectiveOverTensorIntegers.lean",
+          "weight": 25,
+          "absorbed_leaves": 24,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/AnnihilatorLiftOfMulEqP.lean"
+        },
+        {
+          "rel_path": "Formalism/PeriodIntegrals/UnitaryGroupMassFormula/ArchimedeanOrbitMeasures/CayDensEx.lean",
+          "weight": 25,
+          "absorbed_leaves": 12,
+          "absorbed_chains": 12,
+          "rep_rel_path": "Formalism/PeriodIntegrals/UnitaryGroupMassFormula/ArchimedeanOrbitMeasures/Imports.lean"
+        },
+        {
+          "rel_path": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/EtaleLocalVanishingCohomology.lean",
+          "weight": 24,
+          "absorbed_leaves": 23,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/EtaleUniquePrimeLeMapMaximal.lean"
+        },
+        {
+          "rel_path": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/ExistsStrictHenselisation.lean",
+          "weight": 24,
+          "absorbed_leaves": 23,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/ExistsNumDen.lean"
+        },
+        {
+          "rel_path": "Formalism/FlagUnipotentLattices/MinkowskiFactorialBounds/CoveringOfTransferenceVariant.lean",
+          "weight": 22,
+          "absorbed_leaves": 4,
+          "absorbed_chains": 17,
+          "rep_rel_path": "Formalism/PeriodIntegrals/Residue.lean"
+        },
+        {
+          "rel_path": "Development/WeilBound/RepresentationTheoryGL/UnitaryDualProof/HermitianForms/UnitaryLattices/IsotropicAtoms/ChartRestriction.lean",
+          "weight": 22,
+          "absorbed_leaves": 21,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Development/AutomorphicSpectrum/Proofs/BlockDecomposition/AnnihilatorCompactWithinNhds.lean"
+        },
+        {
+          "rel_path": "Development/AbelianVarietyTheory/Proofs/InertiaEigenvalues/UntiltFrobeniusSeriesOntoAndIndependentZeros.lean",
+          "weight": 21,
+          "absorbed_leaves": 14,
+          "absorbed_chains": 6,
+          "rep_rel_path": "Development/AbelianVarietyTheory/Proofs/InertiaEigenvalues/NewtonPolygonDominantIndexXSubCMul.lean"
+        },
+        {
+          "rel_path": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/MatchedThetaDescentRegular.lean",
+          "weight": 20,
+          "absorbed_leaves": 7,
+          "absorbed_chains": 12,
+          "rep_rel_path": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/ToEndDApply.lean"
+        },
+        {
+          "rel_path": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/SchwartzSeminormL2BoundStatement.lean",
+          "weight": 20,
+          "absorbed_leaves": 19,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/NormLeLintegralTaylorTailIteratedDeriv.lean"
+        }
+      ],
+      "top_weighted_edges": [
+        {
+          "src": "Development/AutomorphicArithmetic/Foundations/GaloisRepresentations/TranscendenceTraces/IsolateSpecHolds.lean",
+          "dst": "Development/AutomorphicArithmetic/Foundations/GaloisRepresentations/TranscendenceTraces/IsolateSpec.lean",
+          "weight": 154,
+          "mult": 76,
+          "chain": 78
+        },
+        {
+          "src": "Development/WeilBound/CoreStatements/AutomorphicKernels/AbelianDeRham/AbelianHodgeDeRham/AbelianHodgeDeRham.lean",
+          "dst": "Development/WeilBound/CoreStatements/TemperedRepresentationTheory/HodgeWedgeFields/H1CommutesBaseChange.lean",
+          "weight": 126,
+          "mult": 38,
+          "chain": 88
+        },
+        {
+          "src": "PositivityTheory/AutomorphicForms/PublishedInputs/CuspidalContinuity/ArchimedeanCuspidal/VerticalStrips/RsOf.lean",
+          "dst": "PositivityTheory/AutomorphicForms/PublishedInputs/CuspidalContinuity/ArchimedeanCuspidal/VerticalStrips/UnramifiedEulerProductIntegral.lean",
+          "weight": 95,
+          "mult": 31,
+          "chain": 64
+        },
+        {
+          "src": "Development/WeilBound/CoreStatements/PublishedTheorems/JacquetShalikaRigidity/RsPoleOfInputs.lean",
+          "dst": "Development/WeilBound/CoreStatements/PublishedTheorems/JacquetShalikaRigidity/ColumnConjugationMeasure.lean",
+          "weight": 90,
+          "mult": 44,
+          "chain": 46
+        },
+        {
+          "src": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/HasRepresentingSchemePinchedBase.lean",
+          "dst": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/UnitsPatch.lean",
+          "weight": 74,
+          "mult": 23,
+          "chain": 51
+        },
+        {
+          "src": "Development/WeilBound/CoreStatements/PadicHodgeComparison/EtaleCohomologyComparison/KummerCupProducts/EtaleChernClassEqKummerClass.lean",
+          "dst": "Development/WeilBound/CoreStatements/PadicHodgeComparison/EtaleCohomologyComparison/KummerCupProducts/FirstChernCompatibleSystem.lean",
+          "weight": 70,
+          "mult": 35,
+          "chain": 35
+        },
+        {
+          "src": "PositivityTheory/AutomorphicForms/PublishedInputs/CuspidalContinuity/ArchimedeanCuspidal/StripEstimates/EulOf.lean",
+          "dst": "PositivityTheory/AutomorphicForms/PublishedInputs/CuspidalContinuity/ArchimedeanCuspidal/StripEstimates/FaceMapCompSuccAboveCastSucc.lean",
+          "weight": 66,
+          "mult": 31,
+          "chain": 35
+        },
+        {
+          "src": "GroundTheory/HeightsAndTheta/Heights/RemainderTerms/Imports.lean",
+          "dst": "GroundTheory/HeightsAndTheta/Heights/RemainderTerms/StatementsComb.lean",
+          "weight": 66,
+          "mult": 33,
+          "chain": 33
+        },
+        {
+          "src": "GroundTheory/HeightsAndTheta/Heights/RemainderTerms/Imports.lean",
+          "dst": "GroundTheory/HeightsAndTheta/Heights/RemainderTerms/StatementsFlag.lean",
+          "weight": 64,
+          "mult": 32,
+          "chain": 32
+        },
+        {
+          "src": "Development/AutomorphicArithmetic/Foundations/GaloisRepresentations/SphericalCoordinates/AlgebraEquivSetup/SetupBasicHolds.lean",
+          "dst": "Development/AutomorphicArithmetic/Foundations/GaloisRepresentations/SphericalCoordinates/AlgebraEquivSetup/CodiffUnit.lean",
+          "weight": 63,
+          "mult": 30,
+          "chain": 33
+        }
+      ]
+    },
+    "existing_simp": {
+      "node_count": 115374,
+      "edge_count": 563733,
+      "num_layers": 177,
+      "layer_dy": 6.1701,
+      "min_intra_layer_gap": 1.0,
+      "bounds": {
+        "xmin": -1004.5,
+        "xmax": 1004.5,
+        "ymin": 0.0,
+        "ymax": 1085.9376
+      },
+      "aspect_ratio": 1.85,
+      "leaves_removed": 4319,
+      "chains_removed": 15843,
+      "weighted_node_count": 2125,
+      "max_node_weight": 25,
+      "weighted_edge_count": 8336,
+      "chain_edge_count": 7628,
+      "max_edge_weight": 112,
+      "max_edge_mult": 56,
+      "max_edge_chain": 56,
+      "total_node_weight": 158897,
+      "total_edge_chain_weight": 16290,
+      "layout_metrics": {
+        "is_dag": true,
+        "y_iters_requested": 25,
+        "y_iters_run": 12,
+        "x_sweeps_run": 16,
+        "init_avg_y_span": 18.618,
+        "final_avg_y_span": 16.835,
+        "span_eq_1_edges": 132393,
+        "span_le_5_edges": 251539,
+        "init_avg_x_span": 257.815,
+        "final_avg_x_span": 88.081,
+        "layer_widths": {
+          "min": 1,
+          "median": 621,
+          "p95": 1469,
+          "max": 2010
+        }
+      },
+      "top_weighted_nodes": [
+        {
+          "rel_path": "Formalism/PeriodIntegrals/UnitaryGroupMassFormula/ArchimedeanOrbitMeasures/CayDensEx.lean",
+          "weight": 25,
+          "absorbed_leaves": 12,
+          "absorbed_chains": 12,
+          "rep_rel_path": "Formalism/PeriodIntegrals/UnitaryGroupMassFormula/ArchimedeanOrbitMeasures/Imports.lean"
+        },
+        {
+          "rel_path": "Formalism/SharpRestriction/GlobalSchurBounds/GlobalRankLatticeProofs/UnitTraceSumBounds/Imports.lean",
+          "weight": 24,
+          "absorbed_leaves": 17,
+          "absorbed_chains": 6,
+          "rep_rel_path": "Formalism/SharpRestriction/GlobalSchurBounds/GlobalRankLatticeProofs/UnitTraceSumBounds/CBFiLower.lean"
+        },
+        {
+          "rel_path": "Development/AbelianVarietyTheory/Proofs/FlagMeasures/CardPrimitiveTuplesHermitianGramModUniformizer.lean",
+          "weight": 23,
+          "absorbed_leaves": 1,
+          "absorbed_chains": 21,
+          "rep_rel_path": "Development/AbelianVarietyTheory/Proofs/FlagMeasures/PrimOfIsUnitDet.lean"
+        },
+        {
+          "rel_path": "Development/WeilBound/RepresentationTheoryGL/UnitaryDualProof/HermitianForms/UnitaryLattices/IsotropicAtoms/ChartRestriction.lean",
+          "weight": 22,
+          "absorbed_leaves": 21,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Development/AutomorphicSpectrum/Proofs/BlockDecomposition/AnnihilatorCompactWithinNhds.lean"
+        },
+        {
+          "rel_path": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/MatchedThetaDescentRegular.lean",
+          "weight": 20,
+          "absorbed_leaves": 7,
+          "absorbed_chains": 12,
+          "rep_rel_path": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/ToEndDApply.lean"
+        },
+        {
+          "rel_path": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/SchwartzSeminormL2BoundStatement.lean",
+          "weight": 20,
+          "absorbed_leaves": 19,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/NormLeLintegralTaylorTailIteratedDeriv.lean"
+        },
+        {
+          "rel_path": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/DerivativeBoundAllPoints.lean",
+          "weight": 19,
+          "absorbed_leaves": 18,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/ExistsTranscendenceBasisAlgebraic.lean"
+        },
+        {
+          "rel_path": "Development/AbelianVarietyTheory/Proofs/IwasawaDecomposition/ExistsRationalSymplecticBasisAdaptedCoisotropic.lean",
+          "weight": 18,
+          "absorbed_leaves": 17,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Development/AbelianVarietyTheory/Proofs/IwasawaDecomposition/ExistsAdaptedFamily.lean"
+        },
+        {
+          "rel_path": "Development/WeilBound/RepresentationTheoryGL/UnitaryDualProof/HermitianForms/UnitaryLattices/LatticeIndexLifts/MeasurableSpaceSecondLift.lean",
+          "weight": 18,
+          "absorbed_leaves": 17,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Development/AutomorphicSpectrum/Proofs/BlockDecomposition/DistribHaarCharEqOneOfValuationEqOne.lean"
+        },
+        {
+          "rel_path": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/TripleRestrictionHermitianAdaptedPlane.lean",
+          "weight": 18,
+          "absorbed_leaves": 5,
+          "absorbed_chains": 12,
+          "rep_rel_path": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/SupMeas.lean"
+        }
+      ],
+      "top_weighted_edges": [
+        {
+          "src": "PositivityTheory/AutomorphicForms/PublishedInputs/CuspidalContinuity/ArchimedeanCuspidal/VerticalStrips/RsOf.lean",
+          "dst": "PositivityTheory/AutomorphicForms/PublishedInputs/CuspidalContinuity/ArchimedeanCuspidal/VerticalStrips/UnramifiedEulerProductIntegral.lean",
+          "weight": 112,
+          "mult": 56,
+          "chain": 56
+        },
+        {
+          "src": "Development/AutomorphicSpectrum/Proofs/TwistedProofs/UnramDoublingInert.lean",
+          "dst": "Development/AbelianVarietyTheory/Proofs/TwistedOperators/HasLenOfLatLen.lean",
+          "weight": 68,
+          "mult": 34,
+          "chain": 34
+        },
+        {
+          "src": "PositivityTheory/AutomorphicForms/PublishedInputs/CuspidalContinuity/ArchimedeanCuspidal/StripEstimates/EulOf.lean",
+          "dst": "PositivityTheory/AutomorphicForms/PublishedInputs/CuspidalContinuity/ArchimedeanCuspidal/StripEstimates/FaceMapCompSuccAboveCastSucc.lean",
+          "weight": 64,
+          "mult": 30,
+          "chain": 34
+        },
+        {
+          "src": "PositivityTheory/AutomorphicForms/PublishedInputs/JacquetLanglands/TorusKernels/FinalTF.lean",
+          "dst": "PositivityTheory/AutomorphicForms/PublishedInputs/JacquetLanglands/TorusKernels/MultivariableReproducingFormula.lean",
+          "weight": 61,
+          "mult": 29,
+          "chain": 32
+        },
+        {
+          "src": "Development/AutomorphicSpectrum/Proofs/BlockDecomposition/RealModelExists.lean",
+          "dst": "Development/AutomorphicSpectrum/Proofs/BlockDecomposition/OrderedCechToCatCochainsOneApplyValueAtSubset.lean",
+          "weight": 59,
+          "mult": 29,
+          "chain": 30
+        },
+        {
+          "src": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/PolarisationDualStatement.lean",
+          "dst": "Development/AbelianVarietyTheory/BlockTheory/DivisorBase/ConjugateOrderData.lean",
+          "weight": 57,
+          "mult": 29,
+          "chain": 28
+        },
+        {
+          "src": "Development/WeilBound/RepresentationTheoryGL/TwistedFactors/IntegralUnitBaseChange/BcflUnit.lean",
+          "dst": "Development/WeilBound/RepresentationTheoryGL/TwistedFactors/IntegralUnitBaseChange/Development.lean",
+          "weight": 56,
+          "mult": 28,
+          "chain": 28
+        },
+        {
+          "src": "GroundTheory/HeightsAndTheta/Heights/WeightedHomogeneous/Assembly.lean",
+          "dst": "GroundTheory/HeightsAndTheta/Heights/WeightedHomogeneous/Statements.lean",
+          "weight": 56,
+          "mult": 28,
+          "chain": 28
+        },
+        {
+          "src": "Development/AutomorphicSpectrum/Proofs/BlockDecomposition/KernelRegularity.lean",
+          "dst": "Development/AutomorphicSpectrum/Proofs/BlockDecomposition/FactorRapid.lean",
+          "weight": 53,
+          "mult": 27,
+          "chain": 26
+        },
+        {
+          "src": "GroundTheory/HeightsAndTheta/Heights/RemainderTerms/Imports.lean",
+          "dst": "GroundTheory/HeightsAndTheta/Heights/RemainderTerms/StatementsComb.lean",
+          "weight": 53,
+          "mult": 27,
+          "chain": 26
+        }
+      ]
+    },
+    "existing_hasse_simp": {
+      "node_count": 83150,
+      "edge_count": 247282,
+      "num_layers": 151,
+      "layer_dy": 5.2306,
+      "min_intra_layer_gap": 1.0,
+      "bounds": {
+        "xmin": -725.7393798828125,
+        "xmax": 725.7393798828125,
+        "ymin": 0.0,
+        "ymax": 784.59
+      },
+      "aspect_ratio": 1.85,
+      "leaves_removed": 4681,
+      "chains_removed": 47705,
+      "weighted_node_count": 1995,
+      "max_node_weight": 28,
+      "weighted_edge_count": 32629,
+      "chain_edge_count": 32526,
+      "max_edge_weight": 95,
+      "max_edge_mult": 33,
+      "max_edge_chain": 64,
+      "total_node_weight": 126554,
+      "total_edge_chain_weight": 48633,
+      "layout_metrics": {
+        "is_dag": true,
+        "y_iters_requested": 25,
+        "y_iters_run": 14,
+        "x_sweeps_run": 16,
+        "init_avg_y_span": 10.554,
+        "final_avg_y_span": 9.058,
+        "span_eq_1_edges": 99163,
+        "span_le_5_edges": 151523,
+        "init_avg_x_span": 152.351,
+        "final_avg_x_span": 68.454,
+        "layer_widths": {
+          "min": 1,
+          "median": 648,
+          "p95": 1143,
+          "max": 1421
+        }
+      },
+      "top_weighted_nodes": [
+        {
+          "rel_path": "Formalism/SharpRestriction/GlobalSchurBounds/GlobalRankLatticeProofs/UnitTraceSumBounds/Imports.lean",
+          "weight": 28,
+          "absorbed_leaves": 19,
+          "absorbed_chains": 8,
+          "rep_rel_path": "Formalism/SharpRestriction/GlobalSchurBounds/GlobalRankLatticeProofs/UnitTraceSumBounds/CBFiLower.lean"
+        },
+        {
+          "rel_path": "Formalism/PeriodIntegrals/UnitaryGroupMassFormula/ArchimedeanOrbitMeasures/CayDensEx.lean",
+          "weight": 25,
+          "absorbed_leaves": 12,
+          "absorbed_chains": 12,
+          "rep_rel_path": "Formalism/PeriodIntegrals/UnitaryGroupMassFormula/ArchimedeanOrbitMeasures/Imports.lean"
+        },
+        {
+          "rel_path": "Formalism/FlagUnipotentLattices/MinkowskiFactorialBounds/CoveringOfTransferenceVariant.lean",
+          "weight": 22,
+          "absorbed_leaves": 4,
+          "absorbed_chains": 17,
+          "rep_rel_path": "Formalism/PeriodIntegrals/Residue.lean"
+        },
+        {
+          "rel_path": "Development/WeilBound/RepresentationTheoryGL/UnitaryDualProof/HermitianForms/UnitaryLattices/IsotropicAtoms/ChartRestriction.lean",
+          "weight": 22,
+          "absorbed_leaves": 21,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Development/AutomorphicSpectrum/Proofs/BlockDecomposition/AnnihilatorCompactWithinNhds.lean"
+        },
+        {
+          "rel_path": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/MatchedThetaDescentRegular.lean",
+          "weight": 20,
+          "absorbed_leaves": 7,
+          "absorbed_chains": 12,
+          "rep_rel_path": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/ToEndDApply.lean"
+        },
+        {
+          "rel_path": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/SchwartzSeminormL2BoundStatement.lean",
+          "weight": 20,
+          "absorbed_leaves": 19,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/NormLeLintegralTaylorTailIteratedDeriv.lean"
+        },
+        {
+          "rel_path": "Formalism/LocalToGlobal/IndefiniteForms/IndefiniteTree/IndefiniteTreeX.lean",
+          "weight": 20,
+          "absorbed_leaves": 13,
+          "absorbed_chains": 6,
+          "rep_rel_path": "Formalism/PeriodIntegrals/KoszulExact.lean"
+        },
+        {
+          "rel_path": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/DerivativeBoundAllPoints.lean",
+          "weight": 19,
+          "absorbed_leaves": 18,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/ExistsTranscendenceBasisAlgebraic.lean"
+        },
+        {
+          "rel_path": "Development/AbelianVarietyTheory/Proofs/InertiaEigenvalues/ParahoricSchwartzVanishOffTranslates.lean",
+          "weight": 19,
+          "absorbed_leaves": 18,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Development/AbelianVarietyTheory/Proofs/InertiaEigenvalues/DvrMatrixProjPreimage.lean"
+        },
+        {
+          "rel_path": "Development/AbelianVarietyTheory/Proofs/IwasawaDecomposition/ExistsRationalSymplecticBasisAdaptedCoisotropic.lean",
+          "weight": 18,
+          "absorbed_leaves": 17,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Development/AbelianVarietyTheory/Proofs/IwasawaDecomposition/ExistsAdaptedFamily.lean"
+        }
+      ],
+      "top_weighted_edges": [
+        {
+          "src": "PositivityTheory/AutomorphicForms/PublishedInputs/CuspidalContinuity/ArchimedeanCuspidal/VerticalStrips/RsOf.lean",
+          "dst": "PositivityTheory/AutomorphicForms/PublishedInputs/CuspidalContinuity/ArchimedeanCuspidal/VerticalStrips/UnramifiedEulerProductIntegral.lean",
+          "weight": 95,
+          "mult": 31,
+          "chain": 64
+        },
+        {
+          "src": "PositivityTheory/AutomorphicForms/PublishedInputs/CuspidalContinuity/ArchimedeanCuspidal/StripEstimates/EulOf.lean",
+          "dst": "PositivityTheory/AutomorphicForms/PublishedInputs/CuspidalContinuity/ArchimedeanCuspidal/StripEstimates/FaceMapCompSuccAboveCastSucc.lean",
+          "weight": 66,
+          "mult": 31,
+          "chain": 35
+        },
+        {
+          "src": "GroundTheory/HeightsAndTheta/Heights/RemainderTerms/Imports.lean",
+          "dst": "GroundTheory/HeightsAndTheta/Heights/RemainderTerms/StatementsComb.lean",
+          "weight": 66,
+          "mult": 33,
+          "chain": 33
+        },
+        {
+          "src": "GroundTheory/HeightsAndTheta/Heights/RemainderTerms/Imports.lean",
+          "dst": "GroundTheory/HeightsAndTheta/Heights/RemainderTerms/StatementsFlag.lean",
+          "weight": 64,
+          "mult": 32,
+          "chain": 32
+        },
+        {
+          "src": "GroundTheory/HeightsAndTheta/Heights/RemainderTerms/Imports.lean",
+          "dst": "GroundTheory/HeightsAndTheta/Heights/RemainderTerms/StatementsSchur.lean",
+          "weight": 63,
+          "mult": 31,
+          "chain": 32
+        },
+        {
+          "src": "PositivityTheory/AutomorphicForms/PublishedInputs/JacquetLanglands/TorusKernels/FinalTF.lean",
+          "dst": "PositivityTheory/AutomorphicForms/PublishedInputs/JacquetLanglands/TorusKernels/MultivariableReproducingFormula.lean",
+          "weight": 61,
+          "mult": 29,
+          "chain": 32
+        },
+        {
+          "src": "Development/AbelianVarietyTheory/Proofs/TwistedOperators/RegularSemisimpleOf.lean",
+          "dst": "Development/AbelianVarietyTheory/Proofs/TwistedOperators/NotCompactOfIdempotent.lean",
+          "weight": 60,
+          "mult": 20,
+          "chain": 40
+        },
+        {
+          "src": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/TruncatedPlurisubharmonicCorrection.lean",
+          "dst": "Development/AbelianVarietyTheory/BlockTheory/DivisorBase/HermitianInterpolation.lean",
+          "weight": 57,
+          "mult": 16,
+          "chain": 41
+        },
+        {
+          "src": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/UnitarySatakeWeylInvariant.lean",
+          "dst": "Development/AbelianVarietyTheory/Proofs/DivisorProofs/AntiJMulApply.lean",
+          "weight": 57,
+          "mult": 19,
+          "chain": 38
+        },
+        {
+          "src": "CompanionTheory/RealGroups/UnitaryAdmissibility/ArchimedeanUnitaryDual/FinalB.lean",
+          "dst": "CompanionTheory/RealGroups/UnitaryAdmissibility/ArchimedeanUnitaryDual/StSandwich.lean",
+          "weight": 56,
+          "mult": 18,
+          "chain": 38
+        }
+      ]
+    }
+  },
   "payload": {
-    "format_version": 2,
-    "raw_binary_bytes": 10715720,
-    "gzip_bytes": 4084854,
-    "js_file_bytes": 5446505,
+    "format_version": 3,
+    "raw_binary_bytes": 19365504,
+    "gzip_bytes": 9305882,
+    "js_file_bytes": 12407877,
     "edge_varint_bytes": 1809565,
     "c_super_edges_bytes": 159866,
+    "full_hasse_mask_bytes": 94158,
+    "existing_hasse_mask_bytes": 74125,
+    "simplified_edge_varint_bytes": 4719947,
     "name_blob_bytes": 5117809,
     "dir_blob_bytes": 258320
   },
-  "elapsed_seconds": 91.04
+  "elapsed_seconds": 196.53
 }

@@ -76,21 +76,32 @@
   .nav-sep {
     color: #999999;
   }
-  .collapse-pill {
+  .controls-stack {
     position: fixed;
     top: 12px;
     right: 14px;
     z-index: 10;
     display: none;
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+    max-width: calc(100vw - 200px);
+  }
+  .controls-stack.visible {
+    display: flex;
+  }
+  .collapse-pill {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
     background: var(--pill-bg);
     border: 1px solid var(--border);
     border-radius: 4px;
     overflow: hidden;
     backdrop-filter: blur(4px);
   }
-  .collapse-pill.visible {
-    display: inline-flex;
+  .collapse-pill[hidden] {
+    display: none;
   }
   .collapse-pill button {
     appearance: none;
@@ -98,14 +109,22 @@
     background: transparent;
     color: var(--text);
     font-family: var(--sans);
-    font-size: 12.5px;
+    font-size: 12px;
     font-weight: 500;
     line-height: 1.2;
     padding: 6px 10px;
     cursor: pointer;
-    display: inline-flex;
+    display: flex;
     align-items: center;
+    justify-content: flex-end;
     gap: 7px;
+    white-space: nowrap;
+  }
+  .collapse-pill button[hidden] {
+    display: none;
+  }
+  .collapse-pill button:not([hidden]) ~ button:not([hidden]) {
+    border-top: 1px solid var(--border);
   }
   .collapse-pill button:hover {
     background: var(--btn-hover);
@@ -128,17 +147,88 @@
   .collapse-pill button[aria-pressed="true"] .collapse-dot {
     background: #38bdf8;
   }
-  .collapse-stats {
-    display: none;
-    font-size: 11px;
-    font-family: var(--mono);
-    color: #cbd5e1;
-    border-left: 1px solid rgba(255, 255, 255, 0.22);
-    padding-left: 7px;
-    margin-left: 1px;
+  .hasse-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    border: 1.5px solid #64748b;
+    background: transparent;
+    position: relative;
+    flex-shrink: 0;
   }
-  .collapse-pill button[aria-pressed="true"] .collapse-stats {
-    display: inline;
+  .collapse-pill button[aria-pressed="true"] .hasse-dot {
+    border-color: #34d399;
+    background: rgba(52, 211, 153, 0.25);
+  }
+  .chain-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 2px solid #64748b;
+    box-shadow: inset 0 0 0 1.5px #ffffff;
+    background: #64748b;
+    flex-shrink: 0;
+  }
+  .collapse-pill button[aria-pressed="true"] .chain-dot {
+    border-color: #fbbf24;
+    box-shadow: inset 0 0 0 1.5px #1e293b;
+    background: #fbbf24;
+  }
+  .toggle-label {
+    display: inline-grid;
+    justify-items: end;
+  }
+  .toggle-label > span {
+    grid-area: 1 / 1;
+  }
+  .collapse-pill button[aria-pressed="false"] .label-on,
+  .collapse-pill button[aria-pressed="true"] .label-off {
+    visibility: hidden;
+  }
+  .stats-pill {
+    background: var(--pill-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    backdrop-filter: blur(4px);
+  }
+  .stats-table {
+    border-collapse: collapse;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.3;
+  }
+  .stats-table th {
+    font-family: var(--sans);
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--muted);
+    background: #f8fafc;
+    border-bottom: 1px solid #e5e5e5;
+    padding: 3px 9px;
+    text-align: right;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .stats-table td {
+    padding: 2px 9px;
+    text-align: right;
+    white-space: nowrap;
+  }
+  .stats-table tr.stats-abs td {
+    padding-top: 4px;
+    color: var(--text);
+    font-weight: 600;
+  }
+  .stats-table tr.stats-pct td {
+    padding-bottom: 4px;
+    color: var(--muted);
+    font-size: 10.5px;
+  }
+  .stats-table th + th,
+  .stats-table td + td {
+    border-left: 1px solid #ececec;
   }
   .zoom-pill {
     position: fixed;
@@ -310,6 +400,22 @@
     flex-shrink: 0;
     margin-left: 0.5px;
   }
+  .legend-anchor-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 2px solid #334155;
+    box-shadow: inset 0 0 0 1.5px #ffffff;
+    background: #334155;
+    flex-shrink: 0;
+  }
+  .legend-wedge-line {
+    width: 10px;
+    height: 3px;
+    border-radius: 1.5px;
+    background: #334155;
+    flex-shrink: 0;
+  }
   #loading {
     position: fixed;
     top: 50%;
@@ -336,12 +442,49 @@
   <a href="FULL_DAG.html">Methodology</a>
 </nav>
 
-<div class="collapse-pill" id="collapse-pill">
-  <button id="btn-collapse-existing" type="button" aria-pressed="false" title="Collapse proofs of existing published theory into literature supernodes (c)">
-    <span class="collapse-dot" aria-hidden="true"></span>
-    <span>Collapse existing theory</span>
-    <span id="collapse-stats" class="collapse-stats"></span>
-  </button>
+<div class="controls-stack" id="controls-stack">
+  <div class="collapse-pill" id="collapse-pill" role="group" aria-label="Graph simplification controls">
+    <button id="btn-collapse-existing" type="button" aria-pressed="false" title="Collapse proofs of existing published theory into literature supernodes (c)" hidden>
+      <span class="toggle-label">
+        <span id="lbl-collapse-off" class="label-off" aria-hidden="false">Collapse existing theory</span>
+        <span id="lbl-collapse-on" class="label-on" aria-hidden="true">Collapsed existing theory</span>
+      </span>
+      <span class="collapse-dot" aria-hidden="true"></span>
+    </button>
+    <button id="btn-hide-redundant" type="button" aria-pressed="false" title="Hide transitively redundant import edges — Hasse diagram / transitive reduction (h)" hidden>
+      <span class="toggle-label">
+        <span id="lbl-hasse-off" class="label-off" aria-hidden="false">Hide redundant imports</span>
+        <span id="lbl-hasse-on" class="label-on" aria-hidden="true">Hidden redundant imports</span>
+      </span>
+      <span class="hasse-dot" aria-hidden="true"></span>
+    </button>
+    <button id="btn-collapse-chains" type="button" aria-pressed="false" title="Fold simple leaves into parent node weights and contract pass-through (1,1) chains onto weighted edges (l)" hidden>
+      <span class="toggle-label">
+        <span id="lbl-chains-off" class="label-off" aria-hidden="false">Collapse chains &amp; leaves</span>
+        <span id="lbl-chains-on" class="label-on" aria-hidden="true">Collapsed chains &amp; leaves</span>
+      </span>
+      <span class="chain-dot" aria-hidden="true"></span>
+    </button>
+  </div>
+  <div class="stats-pill" id="stats-pill" aria-live="polite">
+    <table class="stats-table" aria-label="Active graph counts">
+      <thead>
+        <tr><th>Nodes</th><th>Edges</th><th>Layers</th></tr>
+      </thead>
+      <tbody>
+        <tr class="stats-abs">
+          <td id="stat-nodes-abs"></td>
+          <td id="stat-edges-abs"></td>
+          <td id="stat-layers-abs"></td>
+        </tr>
+        <tr class="stats-pct">
+          <td id="stat-nodes-pct"></td>
+          <td id="stat-edges-pct"></td>
+          <td id="stat-layers-pct"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
 
 <aside class="legend-pill" id="legend-pill" aria-label="Node color legend">
@@ -355,6 +498,14 @@
       <div id="legend-super-note" class="legend-super-note">
         <span class="legend-diamond" aria-hidden="true"></span>
         <span>Collapsed existing theory</span>
+      </div>
+      <div id="legend-anchor-note" class="legend-super-note">
+        <span class="legend-anchor-dot" aria-hidden="true"></span>
+        <span>Weighted node [w] (absorbed leaves)</span>
+      </div>
+      <div id="legend-wedge-note" class="legend-super-note">
+        <span class="legend-wedge-line" aria-hidden="true"></span>
+        <span>Weighted edge (&times;mult / +chain)</span>
       </div>
       <div>Edges blend importer &rarr; dep &middot; <a href="FULL_DAG.html#6-viewer-legend-and-visual-encoding">Guide</a></div>
     </div>
@@ -379,14 +530,31 @@
   const ovCtx = ovCanvas.getContext("2d");
   const loadingEl = document.getElementById("loading");
   const navPill = document.querySelector(".nav-pill");
+  const controlsStack = document.getElementById("controls-stack");
   const collapsePill = document.getElementById("collapse-pill");
   const btnCollapse = document.getElementById("btn-collapse-existing");
-  const collapseStatsEl = document.getElementById("collapse-stats");
+  const btnHideRedundant = document.getElementById("btn-hide-redundant");
+  const btnCollapseChains = document.getElementById("btn-collapse-chains");
+  const lblCollapseOff = document.getElementById("lbl-collapse-off");
+  const lblCollapseOn = document.getElementById("lbl-collapse-on");
+  const lblHasseOff = document.getElementById("lbl-hasse-off");
+  const lblHasseOn = document.getElementById("lbl-hasse-on");
+  const lblChainsOff = document.getElementById("lbl-chains-off");
+  const lblChainsOn = document.getElementById("lbl-chains-on");
+  const statsPill = document.getElementById("stats-pill");
+  const statNodesAbs = document.getElementById("stat-nodes-abs");
+  const statEdgesAbs = document.getElementById("stat-edges-abs");
+  const statLayersAbs = document.getElementById("stat-layers-abs");
+  const statNodesPct = document.getElementById("stat-nodes-pct");
+  const statEdgesPct = document.getElementById("stat-edges-pct");
+  const statLayersPct = document.getElementById("stat-layers-pct");
   const legendPill = document.getElementById("legend-pill");
   const btnLegendToggle = document.getElementById("btn-legend-toggle");
   const legendToggleIcon = document.getElementById("legend-toggle-icon");
   const legendListEl = document.getElementById("legend-list");
   const legendSuperNote = document.getElementById("legend-super-note");
+  const legendAnchorNote = document.getElementById("legend-anchor-note");
+  const legendWedgeNote = document.getElementById("legend-wedge-note");
   const zoomPill = document.querySelector(".zoom-pill");
   const btnZoomIn = document.getElementById("btn-zoom-in");
   const btnZoomOut = document.getElementById("btn-zoom-out");
@@ -507,7 +675,7 @@
     }
 
     const version = view.getUint32(4, true);
-    if (version !== 1 && version !== 2) {
+    if (version !== 1 && version !== 2 && version !== 3) {
       showLoadError("Unsupported binary DAG version: " + version);
       return;
     }
@@ -606,6 +774,75 @@
       const deadEdgeCount = view.getUint32(pos, true);
       pos += 4;
       deadEdgesRaw = new Uint32Array(rawBuf, pos, deadEdgeCount * 2);
+      pos += deadEdgeCount * 8;
+    }
+
+    // Optional LDAG v3 Hasse bitmasks & 4 simplified views
+    let fullHasseMeta = null;
+    let existingHasseMeta = null;
+    let simpMetaMap = null;
+    let fullHasseMask = null;
+    let existingHasseMask = null;
+    const simpRaw = {};
+
+    if (version >= 3) {
+      fullHasseMeta = header.full_hasse || null;
+      existingHasseMeta = header.existing_hasse || null;
+      simpMetaMap = header.simplified || null;
+
+      if (fullHasseMeta) {
+        const fMaskLen = view.getUint32(pos, true);
+        pos += 4;
+        fullHasseMask = u8.subarray(pos, pos + fMaskLen);
+        pos = align4(pos + fMaskLen);
+      }
+
+      if (existingHasseMeta) {
+        const eMaskLen = view.getUint32(pos, true);
+        pos += 4;
+        existingHasseMask = u8.subarray(pos, pos + eMaskLen);
+        pos = align4(pos + eMaskLen);
+      }
+
+      if (simpMetaMap) {
+        const simpKeys = ["full_simp", "full_hasse_simp", "existing_simp", "existing_hasse_simp"];
+        for (let idx = 0; idx < simpKeys.length; idx++) {
+          const skey = simpKeys[idx];
+          const sm = simpMetaMap[skey];
+          if (!sm) continue;
+          const sN = sm.node_count;
+          const sLayers = sm.num_layers;
+
+          const sLayerOffsets = new Uint32Array(rawBuf, pos, sLayers + 1);
+          pos += (sLayers + 1) * 4;
+
+          const sNodeX = new Float32Array(rawBuf, pos, sN);
+          pos += sN * 4;
+
+          const sNodeFullId = new Int32Array(rawBuf, pos, sN);
+          pos += sN * 4;
+
+          const recCount = view.getUint32(pos, true);
+          pos += 4;
+          const recsStart = pos;
+          pos += recCount * 16;
+
+          const sEdgeLen = view.getUint32(pos, true);
+          pos += 4;
+          const sEdgeStream = u8.subarray(pos, pos + sEdgeLen);
+          pos = align4(pos + sEdgeLen);
+
+          simpRaw[skey] = {
+            meta: sm,
+            layerOffsets: sLayerOffsets,
+            nodeX: sNodeX,
+            nodeFullId: sNodeFullId,
+            recCount: recCount,
+            recsStart: recsStart,
+            edgeStream: sEdgeStream,
+          };
+        }
+      }
     }
 
     // Derive dense nodeLayer array from layerOffsets
@@ -781,15 +1018,17 @@
           bucketWriteVert[bkt] = vIdx + 2;
 
           let alphaByte = 64; // 1.0x baseline via (v_color.a * 4.0)
-          if (vEdgeWeights !== null && vNodeFullId !== null) {
+          if (vEdgeWeights !== null) {
             const w = vEdgeWeights[k];
-            const fidV = vNodeFullId[v];
             if (w >= 2) {
-              alphaByte = Math.min(255, Math.round(160 + 30 * Math.log2(w)));
-            } else if (fidV < 0) {
-              const sCnt = cSuperCounts[-(fidV + 1)];
+              alphaByte = Math.min(255, Math.round(124 + 28 * Math.log2(w)));
+            } else if (vNodeFullId !== null && vNodeFullId[v] < 0) {
+              const sCnt = cSuperCounts[-(vNodeFullId[v] + 1)];
               alphaByte = Math.min(255, Math.round(108 + 20 * Math.log10(Math.max(10, sCnt))));
             }
+          } else if (vNodeFullId !== null && vNodeFullId[v] < 0) {
+            const sCnt = cSuperCounts[-(vNodeFullId[v] + 1)];
+            alphaByte = Math.min(255, Math.round(108 + 20 * Math.log10(Math.max(10, sCnt))));
           }
 
           const fOff0 = vIdx * 3;
@@ -823,7 +1062,8 @@
       vLayerDy,
       vNodeGroup,
       vNodeInDeg,
-      vNodeFullId
+      vNodeFullId,
+      vNodeWeight
     ) {
       const nodeBuf = new ArrayBuffer(vNodeCount * 16);
       const nodeF32 = new Float32Array(nodeBuf);
@@ -832,14 +1072,21 @@
         const fOff = i * 4;
         const bOff = i * 16;
         let weight;
-        let isSuperByte = 0;
+        let markerByte = 0; // 0: normal disc, 128: weighted anchor disc, 255: literature supernode diamond
         if (vNodeFullId !== null && vNodeFullId[i] < 0) {
           const sCnt = cSuperCounts[-(vNodeFullId[i] + 1)];
           weight = 1.7 + 0.52 * Math.log1p(sCnt);
-          isSuperByte = 255;
+          markerByte = 255;
         } else {
           const inD = vNodeInDeg[i];
-          weight = inD === 0 ? 2.4 : (1.0 + 0.32 * Math.log1p(inD));
+          const baseW = inD === 0 ? 2.4 : (1.0 + 0.32 * Math.log1p(inD));
+          const nw = vNodeWeight ? vNodeWeight[i] : 1;
+          if (nw > 1) {
+            weight = baseW + 0.55 * Math.log1p(nw - 1);
+            markerByte = 128;
+          } else {
+            weight = baseW;
+          }
         }
         nodeF32[fOff] = vNodeX[i];
         nodeF32[fOff + 1] = vNodeLayer[i] * vLayerDy;
@@ -848,7 +1095,7 @@
         nodeU8[bOff + 12] = groupR[g];
         nodeU8[bOff + 13] = groupG[g];
         nodeU8[bOff + 14] = groupB[g];
-        nodeU8[bOff + 15] = isSuperByte;
+        nodeU8[bOff + 15] = markerByte;
       }
       return nodeBuf;
     }
@@ -856,7 +1103,7 @@
     const fullEdgePack = createEdgeVboData(
       N, M, nodeX, nodeLayer, layerDy, nodeGroup, edgeOffsets, edgeTargets, null, bucketCounts, null
     );
-    const fullNodeBuf = createNodeVboData(N, nodeX, nodeLayer, layerDy, nodeGroup, nodeInDeg, null);
+    const fullNodeBuf = createNodeVboData(N, nodeX, nodeLayer, layerDy, nodeGroup, nodeInDeg, null, null);
 
     // Initialize WebGL1 (or fallback to 2D Canvas if unavailable)
     const gl =
@@ -918,10 +1165,10 @@
         "  gl_Position = vec4(a_pos * u_scale + u_offset, 0.0, 1.0);",
         "  float sz = (1.25 + 0.55 * a_weight) * (0.72 + 0.38 * sqrt(max(u_zoom, 0.05))) * u_dpr;",
         "  if (u_zoom >= 4.0) {",
-        "    float cap = a_color.a > 0.5 ? 0.85 : 0.76;",
+        "    float cap = a_color.a > 0.75 ? 0.85 : 0.76;",
         "    sz = min(sz, cap * u_zoom * u_dpr);",
         "  }",
-        "  float minSz = (a_color.a > 0.5 ? 2.2 : 1.5) * u_dpr;",
+        "  float minSz = (a_color.a > 0.75 ? 2.2 : (a_color.a > 0.25 ? 1.9 : 1.5)) * u_dpr;",
         "  sz = clamp(sz, minSz, u_maxPointSize);",
         "  gl_PointSize = sz;",
         "  v_pointSize = sz;",
@@ -939,7 +1186,7 @@
         "varying float v_isSuper;",
         "void main() {",
         "  vec2 p = (gl_PointCoord - vec2(0.5)) * 2.0;",
-        "  if (v_isSuper > 0.5) {",
+        "  if (v_isSuper > 0.75) {",
         "    float dist = abs(p.x) + abs(p.y);",
         "    float edgeW = min(0.45, 2.1 / max(v_pointSize, 2.0));",
         "    float alpha = 1.0 - smoothstep(1.0 - edgeW, 1.0, dist);",
@@ -958,6 +1205,10 @@
         "    float alpha = 1.0 - smoothstep(1.0 - edgeW, 1.0, dist);",
         "    if (alpha < 0.02) discard;",
         "    vec3 col = v_color.rgb;",
+        "    if (v_isSuper > 0.25 && v_pointSize > 4.5) {",
+        "      float ring = smoothstep(0.36, 0.44, dist) * (1.0 - smoothstep(0.54, 0.62, dist));",
+        "      col = mix(col, vec3(1.0), ring * 0.78);",
+        "    }",
         "    if (v_rimStrength > 0.01) {",
         "      float rim = smoothstep(0.70, 0.86, dist);",
         "      col = mix(col, col * 0.55, rim * 0.75 * v_rimStrength);",
@@ -1002,8 +1253,117 @@
       return vbo;
     }
 
+    function buildLandmarkIds(vNodeCount, vNodeLayer, vNodeInDeg, vNodeFullId, vNodeWeight) {
+      const lRoots = [];
+      const lSupers = [];
+      const lHubs = [];
+      for (let i = 0; i < vNodeCount; i++) {
+        const fid = vNodeFullId ? vNodeFullId[i] : i;
+        const nw = vNodeWeight ? vNodeWeight[i] : 1;
+        if (fid < 0) {
+          lSupers.push(i);
+        } else if (vNodeInDeg[i] === 0) {
+          lRoots.push(i);
+        } else if (vNodeInDeg[i] >= 10 || vNodeLayer[i] <= 10 || nw >= 6) {
+          lHubs.push(i);
+        }
+      }
+      lSupers.sort((a, b) => {
+        const ca = cSuperCounts[-(vNodeFullId[a] + 1)];
+        const cb = cSuperCounts[-(vNodeFullId[b] + 1)];
+        if (ca !== cb) return cb - ca;
+        return a - b;
+      });
+      lHubs.sort((a, b) => {
+        const na = vNodeWeight ? vNodeWeight[a] : 1;
+        const nb = vNodeWeight ? vNodeWeight[b] : 1;
+        const sa = vNodeInDeg[a] + (na > 1 ? na * 12 : 0);
+        const sb = vNodeInDeg[b] + (nb > 1 ? nb * 12 : 0);
+        if (sa !== sb) return sb - sa;
+        return a - b;
+      });
+      const maxHubs = Math.min(1400, lHubs.length);
+      const out = new Uint32Array(lRoots.length + lSupers.length + maxHubs);
+      let off = 0;
+      for (let i = 0; i < lRoots.length; i++) out[off++] = lRoots[i];
+      for (let i = 0; i < lSupers.length; i++) out[off++] = lSupers[i];
+      for (let i = 0; i < maxHubs; i++) out[off++] = lHubs[i];
+      return out;
+    }
+
+    function buildHeavyEdgeList(
+      vNodeCount,
+      vEdgeOffsets,
+      vEdgeTargets,
+      vEdgeWeights,
+      vEdgeMults,
+      vEdgeChains,
+      vNodeFullId,
+      maxKeep
+    ) {
+      if (!vEdgeWeights && !vNodeFullId) return null;
+      const cU = [];
+      const cV = [];
+      const cM = [];
+      const cC = [];
+      const cScore = [];
+      for (let u = 0; u < vNodeCount; u++) {
+        const a = vEdgeOffsets[u];
+        const b = vEdgeOffsets[u + 1];
+        for (let k = a; k < b; k++) {
+          const v = vEdgeTargets[k];
+          const w = vEdgeWeights ? vEdgeWeights[k] : 1;
+          const mult = vEdgeMults ? vEdgeMults[k] : w;
+          const ch = vEdgeChains ? vEdgeChains[k] : 0;
+          const isLargeSuper =
+            vNodeFullId !== null &&
+            vNodeFullId[v] < 0 &&
+            cSuperCounts[-(vNodeFullId[v] + 1)] >= 400;
+          if (w >= 2 || isLargeSuper) {
+            cU.push(u);
+            cV.push(v);
+            cM.push(mult);
+            cC.push(ch);
+            cScore.push(w >= 2 ? w * 1000 : 500 + (isLargeSuper ? 1 : 0));
+          }
+        }
+      }
+      const total = cU.length;
+      if (total === 0) return null;
+      if (total <= maxKeep) {
+        const out = new Uint32Array(total * 4);
+        for (let i = 0; i < total; i++) {
+          const j = i * 4;
+          out[j] = cU[i];
+          out[j + 1] = cV[i];
+          out[j + 2] = cM[i];
+          out[j + 3] = cC[i];
+        }
+        return out;
+      }
+      const idxs = new Uint32Array(total);
+      for (let i = 0; i < total; i++) idxs[i] = i;
+      idxs.sort((ia, ib) => {
+        const d = cScore[ib] - cScore[ia];
+        return d !== 0 ? d : ia - ib;
+      });
+      const out = new Uint32Array(maxKeep * 4);
+      for (let i = 0; i < maxKeep; i++) {
+        const src = idxs[i];
+        const j = i * 4;
+        out[j] = cU[src];
+        out[j + 1] = cV[src];
+        out[j + 2] = cM[src];
+        out[j + 3] = cC[src];
+      }
+      return out;
+    }
+
     const fullView = {
-      isCollapsed: false,
+      key: "full",
+      isExisting: false,
+      isHasse: false,
+      isSimplified: false,
       nodeCount: N,
       edgeCount: M,
       numLayers: numLayers,
@@ -1016,23 +1376,27 @@
       nodeInDeg: nodeInDeg,
       nodeOutDeg: nodeOutDeg,
       nodeFullId: null,
+      nodeWeight: null,
+      nodeMetaMap: null,
       edgeOffsets: edgeOffsets,
       edgeTargets: edgeTargets,
       edgeWeights: null,
+      edgeMults: null,
+      edgeChains: null,
       revOffsets: revOffsets,
       revSources: revSources,
       revWeights: null,
       landmarkIds: fullLandmarkIds,
-      weightedEdgeList: null,
+      heavyEdgeList: null,
       bucketEdgeEnd: fullEdgePack.bucketEdgeEnd,
       edgeVbo: uploadVbo(fullEdgePack.edgeBuf),
       nodeVbo: uploadVbo(fullNodeBuf),
     };
 
-    let collapsedView = null;
+    const viewsCache = { full: fullView };
 
-    function getOrBuildCollapsedView() {
-      if (collapsedView) return collapsedView;
+    function getOrBuildExistingView() {
+      if (viewsCache.existing) return viewsCache.existing;
       if (!cMeta) return null;
 
       const cN = cMeta.node_count;
@@ -1055,13 +1419,17 @@
       const cNodeGroup = new Uint8Array(cN);
       const cNodeInDeg = new Uint16Array(cN);
       const cNodeOutDeg = new Uint16Array(cN);
+      const cNodeWeight = new Uint32Array(cN);
       for (let i = 0; i < cN; i++) {
         const fid = cNodeFullId[i];
         if (fid >= 0) {
           fullToCollapsed[fid] = i;
           cNodeGroup[i] = nodeGroup[fid];
+          cNodeWeight[i] = 1;
         } else {
-          cNodeGroup[i] = cSuperGroup[-(fid + 1)];
+          const sIdx = -(fid + 1);
+          cNodeGroup[i] = cSuperGroup[sIdx];
+          cNodeWeight[i] = cSuperCounts[sIdx];
         }
       }
 
@@ -1120,7 +1488,6 @@
       const cEdgeWeights = new Uint16Array(cM);
       const cRevCounts = new Uint32Array(cN);
       const cBucketCounts = new Uint32Array(8);
-      const weightedEdgeTriples = [];
 
       let ctIdx = 0;
       for (let cu = 0; cu < cN; cu++) {
@@ -1152,10 +1519,6 @@
             cRevCounts[cv]++;
             const bkt = ((Math.imul(cu, 2654435761) ^ Math.imul(cv, 2246822519)) >>> 29) & 7;
             cBucketCounts[bkt]++;
-            const superCount = cSuperCounts[-(cNodeFullId[cv] + 1)];
-            if (w >= 2 || superCount >= 400) {
-              weightedEdgeTriples.push(cu, cv, w);
-            }
           }
         }
         cNodeOutDeg[cu] = Math.min(65535, ctIdx - cEdgeOffsets[cu]);
@@ -1184,48 +1547,22 @@
         }
       }
 
-      // Collapsed landmarks: roots -> ALL literature supernodes (by collapsed size desc) -> top active hubs
-      const cRoots = [];
-      const cSupers = [];
-      const cHubs = [];
-      for (let i = 0; i < cN; i++) {
-        const fid = cNodeFullId[i];
-        if (fid < 0) {
-          cSupers.push(i);
-        } else if (cNodeInDeg[i] === 0) {
-          cRoots.push(i);
-        } else if (cNodeInDeg[i] >= 10 || cNodeLayer[i] <= 10) {
-          cHubs.push(i);
-        }
-      }
-      cSupers.sort((a, b) => {
-        const ca = cSuperCounts[-(cNodeFullId[a] + 1)];
-        const cb = cSuperCounts[-(cNodeFullId[b] + 1)];
-        if (ca !== cb) return cb - ca;
-        return a - b;
-      });
-      cHubs.sort((a, b) => {
-        const da = cNodeInDeg[a];
-        const db = cNodeInDeg[b];
-        if (da !== db) return db - da;
-        return a - b;
-      });
-      const maxCHubs = Math.min(1200, cHubs.length);
-      const cLandmarks = new Uint32Array(cRoots.length + cSupers.length + maxCHubs);
-      let lOff = 0;
-      for (let i = 0; i < cRoots.length; i++) cLandmarks[lOff++] = cRoots[i];
-      for (let i = 0; i < cSupers.length; i++) cLandmarks[lOff++] = cSupers[i];
-      for (let i = 0; i < maxCHubs; i++) cLandmarks[lOff++] = cHubs[i];
-
+      const cLandmarks = buildLandmarkIds(cN, cNodeLayer, cNodeInDeg, cNodeFullId, cNodeWeight);
+      const cHeavyEdgeList = buildHeavyEdgeList(
+        cN, cEdgeOffsets, cEdgeTargets, cEdgeWeights, cEdgeWeights, null, cNodeFullId, 2500
+      );
       const cEdgePack = createEdgeVboData(
         cN, ctIdx, cNodeX, cNodeLayer, cLayerDy, cNodeGroup, cEdgeOffsets, cEdgeTargets, cEdgeWeights, cBucketCounts, cNodeFullId
       );
       const cNodeBuf = createNodeVboData(
-        cN, cNodeX, cNodeLayer, cLayerDy, cNodeGroup, cNodeInDeg, cNodeFullId
+        cN, cNodeX, cNodeLayer, cLayerDy, cNodeGroup, cNodeInDeg, cNodeFullId, cNodeWeight
       );
 
-      collapsedView = {
-        isCollapsed: true,
+      viewsCache.existing = {
+        key: "existing",
+        isExisting: true,
+        isHasse: false,
+        isSimplified: false,
         nodeCount: cN,
         edgeCount: ctIdx,
         numLayers: cNumLayers,
@@ -1238,21 +1575,329 @@
         nodeInDeg: cNodeInDeg,
         nodeOutDeg: cNodeOutDeg,
         nodeFullId: cNodeFullId,
+        nodeWeight: cNodeWeight,
+        nodeMetaMap: null,
         edgeOffsets: cEdgeOffsets,
         edgeTargets: cEdgeTargets,
         edgeWeights: cEdgeWeights,
+        edgeMults: cEdgeWeights,
+        edgeChains: null,
         revOffsets: cRevOffsets,
         revSources: cRevSources,
         revWeights: cRevWeights,
         landmarkIds: cLandmarks,
-        weightedEdgeList: new Uint32Array(weightedEdgeTriples),
+        heavyEdgeList: cHeavyEdgeList,
         bucketEdgeEnd: cEdgePack.bucketEdgeEnd,
         edgeVbo: uploadVbo(cEdgePack.edgeBuf),
         nodeVbo: uploadVbo(cNodeBuf),
       };
-      return collapsedView;
+      return viewsCache.existing;
     }
 
+    function buildHasseFilteredView(key, baseView, bitmask, targetEdgeCount) {
+      if (viewsCache[key]) return viewsCache[key];
+      if (!baseView || !bitmask) return null;
+
+      const vN = baseView.nodeCount;
+      const hEdgeOffsets = new Uint32Array(vN + 1);
+      const hEdgeTargets = new Uint32Array(targetEdgeCount);
+      const hEdgeWeights = baseView.edgeWeights ? new Uint16Array(targetEdgeCount) : null;
+      const hEdgeMults = baseView.edgeMults ? new Uint16Array(targetEdgeCount) : null;
+      const hEdgeChains = baseView.edgeChains ? new Uint16Array(targetEdgeCount) : null;
+      const hNodeInDeg = new Uint16Array(vN);
+      const hNodeOutDeg = new Uint16Array(vN);
+      const hRevCounts = new Uint32Array(vN);
+      const hBucketCounts = new Uint32Array(8);
+
+      let htIdx = 0;
+      for (let u = 0; u < vN; u++) {
+        hEdgeOffsets[u] = htIdx;
+        const a = baseView.edgeOffsets[u];
+        const b = baseView.edgeOffsets[u + 1];
+        for (let k = a; k < b; k++) {
+          if (((bitmask[k >> 3] >> (k & 7)) & 1) === 0) continue;
+          const v = baseView.edgeTargets[k];
+          hEdgeTargets[htIdx] = v;
+          if (hEdgeWeights) hEdgeWeights[htIdx] = baseView.edgeWeights[k];
+          if (hEdgeMults) hEdgeMults[htIdx] = baseView.edgeMults[k];
+          if (hEdgeChains) hEdgeChains[htIdx] = baseView.edgeChains[k];
+          htIdx++;
+          hRevCounts[v]++;
+          const bkt = ((Math.imul(u, 2654435761) ^ Math.imul(v, 2246822519)) >>> 29) & 7;
+          hBucketCounts[bkt]++;
+        }
+        hNodeOutDeg[u] = Math.min(65535, htIdx - hEdgeOffsets[u]);
+      }
+      hEdgeOffsets[vN] = htIdx;
+
+      const hRevOffsets = new Uint32Array(vN + 1);
+      let hRAcc = 0;
+      for (let i = 0; i < vN; i++) {
+        hNodeInDeg[i] = Math.min(65535, hRevCounts[i]);
+        hRevOffsets[i] = hRAcc;
+        hRAcc += hRevCounts[i];
+      }
+      hRevOffsets[vN] = hRAcc;
+      const hRevSources = new Uint32Array(htIdx);
+      const hRevWeights = hEdgeWeights ? new Uint16Array(htIdx) : null;
+      const hRevWrite = new Uint32Array(hRevOffsets);
+      for (let u = 0; u < vN; u++) {
+        const a = hEdgeOffsets[u];
+        const b = hEdgeOffsets[u + 1];
+        for (let k = a; k < b; k++) {
+          const v = hEdgeTargets[k];
+          const posW = hRevWrite[v]++;
+          hRevSources[posW] = u;
+          if (hRevWeights) hRevWeights[posW] = hEdgeWeights[k];
+        }
+      }
+
+      const hLandmarks = buildLandmarkIds(
+        vN, baseView.nodeLayer, hNodeInDeg, baseView.nodeFullId, baseView.nodeWeight
+      );
+      const hHeavyEdgeList = buildHeavyEdgeList(
+        vN, hEdgeOffsets, hEdgeTargets, hEdgeWeights, hEdgeMults, hEdgeChains, baseView.nodeFullId, 2500
+      );
+      const hEdgePack = createEdgeVboData(
+        vN, htIdx, baseView.nodeX, baseView.nodeLayer, baseView.layerDy, baseView.nodeGroup,
+        hEdgeOffsets, hEdgeTargets, hEdgeWeights, hBucketCounts, baseView.nodeFullId
+      );
+
+      viewsCache[key] = {
+        key: key,
+        isExisting: baseView.isExisting,
+        isHasse: true,
+        isSimplified: false,
+        nodeCount: vN,
+        edgeCount: htIdx,
+        numLayers: baseView.numLayers,
+        layerDy: baseView.layerDy,
+        bounds: baseView.bounds,
+        layerOffsets: baseView.layerOffsets,
+        nodeX: baseView.nodeX,
+        nodeLayer: baseView.nodeLayer,
+        nodeGroup: baseView.nodeGroup,
+        nodeInDeg: hNodeInDeg,
+        nodeOutDeg: hNodeOutDeg,
+        nodeFullId: baseView.nodeFullId,
+        nodeWeight: baseView.nodeWeight,
+        nodeMetaMap: baseView.nodeMetaMap,
+        edgeOffsets: hEdgeOffsets,
+        edgeTargets: hEdgeTargets,
+        edgeWeights: hEdgeWeights,
+        edgeMults: hEdgeMults,
+        edgeChains: hEdgeChains,
+        revOffsets: hRevOffsets,
+        revSources: hRevSources,
+        revWeights: hRevWeights,
+        landmarkIds: hLandmarks,
+        heavyEdgeList: hHeavyEdgeList,
+        bucketEdgeEnd: hEdgePack.bucketEdgeEnd,
+        edgeVbo: uploadVbo(hEdgePack.edgeBuf),
+        nodeVbo: baseView.nodeVbo,
+      };
+      return viewsCache[key];
+    }
+
+    function getOrBuildSimplifiedView(key) {
+      if (viewsCache[key]) return viewsCache[key];
+      const desc = simpRaw[key];
+      if (!desc) return null;
+
+      const sm = desc.meta;
+      const sN = sm.node_count;
+      const sM = sm.edge_count;
+      const sNumLayers = sm.num_layers;
+      const sLayerDy = sm.layer_dy;
+      const sLayerOffsets = desc.layerOffsets;
+      const sNodeX = desc.nodeX;
+      const sNodeFullId = desc.nodeFullId;
+
+      const sNodeLayer = new Uint16Array(sN);
+      for (let ly = 0; ly < sNumLayers; ly++) {
+        const a = sLayerOffsets[ly];
+        const b = sLayerOffsets[ly + 1];
+        for (let i = a; i < b; i++) {
+          sNodeLayer[i] = ly;
+        }
+      }
+
+      const sNodeGroup = new Uint8Array(sN);
+      const sNodeWeight = new Uint32Array(sN);
+      for (let i = 0; i < sN; i++) {
+        const fid = sNodeFullId[i];
+        if (fid >= 0) {
+          sNodeGroup[i] = nodeGroup[fid];
+          sNodeWeight[i] = 1;
+        } else {
+          const sIdx = -(fid + 1);
+          sNodeGroup[i] = cSuperGroup[sIdx];
+          sNodeWeight[i] = cSuperCounts[sIdx];
+        }
+      }
+
+      const sNodeMetaMap = new Map();
+      for (let r = 0; r < desc.recCount; r++) {
+        const off = desc.recsStart + r * 16;
+        const nidW = view.getUint32(off, true);
+        const wVal = view.getUint32(off + 4, true);
+        const aL = view.getUint16(off + 8, true);
+        const aC = view.getUint16(off + 10, true);
+        const rFid = view.getInt32(off + 12, true);
+        sNodeWeight[nidW] = wVal;
+        sNodeMetaMap.set(nidW, { weight: wVal, leaves: aL, chains: aC, repFullId: rFid });
+      }
+
+      const stream = desc.edgeStream;
+      let sp = 0;
+      function readVarint() {
+        let val = 0;
+        let shift = 0;
+        while (true) {
+          const b = stream[sp++];
+          val |= (b & 0x7f) << shift;
+          if ((b & 0x80) === 0) return val;
+          shift += 7;
+        }
+      }
+
+      const sEdgeOffsets = new Uint32Array(sN + 1);
+      const sEdgeTargets = new Uint32Array(sM);
+      const sEdgeWeights = new Uint16Array(sM);
+      const sEdgeMults = new Uint16Array(sM);
+      const sEdgeChains = new Uint16Array(sM);
+      const sNodeInDeg = new Uint16Array(sN);
+      const sNodeOutDeg = new Uint16Array(sN);
+      const sRevCounts = new Uint32Array(sN);
+      const sBucketCounts = new Uint32Array(8);
+
+      let stIdx = 0;
+      for (let u = 0; u < sN; u++) {
+        sEdgeOffsets[u] = stIdx;
+        const deg = readVarint();
+        let prevV = 0;
+        for (let k = 0; k < deg; k++) {
+          const code = readVarint();
+          const delta = code >>> 1;
+          const isW = code & 1;
+          const v = prevV + delta;
+          prevV = v;
+          let mult = 1;
+          let ch = 0;
+          if (isW) {
+            mult = readVarint();
+            ch = readVarint();
+          }
+          sEdgeTargets[stIdx] = v;
+          sEdgeMults[stIdx] = Math.min(65535, mult);
+          sEdgeChains[stIdx] = Math.min(65535, ch);
+          sEdgeWeights[stIdx] = Math.min(65535, mult + ch);
+          stIdx++;
+          sRevCounts[v]++;
+          const bkt = ((Math.imul(u, 2654435761) ^ Math.imul(v, 2246822519)) >>> 29) & 7;
+          sBucketCounts[bkt]++;
+        }
+        sNodeOutDeg[u] = Math.min(65535, stIdx - sEdgeOffsets[u]);
+      }
+      sEdgeOffsets[sN] = stIdx;
+
+      const sRevOffsets = new Uint32Array(sN + 1);
+      let sRAcc = 0;
+      for (let i = 0; i < sN; i++) {
+        sNodeInDeg[i] = Math.min(65535, sRevCounts[i]);
+        sRevOffsets[i] = sRAcc;
+        sRAcc += sRevCounts[i];
+      }
+      sRevOffsets[sN] = sRAcc;
+      const sRevSources = new Uint32Array(stIdx);
+      const sRevWeights = new Uint16Array(stIdx);
+      const sRevWrite = new Uint32Array(sRevOffsets);
+      for (let u = 0; u < sN; u++) {
+        const a = sEdgeOffsets[u];
+        const b = sEdgeOffsets[u + 1];
+        for (let k = a; k < b; k++) {
+          const v = sEdgeTargets[k];
+          const posW = sRevWrite[v]++;
+          sRevSources[posW] = u;
+          sRevWeights[posW] = sEdgeWeights[k];
+        }
+      }
+
+      const sLandmarks = buildLandmarkIds(sN, sNodeLayer, sNodeInDeg, sNodeFullId, sNodeWeight);
+      const sHeavyEdgeList = buildHeavyEdgeList(
+        sN, sEdgeOffsets, sEdgeTargets, sEdgeWeights, sEdgeMults, sEdgeChains, sNodeFullId, 2500
+      );
+      const sEdgePack = createEdgeVboData(
+        sN, stIdx, sNodeX, sNodeLayer, sLayerDy, sNodeGroup, sEdgeOffsets, sEdgeTargets, sEdgeWeights, sBucketCounts, sNodeFullId
+      );
+      const sNodeBuf = createNodeVboData(
+        sN, sNodeX, sNodeLayer, sLayerDy, sNodeGroup, sNodeInDeg, sNodeFullId, sNodeWeight
+      );
+
+      viewsCache[key] = {
+        key: key,
+        isExisting: key.startsWith("existing"),
+        isHasse: key.indexOf("hasse") >= 0,
+        isSimplified: true,
+        nodeCount: sN,
+        edgeCount: stIdx,
+        numLayers: sNumLayers,
+        layerDy: sLayerDy,
+        bounds: sm.bounds,
+        layerOffsets: sLayerOffsets,
+        nodeX: sNodeX,
+        nodeLayer: sNodeLayer,
+        nodeGroup: sNodeGroup,
+        nodeInDeg: sNodeInDeg,
+        nodeOutDeg: sNodeOutDeg,
+        nodeFullId: sNodeFullId,
+        nodeWeight: sNodeWeight,
+        nodeMetaMap: sNodeMetaMap,
+        edgeOffsets: sEdgeOffsets,
+        edgeTargets: sEdgeTargets,
+        edgeWeights: sEdgeWeights,
+        edgeMults: sEdgeMults,
+        edgeChains: sEdgeChains,
+        revOffsets: sRevOffsets,
+        revSources: sRevSources,
+        revWeights: sRevWeights,
+        landmarkIds: sLandmarks,
+        heavyEdgeList: sHeavyEdgeList,
+        bucketEdgeEnd: sEdgePack.bucketEdgeEnd,
+        edgeVbo: uploadVbo(sEdgePack.edgeBuf),
+        nodeVbo: uploadVbo(sNodeBuf),
+      };
+      return viewsCache[key];
+    }
+
+    function getViewKey(st) {
+      if (!st.existing && !st.hasse && !st.simplify) return "full";
+      if (!st.existing && st.hasse && !st.simplify) return "full_hasse";
+      if (st.existing && !st.hasse && !st.simplify) return "existing";
+      if (st.existing && st.hasse && !st.simplify) return "existing_hasse";
+      if (!st.existing && !st.hasse && st.simplify) return "full_simp";
+      if (!st.existing && st.hasse && st.simplify) return "full_hasse_simp";
+      if (st.existing && !st.hasse && st.simplify) return "existing_simp";
+      return "existing_hasse_simp";
+    }
+
+    function getViewForState(st) {
+      const key = getViewKey(st);
+      if (viewsCache[key]) return viewsCache[key];
+      if (key === "full_hasse") {
+        return buildHasseFilteredView("full_hasse", fullView, fullHasseMask, fullHasseMeta.edge_count);
+      }
+      if (key === "existing") {
+        return getOrBuildExistingView();
+      }
+      if (key === "existing_hasse") {
+        const baseE = getOrBuildExistingView();
+        return buildHasseFilteredView("existing_hasse", baseE, existingHasseMask, existingHasseMeta.edge_count);
+      }
+      return getOrBuildSimplifiedView(key);
+    }
+
+    const viewState = { existing: false, hasse: false, simplify: false };
     let activeView = fullView;
 
     // Viewport state
@@ -1329,25 +1974,33 @@
       const fid = av.nodeFullId ? av.nodeFullId[idx] : idx;
       let weight;
       let isSuper = false;
+      let isAnchor = false;
       if (fid < 0) {
         const sCnt = cSuperCounts[-(fid + 1)];
         weight = 1.7 + 0.52 * Math.log1p(sCnt);
         isSuper = true;
       } else {
         const inD = av.nodeInDeg[idx];
-        weight = inD === 0 ? 2.4 : (1.0 + 0.32 * Math.log1p(inD));
+        const baseW = inD === 0 ? 2.4 : (1.0 + 0.32 * Math.log1p(inD));
+        const nw = av.nodeWeight ? av.nodeWeight[idx] : 1;
+        if (nw > 1) {
+          weight = baseW + 0.55 * Math.log1p(nw - 1);
+          isAnchor = true;
+        } else {
+          weight = baseW;
+        }
       }
       let sz = (1.25 + 0.55 * weight) * (0.72 + 0.38 * Math.sqrt(Math.max(zoom, 0.05)));
       if (zoom >= 4.0) {
         sz = Math.min(sz, (isSuper ? 0.85 : 0.76) * zoom);
       }
-      sz = Math.max(isSuper ? 2.2 : 1.5, Math.min(maxPointSize / dpr, sz));
+      sz = Math.max(isSuper ? 2.2 : (isAnchor ? 1.9 : 1.5), Math.min(maxPointSize / dpr, sz));
       return 0.5 * sz;
     }
 
     function reserveUiRects(placed) {
       const pad = 6;
-      const els = [navPill, collapsePill, legendPill, zoomPill];
+      const els = [navPill, collapsePill, statsPill, legendPill, zoomPill];
       for (let i = 0; i < els.length; i++) {
         const el = els[i];
         if (!el) continue;
@@ -1391,53 +2044,145 @@
       const placed = [];
       reserveUiRects(placed);
 
-      // Post-collapse variable-thickness weighted edges overlay (collapsed mode)
-      if (av.isCollapsed && av.weightedEdgeList && av.weightedEdgeList.length > 0) {
-        const wList = av.weightedEdgeList;
+      // Post-collapse variable-thickness weighted edges overlay (existing-theory and/or chain-collapsed views)
+      if (av.edgeWeights !== null || (av.heavyEdgeList && av.heavyEdgeList.length > 0)) {
         const nX = av.nodeX;
         const nL = av.nodeLayer;
         const lDy = av.layerDy;
         const zoomRatio = zoom / fitZoom;
         const wBadges = [];
+        const strokes = [];
 
-        ovCtx.save();
-        ovCtx.lineCap = "round";
-        for (let i = 0; i < wList.length; i += 3) {
-          const cu = wList[i];
-          const cv = wList[i + 1];
-          const w = wList[i + 2];
-          const ux = nX[cu];
-          const uy = nL[cu] * lDy;
-          const vx = nX[cv];
-          const vy = nL[cv] * lDy;
-          if ((ux < wxMin && vx < wxMin) || (ux > wxMax && vx > wxMax)) continue;
-          if ((uy < wyMin && vy < wyMin) || (uy > wyMax && vy > wyMax)) continue;
-
-          const sx0 = ux * zoom + panX;
-          const sy0 = uy * zoom + panY;
-          const sx1 = vx * zoom + panX;
-          const sy1 = vy * zoom + panY;
-
-          const lw = w >= 2
-            ? Math.min(5.2, 1.35 + 0.82 * Math.log2(w))
-            : Math.min(2.4, 0.9 + 0.25 * Math.log10(Math.max(10, cSuperCounts[-(av.nodeFullId[cv] + 1)])));
-          const alpha = w >= 2
-            ? Math.min(0.75, 0.26 + 0.14 * Math.sqrt(zoomRatio))
-            : Math.min(0.45, 0.10 + 0.08 * Math.sqrt(zoomRatio));
-
-          ovCtx.strokeStyle = groupCss[av.nodeGroup[cv]];
-          ovCtx.globalAlpha = alpha;
-          ovCtx.lineWidth = lw;
-          ovCtx.beginPath();
-          ovCtx.moveTo(sx0, sy0);
-          ovCtx.lineTo(sx1, sy1);
-          ovCtx.stroke();
-
-          if (w >= 2 && visibleCount <= 550 && zoom >= 6) {
-            wBadges.push({ sx0, sy0, sx1, sy1, w, col: groupCss[av.nodeGroup[cv]] });
+        if (visibleCount > 1200) {
+          const wList = av.heavyEdgeList;
+          if (wList) {
+            for (let i = 0; i < wList.length; i += 4) {
+              const cu = wList[i];
+              const cv = wList[i + 1];
+              const mult = wList[i + 2];
+              const ch = wList[i + 3];
+              strokes.push(cu, cv, mult, ch);
+            }
+          }
+        } else if (visibleCount > 0 && av.edgeWeights !== null) {
+          const seenE = new Set();
+          const candU = [];
+          const candV = [];
+          const candM = [];
+          const candC = [];
+          const candW = [];
+          function addEdgeCand(cu, cv, mult, ch, w) {
+            const isLargeSuper =
+              av.nodeFullId !== null &&
+              av.nodeFullId[cv] < 0 &&
+              cSuperCounts[-(av.nodeFullId[cv] + 1)] >= 400;
+            if (w < 2 && !isLargeSuper) return;
+            const key = cu * 262144 + cv;
+            if (seenE.has(key)) return;
+            seenE.add(key);
+            candU.push(cu);
+            candV.push(cv);
+            candM.push(mult);
+            candC.push(ch);
+            candW.push(w);
+          }
+          for (let s = 0; s < slices.length; s += 2) {
+            const a = slices[s];
+            const b = slices[s + 1];
+            for (let u = a; u < b; u++) {
+              const ea = av.edgeOffsets[u];
+              const eb = av.edgeOffsets[u + 1];
+              for (let k = ea; k < eb; k++) {
+                const v = av.edgeTargets[k];
+                const w = av.edgeWeights[k];
+                const mult = av.edgeMults ? av.edgeMults[k] : w;
+                const ch = av.edgeChains ? av.edgeChains[k] : 0;
+                addEdgeCand(u, v, mult, ch, w);
+              }
+              const ra = av.revOffsets[u];
+              const rb = av.revOffsets[u + 1];
+              const rLim = Math.min(rb, ra + 48);
+              for (let k = ra; k < rLim; k++) {
+                const p = av.revSources[k];
+                const w = av.revWeights ? av.revWeights[k] : 1;
+                if (w < 2 && !(av.nodeFullId && av.nodeFullId[u] < 0 && cSuperCounts[-(av.nodeFullId[u] + 1)] >= 400)) {
+                  continue;
+                }
+                // Lookup exact mult/ch when needed only if edgeChains present; else mult=w, ch=0
+                let mult = w;
+                let ch = 0;
+                if (av.edgeChains) {
+                  const pa = av.edgeOffsets[p];
+                  const pb = av.edgeOffsets[p + 1];
+                  for (let pk = pa; pk < pb; pk++) {
+                    if (av.edgeTargets[pk] === u) {
+                      mult = av.edgeMults[pk];
+                      ch = av.edgeChains[pk];
+                      break;
+                    }
+                  }
+                }
+                addEdgeCand(p, u, mult, ch, w);
+              }
+            }
+          }
+          if (candU.length <= 1500) {
+            for (let i = 0; i < candU.length; i++) {
+              strokes.push(candU[i], candV[i], candM[i], candC[i]);
+            }
+          } else {
+            const idxs = new Uint32Array(candU.length);
+            for (let i = 0; i < candU.length; i++) idxs[i] = i;
+            idxs.sort((ia, ib) => candW[ib] - candW[ia]);
+            for (let i = 0; i < 1500; i++) {
+              const idx = idxs[i];
+              strokes.push(candU[idx], candV[idx], candM[idx], candC[idx]);
+            }
           }
         }
-        ovCtx.restore();
+
+        if (strokes.length > 0) {
+          ovCtx.save();
+          ovCtx.lineCap = "round";
+          for (let i = 0; i < strokes.length; i += 4) {
+            const cu = strokes[i];
+            const cv = strokes[i + 1];
+            const mult = strokes[i + 2];
+            const ch = strokes[i + 3];
+            const w = mult + ch;
+            const ux = nX[cu];
+            const uy = nL[cu] * lDy;
+            const vx = nX[cv];
+            const vy = nL[cv] * lDy;
+            if ((ux < wxMin && vx < wxMin) || (ux > wxMax && vx > wxMax)) continue;
+            if ((uy < wyMin && vy < wyMin) || (uy > wyMax && vy > wyMax)) continue;
+
+            const sx0 = ux * zoom + panX;
+            const sy0 = uy * zoom + panY;
+            const sx1 = vx * zoom + panX;
+            const sy1 = vy * zoom + panY;
+
+            const lw = w >= 2
+              ? Math.min(5.2, 1.25 + 0.78 * Math.log2(w))
+              : Math.min(2.4, 0.9 + 0.25 * Math.log10(Math.max(10, cSuperCounts[-(av.nodeFullId[cv] + 1)])));
+            const alpha = w >= 2
+              ? Math.min(0.75, 0.24 + 0.14 * Math.sqrt(zoomRatio))
+              : Math.min(0.45, 0.10 + 0.08 * Math.sqrt(zoomRatio));
+
+            ovCtx.strokeStyle = groupCss[av.nodeGroup[cv]];
+            ovCtx.globalAlpha = alpha;
+            ovCtx.lineWidth = lw;
+            ovCtx.beginPath();
+            ovCtx.moveTo(sx0, sy0);
+            ovCtx.lineTo(sx1, sy1);
+            ovCtx.stroke();
+
+            if (w >= 2 && visibleCount <= 550 && zoom >= 6) {
+              wBadges.push({ sx0, sy0, sx1, sy1, w, mult, ch, col: groupCss[av.nodeGroup[cv]] });
+            }
+          }
+          ovCtx.restore();
+        }
 
         if (wBadges.length > 0) {
           wBadges.sort((a, b) => b.w - a.w);
@@ -1452,7 +2197,10 @@
             const mx = b.sx0 * 0.38 + b.sx1 * 0.62;
             const my = b.sy0 * 0.38 + b.sy1 * 0.62;
             if (mx < 16 || mx > cssW - 16 || my < 16 || my > cssH - 16) continue;
-            const txt = "×" + b.w;
+            let txt;
+            if (b.ch > 0 && b.mult > 1) txt = "\u00d7" + b.mult + " +" + b.ch;
+            else if (b.ch > 0) txt = "+" + b.ch;
+            else txt = "\u00d7" + b.mult;
             const bw = ovCtx.measureText(txt).width + 6;
             const bh = 13;
             const x0 = mx - bw * 0.5;
@@ -1557,8 +2305,14 @@
         candidates.sort((a, b) => {
           const fa = av.nodeFullId ? av.nodeFullId[a] : a;
           const fb = av.nodeFullId ? av.nodeFullId[b] : b;
-          const pa = fa < 0 ? (1e8 + cSuperCounts[-(fa + 1)] * 1000) : (av.nodeInDeg[a] === 0 ? 1e9 : (av.nodeInDeg[a] * 10 + av.nodeOutDeg[a]));
-          const pb = fb < 0 ? (1e8 + cSuperCounts[-(fb + 1)] * 1000) : (av.nodeInDeg[b] === 0 ? 1e9 : (av.nodeInDeg[b] * 10 + av.nodeOutDeg[b]));
+          const na = av.nodeWeight ? av.nodeWeight[a] : 1;
+          const nb = av.nodeWeight ? av.nodeWeight[b] : 1;
+          const pa = fa < 0
+            ? (1e8 + cSuperCounts[-(fa + 1)] * 1000)
+            : (av.nodeInDeg[a] === 0 ? 1e9 : (av.nodeInDeg[a] * 10 + av.nodeOutDeg[a] + (na > 1 ? na * 120 : 0)));
+          const pb = fb < 0
+            ? (1e8 + cSuperCounts[-(fb + 1)] * 1000)
+            : (av.nodeInDeg[b] === 0 ? 1e9 : (av.nodeInDeg[b] * 10 + av.nodeOutDeg[b] + (nb > 1 ? nb * 120 : 0)));
           if (pa !== pb) return pb - pa;
           return a - b;
         });
@@ -1601,9 +2355,25 @@
         } else {
           label = shortNames[fid];
           if (!label) continue;
-          if (showDir) {
-            const dl = dirList[nodeDirId[fid]] || "";
-            if (dl && dl !== "(root)") subLabel = dl;
+          const nw = av.nodeWeight ? av.nodeWeight[id] : 1;
+          const dl = dirList[nodeDirId[fid]] || "";
+          if (nw > 1) {
+            countSuffix = " [" + nw.toLocaleString() + "]";
+            if (showDir) {
+              const meta = av.nodeMetaMap ? av.nodeMetaMap.get(id) : null;
+              const k = nw - 1;
+              let absTxt;
+              if (k === 1 && meta && meta.repFullId >= 0 && shortNames[meta.repFullId]) {
+                absTxt = "+1 leaf (" + shortNames[meta.repFullId] + ")";
+              } else if (meta && meta.chains > 0) {
+                absTxt = "+" + k.toLocaleString() + " collapsed (" + meta.leaves.toLocaleString() + " leaves, " + meta.chains.toLocaleString() + " chain)";
+              } else {
+                absTxt = "+" + k.toLocaleString() + " " + (k === 1 ? "leaf" : "leaves");
+              }
+              subLabel = dl && dl !== "(root)" ? absTxt + " · " + dl : absTxt;
+            }
+          } else if (showDir && dl && dl !== "(root)") {
+            subLabel = dl;
           }
         }
 
@@ -1727,6 +2497,15 @@
           ctx.beginPath();
           ctx.arc(sx, sy, r, 0, Math.PI * 2);
           ctx.fill();
+          if (av.nodeWeight && av.nodeWeight[i] > 1 && r >= 2.2) {
+            ctx.save();
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.85)";
+            ctx.lineWidth = Math.max(1, r * 0.28);
+            ctx.beginPath();
+            ctx.arc(sx, sy, r * 0.55, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.restore();
+          }
         }
       }
       drawOverlay();
@@ -1830,46 +2609,107 @@
       scheduleRender();
     }
 
+    function formatPct(cur, base) {
+      if (base <= 0) return "0%";
+      const pct = cur === base ? 100 : Math.min(99, Math.round((100 * cur) / base));
+      return pct + "%";
+    }
+
+    function setToggleLabelAria(offEl, onEl, active) {
+      if (offEl) offEl.setAttribute("aria-hidden", String(active));
+      if (onEl) onEl.setAttribute("aria-hidden", String(!active));
+    }
+
+    function updateToggleLabels() {
+      setToggleLabelAria(lblCollapseOff, lblCollapseOn, viewState.existing);
+      setToggleLabelAria(lblHasseOff, lblHasseOn, viewState.hasse);
+      setToggleLabelAria(lblChainsOff, lblChainsOn, viewState.simplify);
+    }
+
+    function updateViewStats() {
+      if (statNodesAbs) statNodesAbs.textContent = activeView.nodeCount.toLocaleString();
+      if (statEdgesAbs) statEdgesAbs.textContent = activeView.edgeCount.toLocaleString();
+      if (statLayersAbs) statLayersAbs.textContent = activeView.numLayers.toLocaleString();
+      if (statNodesPct) statNodesPct.textContent = formatPct(activeView.nodeCount, N);
+      if (statEdgesPct) statEdgesPct.textContent = formatPct(activeView.edgeCount, M);
+      if (statLayersPct) statLayersPct.textContent = formatPct(activeView.numLayers, numLayers);
+    }
+
     function updateModeMetadata() {
-      window.__FULL_DAG_MODE__ = activeView.isCollapsed ? "collapsed" : "full";
+      window.__FULL_DAG_MODE__ = activeView.key;
       window.__FULL_DAG_STATS__ = {
-        mode: window.__FULL_DAG_MODE__,
+        mode: activeView.key,
+        existing: viewState.existing,
+        hasse: viewState.hasse,
+        simplify: viewState.simplify,
         nodeCount: activeView.nodeCount,
         edgeCount: activeView.edgeCount,
         numLayers: activeView.numLayers,
-        collapsedModules: cMeta ? cMeta.collapsed_module_count : 0,
-        supernodeCount: cMeta ? cMeta.supernode_count : 0,
+        collapsedModules: viewState.existing && cMeta ? cMeta.collapsed_module_count : 0,
+        supernodeCount: viewState.existing && cMeta ? cMeta.supernode_count : 0,
       };
     }
 
-    function toggleExistingTheory() {
-      if (!cMeta) return;
-      const enable = !activeView.isCollapsed;
-      if (enable) {
-        const cv = getOrBuildCollapsedView();
-        if (!cv) return;
-        activeView = cv;
-        btnCollapse.setAttribute("aria-pressed", "true");
-        collapseStatsEl.textContent =
-          "−" + formatCompact(cMeta.collapsed_module_count) + " modules · " + cMeta.num_layers + " layers";
-      } else {
-        activeView = fullView;
-        btnCollapse.setAttribute("aria-pressed", "false");
-        collapseStatsEl.textContent = "";
-      }
-      if (legendSuperNote) {
-        legendSuperNote.classList.toggle("visible", enable);
-      }
+    function applyViewState(preserveCamera) {
+      const nextView = getViewForState(viewState);
+      if (!nextView) return;
+      activeView = nextView;
+
+      if (btnCollapse) btnCollapse.setAttribute("aria-pressed", String(viewState.existing));
+      if (btnHideRedundant) btnHideRedundant.setAttribute("aria-pressed", String(viewState.hasse));
+      if (btnCollapseChains) btnCollapseChains.setAttribute("aria-pressed", String(viewState.simplify));
+
+      updateToggleLabels();
+      updateViewStats();
+
+      if (legendSuperNote) legendSuperNote.classList.toggle("visible", viewState.existing);
+      if (legendAnchorNote) legendAnchorNote.classList.toggle("visible", viewState.simplify);
+      if (legendWedgeNote) legendWedgeNote.classList.toggle("visible", viewState.existing || viewState.simplify);
+
       lastFullDrawMs = 0;
       isInteracting = false;
-      fitToView();
+      if (!preserveCamera) {
+        fitToView();
+      }
       updateModeMetadata();
       renderFrame();
     }
 
-    if (cMeta) {
-      collapsePill.classList.add("visible");
-      btnCollapse.addEventListener("click", toggleExistingTheory);
+    function toggleExistingTheory() {
+      if (!cMeta) return;
+      viewState.existing = !viewState.existing;
+      applyViewState(false);
+    }
+
+    function toggleHideRedundant() {
+      if (!fullHasseMeta) return;
+      const preserveCamera = !viewState.simplify;
+      viewState.hasse = !viewState.hasse;
+      applyViewState(preserveCamera);
+    }
+
+    function toggleCollapseChains() {
+      if (!simpMetaMap) return;
+      viewState.simplify = !viewState.simplify;
+      applyViewState(false);
+    }
+
+    if (controlsStack) controlsStack.classList.add("visible");
+    if (cMeta || fullHasseMeta || simpMetaMap) {
+      if (cMeta && btnCollapse) {
+        btnCollapse.hidden = false;
+        btnCollapse.addEventListener("click", toggleExistingTheory);
+      }
+      if (fullHasseMeta && btnHideRedundant) {
+        btnHideRedundant.hidden = false;
+        btnHideRedundant.addEventListener("click", toggleHideRedundant);
+      }
+      if (simpMetaMap && btnCollapseChains) {
+        btnCollapseChains.hidden = false;
+        btnCollapseChains.addEventListener("click", toggleCollapseChains);
+      }
+    } else if (collapsePill) {
+      collapsePill.hidden = true;
     }
 
     if (btnLegendToggle && legendPill) {
@@ -1884,6 +2724,8 @@
     }
 
     // Initial sizing & first draw
+    updateToggleLabels();
+    updateViewStats();
     resizeCanvases(false);
     loadingEl.remove();
     glCanvas.style.visibility = "visible";
@@ -1998,6 +2840,12 @@
       if (ev.key === "c" || ev.key === "C") {
         ev.preventDefault();
         toggleExistingTheory();
+      } else if (ev.key === "h" || ev.key === "H") {
+        ev.preventDefault();
+        toggleHideRedundant();
+      } else if (ev.key === "l" || ev.key === "L") {
+        ev.preventDefault();
+        toggleCollapseChains();
       } else if (ev.key === "+" || ev.key === "=") {
         ev.preventDefault();
         zoomAt(cssW * 0.5, cssH * 0.5, 1.35);

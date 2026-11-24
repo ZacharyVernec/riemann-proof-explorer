@@ -227,7 +227,7 @@
       <p>Interactive WebGL pan-and-zoom visualization of the complete Lean module import DAG, built via a repeatable, refactor-resilient layout pipeline.</p>
       <ul>
         <li><strong>Deterministic Sugiyama Layout:</strong> Bottom-aligned longest-path layering, feasible <i>L</i><sub>1</sub> rank tightening, two-sided weighted barycenter ordering, and <i>O</i>(<i>k</i>) Pool-Adjacent-Violators isotonic horizontal placement.</li>
-        <li><strong>Collapse Existing Theory Toggle:</strong> Contracts existing peer-reviewed proof subtrees into labeled literature supernodes showing collapsed module counts, weighted contracted import edges, and a compacted Sugiyama layout.</li>
+        <li><strong>Three Composable Simplification Toggles:</strong> Independently toggle <em>Collapse existing theory</em> (literature supernodes), <em>Hide redundant imports</em> (in-place Hasse transitive reduction), and <em>Collapse chains &amp; leaves</em> (folding simple leaves into weighted anchor nodes <code>[w]</code> and contracting pass-through chains onto weighted edges).</li>
         <li><strong>Pure Navigation View:</strong> Full-viewport WebGL rendering of every module and import edge with smooth zooming, panning, and progressive labels.</li>
       </ul>
       <div class="links">

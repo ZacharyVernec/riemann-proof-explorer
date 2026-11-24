@@ -28,7 +28,7 @@ BUILD_INDEX_SCRIPT = ROOT / "analysis" / "build_index.py"
 SRC_DIR = ROOT / "lean" / "src"
 
 MAGIC = b"LDAG"
-FORMAT_VERSION = 2
+FORMAT_VERSION = 3
 
 BASE_PALETTE = [
     "#2563eb",
@@ -1164,6 +1164,7 @@ def build_collapsed_dag(
         "raw_super_edge_cnt": raw_super_edge_cnt,
         "max_edge_weight": max_edge_weight,
         "weight_hist": weight_hist,
+        "c_sort_keys": c_sort_keys,
         "c_y": c_y,
         "c_x": c_x,
         "c_layer_dy": c_layer_dy,
@@ -1179,10 +1180,440 @@ def build_collapsed_dag(
         "c_super_titles": c_super_titles,
         "c_super_dom_top_dir": c_super_dom_top_dir,
         "c_super_adj_out": c_super_adj_out,
+        "c_adj_out": c_adj_out,
+        "c_weights_out": c_weights_out,
         "c_adj_in": c_adj_in,
         "c_weights_in": c_weights_in,
         "effective_dead_edges": effective_dead_edges,
         "peeled_barrels": peeled_barrels,
+    }
+
+
+def compute_transitive_reduction(
+    n_nodes: int,
+    adj_out: list[list[int]],
+    adj_in: list[list[int]],
+) -> tuple[list[list[int]], list[list[int]]]:
+    """Compute exact transitive reduction (Hasse diagram) via striped Python int bitsets."""
+    in_rem = [len(adj_in[i]) for i in range(n_nodes)]
+    q: deque[int] = deque(i for i in range(n_nodes) if in_rem[i] == 0)
+    topo: list[int] = []
+    while q:
+        u = q.popleft()
+        topo.append(u)
+        for v in adj_out[u]:
+            in_rem[v] -= 1
+            if in_rem[v] == 0:
+                q.append(v)
+    if len(topo) != n_nodes:
+        raise RuntimeError(f"Transitive reduction failed: processed {len(topo)} of {n_nodes} nodes")
+
+    topo_pos = [0] * n_nodes
+    for idx, u in enumerate(topo):
+        topo_pos[u] = idx
+
+    stripe_size = 16384
+    tr_out: list[list[int]] = [[] for _ in range(n_nodes)]
+    for start in range(0, n_nodes, stripe_size):
+        end = min(n_nodes, start + stripe_size)
+        reach1 = [0] * n_nodes
+        for pos in range(end - 1, -1, -1):
+            u = topo[pos]
+            outs = adj_out[u]
+            if not outs:
+                continue
+            r2 = 0
+            r1 = 0
+            for v in outs:
+                rv = reach1[v]
+                if rv:
+                    r2 |= rv
+                    r1 |= rv
+                pv = topo_pos[v]
+                if start <= pv < end:
+                    r1 |= 1 << (pv - start)
+            reach1[u] = r1
+            for v in outs:
+                pv = topo_pos[v]
+                if start <= pv < end and not ((r2 >> (pv - start)) & 1):
+                    tr_out[u].append(v)
+
+    tr_in: list[list[int]] = [[] for _ in range(n_nodes)]
+    for u in range(n_nodes):
+        tr_out[u].sort()
+        for v in tr_out[u]:
+            tr_in[v].append(u)
+    return tr_out, tr_in
+
+
+def pack_edge_bitmask(bits: list[bool]) -> bytes:
+    """Pack boolean list little-endian (bit i at byte i>>3, mask 1<<(i&7))."""
+    out = bytearray((len(bits) + 7) // 8)
+    for i, b in enumerate(bits):
+        if b:
+            out[i >> 3] |= 1 << (i & 7)
+    return bytes(out)
+
+
+def simplify_chains_and_leaves(
+    n_nodes: int,
+    adj_out: list[list[int]],
+    adj_in: list[list[int]],
+    init_node_weights: list[int],
+    init_edge_mults: list[dict[int, int]] | None,
+    protected_nodes: set[int],
+    node_full_ids: list[int],
+) -> dict[str, Any]:
+    """2-phase fixed-point collapse: simple leaves fold into parent nw; (1,1) chains contract onto edges."""
+    edge_m: list[dict[int, int]] = [
+        {v: (init_edge_mults[u][v] if init_edge_mults is not None else 1) for v in adj_out[u]}
+        for u in range(n_nodes)
+    ]
+    edge_c: list[dict[int, int]] = [{v: 0 for v in adj_out[u]} for u in range(n_nodes)]
+    edge_c_leaves: list[dict[int, int]] = [{v: 0 for v in adj_out[u]} for u in range(n_nodes)]
+    edge_c_chains: list[dict[int, int]] = [{v: 0 for v in adj_out[u]} for u in range(n_nodes)]
+    adj_i: list[set[int]] = [set(adj_in[u]) for u in range(n_nodes)]
+
+    nw = list(init_node_weights)
+    abs_leaves = [0] * n_nodes
+    abs_chains = [0] * n_nodes
+    rep_full_id = [-1] * n_nodes
+    rep_weight = [0] * n_nodes
+    alive = [True] * n_nodes
+
+    leaves_removed = 0
+    chains_removed = 0
+    init_total_weight = sum(init_node_weights)
+
+    changed = True
+    while changed:
+        changed = False
+        # Phase 1: Peel all unprotected simple leaves (in=1, out=0) iteratively
+        lq: deque[int] = deque(
+            u
+            for u in range(n_nodes)
+            if alive[u] and u not in protected_nodes and len(adj_i[u]) == 1 and len(edge_m[u]) == 0
+        )
+        while lq:
+            u = lq.popleft()
+            if not alive[u] or u in protected_nodes or len(adj_i[u]) != 1 or len(edge_m[u]) != 0:
+                continue
+            p = next(iter(adj_i[u]))
+            alive[u] = False
+            adj_i[u].clear()
+            leaves_removed += 1
+            changed = True
+
+            edge_m[p].pop(u)
+            c_pu = edge_c[p].pop(u)
+            cl_pu = edge_c_leaves[p].pop(u)
+            cc_pu = edge_c_chains[p].pop(u)
+
+            cand_w = nw[u] + c_pu
+            nw[p] += cand_w
+            abs_leaves[p] += 1 + abs_leaves[u] + cl_pu
+            abs_chains[p] += abs_chains[u] + cc_pu
+
+            cand_fid = node_full_ids[u] if rep_full_id[u] == -1 else rep_full_id[u]
+            if cand_w > rep_weight[p] or (
+                cand_w == rep_weight[p] and (rep_full_id[p] == -1 or cand_fid < rep_full_id[p])
+            ):
+                rep_full_id[p] = cand_fid
+                rep_weight[p] = cand_w
+
+            if alive[p] and p not in protected_nodes and len(adj_i[p]) == 1 and len(edge_m[p]) == 0:
+                lq.append(p)
+
+        # Phase 2: Contract all unprotected pass-through (1,1) nodes deterministically
+        cq: deque[int] = deque(
+            u
+            for u in range(n_nodes)
+            if alive[u] and u not in protected_nodes and len(adj_i[u]) == 1 and len(edge_m[u]) == 1
+        )
+        while cq:
+            u = cq.popleft()
+            if not alive[u] or u in protected_nodes or len(adj_i[u]) != 1 or len(edge_m[u]) != 1:
+                continue
+            p = next(iter(adj_i[u]))
+            c = next(iter(edge_m[u]))
+            if p == c:
+                raise RuntimeError(f"Self-loop encountered during chain contraction at node {u}")
+            alive[u] = False
+            adj_i[u].clear()
+            chains_removed += 1
+            changed = True
+
+            m_pu = edge_m[p].pop(u)
+            m_uc = edge_m[u].pop(c)
+            c_pu = edge_c[p].pop(u)
+            c_uc = edge_c[u].pop(c)
+            cl_pu = edge_c_leaves[p].pop(u)
+            cl_uc = edge_c_leaves[u].pop(c)
+            cc_pu = edge_c_chains[p].pop(u)
+            cc_uc = edge_c_chains[u].pop(c)
+            adj_i[c].discard(u)
+
+            path_mult = max(m_pu, m_uc)
+            added_c = c_pu + c_uc + nw[u]
+            added_cl = cl_pu + cl_uc + abs_leaves[u]
+            added_cc = cc_pu + cc_uc + 1 + abs_chains[u]
+
+            if c in edge_m[p]:
+                edge_m[p][c] += path_mult
+                edge_c[p][c] += added_c
+                edge_c_leaves[p][c] += added_cl
+                edge_c_chains[p][c] += added_cc
+            else:
+                edge_m[p][c] = path_mult
+                edge_c[p][c] = added_c
+                edge_c_leaves[p][c] = added_cl
+                edge_c_chains[p][c] = added_cc
+                adj_i[c].add(p)
+
+            if alive[p] and p not in protected_nodes and len(adj_i[p]) == 1 and len(edge_m[p]) == 1:
+                cq.append(p)
+            if alive[c] and c not in protected_nodes and len(adj_i[c]) == 1 and len(edge_m[c]) == 1:
+                cq.append(c)
+
+    surviving = [u for u in range(n_nodes) if alive[u]]
+    total_nw = sum(nw[u] for u in surviving)
+    total_ec = sum(c_val for u in surviving for c_val in edge_c[u].values())
+    if total_nw + total_ec != init_total_weight:
+        raise RuntimeError(
+            f"Module conservation violated: node_w({total_nw}) + edge_chain({total_ec}) != {init_total_weight}"
+        )
+
+    for u in surviving:
+        if u not in protected_nodes:
+            if 1 + abs_leaves[u] + abs_chains[u] != nw[u]:
+                raise RuntimeError(f"Weight decomposition mismatch at node {u}: 1+{abs_leaves[u]}+{abs_chains[u]} != {nw[u]}")
+            if len(adj_i[u]) == 1 and len(edge_m[u]) <= 1:
+                raise RuntimeError(f"Uncollapsed simple node remained: {u} (in={len(adj_i[u])}, out={len(edge_m[u])})")
+        for v in edge_m[u]:
+            if edge_c_leaves[u][v] + edge_c_chains[u][v] != edge_c[u][v]:
+                raise RuntimeError(f"Edge chain split mismatch on {u}->{v}")
+
+    return {
+        "surviving": surviving,
+        "nw": nw,
+        "abs_leaves": abs_leaves,
+        "abs_chains": abs_chains,
+        "rep_full_id": rep_full_id,
+        "edge_m": edge_m,
+        "edge_c": edge_c,
+        "leaves_removed": leaves_removed,
+        "chains_removed": chains_removed,
+        "total_nw": total_nw,
+        "total_ec": total_ec,
+    }
+
+
+def build_simplified_view(
+    simp: dict[str, Any],
+    sort_keys: list[str],
+    node_full_ids: list[int],
+    full_rel_path: list[str],
+    full_order: list[int],
+    c_super_titles: list[str],
+    y_iters: int,
+    x_sweeps: int,
+) -> dict[str, Any]:
+    """Compute weighted Sugiyama layout and binary sections for a simplified DAG view."""
+    surviving = simp["surviving"]
+    n_s = len(surviving)
+    old_to_dense = {old_u: i for i, old_u in enumerate(surviving)}
+
+    s_sort_keys = [sort_keys[u] for u in surviving]
+    s_adj_out: list[list[int]] = [[] for _ in range(n_s)]
+    s_adj_in: list[list[int]] = [[] for _ in range(n_s)]
+    s_w_out: list[list[int]] = [[] for _ in range(n_s)]
+    s_w_in: list[list[int]] = [[] for _ in range(n_s)]
+
+    edge_m = simp["edge_m"]
+    edge_c = simp["edge_c"]
+    for i, old_u in enumerate(surviving):
+        targets = sorted(old_to_dense[old_v] for old_v in edge_m[old_u].keys())
+        s_adj_out[i] = targets
+        for j in targets:
+            old_v = surviving[j]
+            w_tot = edge_m[old_u][old_v] + edge_c[old_u][old_v]
+            s_w_out[i].append(w_tot)
+            s_adj_in[j].append(i)
+            s_w_in[j].append(w_tot)
+
+    s_y, s_x, s_layer_dy, s_metrics = compute_layout(
+        s_sort_keys,
+        s_adj_out,
+        s_adj_in,
+        y_iters,
+        x_sweeps,
+        edge_weights_out=s_w_out,
+        edge_weights_in=s_w_in,
+    )
+    s_num_layers = (max(s_y) + 1) if n_s else 0
+
+    s_order = sorted(range(n_s), key=lambda u: (s_y[u], s_x[u], s_sort_keys[u]))
+    s_dense_to_canon = [0] * n_s
+    for new_sid, dense_id in enumerate(s_order):
+        s_dense_to_canon[dense_id] = new_sid
+
+    s_layer_offsets = [0] * (s_num_layers + 1)
+    prev_layer = -1
+    prev_x = 0.0
+    s_min_gap = float("inf")
+    for new_sid, dense_id in enumerate(s_order):
+        ly = s_y[dense_id]
+        xv = s_x[dense_id]
+        if ly != prev_layer:
+            for fill_l in range(prev_layer + 1, ly + 1):
+                s_layer_offsets[fill_l] = new_sid
+            prev_layer = ly
+        else:
+            gap = xv - prev_x
+            if gap < s_min_gap:
+                s_min_gap = gap
+            if gap < 1.0 - 1e-4:
+                raise RuntimeError(f"Simplified layer {ly} spacing violation at node {new_sid}: gap={gap}")
+        prev_x = xv
+    for fill_l in range(prev_layer + 1, s_num_layers + 1):
+        s_layer_offsets[fill_l] = n_s
+
+    s_node_x_f32 = [struct.unpack("<f", struct.pack("<f", s_x[dense_id]))[0] for dense_id in s_order]
+    s_node_full_id = [node_full_ids[surviving[dense_id]] for dense_id in s_order]
+
+    nw = simp["nw"]
+    abs_leaves = simp["abs_leaves"]
+    abs_chains = simp["abs_chains"]
+    rep_full_id = simp["rep_full_id"]
+
+    weighted_node_records: list[tuple[int, int, int, int, int]] = []
+    max_node_weight = 1
+    for new_sid, dense_id in enumerate(s_order):
+        old_u = surviving[dense_id]
+        fid = s_node_full_id[new_sid]
+        if fid >= 0 and nw[old_u] > 1:
+            w_val = nw[old_u]
+            if w_val > max_node_weight:
+                max_node_weight = w_val
+            weighted_node_records.append(
+                (new_sid, w_val, abs_leaves[old_u], abs_chains[old_u], rep_full_id[old_u])
+            )
+
+    # Canonical edges and 1-bit-flagged LEB128 edge stream
+    canon_edges: list[list[tuple[int, int, int]]] = [[] for _ in range(n_s)]
+    edge_count = 0
+    weighted_edge_count = 0
+    chain_edge_count = 0
+    max_edge_weight = 1
+    max_edge_mult = 1
+    max_edge_chain = 0
+
+    for dense_u, old_u in enumerate(surviving):
+        nu = s_dense_to_canon[dense_u]
+        pairs: list[tuple[int, int, int]] = []
+        for old_v, mult in edge_m[old_u].items():
+            nv = s_dense_to_canon[old_to_dense[old_v]]
+            if nu >= nv:
+                raise RuntimeError(f"Simplified canonical ID invariant violated: {nu} -> {nv}")
+            ch = edge_c[old_u][old_v]
+            pairs.append((nv, mult, ch))
+            edge_count += 1
+            wtot = mult + ch
+            if wtot >= 2:
+                weighted_edge_count += 1
+            if ch > 0:
+                chain_edge_count += 1
+            if wtot > max_edge_weight:
+                max_edge_weight = wtot
+            if mult > max_edge_mult:
+                max_edge_mult = mult
+            if ch > max_edge_chain:
+                max_edge_chain = ch
+        pairs.sort()
+        canon_edges[nu] = pairs
+
+    edge_buf = bytearray()
+    for nu in range(n_s):
+        pairs = canon_edges[nu]
+        encode_varint(edge_buf, len(pairs))
+        prev_v = 0
+        for nv, mult, ch in pairs:
+            is_w = 1 if (mult != 1 or ch != 0) else 0
+            encode_varint(edge_buf, ((nv - prev_v) << 1) | is_w)
+            if is_w:
+                encode_varint(edge_buf, mult)
+                encode_varint(edge_buf, ch)
+            prev_v = nv
+
+    xmin = min(s_node_x_f32, default=0.0)
+    xmax = max(s_node_x_f32, default=0.0)
+    ymin = 0.0
+    ymax = round(max(0, s_num_layers - 1) * s_layer_dy, 4)
+
+    def _label_for_fid(fid: int) -> str:
+        if fid >= 0:
+            return full_rel_path[full_order[fid]]
+        return f"[Literature] {c_super_titles[-(fid + 1)]}"
+
+    top_weighted_nodes = [
+        {
+            "rel_path": full_rel_path[full_order[s_node_full_id[rec[0]]]],
+            "weight": rec[1],
+            "absorbed_leaves": rec[2],
+            "absorbed_chains": rec[3],
+            "rep_rel_path": full_rel_path[full_order[rec[4]]] if rec[4] >= 0 else None,
+        }
+        for rec in sorted(weighted_node_records, key=lambda r: (-r[1], r[0]))[:10]
+    ]
+
+    top_edges_raw: list[tuple[int, int, int, int, int]] = []
+    for nu in range(n_s):
+        for nv, mult, ch in canon_edges[nu]:
+            if mult + ch >= 2:
+                top_edges_raw.append((mult + ch, ch, mult, nu, nv))
+    top_edges_raw.sort(key=lambda t: (-t[0], -t[1], -t[2], t[3], t[4]))
+    top_weighted_edges = [
+        {
+            "src": _label_for_fid(s_node_full_id[nu]),
+            "dst": _label_for_fid(s_node_full_id[nv]),
+            "weight": wtot,
+            "mult": mult,
+            "chain": ch,
+        }
+        for wtot, ch, mult, nu, nv in top_edges_raw[:10]
+    ]
+
+    summary_meta = {
+        "node_count": n_s,
+        "edge_count": edge_count,
+        "num_layers": s_num_layers,
+        "layer_dy": s_layer_dy,
+        "min_intra_layer_gap": round(s_min_gap, 4) if math.isfinite(s_min_gap) else None,
+        "bounds": {"xmin": xmin, "xmax": xmax, "ymin": ymin, "ymax": ymax},
+        "aspect_ratio": round((xmax - xmin) / max(1e-6, ymax - ymin), 3),
+        "leaves_removed": simp["leaves_removed"],
+        "chains_removed": simp["chains_removed"],
+        "weighted_node_count": len(weighted_node_records),
+        "max_node_weight": max_node_weight,
+        "weighted_edge_count": weighted_edge_count,
+        "chain_edge_count": chain_edge_count,
+        "max_edge_weight": max_edge_weight,
+        "max_edge_mult": max_edge_mult,
+        "max_edge_chain": max_edge_chain,
+        "total_node_weight": simp["total_nw"],
+        "total_edge_chain_weight": simp["total_ec"],
+        "layout_metrics": s_metrics,
+        "top_weighted_nodes": top_weighted_nodes,
+        "top_weighted_edges": top_weighted_edges,
+    }
+
+    return {
+        "layer_offsets": s_layer_offsets,
+        "node_x_f32": s_node_x_f32,
+        "node_full_id": s_node_full_id,
+        "weighted_node_records": weighted_node_records,
+        "edge_buf": edge_buf,
+        "summary": summary_meta,
     }
 
 
@@ -1248,13 +1679,17 @@ def main() -> None:
         layer_offsets[fill_l] = n_mod
 
     new_adj_out: list[list[int]] = [[] for _ in range(n_mod)]
+    new_adj_in: list[list[int]] = [[] for _ in range(n_mod)]
     for old_u in range(n_mod):
         nu = old_to_new[old_u]
         targets = sorted(old_to_new[old_v] for old_v in adj_out[old_u])
         for nv in targets:
             if nu >= nv:
                 raise RuntimeError(f"Canonical ID ordering invariant violated: {nu} -> {nv}")
+            new_adj_in[nv].append(nu)
         new_adj_out[nu] = targets
+    for nu in range(n_mod):
+        new_adj_in[nu].sort()
 
     # Stage B: Existing-theory identification & collapsed DAG layout
     t_col = time.time()
@@ -1373,6 +1808,122 @@ def main() -> None:
         (old_to_new[u], old_to_new[v]) for u, v in col_res["effective_dead_edges"]
     )
 
+    # Stage C: Transitive reduction (Hasse bitmasks) & 4 chain/leaf-simplified views
+    t_v3 = time.time()
+    full_tr_out, full_tr_in = compute_transitive_reduction(n_mod, new_adj_out, new_adj_in)
+    full_tr_sets = [set(nbrs) for nbrs in full_tr_out]
+    full_hasse_bits = [nv in full_tr_sets[nu] for nu in range(n_mod) for nv in new_adj_out[nu]]
+    full_hasse_edge_count = sum(len(nbrs) for nbrs in full_tr_out)
+    if len(full_hasse_bits) != n_edges or sum(1 for b in full_hasse_bits if b) != full_hasse_edge_count:
+        raise RuntimeError("Full Hasse bitmask count mismatch")
+    full_hasse_mask = pack_edge_bitmask(full_hasse_bits)
+
+    # Canonical existing-theory adjacency in exact JS CSR emission order
+    full_to_c = [-1] * n_mod
+    for cu, fid in enumerate(c_node_full_id):
+        if fid >= 0:
+            full_to_c[fid] = cu
+    dead_set = set(dead_edges_canonical)
+    c_can_out: list[list[int]] = [[] for _ in range(n_c)]
+    c_can_in: list[list[int]] = [[] for _ in range(n_c)]
+    c_can_em: list[dict[int, int]] = [{} for _ in range(n_c)]
+    c_can_edge_seq: list[list[int]] = [[] for _ in range(n_c)]
+    for cu in range(n_c):
+        fid = c_node_full_id[cu]
+        if fid >= 0:
+            for fv in new_adj_out[fid]:
+                cv = full_to_c[fv]
+                if cv >= 0 and (fid, fv) not in dead_set:
+                    c_can_edge_seq[cu].append(cv)
+                    c_can_em[cu][cv] = 1
+            for cv, w in col_res["c_super_adj_out"][cu]:
+                c_can_edge_seq[cu].append(cv)
+                c_can_em[cu][cv] = w
+        c_can_out[cu] = sorted(c_can_em[cu].keys())
+        for cv in c_can_out[cu]:
+            c_can_in[cv].append(cu)
+    for cv in range(n_c):
+        c_can_in[cv].sort()
+
+    c_tr_out, c_tr_in = compute_transitive_reduction(n_c, c_can_out, c_can_in)
+    c_tr_sets = [set(nbrs) for nbrs in c_tr_out]
+    existing_edge_count = col_res["active_edge_cnt"] + col_res["super_edge_cnt"]
+    existing_hasse_bits = [cv in c_tr_sets[cu] for cu in range(n_c) for cv in c_can_edge_seq[cu]]
+    existing_hasse_edge_count = sum(len(nbrs) for nbrs in c_tr_out)
+    if (
+        len(existing_hasse_bits) != existing_edge_count
+        or sum(1 for b in existing_hasse_bits if b) != existing_hasse_edge_count
+    ):
+        raise RuntimeError("Existing-theory Hasse bitmask count mismatch")
+    existing_hasse_mask = pack_edge_bitmask(existing_hasse_bits)
+
+    full_sort_keys = [rel_path[old_id] for old_id in order]
+    full_node_ids = list(range(n_mod))
+    full_init_nw = [1] * n_mod
+
+    c_can_sort_keys = [col_res["c_sort_keys"][old_cid] for old_cid in col_res["c_order"]]
+    c_can_nw = [1 if fid >= 0 else col_res["c_super_counts"][-(fid + 1)] for fid in c_node_full_id]
+    c_protected = {cu for cu, fid in enumerate(c_node_full_id) if fid < 0}
+    c_tr_em = [{cv: c_can_em[cu][cv] for cv in c_tr_out[cu]} for cu in range(n_c)]
+    c_super_titles = col_res["c_super_titles"]
+
+    simp_specs = [
+        ("full_simp", n_mod, new_adj_out, new_adj_in, full_init_nw, None, set(), full_node_ids, full_sort_keys),
+        ("full_hasse_simp", n_mod, full_tr_out, full_tr_in, full_init_nw, None, set(), full_node_ids, full_sort_keys),
+        ("existing_simp", n_c, c_can_out, c_can_in, c_can_nw, c_can_em, c_protected, c_node_full_id, c_can_sort_keys),
+        (
+            "existing_hasse_simp",
+            n_c,
+            c_tr_out,
+            c_tr_in,
+            c_can_nw,
+            c_tr_em,
+            c_protected,
+            c_node_full_id,
+            c_can_sort_keys,
+        ),
+    ]
+
+    simplified_views: dict[str, dict[str, Any]] = {}
+    for skey, s_n, s_out, s_in, s_nw, s_em, s_prot, s_fids, s_keys in simp_specs:
+        simp_raw = simplify_chains_and_leaves(s_n, s_out, s_in, s_nw, s_em, s_prot, s_fids)
+        view_pack = build_simplified_view(
+            simp_raw,
+            s_keys,
+            s_fids,
+            rel_path,
+            order,
+            c_super_titles,
+            args.y_iters,
+            args.x_sweeps,
+        )
+        simplified_views[skey] = view_pack
+        sm = view_pack["summary"]
+        print(
+            f"  [{skey}] {sm['node_count']:,} nodes, {sm['edge_count']:,} edges, {sm['num_layers']} layers "
+            f"(−{sm['leaves_removed']:,} leaves, −{sm['chains_removed']:,} chains; "
+            f"weighted nodes={sm['weighted_node_count']:,}, weighted edges={sm['weighted_edge_count']:,})"
+        )
+    print(f"Computed Hasse masks & 4 simplified views in {time.time() - t_v3:.2f}s")
+
+    simp_header_meta: dict[str, Any] = {}
+    for skey, _, _, _, _, _, _, _, _ in simp_specs:
+        sm = simplified_views[skey]["summary"]
+        simp_header_meta[skey] = {
+            "node_count": sm["node_count"],
+            "edge_count": sm["edge_count"],
+            "num_layers": sm["num_layers"],
+            "layer_dy": sm["layer_dy"],
+            "bounds": sm["bounds"],
+            "weighted_node_count": sm["weighted_node_count"],
+            "weighted_edge_count": sm["weighted_edge_count"],
+            "leaves_removed": sm["leaves_removed"],
+            "chains_removed": sm["chains_removed"],
+            "max_node_weight": sm["max_node_weight"],
+            "max_edge_weight": sm["max_edge_weight"],
+            "layout_metrics": sm["layout_metrics"],
+        }
+
     header_obj = {
         "node_count": n_mod,
         "edge_count": n_edges,
@@ -1389,7 +1940,7 @@ def main() -> None:
             "collapsed_module_count": collapsed_mod_count,
             "frontier_module_count": len(col_res["frontier_set"]),
             "interior_module_count": len(col_res["collapsed_interior"]),
-            "edge_count": col_res["active_edge_cnt"] + col_res["super_edge_cnt"],
+            "edge_count": existing_edge_count,
             "active_edge_count": col_res["active_edge_cnt"],
             "super_edge_count": col_res["super_edge_cnt"],
             "raw_super_edge_count": col_res["raw_super_edge_cnt"],
@@ -1400,6 +1951,17 @@ def main() -> None:
             "dead_edge_count": len(dead_edges_canonical),
             "layout_metrics": col_res["c_metrics"],
         },
+        "full_hasse": {
+            "edge_count": full_hasse_edge_count,
+            "redundant_edge_count": n_edges - full_hasse_edge_count,
+            "bitmask_bytes": len(full_hasse_mask),
+        },
+        "existing_hasse": {
+            "edge_count": existing_hasse_edge_count,
+            "redundant_edge_count": existing_edge_count - existing_hasse_edge_count,
+            "bitmask_bytes": len(existing_hasse_mask),
+        },
+        "simplified": simp_header_meta,
     }
     header_bytes = json.dumps(header_obj, separators=(",", ":")).encode("utf-8")
 
@@ -1416,7 +1978,7 @@ def main() -> None:
     dir_blob = "\n".join(unique_dirs).encode("utf-8")
     name_blob = "\n".join(short_names).encode("utf-8")
 
-    # Assemble 4-byte-aligned little-endian LDAG v2 binary payload
+    # Assemble 4-byte-aligned little-endian LDAG v3 binary payload
     raw_buf = bytearray()
     raw_buf.extend(MAGIC)
     raw_buf.extend(struct.pack("<II", FORMAT_VERSION, len(header_bytes)))
@@ -1473,6 +2035,36 @@ def main() -> None:
     raw_buf.extend(struct.pack("<I", len(dead_edges_canonical)))
     for du, dv in dead_edges_canonical:
         raw_buf.extend(struct.pack("<II", du, dv))
+
+    # v3 Hasse bitmasks
+    raw_buf.extend(struct.pack("<I", len(full_hasse_mask)))
+    raw_buf.extend(full_hasse_mask)
+    pad4(raw_buf)
+
+    raw_buf.extend(struct.pack("<I", len(existing_hasse_mask)))
+    raw_buf.extend(existing_hasse_mask)
+    pad4(raw_buf)
+
+    # v3 Simplified view sections
+    simp_edge_bytes_total = 0
+    for skey, _, _, _, _, _, _, _, _ in simp_specs:
+        vp = simplified_views[skey]
+        sm = vp["summary"]
+        s_n = sm["node_count"]
+        s_layers = sm["num_layers"]
+        recs = vp["weighted_node_records"]
+        s_ebuf = vp["edge_buf"]
+        simp_edge_bytes_total += len(s_ebuf)
+
+        raw_buf.extend(struct.pack(f"<{s_layers + 1}I", *vp["layer_offsets"]))
+        raw_buf.extend(struct.pack(f"<{s_n}f", *vp["node_x_f32"]))
+        raw_buf.extend(struct.pack(f"<{s_n}i", *vp["node_full_id"]))
+        raw_buf.extend(struct.pack("<I", len(recs)))
+        for nid_w, w_val, a_l, a_c, r_fid in recs:
+            raw_buf.extend(struct.pack("<IIHHi", nid_w, w_val, min(65535, a_l), min(65535, a_c), r_fid))
+        raw_buf.extend(struct.pack("<I", len(s_ebuf)))
+        raw_buf.extend(s_ebuf)
+        pad4(raw_buf)
 
     gz_bytes = gzip.compress(bytes(raw_buf), compresslevel=9, mtime=0)
     b64_str = base64.b64encode(gz_bytes).decode("ascii")
@@ -1600,6 +2192,12 @@ def main() -> None:
         "roots": roots,
         "top_in_degree_hubs": hubs_summary,
         "collapsed": collapsed_summary,
+        "full_hasse": header_obj["full_hasse"],
+        "existing_hasse": header_obj["existing_hasse"],
+        "simplified": {
+            skey: simplified_views[skey]["summary"]
+            for skey, _, _, _, _, _, _, _, _ in simp_specs
+        },
         "payload": {
             "format_version": FORMAT_VERSION,
             "raw_binary_bytes": len(raw_buf),
@@ -1607,6 +2205,9 @@ def main() -> None:
             "js_file_bytes": data_js_path.stat().st_size,
             "edge_varint_bytes": len(edge_buf),
             "c_super_edges_bytes": len(c_super_edges_buf),
+            "full_hasse_mask_bytes": len(full_hasse_mask),
+            "existing_hasse_mask_bytes": len(existing_hasse_mask),
+            "simplified_edge_varint_bytes": simp_edge_bytes_total,
             "name_blob_bytes": len(name_blob),
             "dir_blob_bytes": len(dir_blob),
         },

@@ -734565,6 +734565,7 @@
         "Development": 2374,
         "Formalism": 5
       },
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 2379,
       "importing_d2_dirs": {
         "Development/AbelianVarietyTheory": 2008,
@@ -734574,6 +734575,14 @@
         "Formalism/SharpRestriction": 2,
         "Development/AutomorphicArithmetic": 1
       },
+      "imported_d2_dirs": {},
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [],
+      "tr_analyzed_dependents": [
+        "Development/WeilBound/RepresentationTheoryGL/RegularisedSiegelWeil/ThetaIdempotents/HeckeEta.lean",
+        "ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/ExtensionDescent/UnifUniqSt.lean"
+      ],
       "plain_english_summary": "Core geometric interface contract across Development and Formalism. Packages PEL-type Shimura toroidal boundary uniformisation (PELUnif, UniformisationConclusion, Model.N3), torsion identification with Mumford quotients compatible with O_E-action and Weil pairings (PELUnif.TorsionIso), formal-arc period data (TateIsoQ, ArcIn, Model.HasArcData, Model.N4), and the global toroidal compactification theorem PartI.",
       "key_exports": [
         {
@@ -734748,10 +734757,24 @@
       "importing_top_dirs": {
         "Development": 2283
       },
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 2283,
       "importing_d2_dirs": {
         "Development/AbelianVarietyTheory": 2283
       },
+      "imported_d2_dirs": {},
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [
+        "ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/BirationalGeometry/ToroidalCompactification/UniformisationConclusion.lean",
+        "ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/ExtensionDescent/SecBaseChangeAnySt.lean"
+      ],
+      "tr_analyzed_dependents": [
+        "CompanionTheory/AutomorphicTheory/TemperedLocalSpectra/ObstructionLifting/H1StructureDimLe.lean",
+        "Development/AbelianVarietyTheory/Definitions/AutomorphicMembership/Brauer.lean",
+        "Development/DiscreteGroups/PiInvariants/CompactSupportTwists/PiVecExHolds.lean",
+        "Formalism/GammaFactorNonvanishing/CritLine.lean"
+      ],
       "plain_english_summary": "States UnifUniqSt (wrapped in Laws6): uniqueness of Mumford semiabelian uniformisations U, U' sharing the same polarized semiabelian scheme G and compatible rigidified line bundle isomorphism wL, giving a canonical isomorphism of degeneration data compatible with theta sections, thick-level coordinates, and O-actions.",
       "key_exports": [
         {
@@ -734803,6 +734826,7 @@
         "Development": 1425,
         "Formalism": 4
       },
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 1429,
       "importing_d2_dirs": {
         "Development/AbelianVarietyTheory": 1273,
@@ -734811,6 +734835,17 @@
         "Formalism/LocalToGlobal": 4,
         "Development/AutomorphicArithmetic": 1
       },
+      "imported_d2_dirs": {},
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [],
+      "tr_analyzed_dependents": [
+        "CompanionTheory/AutomorphicTheory/TemperedLocalSpectra/ObstructionLifting/H1StructureDimLe.lean",
+        "Development/AbelianVarietyTheory/Definitions/AutomorphicMembership/Brauer.lean",
+        "Development/DiscreteGroups/PiInvariants/CompactSupportTwists/PiVecExHolds.lean",
+        "Development/WeilBound/RepresentationTheoryGL/RegularisedSiegelWeil/ThetaIdempotents/HeckeEta.lean",
+        "Formalism/GammaFactorNonvanishing/CritLine.lean"
+      ],
       "plain_english_summary": "Defines congruence-level automorphisms (Sim, Moduli.LevAut), finite etale level-compatibility across dividing levels (ToroidalLevelCompatibility), prime-to-level Hecke kernel subgroups (SAB.HeckeKer) and prime-to-level Hecke correspondences on toroidal compactifications (ToroidalHeckeCompatibility), bundled into N1.",
       "key_exports": [
         {
@@ -734929,10 +734964,23 @@
       "importing_top_dirs": {
         "Development": 1337
       },
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 1337,
       "importing_d2_dirs": {
         "Development/AbelianVarietyTheory": 1337
       },
+      "imported_d2_dirs": {},
+      "direct_analyzed_deps": [
+        "ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/ExtensionDescent/GlobalSectionsRankAlgClosed.lean"
+      ],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [
+        "ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/ExtensionDescent/GlobalSectionsRankAlgClosed.lean"
+      ],
+      "tr_analyzed_dependents": [
+        "Development/WeilBound/RepresentationTheoryGL/RegularisedSiegelWeil/ThetaIdempotents/HeckeEta.lean",
+        "ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/ExtensionDescent/UnifUniqSt.lean"
+      ],
       "plain_english_summary": "States four foundational theorems/laws for polarized abelian schemes (Laws2): local existence of base-change-compatible global section bases of L^n (SecBaseChangeAnySt), base-change and residue lifting for twisted bundles L^(q-1) otimes t_c^* L (SecTwistSt), Weil-pairing character duality for N-torsion over algebraically closed fields (CharPairSt), and density of the smooth locus (SmoothDenseSt).",
       "key_exports": [
         {
@@ -735031,6 +735079,7 @@
         "Development": 1201,
         "Formalism": 2
       },
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 1203,
       "importing_d2_dirs": {
         "Development/AbelianVarietyTheory": 1151,
@@ -735038,6 +735087,20 @@
         "Development/WeilBound": 4,
         "Formalism/LocalToGlobal": 2
       },
+      "imported_d2_dirs": {},
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [],
+      "tr_analyzed_dependents": [
+        "CompanionTheory/AutomorphicTheory/TemperedLocalSpectra/ObstructionLifting/H1StructureDimLe.lean",
+        "Development/AbelianVarietyTheory/Definitions/AutomorphicMembership/Brauer.lean",
+        "Development/AutomorphicArithmetic/AutomorphicVarieties/AutomorphicForms/LocIsotypic.lean",
+        "Development/AutomorphicArithmetic/AutomorphicVarieties/AutomorphicForms/RealTransport/RealTransport.lean",
+        "Development/AutomorphicSpectrum/Definitions/GlobalGeometry/BdryChart.lean",
+        "Development/DiscreteGroups/PiInvariants/CompactSupportTwists/PiVecExHolds.lean",
+        "Development/WeilBound/RepresentationTheoryGL/RegularisedSiegelWeil/ThetaIdempotents/HeckeEta.lean",
+        "Formalism/GammaFactorNonvanishing/CritLine.lean"
+      ],
       "plain_english_summary": "Formulates complex-analytic uniformisation of unitary Shimura varieties: polarized CM-type period maps (IsTypeFn, IsPeriod), holomorphic period families (IsHolPeriods), tangent-space identification via dual numbers (IsDerivAt0), Riemann theta frames (IsThetaFrame), and the global complex uniformisation bundle FamilyUnif / N1c.",
       "key_exports": [
         {
@@ -735131,12 +735194,22 @@
         "Development": 870,
         "ReciprocityTheory": 1
       },
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 871,
       "importing_d2_dirs": {
         "Development/AbelianVarietyTheory": 869,
         "Development/AutomorphicSpectrum": 1,
         "ReciprocityTheory/ReductiveGroups": 1
       },
+      "imported_d2_dirs": {},
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [],
+      "tr_analyzed_dependents": [
+        "CompanionTheory/AutomorphicTheory/TemperedLocalSpectra/ObstructionLifting/H1StructureDimLe.lean",
+        "Development/AbelianVarietyTheory/Definitions/AutomorphicMembership/Brauer.lean",
+        "Development/DiscreteGroups/PiInvariants/CompactSupportTwists/PiVecExHolds.lean"
+      ],
       "plain_english_summary": "Proves ThExprUniqSt from ChartIndepSt2: two formal differential operators nab_1, nab_2 acting on global sections of powers of the polarization line bundle L^k over a framed Shimura point y produce the exact same value on harmonic polynomials P when evaluated via local formal charts.",
       "key_exports": [
         {
@@ -735187,6 +735260,7 @@
       "importing_top_dirs": {
         "Development": 780
       },
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 902,
       "importing_d2_dirs": {
         "Development/AbelianVarietyTheory": 723,
@@ -735198,6 +735272,28 @@
         "Formalism/AdmissibleDesigns": 1,
         "Formalism/PeriodIntegrals": 1
       },
+      "imported_d2_dirs": {
+        "Formalism/SharpRestriction": 4
+      },
+      "direct_analyzed_deps": [
+        "Formalism/LocalRingCardinality/AdicCompletionLocal/LocTied.lean"
+      ],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [
+        "Formalism/LocalRingCardinality/AdicCompletionLocal/LocTied.lean"
+      ],
+      "tr_analyzed_dependents": [
+        "CompanionTheory/AutomorphicTheory/TemperedLocalSpectra/ObstructionLifting/H1StructureDimLe.lean",
+        "CompanionTheory/HarishChandraModules/LowKTypeMultiplicity/DiscreteSeriesCharacters/DiscreteSeriesInfinitesimalCharacter.lean",
+        "Development/AbelianVarietyTheory/Definitions/NonGaloisDescent/Langlands.lean",
+        "Development/AutomorphicArithmetic/AutomorphicVarieties/AutomorphicForms/LocIsotypic.lean",
+        "Development/AutomorphicArithmetic/AutomorphicVarieties/AutomorphicForms/RealTransport/RealTransport.lean",
+        "Development/DiscreteGroups/PiInvariants/CompactSupportTwists/PiVecExHolds.lean",
+        "Development/WeilBound/CoreStatements/TemperedRepresentationTheory/PlaneSupports/PlaneSupp.lean",
+        "Development/WeilBound/RepresentationTheoryGL/RegularisedSiegelWeil/ThetaIdempotents/HeckeEta.lean",
+        "Formalism/LocalToGlobal/IndefiniteReal/LinksStage.lean",
+        "PositivityTheory/Representations/BoundaryCones/ArchimedeanCones/ConeOverlaps/OpenConeCriteria/OpenConeFormulation/IsOpenConeInvariant.lean"
+      ],
       "plain_english_summary": "Defines self-dual Hermitian lattices (IsSDLat, SDLat), inert-prime indices (GIdx), and the central 200+ field packaging structure D7 that coordinates CM host fields, Shimura spaces, member column chains, relative Hermitian determinants (relDet), Fontaine period rings (loc, locA, locT), Galois representations and types (nd, ntw, naut, ntypes), and theta jets. Also states key compatibility conjectures/predicates (BuRational, bridge_cols_conj, FactDGam, AnisotropicLineIndepOfMember).",
       "key_exports": [
         {
@@ -735391,6 +735487,7 @@
       "importing_top_dirs": {
         "Development": 775
       },
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 775,
       "importing_d2_dirs": {
         "Development/AbelianVarietyTheory": 738,
@@ -735398,6 +735495,17 @@
         "Development/WeilBound": 6,
         "Development/AutomorphicArithmetic": 2
       },
+      "imported_d2_dirs": {
+        "Formalism/SharpRestriction": 1
+      },
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [
+        "Formalism/LocalRingCardinality/RhoDetPrimeEqMuTildeMulChiPow.lean"
+      ],
+      "tr_analyzed_deps": [],
+      "tr_analyzed_dependents": [
+        "Formalism/LocalRingCardinality/RhoDetPrimeEqMuTildeMulChiPow.lean"
+      ],
       "plain_english_summary": "Defines the structure LocTied tying an abstract local Fontaine period-ring package (P : LocPrime l, AI : LocAinf l P) to the canonical concrete period rings Per.Bcris l and Per.BdR l via Galois-, Frobenius-, filtration-, and t-compatible ring isomorphisms eB and eD.",
       "key_exports": [
         {
@@ -735438,6 +735546,7 @@
         "Development": 695,
         "Formalism": 3
       },
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 698,
       "importing_d2_dirs": {
         "Development/AbelianVarietyTheory": 396,
@@ -735445,6 +735554,15 @@
         "Development/WeilBound": 17,
         "Formalism/SharpRestriction": 3
       },
+      "imported_d2_dirs": {},
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [
+        "ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/ExtensionDescent/SecBaseChangeAnySt.lean"
+      ],
+      "tr_analyzed_deps": [],
+      "tr_analyzed_dependents": [
+        "ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/ExtensionDescent/SecBaseChangeAnySt.lean"
+      ],
       "plain_english_summary": "Defines the 24-field foundational algebraic-geometry contract Laws for polarized abelian schemes over arbitrary schemes: Riemann-Roch rank dim H^0(A, L^n) = n^g (GlobalSectionsRankAlgClosed), base change (SecBaseChangeSt), ampleness/projectivity (AmpleSt), Theorem of the Cube and Square (CubeSt, SquareSt), Rigidity (RigiditySt), Weil pairing nondegeneracy (WeilNondegSt), Mumford's theta-group irreducibility (IrredSt), Serre's torsion-rigidity lemma (SerreSt), finite-flat quotients (QuotientSt), and unramified complete DVR lifts (UnramExtSt).",
       "key_exports": [
         {
@@ -735628,12 +735746,31 @@
       "importing_top_dirs": {
         "Development": 649
       },
+      "imported_top_dirs": {
+        "ReciprocityTheory": 1
+      },
       "d2_ext_fan_in": 649,
       "importing_d2_dirs": {
         "Development/AbelianVarietyTheory": 642,
         "Development/AutomorphicArithmetic": 5,
         "Development/WeilBound": 2
       },
+      "imported_d2_dirs": {
+        "Formalism/WeaklyAdmissibleFiltrations": 2,
+        "ReciprocityTheory/BasicDefinitions": 1
+      },
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [],
+      "tr_analyzed_dependents": [
+        "CompanionTheory/AutomorphicTheory/TemperedLocalSpectra/ObstructionLifting/H1StructureDimLe.lean",
+        "Development/AbelianVarietyTheory/Definitions/NonGaloisDescent/Langlands.lean",
+        "Development/AutomorphicArithmetic/AutomorphicVarieties/AutomorphicForms/LocIsotypic.lean",
+        "Development/AutomorphicArithmetic/AutomorphicVarieties/AutomorphicForms/RealTransport/RealTransport.lean",
+        "Development/DiscreteGroups/PiInvariants/CompactSupportTwists/PiVecExHolds.lean",
+        "Development/WeilBound/RepresentationTheoryGL/RegularisedSiegelWeil/ThetaIdempotents/HeckeEta.lean",
+        "Formalism/GammaFactorNonvanishing/CritLine.lean"
+      ],
       "plain_english_summary": "Defines continuous p-adic Galois representations GRep over Q_p-extensions LL with integral rings O, de Rham representations (IsDR), Tate-twisted linear and lattice dualities (IsDual1, IsDualLat1), cup products (cupL, cupLD), and the local Bloch-Kato / Tate duality specifications bkACore, bkBCore, LocalTateTopDegree, TateFiniteness, and drDualCore.",
       "key_exports": [
         {
@@ -735787,11 +735924,22 @@
       "importing_top_dirs": {
         "Development": 563
       },
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 563,
       "importing_d2_dirs": {
         "Development/AbelianVarietyTheory": 562,
         "Development/AutomorphicArithmetic": 1
       },
+      "imported_d2_dirs": {},
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [],
+      "tr_analyzed_dependents": [
+        "CompanionTheory/AutomorphicTheory/TemperedLocalSpectra/ObstructionLifting/H1StructureDimLe.lean",
+        "Development/AbelianVarietyTheory/Definitions/AutomorphicMembership/Brauer.lean",
+        "Development/DiscreteGroups/PiInvariants/CompactSupportTwists/PiVecExHolds.lean",
+        "Formalism/GammaFactorNonvanishing/CritLine.lean"
+      ],
       "plain_english_summary": "Defines resolution of singularities and log-resolution specifications for Noetherian reduced quasi-excellent schemes (QERing, QE) with finite-Frobenius residue fields (FFinRes): Cartier blowups (Blowup), simple normal crossings (Snc, LSncAt), and global/local log-resolution theorems GFR, GFLogR, GFLogStR, LocLog0R.",
       "key_exports": [
         {
@@ -735959,12 +736107,25 @@
       "importing_top_dirs": {
         "Development": 523
       },
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 523,
       "importing_d2_dirs": {
         "Development/AbelianVarietyTheory": 507,
         "Development/AutomorphicArithmetic": 9,
         "Development/AutomorphicSpectrum": 7
       },
+      "imported_d2_dirs": {},
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [
+        "Formalism/LocalRingCardinality/RhoDetPrimeEqMuTildeMulChiPow.lean",
+        "Formalism/RealPlaceAnalysis/ThirdArithmeticHolds.lean",
+        "Formalism/SatakeDualWeyl/KpqSubgroupCompact.lean"
+      ],
+      "tr_analyzed_dependents": [
+        "Development/AbelianVarietyTheory/Definitions/AutomorphicMembership/Brauer.lean",
+        "Formalism/GammaFactorNonvanishing/CritLine.lean"
+      ],
       "plain_english_summary": "Defines the inductive construction stages (RealDat.Pre0, Pre1, upd1..upd6) and analytic/representation-theoretic input bundle Inputs for indefinite unitary theta lifts and seesaw/doubling identities on Hermitian spaces over CM fields: Cartan involutions (CartanOK), self-dual frames (SelfDualOK), Weil representations (FullY, FullP, VecTheta), fundamental-domain Petersson inner products (PetAll), and Schur multipliers (SchurAll).",
       "key_exports": [
         {
@@ -736217,10 +736378,25 @@
       "importing_top_dirs": {
         "Development": 482
       },
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 482,
       "importing_d2_dirs": {
         "Development/AbelianVarietyTheory": 482
       },
+      "imported_d2_dirs": {
+        "Formalism/QuotientMetricDivisors": 1
+      },
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [],
+      "tr_analyzed_dependents": [
+        "Development/AbelianVarietyTheory/Definitions/AutomorphicMembership/Brauer.lean",
+        "Development/AutomorphicArithmetic/AutomorphicVarieties/AutomorphicForms/LocIsotypic.lean",
+        "Development/AutomorphicArithmetic/AutomorphicVarieties/AutomorphicForms/RealTransport/RealTransport.lean",
+        "Development/DiscreteGroups/PiInvariants/CompactSupportTwists/PiVecExHolds.lean",
+        "Development/WeilBound/RepresentationTheoryGL/RegularisedSiegelWeil/ThetaIdempotents/HeckeEta.lean",
+        "Formalism/GammaFactorNonvanishing/CritLine.lean"
+      ],
       "plain_english_summary": "States the adelic product-formula and local-valuation height inequalities connecting non-archimedean divisibility valuations vA(w) to archimedean norm bounds of algebraic numbers a^12 / De^M and CM normalizing constants cmConst (HeightCore, HeightBoundOfLocalValuations, PlaceVaryingValuesBound, BBSize).",
       "key_exports": [
         {
@@ -736365,6 +736541,7 @@
         "CompanionTheory": 1,
         "ReciprocityTheory": 1
       },
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 380,
       "importing_d2_dirs": {
         "Development/AbelianVarietyTheory": 361,
@@ -736374,6 +736551,19 @@
         "Development/WeilBound": 1,
         "ReciprocityTheory/ReductiveGroups": 1
       },
+      "imported_d2_dirs": {},
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [],
+      "tr_analyzed_dependents": [
+        "CompanionTheory/AutomorphicTheory/TemperedLocalSpectra/ObstructionLifting/H1StructureDimLe.lean",
+        "Development/AbelianVarietyTheory/Definitions/NonGaloisDescent/Langlands.lean",
+        "Development/AutomorphicArithmetic/AutomorphicVarieties/AutomorphicForms/LocIsotypic.lean",
+        "Development/AutomorphicArithmetic/AutomorphicVarieties/AutomorphicForms/RealTransport/RealTransport.lean",
+        "Development/DiscreteGroups/PiInvariants/CompactSupportTwists/PiVecExHolds.lean",
+        "Development/WeilBound/RepresentationTheoryGL/RegularisedSiegelWeil/ThetaIdempotents/HeckeEta.lean",
+        "Formalism/GammaFactorNonvanishing/CritLine.lean"
+      ],
       "plain_english_summary": "Exports global Selmer-submodule length preservation under restriction to ramification-restricted Galois groups GS(S) (SelAllLeInf, SelAllLen) alongside the full local Galois cohomology package over arbitrary finite extensions K / Q_l (CycKSpec, LocalFinitenessK, LocalTateDualityK via cup products H^0 x H^2 -> Z/l^r and H^1 x H^1 -> Z/l^r, and LocalEulerCharK).",
       "key_exports": [
         {
@@ -736462,6 +736652,7 @@
         "Development": 303,
         "CompanionTheory": 2
       },
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 321,
       "importing_d2_dirs": {
         "Development/AbelianVarietyTheory": 291,
@@ -736476,6 +736667,19 @@
         "Formalism/LocalRingCardinality": 1,
         "Formalism/PeriodIntegrals": 1
       },
+      "imported_d2_dirs": {},
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [],
+      "tr_analyzed_dependents": [
+        "CompanionTheory/AutomorphicTheory/TemperedLocalSpectra/ObstructionLifting/H1StructureDimLe.lean",
+        "Development/AbelianVarietyTheory/Definitions/NonGaloisDescent/Langlands.lean",
+        "Development/AutomorphicArithmetic/AutomorphicVarieties/AutomorphicForms/LocIsotypic.lean",
+        "Development/AutomorphicArithmetic/AutomorphicVarieties/AutomorphicForms/RealTransport/RealTransport.lean",
+        "Development/DiscreteGroups/PiInvariants/CompactSupportTwists/PiVecExHolds.lean",
+        "Development/WeilBound/RepresentationTheoryGL/RegularisedSiegelWeil/ThetaIdempotents/HeckeEta.lean",
+        "Formalism/LocalToGlobal/IndefiniteReal/LinksStage.lean"
+      ],
       "plain_english_summary": "Realizes and exports 40+ proved theorems on adelic unitary groups U(J)(A_F), compact open level subgroups (KpqSubgroupCompact, StabFinite, ClassSetFinite), Cartan decompositions (CartanDecomp, CartanUnique), Hecke operators T_j and their Satake transforms (SatakeTj, SatakeInert, SatMul), spherical functions, and Weyl-module stability.",
       "key_exports": [
         {
@@ -736789,10 +736993,23 @@
       "importing_top_dirs": {
         "Development": 248
       },
+      "imported_top_dirs": {
+        "Development": 1
+      },
       "d2_ext_fan_in": 248,
       "importing_d2_dirs": {
         "Development/AbelianVarietyTheory": 248
       },
+      "imported_d2_dirs": {
+        "Development/AutomorphicArithmetic": 1
+      },
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [],
+      "tr_analyzed_dependents": [
+        "Development/AutomorphicArithmetic/AutomorphicVarieties/SmallClassNumbers/CorGKOf.lean",
+        "Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean"
+      ],
       "plain_english_summary": "Pure import facade ('import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.Newform') acting as a cross-directory alias for the classical newform interface.",
       "key_exports": [],
       "all_declarations": []
@@ -736821,6 +737038,7 @@
         "CompanionTheory": 59,
         "ReciprocityTheory": 1
       },
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 233,
       "importing_d2_dirs": {
         "Development/AbelianVarietyTheory": 108,
@@ -736835,6 +737053,23 @@
         "Formalism/HermitianCurvature": 1,
         "ReciprocityTheory/ReductiveGroups": 1
       },
+      "imported_d2_dirs": {},
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [],
+      "tr_analyzed_dependents": [
+        "CompanionTheory/AutomorphicTheory/TemperedLocalSpectra/ObstructionLifting/H1StructureDimLe.lean",
+        "CompanionTheory/HarishChandraModules/LowKTypeMultiplicity/DiscreteSeriesCharacters/DiscreteSeriesInfinitesimalCharacter.lean",
+        "Development/AbelianVarietyTheory/Definitions/NonGaloisDescent/Langlands.lean",
+        "Development/AutomorphicArithmetic/AutomorphicVarieties/AutomorphicForms/LocIsotypic.lean",
+        "Development/AutomorphicArithmetic/AutomorphicVarieties/AutomorphicForms/RealTransport/RealTransport.lean",
+        "Development/DiscreteGroups/PiInvariants/CompactSupportTwists/PiVecExHolds.lean",
+        "Development/WeilBound/CoreStatements/TemperedRepresentationTheory/PlaneSupports/PlaneSupp.lean",
+        "Development/WeilBound/RepresentationTheoryGL/RegularisedSiegelWeil/ThetaIdempotents/HeckeEta.lean",
+        "Formalism/HermitianCurvature/StatementTBB.lean",
+        "Formalism/LocalToGlobal/IndefiniteReal/LinksStage.lean",
+        "PositivityTheory/Representations/BoundaryCones/ArchimedeanCones/ConeOverlaps/OpenConeCriteria/OpenConeFormulation/IsOpenConeInvariant.lean"
+      ],
       "plain_english_summary": "Proves 18 algebraic and representation-theoretic identities for unitary gl_n-modules at archimedean places: Casimir eigenvalues on highest-weight vectors (casKHighest, casCentral), sum-of-squares and W-D Casimir identities (sumSq, wdCas), unitary spectral gap (uGap), Taylor analyticity bounds (growthIter, taylorRadius), and Capelli/quantum-determinant relations (qSkewRow, qDetHW, qDetCentral, qComatrix).",
       "key_exports": [
         {
@@ -736983,11 +737218,20 @@
       "importing_top_dirs": {
         "Development": 199
       },
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 199,
       "importing_d2_dirs": {
         "Development/AutomorphicSpectrum": 173,
         "Development/WeilBound": 26
       },
+      "imported_d2_dirs": {},
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [],
+      "tr_analyzed_dependents": [
+        "Development/AutomorphicArithmetic/AutomorphicVarieties/SmallClassNumbers/CorGKOf.lean",
+        "Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean"
+      ],
       "plain_english_summary": "States Arakelov/DVR vertical-intersection pairing independence theorems: invariance of local pairing numbers pairNum under different polynomial expansions of a homogeneous form A (PairNumberExpansionIndependence.Statement), invariance under changing the flag of a ChartBundle on the generic fibre for complete symmetric polynomials hsymmTimes (HsymmPairFlagIndependence.Statement), and spanning of symmetric homogeneous polynomials by hsymmPart.",
       "key_exports": [
         {
@@ -737064,6 +737308,7 @@
       "importing_top_dirs": {
         "Development": 193
       },
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 193,
       "importing_d2_dirs": {
         "Development/AbelianVarietyTheory": 178,
@@ -737071,6 +737316,14 @@
         "Development/WeilBound": 3,
         "Development/AutomorphicArithmetic": 1
       },
+      "imported_d2_dirs": {},
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [],
+      "tr_analyzed_dependents": [
+        "CompanionTheory/AutomorphicTheory/TemperedLocalSpectra/ObstructionLifting/H1StructureDimLe.lean",
+        "Development/AbelianVarietyTheory/Definitions/AutomorphicMembership/Brauer.lean"
+      ],
       "plain_english_summary": "Defines the structure Dat packaging a formal chart at zero, Witt/weight data, finite-level approximations FIN, O_e-actions, Hodge-Tate data, and a tower surjection Tw.q 0 whose kernel is generated by p (tower_zero_surjective, tower_zero_ker), plus evaluation maps evAll and spans evImg on p-torsion neighborhoods Nb p g.",
       "key_exports": [
         {
@@ -737147,12 +737400,21 @@
       "importing_top_dirs": {
         "Development": 167
       },
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 169,
       "importing_d2_dirs": {
         "Development/AutomorphicSpectrum": 163,
         "Development/WeilBound": 4,
         "GroundTheory/PowerSubgroups": 2
       },
+      "imported_d2_dirs": {},
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [],
+      "tr_analyzed_dependents": [
+        "Development/AutomorphicArithmetic/AutomorphicVarieties/SmallClassNumbers/CorGKOf.lean",
+        "Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean"
+      ],
       "plain_english_summary": "Defines Hermitian lattices (HermLattice) over number fields K (finitely generated full O_K-lattices with conjugation-equivariant positive-definite metrics at all complex embeddings), their Arakelov subDegrees, quotDegrees, slopes, and lineDegrees, and states the Bost/Zhang-style slope bounds OrthogonalLines.Statement and LineOfLargeDegree.Statement (existence of a small-height nonzero vector after finite field extension).",
       "key_exports": [
         {
@@ -737280,10 +737542,23 @@
       "importing_top_dirs": {
         "CompanionTheory": 167
       },
+      "imported_top_dirs": {
+        "Formalism": 2
+      },
       "d2_ext_fan_in": 167,
       "importing_d2_dirs": {
         "CompanionTheory/AutomorphicTheory": 167
       },
+      "imported_d2_dirs": {
+        "Formalism/FormalDegreeBessel": 1,
+        "Formalism/RealPlaceAnalysis": 1
+      },
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [],
+      "tr_analyzed_dependents": [
+        "CompanionTheory/HarishChandraModules/LowKTypeMultiplicity/DiscreteSeriesCharacters/DiscreteSeriesInfinitesimalCharacter.lean"
+      ],
       "plain_english_summary": "Defines algebraic structures for branching and tensor-product decomposition of unitary Lie algebra representations U(p, q): Casimir bounds (CasKLe, casG), weight-neighborhood subspaces (WtNear, Lev), the dual tensor decomposition AlgTens (splitting a representation via embeddings io_s and projections pr_s satisfying orthogonality with respect to the indefinite signature form hhJ and sum_io_pr), and asymptotic parameter regimes (Shape).",
       "key_exports": [
         {
@@ -737386,10 +737661,21 @@
       "importing_top_dirs": {
         "Development": 160
       },
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 160,
       "importing_d2_dirs": {
         "Development/AutomorphicSpectrum": 160
       },
+      "imported_d2_dirs": {},
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [
+        "GroundTheory/GlobalFields/IdeleGroups/IdeleNorms.lean"
+      ],
+      "tr_analyzed_dependents": [
+        "Development/AutomorphicArithmetic/AutomorphicVarieties/SmallClassNumbers/CorGKOf.lean",
+        "Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean"
+      ],
       "plain_english_summary": "Defines the local-global Rankin-Selberg / quadratic base-change specification for GL(3) x GL(2) over quadratic fields K/Q: rational-prime indexing (RationalPrimesBelowPlaces), Euler-product grouping (REGRP), Casselman-Shalika unramified zeta-integral evaluation (CasselmanShalikaGL3GL2), local functional equations (LFEV), theta-lift/Eisenstein-like global Rankin-Selberg unfolding (EXP, DEC, ENT, GFE, UNF), and Euler factorization (FAC).",
       "key_exports": [
         {
@@ -737547,10 +737833,21 @@
       "importing_top_dirs": {
         "Development": 128
       },
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 128,
       "importing_d2_dirs": {
         "Development/AutomorphicSpectrum": 128
       },
+      "imported_d2_dirs": {},
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [
+        "GroundTheory/GlobalFields/IdeleGroups/IdeleNorms.lean"
+      ],
+      "tr_analyzed_dependents": [
+        "Development/AutomorphicArithmetic/AutomorphicVarieties/SmallClassNumbers/CorGKOf.lean",
+        "Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean"
+      ],
       "plain_english_summary": "Comprehensive 64-definition specification of Rankin-Selberg zeta integrals on GL(2)/Q and holomorphic modular newforms of weight k >= 3: local Godement-Jacquet/Whittaker functional equations (A1-A11, LocalGammaFunctionalEquation), Atkin-Lehner/newform uniqueness (U1, U0, M1, M0, E4), adelic Poisson summation and Eisenstein continuation (G1-G5, AdelicThetaPoissonSummation), Hecke-eigenform lifts (F0-F7), and the global Rankin-Selberg integral proof of non-dihedrality (UnramifiedEulerProductIntegral, G6, X0, X1).",
       "key_exports": [
         {
@@ -737929,11 +738226,22 @@
       "importing_top_dirs": {
         "Development": 127
       },
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 127,
       "importing_d2_dirs": {
         "Development/AbelianVarietyTheory": 124,
         "Development/AutomorphicArithmetic": 3
       },
+      "imported_d2_dirs": {},
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [
+        "GroundTheory/GlobalFields/IdeleGroups/IdeleNorms.lean"
+      ],
+      "tr_analyzed_dependents": [
+        "Development/AutomorphicArithmetic/AutomorphicVarieties/SmallClassNumbers/CorGKOf.lean",
+        "Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean"
+      ],
       "plain_english_summary": "Proves the Shalika/Piatetski-Shapiro theorem (eq_zero_of_whittaker_eq_zero) for smooth cuspidal automorphic forms on GL_n(A_K): by upward induction on k from 1 to n using Fourier expansions along unipotent rows (partialCoeff_succ_eq_zero), if all Whittaker coefficients of a cusp form phi vanish identically, then phi itself vanishes identically.",
       "key_exports": [
         {
@@ -737984,6 +738292,9 @@
       "importing_top_dirs": {
         "Development": 109
       },
+      "imported_top_dirs": {
+        "Formalism": 2
+      },
       "d2_ext_fan_in": 110,
       "importing_d2_dirs": {
         "Development/AutomorphicSpectrum": 103,
@@ -737991,6 +738302,18 @@
         "CompanionTheory/AutomorphicTheory": 1,
         "Development/AutomorphicArithmetic": 1
       },
+      "imported_d2_dirs": {
+        "Formalism/SharpRestriction": 1,
+        "Formalism/UnipotentAdelicQuotients": 1
+      },
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [
+        "CompanionTheory/SpectralGeometry/LocalGlobalProofs/AdelicAnalysis/TensorLocallyCompactRingStatement.lean"
+      ],
+      "tr_analyzed_deps": [],
+      "tr_analyzed_dependents": [
+        "CompanionTheory/SpectralGeometry/LocalGlobalProofs/AdelicAnalysis/TensorLocallyCompactRingStatement.lean"
+      ],
       "plain_english_summary": "Defines the measure-theoretic framework for the regularized/convergent unitary Siegel-Weil formula: local coordinate measures on R otimes_F E and Hermitian matrices HermR (coordK, coordW, coordHerm), Gram-matrix fiber disintegration measures (IsGramFib), global orbital theta-counting measure (thetaMeas), Euler-product factorization of adelic test-function integrals (IsEulerProd), and the Siegel-Weil measure identity statement SWMeas.",
       "key_exports": [
         {
@@ -738133,12 +738456,25 @@
       "importing_top_dirs": {
         "Development": 103
       },
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 105,
       "importing_d2_dirs": {
         "Development/AutomorphicSpectrum": 94,
         "Development/WeilBound": 9,
         "CompanionTheory/AutomorphicTheory": 2
       },
+      "imported_d2_dirs": {},
+      "direct_analyzed_deps": [
+        "CompanionTheory/SpectralGeometry/CountingDefinitions/AdelicEulerProducts/IsEulerProd.lean"
+      ],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [
+        "CompanionTheory/SpectralGeometry/CountingDefinitions/AdelicEulerProducts/IsEulerProd.lean"
+      ],
+      "tr_analyzed_dependents": [
+        "Development/AutomorphicArithmetic/AutomorphicVarieties/SmallClassNumbers/CorGKOf.lean",
+        "Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean"
+      ],
       "plain_english_summary": "Proves the topological and measure-theoretic foundation theorem GlobalTheory.T.tensor_locally_compact_ring: for any CM extension E/F and locally compact second-countable T2 topological F-algebra R, R otimes_F E inherits topological ring structure, local compactness, Borel measurability, continuity of involution/trace/Gram maps, and closedness of the Hermitian matrix locus HermR.",
       "key_exports": [
         {
@@ -738178,10 +738514,19 @@
       "importing_top_dirs": {
         "Development": 96
       },
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 96,
       "importing_d2_dirs": {
         "Development/AutomorphicSpectrum": 96
       },
+      "imported_d2_dirs": {},
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [],
+      "tr_analyzed_dependents": [
+        "Development/AutomorphicArithmetic/AutomorphicVarieties/SmallClassNumbers/CorGKOf.lean",
+        "Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean"
+      ],
       "plain_english_summary": "Develops the local class-field/valuation theory of separable quadratic extensions E/K of non-archimedean local fields: proves E/K is Galois of order 2 with conjugation conj, shows conjugation preserves valuations, Haar measure, and modulus, proves index [K^x : N(E^x)] = 2 and openness of the norm subgroup, and defines the associated quadratic character quadChar : K^x -> C^x.",
       "key_exports": [
         {
@@ -738455,6 +738800,7 @@
         "Development": 76,
         "CompanionTheory": 13
       },
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 89,
       "importing_d2_dirs": {
         "Development/AbelianVarietyTheory": 57,
@@ -738465,6 +738811,19 @@
         "CompanionTheory/RealGroups": 1,
         "Development/WeilBound": 1
       },
+      "imported_d2_dirs": {
+        "Formalism/RealPlaceAnalysis": 2,
+        "Formalism/FormalDegreeBessel": 1
+      },
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [],
+      "tr_analyzed_dependents": [
+        "CompanionTheory/HarishChandraModules/LowKTypeMultiplicity/DiscreteSeriesCharacters/DiscreteSeriesInfinitesimalCharacter.lean",
+        "Development/AbelianVarietyTheory/Definitions/AutomorphicMembership/Brauer.lean",
+        "Development/DiscreteGroups/PiInvariants/CompactSupportTwists/PiVecExHolds.lean",
+        "Formalism/GammaFactorNonvanishing/CritLine.lean"
+      ],
       "plain_english_summary": "Constructs the complexified Lie algebra action actU on smooth vectors of discrete series representations IsDS of U(p, q) and states DSInfCharCap: the quantum determinant qdet(Egl n)(Y + (n-1)/2) acts on every smooth vector as the scalar Harish-Chandra infinitesimal character polynomial capP(lam, Y).",
       "key_exports": [
         {
@@ -738546,10 +738905,24 @@
       "importing_top_dirs": {
         "Development": 84
       },
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 84,
       "importing_d2_dirs": {
         "Development/AbelianVarietyTheory": 84
       },
+      "imported_d2_dirs": {},
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [],
+      "tr_analyzed_dependents": [
+        "CompanionTheory/AutomorphicTheory/TemperedLocalSpectra/ObstructionLifting/H1StructureDimLe.lean",
+        "Development/AbelianVarietyTheory/Definitions/NonGaloisDescent/Langlands.lean",
+        "Development/AutomorphicArithmetic/AutomorphicVarieties/AutomorphicForms/LocIsotypic.lean",
+        "Development/AutomorphicArithmetic/AutomorphicVarieties/AutomorphicForms/RealTransport/RealTransport.lean",
+        "Development/DiscreteGroups/PiInvariants/CompactSupportTwists/PiVecExHolds.lean",
+        "Development/WeilBound/RepresentationTheoryGL/RegularisedSiegelWeil/ThetaIdempotents/HeckeEta.lean",
+        "Formalism/GammaFactorNonvanishing/CritLine.lean"
+      ],
       "plain_english_summary": "States analytic number theory estimates for prime counting in arithmetic progressions possibly affected by a real Siegel zero beta < 1 (PrimeCountAsymptoticInProgressions, ZeroFreeSymmetric, ZeroSumBoundSmall, ZeroSumBoundLarge, PartialSumIntegralBound) together with Jacobi-symbol quadratic reciprocity cancellation lemmas (KronOdd, KronTwo, LamSumZero, MuConst, MuSmall) and square/prime-power remainder bounds (SizeR, SizeSpSq).",
       "key_exports": [
         {
@@ -738732,10 +739105,21 @@
       "importing_top_dirs": {
         "Development": 81
       },
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 81,
       "importing_d2_dirs": {
         "Development/AutomorphicSpectrum": 81
       },
+      "imported_d2_dirs": {},
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [
+        "GroundTheory/GlobalFields/IdeleGroups/IdeleNorms.lean"
+      ],
+      "tr_analyzed_dependents": [
+        "Development/AutomorphicArithmetic/AutomorphicVarieties/SmallClassNumbers/CorGKOf.lean",
+        "Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean"
+      ],
       "plain_english_summary": "States the local Kirillov/Whittaker model properties for GL_2 over a non-archimedean local field F: transformation under unipotent (SPsi), center (SCen), and GL_2(F) right-translation (STrans), smoothness under open compact subgroups (SSmooth), asymptotic/support bounds on the torus (SBound), nonvanishing (SNe), unramified spherical Whittaker matching (SUnr), local Tate duality (STate), and the resulting GL_2 local functional equation (FeGen, SFe).",
       "key_exports": [
         {
@@ -738868,11 +739252,36 @@
       "importing_top_dirs": {
         "PositivityTheory": 66
       },
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 104,
       "importing_d2_dirs": {
         "PositivityTheory/AutomorphicForms": 66,
         "Development/AutomorphicArithmetic": 38
       },
+      "imported_d2_dirs": {},
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [
+        "BuildAid/D3.lean",
+        "Development/AbelianVarietyTheory/Definitions/NonGaloisDescent/Langlands.lean",
+        "Formalism/HermitianCurvature/StatementTBB.lean",
+        "Formalism/LocalToGlobal/IndefiniteReal/LinksStage.lean",
+        "Formalism/PairingDivisors/StatementH.lean",
+        "Formalism/PeriodIntegrals/DSInfCharCap.lean",
+        "Formalism/SharpRestriction/Divisibility/GeneratorPowers/ThExprUniqOfChartIndep2.lean",
+        "Formalism/ZetaRealNonvanish.lean",
+        "Lemmata/GeneralBFact/Imports.lean",
+        "ReciprocityTheory/AnalyticForms/RegularLocalRings/FinalTheorems.lean",
+        "ReciprocityTheory/DualLattices/TowerZeroSurjective.lean",
+        "ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/BirationalGeometry/ToroidalCompactification/HeckeKer.lean",
+        "ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/BirationalGeometry/ToroidalCompactification/IsHolPeriods.lean",
+        "ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/ExtensionDescent/UnifUniqSt.lean",
+        "ReciprocityTheory/ThetaQuasiPeriods/ThetaQuasiPeriodStatement.lean"
+      ],
+      "tr_analyzed_dependents": [
+        "Development/AutomorphicArithmetic/AutomorphicVarieties/SmallClassNumbers/CorGKOf.lean",
+        "Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean"
+      ],
       "plain_english_summary": "Bundles 60+ foundational theorems from modern representation theory, automorphic forms, Galois cohomology, and arithmetic geometry into four structured hypothesis bundles (LitLoc for local GL_n/LLC/Bernstein-Zelevinsky, LitAut for global cuspidal spectrum/Clozel purity/Caraiani compatibility, LitCoh for Poitou-Tate/Bloch-Kato/Greenberg-Wiles, LitCM for CM abelian varieties/Deligne-Ribet/Hecke-Tate) combined into LitN.",
       "key_exports": [
         {
@@ -738957,6 +739366,7 @@
         "PositivityTheory": 63,
         "CompanionTheory": 1
       },
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 80,
       "importing_d2_dirs": {
         "PositivityTheory/AutomorphicForms": 63,
@@ -738964,6 +739374,20 @@
         "Development/WeilBound": 2,
         "CompanionTheory/RealGroups": 1
       },
+      "imported_d2_dirs": {},
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [
+        "Formalism/GL3MeanSquares/PrimeCountAsymptoticInProgressions.lean",
+        "Formalism/GaloisCohomology/LocalTateDualityK.lean",
+        "Formalism/LocalRingCardinality/RhoDetPrimeEqMuTildeMulChiPow.lean",
+        "Formalism/RealPlaceAnalysis/ThirdArithmeticHolds.lean",
+        "Formalism/SatakeDualWeyl/KpqSubgroupCompact.lean",
+        "Formalism/SharpRestriction/LevelLetterCocycles/LocCoh.lean"
+      ],
+      "tr_analyzed_dependents": [
+        "Development/AbelianVarietyTheory/Definitions/AutomorphicMembership/Brauer.lean"
+      ],
       "plain_english_summary": "Defines the axiomatic characterization of the Local Langlands Correspondence for GL_n over p-adic completions (LawsMin, LawsLit, IsRecLit) matching irreducible smooth representations to Weil-Deligne representations via epsilon-factors, twists, central characters, and contragredients, together with place-isomorphism transport relations (RepRel, WeilRel, WDRel, PlaceIso) across field automorphisms.",
       "key_exports": [
         {
@@ -739072,11 +739496,29 @@
         "PositivityTheory": 63,
         "CompanionTheory": 1
       },
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 64,
       "importing_d2_dirs": {
         "PositivityTheory/AutomorphicForms": 63,
         "CompanionTheory/EightfoldTheory": 1
       },
+      "imported_d2_dirs": {},
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [
+        "Formalism/GL3MeanSquares/PrimeCountAsymptoticInProgressions.lean",
+        "Formalism/GaloisCohomology/LocalTateDualityK.lean",
+        "Formalism/LocalRingCardinality/RhoDetPrimeEqMuTildeMulChiPow.lean",
+        "Formalism/PairingDivisors/StatementH.lean",
+        "Formalism/RealPlaceAnalysis/ThirdArithmeticHolds.lean",
+        "Formalism/SatakeDualWeyl/KpqSubgroupCompact.lean",
+        "Formalism/SharpRestriction/LevelLetterCocycles/LocCoh.lean",
+        "ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/BirationalGeometry/ToroidalCompactification/IsHolPeriods.lean"
+      ],
+      "tr_analyzed_dependents": [
+        "Development/AutomorphicArithmetic/AutomorphicVarieties/SmallClassNumbers/CorGKOf.lean",
+        "Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean"
+      ],
       "plain_english_summary": "Defines the core local-global compatibility predicates linking l-adic Galois representations and cuspidal automorphic representations of GL_n over number fields: Weil-Deligne level conditions (IsLevelWD, WDAway, WDAbove), local isotypic components (LocIsotypic, LocCompC, LocCompR), Satake parameters matching Frobenius eigenvalues (SatLoc, SatFrob), crystalline slopes / Hodge-Tate jumps (CrysSlopes, JumpsAbove), and algebraic Weyl-module dimension bounds (WeylC, WeylQ, CohBound).",
       "key_exports": [
         {
@@ -739226,11 +739668,29 @@
         "PositivityTheory": 63,
         "CompanionTheory": 1
       },
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 64,
       "importing_d2_dirs": {
         "PositivityTheory/AutomorphicForms": 63,
         "CompanionTheory/EightfoldTheory": 1
       },
+      "imported_d2_dirs": {},
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [
+        "Formalism/GL3MeanSquares/PrimeCountAsymptoticInProgressions.lean",
+        "Formalism/GaloisCohomology/LocalTateDualityK.lean",
+        "Formalism/LocalRingCardinality/RhoDetPrimeEqMuTildeMulChiPow.lean",
+        "Formalism/PairingDivisors/StatementH.lean",
+        "Formalism/RealPlaceAnalysis/ThirdArithmeticHolds.lean",
+        "Formalism/SatakeDualWeyl/KpqSubgroupCompact.lean",
+        "Formalism/SharpRestriction/LevelLetterCocycles/LocCoh.lean",
+        "ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/BirationalGeometry/ToroidalCompactification/IsHolPeriods.lean"
+      ],
+      "tr_analyzed_dependents": [
+        "Development/AutomorphicArithmetic/AutomorphicVarieties/SmallClassNumbers/CorGKOf.lean",
+        "Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean"
+      ],
       "plain_english_summary": "Packages base-change and CM-field descent properties used to transport cuspidal automorphic representations from a totally real field F to quadratic CM extensions K/F: existence of CM extensions with prescribed inertia behavior (QuadCM, ExQuadR), absence of self-twists (NoTwistRam), descent of Hecke characters to maximal real subfields (RealTransport), and conjugate self-duality after quadratic base change (CsdTw, BcDual).",
       "key_exports": [
         {
@@ -739339,12 +739799,23 @@
         "Development": 53,
         "CompanionTheory": 2
       },
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 56,
       "importing_d2_dirs": {
         "Development/AbelianVarietyTheory": 53,
         "CompanionTheory/AutomorphicTheory": 2,
         "Formalism/LocalToGlobal": 1
       },
+      "imported_d2_dirs": {},
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [
+        "Formalism/RealPlaceAnalysis/ThirdArithmeticHolds.lean"
+      ],
+      "tr_analyzed_dependents": [
+        "Development/AbelianVarietyTheory/Definitions/AutomorphicMembership/Brauer.lean",
+        "Formalism/GammaFactorNonvanishing/CritLine.lean"
+      ],
       "plain_english_summary": "Formulates the inductive energy-estimate pipeline (StepOne, StepUp, LemmaS, CorS, PtBound, ThmBpAt) for holomorphic sections of polarized vector bundles over Siegel/Hermitian spaces: propagates pointwise kernel bounds NP and energy integrals Ew along chains of local test points via dual lattice Fourier bounds (BlockGrowthBound) and weighted determinant regularity bounds (RegularityBoundBigCell).",
       "key_exports": [
         {
@@ -739578,12 +740049,22 @@
       "importing_top_dirs": {
         "Development": 55
       },
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 56,
       "importing_d2_dirs": {
         "Development/AbelianVarietyTheory": 54,
         "Development/AutomorphicArithmetic": 1,
         "ReciprocityTheory/ReductiveGroups": 1
       },
+      "imported_d2_dirs": {},
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [],
+      "tr_analyzed_dependents": [
+        "CompanionTheory/AutomorphicTheory/TemperedLocalSpectra/ObstructionLifting/H1StructureDimLe.lean",
+        "Development/AbelianVarietyTheory/Definitions/AutomorphicMembership/Brauer.lean",
+        "Development/DiscreteGroups/PiInvariants/CompactSupportTwists/PiVecExHolds.lean"
+      ],
       "plain_english_summary": "Exports 15 specification statements for multivariable Riemann theta functions with real characteristics (a, b) on the Siegel upper half-space SiegelH and ThetaDomain: absolute summability, Weierstrass M-test, holomorphicity in (z, tau), quasi-periodicity under lattice shifts (ThetaQuasiPeriodStatement), real/half-integer characteristic shifts, GL_n(Z) modular transformation (ThetaGLStatement), block-diagonal splitting (ThetaBlockStatement), and genus-1 identification with jacobiTheta_2.",
       "key_exports": [
         {
@@ -739711,6 +740192,7 @@
       "importing_top_dirs": {
         "Development": 47
       },
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 49,
       "importing_d2_dirs": {
         "Development/AbelianVarietyTheory": 44,
@@ -739720,6 +740202,18 @@
         "GroundTheory/AutomorphicForms": 1,
         "GroundTheory/PowerSubgroups": 1
       },
+      "imported_d2_dirs": {},
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [],
+      "tr_analyzed_dependents": [
+        "Development/DiscreteGroups/PiInvariants/CompactSupportTwists/PiVecExHolds.lean",
+        "GroundTheory/AutomorphicForms/MultiplicityOne/Injective.lean",
+        "GroundTheory/ProfiniteCohomology/PoitouTate/PoitouTateNineTermGs.lean",
+        "PositivityTheory/AutomorphicForms/PublishedInputs/CuspidalContinuity/ArchimedeanCuspidal/KFiniteVectors/KFiniteThetaLifts/RationalPrimesBelowPlaces.lean",
+        "PositivityTheory/AutomorphicForms/PublishedInputs/CuspidalContinuity/ArchimedeanCuspidal/SquareIntegrable/SSmooth.lean",
+        "PositivityTheory/AutomorphicForms/PublishedInputs/CuspidalContinuity/ArchimedeanCuspidal/VerticalStrips/UnramifiedEulerProductIntegral.lean"
+      ],
       "plain_english_summary": "Constructs the continuous surjective idelic module homomorphism ideleModule : IdeleGroup K -> R_{>0} as the product of infinite-place moduli and finite-place p-adic norms, proves it vanishes on principal ideles K^x via the product formula (ideleModule_diagonal), and defines the closed norm-one subgroup normOneSubgroup on both the idele group and idele class group.",
       "key_exports": [
         {
@@ -739972,6 +740466,7 @@
       "importing_top_dirs": {
         "Development": 46
       },
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 51,
       "importing_d2_dirs": {
         "Development/AbelianVarietyTheory": 42,
@@ -739982,6 +740477,21 @@
         "Development/AutomorphicArithmetic": 1,
         "Development/WeilBound": 1
       },
+      "imported_d2_dirs": {
+        "CompanionTheory/SpectralGeometry": 29
+      },
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [
+        "Development/AbelianVarietyTheory/Definitions/Jets/SumIoPr.lean",
+        "Formalism/LocalRingCardinality/RhoDetPrimeEqMuTildeMulChiPow.lean",
+        "Formalism/PeriodIntegrals/DSInfCharCap.lean",
+        "Formalism/RealPlaceAnalysis/ThirdArithmeticHolds.lean"
+      ],
+      "tr_analyzed_dependents": [
+        "Development/AutomorphicArithmetic/AutomorphicVarieties/SmallClassNumbers/CorGKOf.lean",
+        "Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean"
+      ],
       "plain_english_summary": "Assembles 31 intermediate algebraic and analytic steps (chain CAR, Koszul resolution, Verma covers, Casselman-Osborne, PRV highest-weight bounds, smooth module brackets, K-finite stability) to prove PI.DSInfCharCap.DSInfCharCap: the Capelli/quantum-determinant infinitesimal character identity for discrete series representations of U(p, q).",
       "key_exports": [
         {
@@ -740188,11 +740698,19 @@
       "importing_top_dirs": {
         "Development": 25
       },
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 25,
       "importing_d2_dirs": {
         "Development/AutomorphicSpectrum": 15,
         "Development/AbelianVarietyTheory": 10
       },
+      "imported_d2_dirs": {},
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [],
+      "tr_analyzed_dependents": [
+        "Development/AbelianVarietyTheory/Definitions/AutomorphicMembership/Brauer.lean"
+      ],
       "plain_english_summary": "Registers namespace prefixes ('CompanionTheory', 'CrystallineSemistableComparison', 'GlobalTheory', 'PositivityTheory', 'UpperTheory') in Lean.LibrarySuggestions.nameDenyListExt to guide automated premise selection during builds. Exports no mathematical theorems or definitions.",
       "key_exports": [],
       "all_declarations": []
@@ -740219,10 +740737,21 @@
       "importing_top_dirs": {
         "Development": 19
       },
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 19,
       "importing_d2_dirs": {
         "Development/WeilBound": 19
       },
+      "imported_d2_dirs": {},
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [
+        "GroundTheory/GlobalFields/IdeleGroups/IdeleNorms.lean"
+      ],
+      "tr_analyzed_dependents": [
+        "Development/AutomorphicArithmetic/AutomorphicVarieties/SmallClassNumbers/CorGKOf.lean",
+        "Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean"
+      ],
       "plain_english_summary": "Proves the classical Poitou-Tate theorems for finite Z/NZ-modules M over the Galois group G_{K,S} unramified outside a finite set of places S containing primes dividing N (assuming N odd or K totally complex): Poitou-Tate compact duality (poitouTate_duality_gs), finiteness and perfect pairing of Tate-Shafarevich groups Sha^1 and Sha^2 (poitouTate_sha_gs), and exactness of the nine-term Poitou-Tate sequence (poitouTate_nineTerm_gs).",
       "key_exports": [
         {
@@ -740289,6 +740818,7 @@
       "importing_top_dirs": {
         "CompanionTheory": 13
       },
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 269,
       "importing_d2_dirs": {
         "Development/AutomorphicSpectrum": 215,
@@ -740297,6 +740827,14 @@
         "CompanionTheory/SpectralGeometry": 9,
         "CompanionTheory/AutomorphicTheory": 4
       },
+      "imported_d2_dirs": {},
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [],
+      "tr_analyzed_dependents": [
+        "Development/AutomorphicArithmetic/AutomorphicVarieties/SmallClassNumbers/CorGKOf.lean",
+        "Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean"
+      ],
       "plain_english_summary": "Single-declaration interface exporting the classical theorem that every smooth irreducible complex representation of GL_n(k) over a non-archimedean local field k is admissible.",
       "key_exports": [
         {
@@ -740336,10 +740874,19 @@
       "importing_top_dirs": {
         "ReciprocityTheory": 2
       },
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 2,
       "importing_d2_dirs": {
         "ReciprocityTheory/ReductiveGroups": 2
       },
+      "imported_d2_dirs": {},
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [],
+      "tr_analyzed_dependents": [
+        "Development/AbelianVarietyTheory/Definitions/AutomorphicMembership/Brauer.lean",
+        "Formalism/GammaFactorNonvanishing/CritLine.lean"
+      ],
       "plain_english_summary": "Proves the Cauchy-Binet determinant expansion for a rectangular matrix product (A * B).det over any commutative ring R, exported as Bl.general_b_fact.goal1 and imported twice by ReciprocityTheory.",
       "key_exports": [
         {
@@ -740379,10 +740926,43 @@
       "importing_top_dirs": {
         "Supplements": 1
       },
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 1,
       "importing_d2_dirs": {
         "Supplements/Kernels": 1
       },
+      "imported_d2_dirs": {},
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [
+        "Supplements/Kernels/MainTheoremsAll.lean"
+      ],
+      "tr_analyzed_deps": [
+        "CompanionTheory/AutomorphicTheory/TemperedLocalSpectra/ObstructionLifting/H1StructureDimLe.lean",
+        "CompanionTheory/EightfoldTheory/VariationTheory/AutomorphicForms/Newform.lean",
+        "CompanionTheory/HarishChandraModules/LowKTypeMultiplicity/DiscreteSeriesCharacters/DiscreteSeriesInfinitesimalCharacter.lean",
+        "CompanionTheory/SpectralGeometry/LocalGlobalProofs/AdelicAnalysis/TensorLocallyCompactRingStatement.lean",
+        "Development/AbelianVarietyTheory/Definitions/AutomorphicMembership/Brauer.lean",
+        "Development/AbelianVarietyTheory/PublishedTheorems/Divisors₂/IrreducibleAdmissibleGL.lean",
+        "Development/AutomorphicArithmetic/AutomorphicVarieties/AutomorphicForms/LocIsotypic.lean",
+        "Development/AutomorphicArithmetic/AutomorphicVarieties/AutomorphicForms/RealTransport/RealTransport.lean",
+        "Development/AutomorphicSpectrum/Definitions/GlobalGeometry/BdryChart.lean",
+        "Development/DiscreteGroups/PiInvariants/CompactSupportTwists/PiVecExHolds.lean",
+        "Development/EtaleCohomology/EtaleSheaves/H0TwistOverClosedField.lean",
+        "Development/ResolutionOfSingularities/Statements.lean",
+        "Development/WeilBound/CoreStatements/TemperedRepresentationTheory/PlaneSupports/PlaneSupp.lean",
+        "GroundTheory/AutomorphicForms/MultiplicityOne/Injective.lean",
+        "GroundTheory/HeightsAndTheta/Heights/DiscreteValuationNumbers/StatementsFlagIndependence.lean",
+        "GroundTheory/HeightsAndTheta/Heights/KernelsLattice.lean",
+        "GroundTheory/LocalFields/QuadraticAbelian/WeilRepQuadratic.lean",
+        "GroundTheory/ProfiniteCohomology/PoitouTate/PoitouTateNineTermGs.lean",
+        "PositivityTheory/AutomorphicForms/PublishedInputs/CuspidalContinuity/ArchimedeanCuspidal/KFiniteVectors/KFiniteThetaLifts/RationalPrimesBelowPlaces.lean",
+        "PositivityTheory/AutomorphicForms/PublishedInputs/CuspidalContinuity/ArchimedeanCuspidal/SquareIntegrable/SSmooth.lean",
+        "PositivityTheory/AutomorphicForms/PublishedInputs/CuspidalContinuity/ArchimedeanCuspidal/VerticalStrips/UnramifiedEulerProductIntegral.lean",
+        "PositivityTheory/Representations/BoundaryCones/ArchimedeanCones/ConeOverlaps/OpenConeCriteria/OpenConeFormulation/IsOpenConeInvariant.lean"
+      ],
+      "tr_analyzed_dependents": [
+        "Supplements/Kernels/MainTheoremsAll.lean"
+      ],
       "plain_english_summary": "Instantiates the abstract literature hypotheses LiteratureRankNHypothesis (via open-image Galois conditions, base change, and CM abelian inputs) and combines patching hypotheses with unitary U(3) class-number-1 arithmetic over Q(sqrt(-3)) to prove CorGK and the polynomial Selmer-length growth bound Bound.",
       "key_exports": [
         {
@@ -740455,10 +741035,20 @@
       "importing_top_dirs": {
         "Supplements": 1
       },
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 1,
       "importing_d2_dirs": {
         "Supplements/Kernels": 1
       },
+      "imported_d2_dirs": {},
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [
+        "Supplements/Kernels/MainTheorems.lean"
+      ],
+      "tr_analyzed_deps": [],
+      "tr_analyzed_dependents": [
+        "Supplements/Kernels/MainTheorems.lean"
+      ],
       "plain_english_summary": "Elementary analytic bridge converting half-plane nonvanishing (Re(s) > 1/2) for all Dirichlet L-functions into critical-line localization (Re(s) = 1/2) in 0 < Re(s) < 1 for arbitrary (possibly imprimitive) Dirichlet characters and the Riemann zeta function. Uses Euler factor nonvanishing for Re(s) > 0 to pass to the primitive character, applies the completed L-function functional equation across s <-> 1 - s, and handles zeta's trivial zeros via Gamma_R.",
       "key_exports": [
         {
@@ -740552,10 +741142,44 @@
       "importing_top_dirs": {
         "Supplements": 1
       },
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 1,
       "importing_d2_dirs": {
         "Supplements/Kernels": 1
       },
+      "imported_d2_dirs": {},
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [
+        "Supplements/Kernels/MainTheorems.lean"
+      ],
+      "tr_analyzed_deps": [
+        "CompanionTheory/AutomorphicTheory/TemperedLocalSpectra/ObstructionLifting/H1StructureDimLe.lean",
+        "CompanionTheory/EightfoldTheory/VariationTheory/AutomorphicForms/Newform.lean",
+        "CompanionTheory/HarishChandraModules/LowKTypeMultiplicity/DiscreteSeriesCharacters/DiscreteSeriesInfinitesimalCharacter.lean",
+        "CompanionTheory/SpectralGeometry/LocalGlobalProofs/AdelicAnalysis/TensorLocallyCompactRingStatement.lean",
+        "Development/AbelianVarietyTheory/Definitions/AutomorphicMembership/Brauer.lean",
+        "Development/AbelianVarietyTheory/PublishedTheorems/Divisors₂/IrreducibleAdmissibleGL.lean",
+        "Development/AutomorphicArithmetic/AutomorphicVarieties/AutomorphicForms/LocIsotypic.lean",
+        "Development/AutomorphicArithmetic/AutomorphicVarieties/AutomorphicForms/RealTransport/RealTransport.lean",
+        "Development/AutomorphicSpectrum/Definitions/GlobalGeometry/BdryChart.lean",
+        "Development/DiscreteGroups/PiInvariants/CompactSupportTwists/PiVecExHolds.lean",
+        "Development/EtaleCohomology/EtaleSheaves/H0TwistOverClosedField.lean",
+        "Development/ResolutionOfSingularities/Statements.lean",
+        "Development/WeilBound/CoreStatements/TemperedRepresentationTheory/PlaneSupports/PlaneSupp.lean",
+        "Development/WeilBound/RepresentationTheoryGL/RegularisedSiegelWeil/ThetaIdempotents/HeckeEta.lean",
+        "GroundTheory/AutomorphicForms/MultiplicityOne/Injective.lean",
+        "GroundTheory/HeightsAndTheta/Heights/DiscreteValuationNumbers/StatementsFlagIndependence.lean",
+        "GroundTheory/HeightsAndTheta/Heights/KernelsLattice.lean",
+        "GroundTheory/LocalFields/QuadraticAbelian/WeilRepQuadratic.lean",
+        "GroundTheory/ProfiniteCohomology/PoitouTate/PoitouTateNineTermGs.lean",
+        "PositivityTheory/AutomorphicForms/PublishedInputs/CuspidalContinuity/ArchimedeanCuspidal/KFiniteVectors/KFiniteThetaLifts/RationalPrimesBelowPlaces.lean",
+        "PositivityTheory/AutomorphicForms/PublishedInputs/CuspidalContinuity/ArchimedeanCuspidal/SquareIntegrable/SSmooth.lean",
+        "PositivityTheory/AutomorphicForms/PublishedInputs/CuspidalContinuity/ArchimedeanCuspidal/VerticalStrips/UnramifiedEulerProductIntegral.lean",
+        "PositivityTheory/Representations/BoundaryCones/ArchimedeanCones/ConeOverlaps/OpenConeCriteria/OpenConeFormulation/IsOpenConeInvariant.lean"
+      ],
+      "tr_analyzed_dependents": [
+        "Supplements/Kernels/MainTheorems.lean"
+      ],
       "plain_english_summary": "Top-of-pyramid bridge inside Development/AutomorphicArithmetic that discharges the Galois local-global modularity hypothesis UpperTheory.Gal.Int.galoisLocalGlobalStrong_recParameter and combines it with local Langlands reciprocity existence (recTExists) and vWin_of_row to prove UpperTheory.FinalTheorems.everyCharacter (nonvanishing of all Dirichlet L-functions on Re(s) > 1/2) and RiemannHypothesis.",
       "key_exports": [
         {
@@ -740617,10 +741241,38 @@
       "importing_top_dirs": {
         "Supplements": 1
       },
+      "imported_top_dirs": {
+        "Development": 1
+      },
       "d2_ext_fan_in": 1,
       "importing_d2_dirs": {
         "Supplements/Kernels": 1
       },
+      "imported_d2_dirs": {
+        "Development/AutomorphicArithmetic": 1
+      },
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [
+        "Supplements/Kernels/MainTheorems.lean"
+      ],
+      "tr_analyzed_deps": [
+        "Formalism/GL3MeanSquares/PrimeCountAsymptoticInProgressions.lean",
+        "Formalism/GaloisCohomology/LocalTateDualityK.lean",
+        "Formalism/HermitianCurvature/StatementTBB.lean",
+        "Formalism/LocalToGlobal/IndefiniteReal/LinksStage.lean",
+        "Formalism/PairingDivisors/StatementH.lean",
+        "Formalism/PeriodIntegrals/DSInfCharCap.lean",
+        "Formalism/SharpRestriction/LevelLetterCocycles/LocCoh.lean",
+        "Formalism/ZetaRealNonvanish.lean",
+        "Lemmata/GeneralBFact/Imports.lean",
+        "ReciprocityTheory/AnalyticForms/RegularLocalRings/FinalTheorems.lean",
+        "ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/BirationalGeometry/ToroidalCompactification/HeckeKer.lean",
+        "ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/BirationalGeometry/ToroidalCompactification/IsHolPeriods.lean",
+        "ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/ExtensionDescent/UnifUniqSt.lean"
+      ],
+      "tr_analyzed_dependents": [
+        "Supplements/Kernels/MainTheorems.lean"
+      ],
       "plain_english_summary": "Proves that archimedean Gamma factors of Dirichlet characters are nonzero for Re(s) > 0, and deduces both critical-line localization for primitive Dirichlet L-functions (critLine) and Mathlib's RiemannHypothesis (rh_of_every) from half-plane nonvanishing UpperTheory.EveryCharacter.",
       "key_exports": [
         {
@@ -740682,10 +741334,26 @@
       "importing_top_dirs": {
         "Development": 1
       },
+      "imported_top_dirs": {
+        "Development": 1
+      },
       "d2_ext_fan_in": 1,
       "importing_d2_dirs": {
         "Development/WeilBound": 1
       },
+      "imported_d2_dirs": {
+        "Development/WeilBound": 1
+      },
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [
+        "Formalism/LocalRingCardinality/RhoDetPrimeEqMuTildeMulChiPow.lean",
+        "Formalism/RealPlaceAnalysis/ThirdArithmeticHolds.lean"
+      ],
+      "tr_analyzed_dependents": [
+        "Development/AutomorphicArithmetic/AutomorphicVarieties/SmallClassNumbers/CorGKOf.lean",
+        "Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean"
+      ],
       "plain_english_summary": "Proves isOpen_cone_of_hbFacts: the cone of real parameter tuples v whose Hermitian matrix hOf(v) is positive definite is an open subset of Euclidean parameter space, using compactness of the unit sphere in C^n and continuity of the quadratic form.",
       "key_exports": [
         {
@@ -740725,10 +741393,29 @@
       "importing_top_dirs": {
         "(root)": 1
       },
+      "imported_top_dirs": {
+        "Development": 1
+      },
       "d2_ext_fan_in": 1,
       "importing_d2_dirs": {
         "(root)": 1
       },
+      "imported_d2_dirs": {
+        "Development/AutomorphicArithmetic": 1
+      },
+      "direct_analyzed_deps": [
+        "Development/AutomorphicArithmetic/AutomorphicVarieties/SmallClassNumbers/CorGKOf.lean"
+      ],
+      "direct_analyzed_dependents": [
+        "Main.lean"
+      ],
+      "tr_analyzed_deps": [
+        "Development/AutomorphicArithmetic/AutomorphicVarieties/SmallClassNumbers/CorGKOf.lean",
+        "Supplements/Kernels/MainTheorems.lean"
+      ],
+      "tr_analyzed_dependents": [
+        "Main.lean"
+      ],
       "plain_english_summary": "The sole interface file of the Supplements directory imported directly by Main.lean. Aggregates MainTheoremsCritical.lean (which itself combines MainTheorems.lean with small-class-number Selmer bounds) and CorGKOf.lean, wiring the completed Development and Formalism proofs into the root theorem file.",
       "key_exports": [],
       "all_declarations": []
@@ -740753,10 +741440,30 @@
       "out_degree": 1,
       "top_ext_fan_in": 0,
       "importing_top_dirs": {},
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 153,
       "importing_d2_dirs": {
         "Development/AutomorphicSpectrum": 153
       },
+      "imported_d2_dirs": {},
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [
+        "Formalism/GL3MeanSquares/PrimeCountAsymptoticInProgressions.lean",
+        "Formalism/GaloisCohomology/LocalTateDualityK.lean",
+        "Formalism/LocalRingCardinality/RhoDetPrimeEqMuTildeMulChiPow.lean",
+        "Formalism/PairingDivisors/StatementH.lean",
+        "Formalism/RealPlaceAnalysis/ThirdArithmeticHolds.lean",
+        "Formalism/SatakeDualWeyl/KpqSubgroupCompact.lean",
+        "Formalism/SharpRestriction/LevelLetterCocycles/LocCoh.lean",
+        "ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/BirationalGeometry/ToroidalCompactification/HeckeKer.lean",
+        "ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/BirationalGeometry/ToroidalCompactification/IsHolPeriods.lean",
+        "ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/BirationalGeometry/ToroidalCompactification/UniformisationConclusion.lean",
+        "ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/ExtensionDescent/SecBaseChangeAnySt.lean"
+      ],
+      "tr_analyzed_dependents": [
+        "Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean"
+      ],
       "plain_english_summary": "Exports three clean propositions used in the regularized Siegel-Weil / Godement-Jacquet L-function pipeline: existence of Hecke characters satisfying a residue condition on the adelic algebra AE D (HeckeEta), right half-plane identity principle for holomorphic functions (RightId), and contour-integral residue extraction at real poles of meromorphic ratios h(s)/d(s) (PoleReal).",
       "key_exports": [
         {
@@ -740816,10 +741523,24 @@
       "out_degree": 1,
       "top_ext_fan_in": 0,
       "importing_top_dirs": {},
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 104,
       "importing_d2_dirs": {
         "Development/AutomorphicSpectrum": 104
       },
+      "imported_d2_dirs": {
+        "Development/AbelianVarietyTheory": 1
+      },
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [
+        "Formalism/LocalRingCardinality/RhoDetPrimeEqMuTildeMulChiPow.lean",
+        "Formalism/RealPlaceAnalysis/ThirdArithmeticHolds.lean"
+      ],
+      "tr_analyzed_dependents": [
+        "Development/AutomorphicArithmetic/AutomorphicVarieties/SmallClassNumbers/CorGKOf.lean",
+        "Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean"
+      ],
       "plain_english_summary": "Formulates the strong-approximation / subgroup-generation criterion for adelic unitary groups SU(J)(A_F) of rank M >= 2: defines nondegenerate two-planes PlaneND and plane stabilizers PlaneSupp, and states that closed subgroups generated by rational elements and local supports around nondegenerate planes fill the full adelic special unitary group (PropPlane, PropGen, PropProd).",
       "key_exports": [
         {
@@ -740915,10 +741636,37 @@
       "out_degree": 2,
       "top_ext_fan_in": 0,
       "importing_top_dirs": {},
+      "imported_top_dirs": {
+        "Development": 2
+      },
       "d2_ext_fan_in": 51,
       "importing_d2_dirs": {
         "CompanionTheory/SpectralGeometry": 51
       },
+      "imported_d2_dirs": {
+        "Development/AbelianVarietyTheory": 2
+      },
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [
+        "Formalism/GL3MeanSquares/PrimeCountAsymptoticInProgressions.lean",
+        "Formalism/GaloisCohomology/LocalTateDualityK.lean",
+        "Formalism/LocalRingCardinality/RhoDetPrimeEqMuTildeMulChiPow.lean",
+        "Formalism/RealPlaceAnalysis/ThirdArithmeticHolds.lean",
+        "Formalism/SatakeDualWeyl/KpqSubgroupCompact.lean",
+        "Formalism/SharpRestriction/Divisibility/GeneratorPowers/ThExprUniqOfChartIndep2.lean",
+        "Formalism/SharpRestriction/LevelLetterCocycles/LocCoh.lean",
+        "ReciprocityTheory/AnalyticForms/RegularLocalRings/FinalTheorems.lean",
+        "ReciprocityTheory/DualLattices/TowerZeroSurjective.lean",
+        "ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/BirationalGeometry/ToroidalCompactification/HeckeKer.lean",
+        "ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/BirationalGeometry/ToroidalCompactification/IsHolPeriods.lean",
+        "ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/ExtensionDescent/UnifUniqSt.lean",
+        "ReciprocityTheory/ThetaQuasiPeriods/ThetaQuasiPeriodStatement.lean"
+      ],
+      "tr_analyzed_dependents": [
+        "Development/AutomorphicArithmetic/AutomorphicVarieties/SmallClassNumbers/CorGKOf.lean",
+        "Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean"
+      ],
       "plain_english_summary": "Formulates the geometric descent and Picard-functor duality toolkit for abelian schemes (used in proving existence and properties of dual abelian varieties): H^1(A, O_A) dimension bound <= g (H1StructureDimLe), closedness and flatness of triviality loci of line bundles on A x Y (IsTrivLocus, TrivLocus, FewEquations, TrivLocusFlat), Hilbert 90 and rigidified line-bundle descent (H90, RigDescent), and existence of dual polarized abelian schemes (Construct, FinDual, DualPol).",
       "key_exports": [
         {
@@ -741089,10 +741837,21 @@
       "out_degree": 2,
       "top_ext_fan_in": 0,
       "importing_top_dirs": {},
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 43,
       "importing_d2_dirs": {
         "Development/WeilBound": 43
       },
+      "imported_d2_dirs": {},
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [
+        "ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/BirationalGeometry/ToroidalCompactification/IsHolPeriods.lean"
+      ],
+      "tr_analyzed_dependents": [
+        "Development/AutomorphicArithmetic/AutomorphicVarieties/SmallClassNumbers/CorGKOf.lean",
+        "Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean"
+      ],
       "plain_english_summary": "Defines complex-analytic boundary charts BdryChart on toroidal compactifications Moduli D l of unitary Shimura varieties: maps a punctured polydisc in C^n holomorphically into a semiabelian scheme SAB over Spec R mapping into Xo.X, equipped with a Lie-algebra trivialization M, logarithmic distance function logSize, and Hodge-metric Gram matrix identification IsRiem.",
       "key_exports": [
         {
@@ -741168,10 +741927,35 @@
       "out_degree": 2,
       "top_ext_fan_in": 0,
       "importing_top_dirs": {},
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 41,
       "importing_d2_dirs": {
         "Development/AutomorphicArithmetic": 41
       },
+      "imported_d2_dirs": {},
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [
+        "Formalism/GL3MeanSquares/PrimeCountAsymptoticInProgressions.lean",
+        "Formalism/GaloisCohomology/LocalTateDualityK.lean",
+        "Formalism/LocalRingCardinality/RhoDetPrimeEqMuTildeMulChiPow.lean",
+        "Formalism/PairingDivisors/StatementH.lean",
+        "Formalism/PeriodIntegrals/DSInfCharCap.lean",
+        "Formalism/RealPlaceAnalysis/ThirdArithmeticHolds.lean",
+        "Formalism/SatakeDualWeyl/KpqSubgroupCompact.lean",
+        "Formalism/SharpRestriction/Divisibility/GeneratorPowers/ThExprUniqOfChartIndep2.lean",
+        "Formalism/SharpRestriction/LevelLetterCocycles/LocCoh.lean",
+        "GroundTheory/GlobalFields/IdeleGroups/IdeleNorms.lean",
+        "ReciprocityTheory/AnalyticForms/RegularLocalRings/FinalTheorems.lean",
+        "ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/BirationalGeometry/ToroidalCompactification/HeckeKer.lean",
+        "ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/BirationalGeometry/ToroidalCompactification/IsHolPeriods.lean",
+        "ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/ExtensionDescent/UnifUniqSt.lean",
+        "ReciprocityTheory/ThetaQuasiPeriods/ThetaQuasiPeriodStatement.lean"
+      ],
+      "tr_analyzed_dependents": [
+        "Development/AutomorphicArithmetic/AutomorphicVarieties/SmallClassNumbers/CorGKOf.lean",
+        "Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean"
+      ],
       "plain_english_summary": "Proves PiVecEx: multiplying a smooth cusp form psi on G(A) (invariant under split center) by a compactly supported continuous cutoff u(ldet x) yields a function in L^2(H_n, nu) with rapidly decaying moments against every power of the height weight wt(x)^M.",
       "key_exports": [
         {
@@ -741209,10 +741993,19 @@
       "out_degree": 1,
       "top_ext_fan_in": 0,
       "importing_top_dirs": {},
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 31,
       "importing_d2_dirs": {
         "Development/AutomorphicArithmetic": 31
       },
+      "imported_d2_dirs": {},
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [],
+      "tr_analyzed_dependents": [
+        "Development/AutomorphicArithmetic/AutomorphicVarieties/SmallClassNumbers/CorGKOf.lean",
+        "Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean"
+      ],
       "plain_english_summary": "Contains the structural inductive proof (goal_of) of finiteness of twisted etale cohomology H^n(X, Z/qZ(i)) for proper schemes over a field (EtaleChapterEFour), decomposing the induction over Krull dimension into explicit leaf statements: H^0 invariance over algebraically closed fields, zero-dimensional varieties, alterations/Chow reductions, curve cohomology via Kummer theory (LeafUnits, LeafPic, LeafKum, LeafCurve), Lefschetz-style fiber families (LeafGeo), and specialization/ghost-killing (LeafSpec, LeafGhost).",
       "key_exports": [
         {
@@ -741378,10 +742171,19 @@
       "out_degree": 1,
       "top_ext_fan_in": 0,
       "importing_top_dirs": {},
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 8,
       "importing_d2_dirs": {
         "Formalism/ZetaNonvanishing": 8
       },
+      "imported_d2_dirs": {},
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [],
+      "tr_analyzed_dependents": [
+        "Development/AbelianVarietyTheory/Definitions/AutomorphicMembership/Brauer.lean",
+        "Formalism/GammaFactorNonvanishing/CritLine.lean"
+      ],
       "plain_english_summary": "Exports the foundational complex-analytic specifications for the Chebyshev/Mellin approach to zeta(s) and real Dirichlet L-functions: Mellin transform differentiation (MellinDeriv), Landau's abscissa-of-convergence theorem for nonnegative functions (LandauLemma), the explicit Mellin transform of S(chi, x) (MellinS), real-axis nonvanishing statements for zeta and quadratic characters mod 3, 4, 7 (ZetaRealNonvanish, LRealNonvanish), and RHofHalfPlane.",
       "key_exports": [
         {
@@ -741497,10 +742299,19 @@
       "out_degree": 0,
       "top_ext_fan_in": 0,
       "importing_top_dirs": {},
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 7,
       "importing_d2_dirs": {
         "Development/WeilBound": 7
       },
+      "imported_d2_dirs": {},
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [],
+      "tr_analyzed_dependents": [
+        "Development/AutomorphicArithmetic/AutomorphicVarieties/SmallClassNumbers/CorGKOf.lean",
+        "Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean"
+      ],
       "plain_english_summary": "Defines canonical functorial embedded resolution of singularities and principalization of ideal sheaves in characteristic zero over schemes: blowup sequences (BlowupSequence), strict normal crossings divisors (IsStrictNormalCrossings, HasSimpleNormalCrossings), pullback compatibility under smooth morphisms and field extensions, and the headline propositions FunctorialResolutionCharZero and FunctorialPrincipalizationCharZero.",
       "key_exports": [
         {
@@ -741761,8 +742572,18 @@
       "out_degree": 0,
       "top_ext_fan_in": 0,
       "importing_top_dirs": {},
+      "imported_top_dirs": {},
       "d2_ext_fan_in": 0,
       "importing_d2_dirs": {},
+      "imported_d2_dirs": {},
+      "direct_analyzed_deps": [],
+      "direct_analyzed_dependents": [
+        "Main.lean"
+      ],
+      "tr_analyzed_deps": [],
+      "tr_analyzed_dependents": [
+        "Main.lean"
+      ],
       "plain_english_summary": "Defines the four standalone target propositions imported by Main.lean: explicit zero-line statements for the Riemann zeta function and for arbitrary or primitive Dirichlet L-functions, plus half-plane nonvanishing for Re(s) > 1/2. Formulated directly over Mathlib so readers can inspect the exact theorems proved without navigating the deep proof tree.",
       "key_exports": [
         {
@@ -741833,8 +742654,30 @@
       "out_degree": 3,
       "top_ext_fan_in": 0,
       "importing_top_dirs": {},
+      "imported_top_dirs": {
+        "Development": 2,
+        "Formalism": 1
+      },
       "d2_ext_fan_in": 0,
       "importing_d2_dirs": {},
+      "imported_d2_dirs": {
+        "Development/AutomorphicArithmetic": 2,
+        "Formalism/GammaFactorNonvanishing": 1
+      },
+      "direct_analyzed_deps": [
+        "Development/AutomorphicArithmetic/CharacterBoxes/ClaimStrip.lean",
+        "Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean",
+        "Formalism/GammaFactorNonvanishing/CritLine.lean"
+      ],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [
+        "Development/AutomorphicArithmetic/CharacterBoxes/ClaimStrip.lean",
+        "Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean",
+        "Formalism/GammaFactorNonvanishing/CritLine.lean"
+      ],
+      "tr_analyzed_dependents": [
+        "Supplements/Kernels/MainTheoremsAll.lean"
+      ],
       "plain_english_summary": "Assembles the final headline theorems exported to Main.lean by combining UpperTheory.FinalTheorems.everyCharacter (from Development) with the functional-equation reflection reductions Formalism.VW.rh_of_every, Formalism.VW.critLine, and Claim.strip / Claim.zeta.",
       "key_exports": [
         {
@@ -741905,8 +742748,24 @@
       "out_degree": 2,
       "top_ext_fan_in": 0,
       "importing_top_dirs": {},
+      "imported_top_dirs": {
+        "Supplements": 1
+      },
       "d2_ext_fan_in": 0,
       "importing_d2_dirs": {},
+      "imported_d2_dirs": {
+        "Supplements/Kernels": 1
+      },
+      "direct_analyzed_deps": [
+        "Statements.lean",
+        "Supplements/Kernels/MainTheoremsAll.lean"
+      ],
+      "direct_analyzed_dependents": [],
+      "tr_analyzed_deps": [
+        "Statements.lean",
+        "Supplements/Kernels/MainTheoremsAll.lean"
+      ],
+      "tr_analyzed_dependents": [],
       "plain_english_summary": "The top-level proof driver of the formalization. Imports Statements.lean and Supplements/Kernels/MainTheoremsAll.lean, and exports the five headline theorems: the classical Riemann Hypothesis (in Mathlib's canonical formulation and an explicit zero-line formulation), nonvanishing of all Dirichlet L-functions in the half-plane Re(s) > 1/2 (away from the pole at s = 1 for the trivial character), and the Generalized Riemann Hypothesis placing all nontrivial zeros of arbitrary and primitive Dirichlet L-functions on the critical line Re(s) = 1/2.",
       "key_exports": [
         {
