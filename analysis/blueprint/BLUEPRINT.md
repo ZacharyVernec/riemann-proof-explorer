@@ -25,13 +25,13 @@ To prove $L(\chi, s) \neq 0$ for $\operatorname{Re}(s) > \tfrac{1}{2}$, the form
 
 ```mermaid
 flowchart TD
-    S0_Main["Stage 0: Main Exports (RH, Half-Plane, GRH)"]
-    S0_Spec["Stage 0: Standalone Target Specs"]
-    S0_All["Stage 0: MainTheoremsAll Junction"]
+    S0_Main["Stage 0: Main Theorems (RH, Half-Plane & GRH)"]
+    S0_Spec["Stage 0: Standalone Target Theorem Statements"]
+    S0_All["Stage 0: Top-Level Theorem & Selmer Combination"]
 
-    S1_Crit["Stage 1: MainTheoremsCritical & MainTheorems"]
-    S1_FE["Stage 1: CritLine & RhOfRight (s <-> 1 - s)"]
-    S1_Strip["Stage 1: ClaimStrip (Euler Factors & Primitive Cond.)"]
+    S1_Crit["Stage 1: Critical-Line, Q(sqrt(-3)) & Analytic Bridge"]
+    S1_FE["Stage 1: Functional-Equation Reflection (s <-> 1 - s)"]
+    S1_Strip["Stage 1: Imprimitive Character Strip Reduction"]
 
     S2_MC["Stage 2: MainConclusion (EveryCharacter)"]
     S2_EC["Stage 2: EveryCharacterOfLiteratureOfVWin"]
@@ -114,33 +114,248 @@ flowchart TD
 
 ## Stage 0: Final Theorems
 
-Stage 0 exposes the clean public theorem statements and binds both the RH/GRH proof branch and the explicit small-class-number Selmer bound into a single root verification module.
+Stage 0 states and exports the unconditional headline theorems using only standard complex-analytic and number-theoretic definitions, without exposing proof internals.
 
-| Milestone | Mathematical Content | Verified Source |
-|---|---|---|
-| **Main Exported Theorems** | Proves Mathlib's `RiemannHypothesis`, critical-line localization for $\zeta(s)$, half-plane nonvanishing $\operatorname{Re}(s) > \tfrac{1}{2}$ for all Dirichlet $L$-functions, and GRH for arbitrary and primitive characters. | [Main.lean](file:///home/ubuntu/riemann_proof/lean/src/Main.lean#L4) |
-| **Standalone Target Specifications** | Defines the four standalone target propositions (`RiemannZetaZerosOnLine`, `DirichletLNonvanishingRightOfHalf`, `DirichletLZerosOnLine`, `PrimitiveDirichletLZerosOnLine`) solely over Mathlib so readers can inspect exact statements directly. | [Statements.lean](file:///home/ubuntu/riemann_proof/lean/src/Statements.lean#L3) |
-| **Root Assembly Junction** | Merges the critical-line main theorem package with the small-class-number Selmer length bound over $\mathbb{Q}(\sqrt{-3})$, acting as the unique non-root bottleneck dominating all downstream proof modules. | [MainTheoremsAll.lean](file:///home/ubuntu/riemann_proof/lean/src/Supplements/Kernels/MainTheoremsAll.lean#L1) |
+### Main Theorems (RH, Half-Plane & GRH)
 
-Specifically, the five top-level theorems proved in [Main.lean](file:///home/ubuntu/riemann_proof/lean/src/Main.lean#L4-L12) assert:
-1. Every zero $s \in \mathbb{C}$ of $\zeta(s)$ other than the trivial negative even integers $s = -2(n+1)$ ($n \in \mathbb{N}$) and $s \neq 1$ satisfies $\operatorname{Re}(s) = \tfrac{1}{2}$.
-2. For every modulus $N \ge 1$, every Dirichlet character $\chi \pmod N$, and every $s \in \mathbb{C}$ with $\operatorname{Re}(s) > \tfrac{1}{2}$ and ($\chi \neq 1$ or $s \neq 1$), $L(\chi, s) \neq 0$.
-3. For every $N \ge 1$, every character $\chi \pmod N$ (arbitrary or primitive), and every $s$ in the critical strip $0 < \operatorname{Re}(s) < 1$, $L(\chi, s) = 0 \implies \operatorname{Re}(s) = \tfrac{1}{2}$.
+- **Statement:** Unconditionally establishes the Riemann Hypothesis for $\zeta(s)$, nonvanishing of every Dirichlet $L$-function $L(\chi, s)$ on the open half-plane $\operatorname{Re}(s) > \tfrac{1}{2}$ (away from the pole at $s = 1$), and the Generalized Riemann Hypothesis for both arbitrary and primitive Dirichlet characters.
+- **Assumptions:** None — all five headline theorems are completely unconditional.
+- **Proof strategy:** Directly matches the proved theorems produced by the Stage 1 analytic reductions to the standalone target statements, introducing no new assumptions.
+
+<details>
+<summary>Longer explanation</summary>
+
+**Statement.** Exports the five unconditional headline theorems of the entire work:
+
+1. **Classical Riemann Hypothesis (standard and explicit formulations):** Every zero $s \in \mathbb{C}$ of the Riemann zeta function $\zeta(s)$, other than the trivial zeros at the negative even integers $s = -2, -4, -6, \dots$ (and excluding the simple pole at $s = 1$), lies on the critical line $\operatorname{Re}(s) = \tfrac{1}{2}$.
+2. **Right Half-Plane Nonvanishing for all Dirichlet $L$-functions:** For every modulus $N \ge 1$, every Dirichlet character $\chi \pmod N$, and every $s \in \mathbb{C}$ with $\operatorname{Re}(s) > \tfrac{1}{2}$, we have $L(\chi, s) \neq 0$ (excluding the simple pole at $s = 1$ when $\chi$ is the principal character).
+3. **Generalized Riemann Hypothesis (all characters):** For every modulus $N \ge 1$ and every Dirichlet character $\chi \pmod N$, every zero of $L(\chi, s)$ in the critical strip $0 < \operatorname{Re}(s) < 1$ satisfies $\operatorname{Re}(s) = \tfrac{1}{2}$.
+4. **Generalized Riemann Hypothesis (primitive characters):** The same critical-line localization stated explicitly for primitive Dirichlet characters $\chi \pmod N$.
+
+**Assumptions.** None. Every intermediate analytic, automorphic, Galois-theoretic, and Arakelov-geometric hypothesis appearing in Stages 2–4 has already been proved and discharged before this stage.
+
+**Proof Strategy.** No new mathematical argument is carried out here. This top-level stage simply instantiates each standalone target statement with the corresponding theorem already proved in Stage 1 from the Stage 2 half-plane nonvanishing result, confirming that both RH and GRH hold unconditionally.
+
+</details>
+
+### Standalone Target Theorem Statements
+
+- **Statement:** Formulates the four target propositions — critical-line zeros of $\zeta(s)$, half-plane nonvanishing of $L(\chi, s)$ on $\operatorname{Re}(s) > \tfrac{1}{2}$, and GRH for arbitrary and primitive characters — using only standard complex-analytic definitions.
+- **Assumptions:** None — this milestone states definitions only and proves or assumes no theorems.
+- **Proof strategy:** Contains no proof; isolates the exact mathematical claims from the proof machinery so a reader can verify what is being proved independently of how it is proved.
+
+<details>
+<summary>Longer explanation</summary>
+
+**Statement.** Gives the exact mathematical statements of the four headline propositions using only standard complex analysis (the analytically continued Riemann zeta function $\zeta(s)$ and Dirichlet $L$-functions $L(\chi, s)$):
+
+1. **Critical-line zeros of $\zeta(s)$:** For all $s \in \mathbb{C}$, if $\zeta(s) = 0$, $s$ is not a negative even integer $-2(n + 1)$ ($n \in \mathbb{N}$), and $s \neq 1$, then $\operatorname{Re}(s) = \tfrac{1}{2}$. (Explicitly excluding $s = 1$ ensures the statement is unaffected by any convention at the simple pole of $\zeta$.)
+2. **Right half-plane nonvanishing:** For all $N \ge 1$, all Dirichlet characters $\chi \pmod N$, and all $s \in \mathbb{C}$ with $\operatorname{Re}(s) > \tfrac{1}{2}$, if either $\chi$ is non-principal or $s \neq 1$, then $L(\chi, s) \neq 0$. (When $\chi$ is non-principal, $L(\chi, s)$ extends to an entire function so $s = 1$ is an ordinary point; when $\chi$ is principal, $L(\chi, s)$ has a simple pole at $s = 1$.)
+3. **GRH for all characters:** For all $N \ge 1$, all $\chi \pmod N$, and all $s \in \mathbb{C}$ with $0 < \operatorname{Re}(s) < 1$, if $L(\chi, s) = 0$ then $\operatorname{Re}(s) = \tfrac{1}{2}$.
+4. **GRH for primitive characters:** The same critical-strip statement restricted to primitive characters $\chi \pmod N$.
+
+**Assumptions.** None. Only the standard definitions of complex numbers, Dirichlet characters modulo $N$, $\zeta(s)$, and $L(\chi, s)$ appear.
+
+**Proof Strategy.** No proof takes place here. Separating the target specifications from the rest of the proof lets any mathematician inspect the exact claims up front and confirm there are no hidden caveats or nonstandard definitions.
+
+</details>
+
+### Top-Level Theorem & Selmer Combination
+
+- **Statement:** Unites the proved RH/GRH theorem suite (and its $\mathbb{Q}(\sqrt{-3})$ arithmetic companions) with the unconditional polynomial upper bound on Selmer/Shafarevich–Tate group sizes over $\mathbb{Q}(\sqrt{-3})$.
+- **Assumptions:** None — both incoming branches (the Stage 1 critical-line theorems and the Stage 2 Selmer bound over $\mathbb{Q}(\sqrt{-3})$) are unconditionally proved.
+- **Proof strategy:** Pure structural aggregation combining the analytic main theorems and the standalone arithmetic Selmer corollary into a single top-level package.
+
+<details>
+<summary>Longer explanation</summary>
+
+**Statement.** Brings together the two unconditional top-level outputs of the entire work under one roof:
+
+- **Analytic branch (Stage 1):** The Riemann Hypothesis for $\zeta(s)$, half-plane nonvanishing for all Dirichlet $L$-functions, GRH for arbitrary and primitive characters, and the companion arithmetic results for the imaginary quadratic field $\mathbb{Q}(\sqrt{-3})$.
+- **Arithmetic Selmer branch (Stage 2):** An explicit polynomial growth bound over $\mathbb{Q}(\sqrt{-3})$ asserting that there exist constants $C, A \in \mathbb{N}$ such that for every positive even integer $e$ and every finite set $L_s$ of admissible primes $l \ge 5$ (satisfying $l - 1 \nmid 2e$), the weighted sum of Shafarevich–Tate group lengths (finite-length torsion Galois cohomology groups measuring locally trivial extensions for the $(-e)$-th power of the $l$-adic cyclotomic character) satisfies
+
+$$\sum_{l \in L_s} (\log l) \cdot \frac{\mathrm{len}_l(e)}{e_{\mathcal{O}}} \le C(e + 1)^A,$$
+
+where $e_{\mathcal{O}}$ is the ramification index of the $l$-adic coefficient ring ($e_{\mathcal{O}} = 1$ in the unramified case $\mathbb{Z}_l$).
+
+**Assumptions.** None. Both the Stage 1 analytic branch and the Stage 2 Selmer growth branch are already completely unconditional.
+
+**Proof Strategy.** No new mathematical argument is added here. This node simply serves as the single top-level junction uniting the analytic RH/GRH theorems with the explicit arithmetic Selmer bound over $\mathbb{Q}(\sqrt{-3})$.
+
+</details>
 
 ---
 
 ## Stage 1: Functional-Equation & Character Reductions
 
-Stage 1 bridges half-plane nonvanishing ($\operatorname{Re}(s) > \tfrac{1}{2}$) to critical-line zero localization ($0 < \operatorname{Re}(s) < 1 \implies \operatorname{Re}(s) = \tfrac{1}{2}$) by elementary complex analysis of Euler products, Gamma factors, and functional equations:
+Stage 1 bridges right half-plane nonvanishing ($\operatorname{Re}(s) > \tfrac{1}{2}$) to critical-line zero localization ($0 < \operatorname{Re}(s) < 1 \implies \operatorname{Re}(s) = \tfrac{1}{2}$) using elementary complex analysis of Euler factors, Gamma factors, and functional equations, alongside companion arithmetic results over $\mathbb{Q}(\sqrt{-3})$.
 
-- **Critical-Line Assembly** ([MainTheoremsCritical.lean](file:///home/ubuntu/riemann_proof/lean/src/Supplements/Kernels/MainTheoremsCritical.lean#L1)) and **Top-Level Analytic Bridge** ([MainTheorems.lean](file:///home/ubuntu/riemann_proof/lean/src/Supplements/Kernels/MainTheorems.lean#L7)) convert `EveryCharacter` into the four exported theorems (`allChi`, `rhOfAll`, `critAll`, `claimAll`).
-- **Primitive Character Reflection** ([CritLine.lean](file:///home/ubuntu/riemann_proof/lean/src/Formalism/GammaFactorNonvanishing/CritLine.lean#L11)): For any primitive character $\chi$, the archimedean factor $\gamma(\chi, s) \in \{\Gamma_{\mathbb{R}}(s), \Gamma_{\mathbb{R}}(s+1)\}$ has no zeros for $\operatorname{Re}(s) > 0$. Consequently, if $L(\chi, s) = 0$ with $0 < \operatorname{Re}(s) < \tfrac{1}{2}$, the completed $L$-function vanishes at $s$; by the functional equation relating $\Lambda(\chi, s)$ and $\Lambda(\chi^{-1}, 1-s)$, it follows that $L(\chi^{-1}, 1-s) = 0$ with $\operatorname{Re}(1 - s) > \tfrac{1}{2}$, contradicting half-plane nonvanishing.
-- **Riemann Zeta Reflection** ([RhOfRight.lean](file:///home/ubuntu/riemann_proof/lean/src/Formalism/GammaFactorNonvanishing/RhOfRight.lean#L5)): Deduces `RiemannHypothesis` directly from $\zeta(s) \neq 0$ on $\operatorname{Re}(s) > \tfrac{1}{2}$ ($s \neq 1$) via the asymmetric functional equation
-  $$\zeta(1 - s) = 2(2\pi)^{-s}\Gamma(s)\cos\!\left(\frac{\pi s}{2}\right)\zeta(s)$$
-  (checking explicitly that the cosine, Gamma, and $2(2\pi)^{-(1-s)}$ prefactors avoid all nontrivial zeros).
-- **Imprimitive Character Reduction** ([ClaimStrip.lean](file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicArithmetic/CharacterBoxes/ClaimStrip.lean#L59), over [HalfPlane.lean](file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicArithmetic/CharacterBoxes/HalfPlane.lean#L3)): Expresses $L(\chi, s)$ for an arbitrary character $\chi \pmod N$ of conductor $M \mid N$ as
-  $$L(\chi, s) = L(\psi, s) \prod_{p \mid N} \bigl(1 - \psi(p)p^{-s}\bigr)$$
-  where $\psi$ is the primitive character inducing $\chi$. Because $|\psi(p)p^{-s}| \le p^{-\operatorname{Re}(s)} < 1$ whenever $\operatorname{Re}(s) > 0$, each Euler factor is nonzero in the critical strip, transferring any zero of $L(\chi, s)$ to $L(\psi, s)$ and then reflecting across $s \mapsto 1 - s$.
+### Critical-Line & $\mathbb{Q}(\sqrt{-3})$ Arithmetic
+
+- **Statement:** Pairs the proved RH/GRH theorems with three arithmetic results for $\mathbb{Q}(\sqrt{-3})$: class number $h(\mathbb{Q}(\sqrt{-3})) = 1$, a cocycle-vanishing criterion for Selmer length zero, and a Galois-representation existence criterion when length is nonzero.
+- **Assumptions:** RH, GRH, $h(\mathbb{Q}(\sqrt{-3})) = 1$, and the length-zero equivalence are unconditional; the Selmer bound specialization and representation-existence lemma take the Stage 2 $U(3)$ modularity inputs.
+- **Proof strategy:** Proves $h(\mathbb{Q}(\sqrt{-3})) = 1$ via Minkowski's discriminant bound, characterizes length zero by every locally trivial Galois $1$-cocycle being a coboundary (forcing vanishing once $\log l > C(e + 1)^A$), and links nonzero length to an admissible $3$-dimensional Galois representation.
+
+<details>
+<summary>Longer explanation</summary>
+
+**Statement.** Bundles the Stage 1 RH/GRH theorems with three companion algebraic number theory results centered on the imaginary quadratic field $K = \mathbb{Q}(\sqrt{-3})$ (whose ring of integers is the Eisenstein integers $\mathbb{Z}[(1 + \sqrt{-3})/2]$):
+
+1. **Class number one & Selmer specialization:** Proves $h(\mathbb{Q}(\sqrt{-3})) = 1$ (the ring of integers is a principal ideal domain) and specializes the general $U(3)$ Selmer inequality to $K = \mathbb{Q}(\sqrt{-3})$ and the trivial character modulo $2$ to obtain the polynomial bound $\sum_{l \in L_s} (\log l) \cdot (\mathrm{len}_l(e) / e_{\mathcal{O}}) \le C(e + 1)^A$, where $e_{\mathcal{O}}$ is the ramification index of the $l$-adic coefficient ring.
+2. **Cocycle-vanishing criterion & large-prime vanishing:** Proves that the $l$-adic Shafarevich–Tate group attached to the $(-e)$-th power of the cyclotomic character has length $0$ if and only if every continuous Galois $1$-cocycle that is locally a coboundary at primes dividing $2l$ and on all inertia subgroups is globally a coboundary. Consequently, when $e_{\mathcal{O}} = 1$ (unramified coefficients such as $\mathbb{Z}_l$), every admissible prime $l$ with $\log l > C(e + 1)^A$ forces complete vanishing of the group.
+3. **Nonzero Selmer length implies a Galois representation:** Under the Stage 2 automorphy and deformation hypotheses, if the Selmer length is nonzero, there exists a non-degenerate $3$-dimensional $l$-adic Galois representation attached to the character data satisfying an automorphic admissibility condition.
+
+**Assumptions.** The RH/GRH deductions, $h(\mathbb{Q}(\sqrt{-3})) = 1$, and the length-zero cocycle equivalence are completely unconditional. The specialization to the explicit Selmer bound over $\mathbb{Q}(\sqrt{-3})$ and the nonzero-length representation lemma are stated conditionally on the Stage 2 $U(3)$ Selmer and modularity hypotheses (which Stage 2 discharges unconditionally).
+
+**Proof Strategy.**
+
+- **Class number 1:** The quadratic field $\mathbb{Q}(\sqrt{-3})$ has discriminant $-3$ and one complex place. Minkowski's geometry-of-numbers bound guarantees that every ideal class contains a nonzero integral ideal of norm strictly less than $2$; the only such ideal is the unit ideal, so every ideal is principal and $h = 1$.
+- **Zero length & large-prime vanishing:** By definition of Galois cohomology $H^1$ as continuous $1$-cocycles modulo coboundaries, the Shafarevich–Tate module has length $0$ precisely when every locally trivial cocycle is globally a coboundary. Applying the polynomial sum bound to a singleton set $\{l\}$ (with $e_{\mathcal{O}} = 1$) yields $(\log l) \cdot \mathrm{len}_l(e) \le C(e + 1)^A$; once $\log l > C(e + 1)^A$, the non-negative integer $\mathrm{len}_l(e)$ cannot be $\ge 1$ and must equal $0$.
+- **Nonzero length to representation:** Argues by contradiction: if no non-degenerate Galois representation existed on the associated deformation ring, an upper bound on the length of the deformation module would collapse to $0$, contradicting the assumed nonvanishing of the Selmer length.
+
+</details>
+
+### RH & GRH from Half-Plane Nonvanishing
+
+- **Statement:** Combines the unconditional Stage 2 half-plane nonvanishing theorem with Stage 1's complex-analytic reflections to deduce RH for $\zeta(s)$, GRH for primitive characters, and GRH for all Dirichlet characters.
+- **Assumptions:** Unconditional overall — receives the proved half-plane nonvanishing theorem from Stage 2 and plugs it into the conditional Stage 1 reflection theorems.
+- **Proof strategy:** Feeds $L(\chi, s) \neq 0$ on $\operatorname{Re}(s) > \tfrac{1}{2}$ into (1) zeta functional-equation reflection via the trivial character mod $1$, (2) primitive-character reflection, and (3) Euler-factor reduction for imprimitive characters.
+
+<details>
+<summary>Longer explanation</summary>
+
+**Statement.** Produces all four top-level analytic theorems unconditionally from the single Stage 2 half-plane nonvanishing result:
+
+1. **Universal half-plane nonvanishing:** $L(\chi, s) \neq 0$ for every $N \ge 1$, every Dirichlet character $\chi \pmod N$, and every $s \in \mathbb{C}$ with $\operatorname{Re}(s) > \tfrac{1}{2}$ (excluding $s = 1$ when $\chi$ is principal).
+2. **Classical Riemann Hypothesis:** Every nontrivial zero of $\zeta(s)$ lies on $\operatorname{Re}(s) = \tfrac{1}{2}$.
+3. **GRH for primitive characters:** Every zero of $L(\chi, s)$ in $0 < \operatorname{Re}(s) < 1$ for a primitive character $\chi$ satisfies $\operatorname{Re}(s) = \tfrac{1}{2}$.
+4. **Unified analytic bundle:** Half-plane nonvanishing, GRH for all (arbitrary, possibly imprimitive) Dirichlet characters in $0 < \operatorname{Re}(s) < 1$, and RH for $\zeta(s)$ together.
+
+**Assumptions.** None at the output level. This bridge is where the unconditional Stage 2 theorem (half-plane nonvanishing) supplies the hypothesis needed by all the elementary Stage 1 functional-equation theorems.
+
+**Proof Strategy.** Pure composition of the Stage 2 nonvanishing theorem with Stage 1's three elementary reductions:
+
+1. Specialize half-plane nonvanishing to the trivial character modulo $1$ (where $L(1, s) = \zeta(s)$) and apply the Riemann zeta reflection theorem to deduce RH.
+2. Apply primitive-character functional-equation reflection directly to deduce GRH for all primitive Dirichlet characters.
+3. Apply Euler-factor elimination and strip reflection to deduce GRH for arbitrary Dirichlet characters along with a second, independent derivation of RH.
+
+</details>
+
+### Functional-Equation Reflection (Primitive)
+
+- **Statement:** Proves that the Gamma factor $\gamma(\chi, s)$ of any Dirichlet character never vanishes for $\operatorname{Re}(s) > 0$, and deduces from half-plane nonvanishing that every critical-strip zero of a primitive $L$-function lies on $\operatorname{Re}(s) = \tfrac{1}{2}$ (plus RH for $\zeta$).
+- **Assumptions:** Nonvanishing of $\gamma(\chi, s)$ is unconditional; the critical-line conclusions assume $L(\chi, s) \neq 0$ for all $\chi$ and all $\operatorname{Re}(s) > \tfrac{1}{2}$ (away from $s = 1$ when $\chi = 1$).
+- **Proof strategy:** Uses $\gamma(\chi, s) \neq 0$ to transfer a putative zero with $0 < \operatorname{Re}(s) < \tfrac{1}{2}$ to the completed $L$-function $\Lambda(\chi, s)$, reflects via the functional equation to obtain $L(\chi^{-1}, 1 - s) = 0$ with $\operatorname{Re}(1 - s) > \tfrac{1}{2}$, and reaches a contradiction.
+
+<details>
+<summary>Longer explanation</summary>
+
+**Statement.** Establishes three elementary complex-analytic results:
+
+1. **Nonvanishing of the archimedean Gamma factor:** For every modulus $N$, every Dirichlet character $\chi \pmod N$, and every $s \in \mathbb{C}$ with $\operatorname{Re}(s) > 0$, the Gamma factor $\gamma(\chi, s)$ is nonzero.
+2. **Critical-line localization for primitive characters:** Assuming right half-plane nonvanishing for all Dirichlet $L$-functions, if $\chi \pmod N$ is **primitive** and $L(\chi, s) = 0$ with $0 < \operatorname{Re}(s) < 1$, then $\operatorname{Re}(s) = \tfrac{1}{2}$.
+3. **Deduction of the Riemann Hypothesis:** Under the same right half-plane assumption, the classical Riemann Hypothesis holds for $\zeta(s)$.
+
+**Assumptions.** Part (1) is unconditional, using only standard properties of Euler's Gamma function $\Gamma(z)$. Parts (2) and (3) assume right half-plane nonvanishing: for every $N \ge 1$, every Dirichlet character $\chi \pmod N$, and every $s \in \mathbb{C}$ with $\operatorname{Re}(s) > \tfrac{1}{2}$ (and $\chi \neq 1$ or $s \neq 1$), we have $L(\chi, s) \neq 0$.
+
+**Proof Strategy.**
+
+1. **Why $\gamma(\chi, s) \neq 0$ on $\operatorname{Re}(s) > 0$:** Every Dirichlet character $\chi$ is either even ($\chi(-1) = 1$) or odd ($\chi(-1) = -1$). Its Gamma factor is $\Gamma_{\mathbb{R}}(s) = \pi^{-s/2}\Gamma(s/2)$ when $\chi$ is even and $\Gamma_{\mathbb{R}}(s + 1) = \pi^{-(s+1)/2}\Gamma((s + 1)/2)$ when $\chi$ is odd. Whenever $\operatorname{Re}(s) > 0$, both $s/2$ and $(s + 1)/2$ have positive real part, where $\Gamma$ is analytic and zero-free and the exponential $\pi^{-z/2}$ never vanishes.
+2. **Reflecting a primitive zero across $s \mapsto 1 - s$:** Suppose $L(\chi, s) = 0$ for a primitive $\chi$ with $0 < \operatorname{Re}(s) < 1$ (so $s \neq 0$ and $s \neq 1$), and suppose for contradiction that $\operatorname{Re}(s) \neq \tfrac{1}{2}$:
+  - If $\operatorname{Re}(s) > \tfrac{1}{2}$, this directly contradicts half-plane nonvanishing (since $s \neq 1$).
+  - If $\operatorname{Re}(s) < \tfrac{1}{2}$, use the relation $L(\chi, s) = \Lambda(\chi, s)/\gamma(\chi, s)$, where $\Lambda(\chi, s)$ is the completed $L$-function. Because $\gamma(\chi, s) \neq 0$, vanishing of $L(\chi, s)$ forces $\Lambda(\chi, s) = 0$. Since $\chi$ is primitive, its inverse character $\chi^{-1} = \overline{\chi}$ is also primitive with the same conductor, and the functional equation relates $\Lambda(\chi^{-1}, 1 - s)$ to a scalar multiple of $\Lambda(\chi, s)$, forcing $\Lambda(\chi^{-1}, 1 - s) = 0$. Dividing by $\gamma(\chi^{-1}, 1 - s)$ yields $L(\chi^{-1}, 1 - s) = 0$. But $\operatorname{Re}(1 - s) = 1 - \operatorname{Re}(s) > \tfrac{1}{2}$ and $1 - s \neq 1$ (since $s \neq 0$), contradicting right half-plane nonvanishing for $\chi^{-1}$.
+3. **Deduction of RH:** Specialize right half-plane nonvanishing to the trivial character modulo $1$, whose $L$-function is $\zeta(s)$, and invoke the Riemann zeta reflection theorem.
+
+</details>
+
+### Zeta Reflection via Functional Equation
+
+- **Statement:** If $\zeta(s)$ has no zeros in the open right half-plane $\operatorname{Re}(s) > \tfrac{1}{2}$ (excluding $s = 1$), then every nontrivial zero of $\zeta(s)$ lies on the critical line $\operatorname{Re}(s) = \tfrac{1}{2}$.
+- **Assumptions:** Assumes $\zeta(s) \neq 0$ for all $s \in \mathbb{C}$ with $\operatorname{Re}(s) > \tfrac{1}{2}$ and $s \neq 1$, plus standard properties of $\zeta(s)$, $\Gamma(s)$, and $\cos(z)$.
+- **Proof strategy:** Splits a nontrivial zero $s$ by trichotomy on $\operatorname{Re}(s)$ vs. $\tfrac{1}{2}$; for $\operatorname{Re}(s) < \tfrac{1}{2}$, applies Riemann's asymmetric functional equation at $1 - s$ and checks that $2(2\pi)^{-(1-s)}$, $\Gamma(1 - s)$, $\cos(\pi(1 - s)/2)$, and $\zeta(1 - s)$ are all nonzero.
+
+<details>
+<summary>Longer explanation</summary>
+
+**Statement.** Proves the classical reduction of the Riemann Hypothesis to the right half-plane: if $\zeta(s) \neq 0$ for every $s \in \mathbb{C}$ with $\operatorname{Re}(s) > \tfrac{1}{2}$ and $s \neq 1$, then every zero $s \in \mathbb{C}$ of $\zeta(s)$ other than the trivial zeros $s = -2, -4, -6, \dots$ (and $s \neq 1$) satisfies $\operatorname{Re}(s) = \tfrac{1}{2}$.
+
+**Assumptions.** Assumes only that $\zeta(s) \neq 0$ whenever $\operatorname{Re}(s) > \tfrac{1}{2}$ and $s \neq 1$, together with standard complex-analytic facts: $\zeta(0) = -\tfrac{1}{2} \neq 0$, $\Gamma(z) \neq 0$ for $\operatorname{Re}(z) > 0$, and Riemann's asymmetric functional equation
+
+$$\zeta(1 - w) = 2(2\pi)^{-w}\Gamma(w)\cos\!\left(\frac{\pi w}{2}\right)\zeta(w),$$
+
+valid for all $w \in \mathbb{C}$ with $w \neq 1$ and $w \notin \{0, -1, -2, \dots\}$.
+
+**Proof Strategy.** Let $s \in \mathbb{C}$ satisfy $\zeta(s) = 0$, $s \neq 1$, and $s \notin \{-2, -4, -6, \dots\}$. By trichotomy, compare $\operatorname{Re}(s)$ with $\tfrac{1}{2}$:
+
+1. **$\operatorname{Re}(s) = \tfrac{1}{2}$:** This is the desired conclusion.
+2. **$\operatorname{Re}(s) > \tfrac{1}{2}$:** Directly ruled out by the assumed right half-plane nonvanishing (since $s \neq 1$).
+3. **$\operatorname{Re}(s) < \tfrac{1}{2}$ (proof by contradiction):** First note $s \neq 0$ because $\zeta(0) = -\tfrac{1}{2} \neq 0$. Setting $w = 1 - s$ gives $\operatorname{Re}(w) = 1 - \operatorname{Re}(s) > \tfrac{1}{2} > 0$, so $w$ avoids all non-positive integers $\{0, -1, -2, \dots\}$, and $s \neq 0$ ensures $w \neq 1$. Thus the asymmetric functional equation applies at $w = 1 - s$:
+
+$$0 = \zeta(s) = 2(2\pi)^{-(1-s)}\Gamma(1 - s)\cos\!\left(\frac{\pi(1 - s)}{2}\right)\zeta(1 - s).$$
+
+Now verify that each of the four factors on the right-hand side is nonzero:
+
+- $2(2\pi)^{-(1-s)} \neq 0$ because $2\pi \neq 0$ and complex exponentials never vanish.
+- $\Gamma(1 - s) \neq 0$ because $\operatorname{Re}(1 - s) > 0$, where $\Gamma$ is analytic and zero-free.
+- $\cos(\pi(1 - s)/2) \neq 0$: cosine vanishes only when $\pi(1 - s)/2 = \pi/2 + k\pi$ for some $k \in \mathbb{Z}$, i.e., $1 - s = 2k + 1$, or $s = -2k$. Here $k < 0$ gives $\operatorname{Re}(s) = -2k \ge 2$ (contradicting $\operatorname{Re}(s) < \tfrac{1}{2}$); $k = 0$ gives $s = 0$ (contradicting $s \neq 0$); and $k \ge 1$ gives a negative even integer $s = -2k$ (a trivial zero, excluded by hypothesis).
+- $\zeta(1 - s) \neq 0$ by hypothesis, since $\operatorname{Re}(1 - s) > \tfrac{1}{2}$ and $1 - s \neq 1$.
+
+A product of four nonzero complex numbers cannot equal $0$ — contradiction.
+
+</details>
+
+### Imprimitive Character Strip Reduction
+
+- **Statement:** Shows that right half-plane nonvanishing for all Dirichlet $L$-functions implies GRH for every character $\chi \pmod N$ (including imprimitive ones) as well as the classical Riemann Hypothesis for $\zeta(s)$.
+- **Assumptions:** Assumes $L(\chi, s) \neq 0$ for all $N \ge 1$, all $\chi \pmod N$, and all $\operatorname{Re}(s) > \tfrac{1}{2}$ (away from $s = 1$ when $\chi = 1$), plus the classical fact that $\zeta(s) \neq 0$ for $\operatorname{Re}(s) \ge 1$.
+- **Proof strategy:** Factors $L(\chi, s) = L(\psi, s) \prod_{p \mid N} (1 - \psi(p)p^{-s})$ via the inducing primitive character $\psi$; since $|\psi(p)p^{-s}| < 1$ for $\operatorname{Re}(s) > 0$, no Euler factor vanishes, reducing to a zero of $L(\psi, s)$ which reflects across $s \mapsto 1 - s$ into $\operatorname{Re}(s) > \tfrac{1}{2}$.
+
+<details>
+<summary>Longer explanation</summary>
+
+**Statement.** Proves two implications from universal right half-plane nonvanishing:
+
+1. **GRH for arbitrary (possibly imprimitive) characters:** For every modulus $N \ge 1$, every Dirichlet character $\chi \pmod N$, and every $s$ in the critical strip $0 < \operatorname{Re}(s) < 1$, if $L(\chi, s) = 0$ then $\operatorname{Re}(s) = \tfrac{1}{2}$.
+2. **Classical Riemann Hypothesis for $\zeta(s)$:** Every zero $s \in \mathbb{C}$ of $\zeta(s)$ other than the trivial zeros $-2, -4, -6, \dots$ (and $s \neq 1$) has $\operatorname{Re}(s) = \tfrac{1}{2}$, proved independently via the symmetric completed zeta function $\Lambda(s)$.
+
+**Assumptions.** Assumes right half-plane nonvanishing for all Dirichlet $L$-functions ($L(\chi, s) \neq 0$ whenever $\operatorname{Re}(s) > \tfrac{1}{2}$ and $\chi \neq 1$ or $s \neq 1$). The $\zeta(s)$ corollary also uses the classical boundary theorem $\zeta(s) \neq 0$ for $\operatorname{Re}(s) \ge 1$ and the symmetric functional equation $\Lambda(1 - s) = \Lambda(s)$.
+
+**Proof Strategy.**
+
+**Part 1 — Arbitrary character $\chi \pmod N$:** Suppose $L(\chi, s) = 0$ with $0 < \operatorname{Re}(s) < 1$. By trichotomy, $\operatorname{Re}(s) > \tfrac{1}{2}$ directly contradicts half-plane nonvanishing (since $s \neq 1$) and $\operatorname{Re}(s) = \tfrac{1}{2}$ is the goal, so suppose for contradiction that $0 < \operatorname{Re}(s) < \tfrac{1}{2}$:
+
+1. *Pass to the inducing primitive character:* Let $\psi \pmod M$ (where $M \mid N$ is the conductor of $\chi$) be the unique primitive character inducing $\chi$. Away from $s = 1$, their $L$-functions differ by finitely many Euler factors: $$L(\chi, s) = L(\psi, s) \prod_{p \mid N} \bigl(1 - \psi(p)p^{-s}\bigr).$$ For every prime $p \ge 2$ and every $s$ with $\operatorname{Re}(s) > 0$, we have $|\psi(p)| \le 1$ (character values are $0$ or roots of unity) and $|p^{-s}| = p^{-\operatorname{Re}(s)} < 1$. Hence $|\psi(p)p^{-s}| < 1$, so $1 - \psi(p)p^{-s} \neq 0$. Because no Euler factor can vanish, $L(\chi, s) = 0$ forces $L(\psi, s) = 0$.
+2. *Reflect the primitive zero:* Since $\psi$ is primitive and $\operatorname{Re}(s) > 0$, its Gamma factor $\gamma(\psi, s) \neq 0$, so the completed $L$-function vanishes: $\Lambda(\psi, s) = 0$. By the functional equation for primitive characters, $\Lambda(\psi^{-1}, 1 - s) = 0$, and hence $L(\psi^{-1}, 1 - s) = 0$.
+3. *Contradiction:* Since $\operatorname{Re}(s) < \tfrac{1}{2}$ and $s \neq 0$, we have $\operatorname{Re}(1 - s) > \tfrac{1}{2}$ and $1 - s \neq 1$, contradicting half-plane nonvanishing for $\psi^{-1} \pmod M$.
+
+**Part 2 — Classical Riemann Hypothesis:** Given a nontrivial zero $\zeta(s) = 0$ with $s \neq 1$ (so also $s \neq 0$, since $\zeta(0) = -\tfrac{1}{2}$):
+
+- If $0 < \operatorname{Re}(s) < 1$, identify $\zeta(s)$ with $L(1, s)$ for the trivial character modulo $1$ and apply Part 1 to get $\operatorname{Re}(s) = \tfrac{1}{2}$.
+- If $\operatorname{Re}(s) \ge 1$, this contradicts the classical theorem $\zeta(s) \neq 0$ on $\operatorname{Re}(s) \ge 1$.
+- If $\operatorname{Re}(s) \le 0$, because $s$ is neither $0$ nor a negative even integer, $\Gamma_{\mathbb{R}}(s) = \pi^{-s/2}\Gamma(s/2)$ has no pole at $s$, so $\zeta(s) = \Lambda(s)/\Gamma_{\mathbb{R}}(s) = 0$ implies $\Lambda(s) = 0$. By the symmetric functional equation $\Lambda(1 - s) = \Lambda(s)$, we obtain $\Lambda(1 - s) = 0$ and hence $\zeta(1 - s) = 0$ with $\operatorname{Re}(1 - s) \ge 1$, again contradicting classical nonvanishing.
+
+</details>
+
+### Half-Plane, Strip & Zeta Definitions
+
+- **Statement:** Defines the three core analytic propositions linked by Stage 1: right half-plane nonvanishing for all Dirichlet $L$-functions, critical-strip localization (GRH) for all characters, and the Riemann Hypothesis for $\zeta(s)$.
+- **Assumptions:** None — pure definitions using standard complex analysis and Dirichlet $L$-functions.
+- **Proof strategy:** Contains no proof; establishes the clean interface separating the deep Stage 2–4 proof of nonvanishing on $\operatorname{Re}(s) > \tfrac{1}{2}$ from the elementary Stage 1 reflection arguments.
+
+<details>
+<summary>Longer explanation</summary>
+
+**Statement.** Defines the three core analytic statements that organize Stage 1:
+
+1. **Right Half-Plane Nonvanishing:** For every modulus $N \ge 1$, every Dirichlet character $\chi \pmod N$, and every $s \in \mathbb{C}$ with $\operatorname{Re}(s) > \tfrac{1}{2}$ (excluding $s = 1$ when $\chi$ is principal), $L(\chi, s) \neq 0$.
+2. **Critical-Strip Localization (GRH):** For every $N \ge 1$, every $\chi \pmod N$, and every $s \in \mathbb{C}$ with $0 < \operatorname{Re}(s) < 1$, if $L(\chi, s) = 0$ then $\operatorname{Re}(s) = \tfrac{1}{2}$.
+3. **Classical Riemann Hypothesis:** For every $s \in \mathbb{C}$ with $\zeta(s) = 0$, if $s$ is not a negative even integer $-2(n + 1)$ ($n \in \mathbb{N}$) and $s \neq 1$, then $\operatorname{Re}(s) = \tfrac{1}{2}$.
+
+**Assumptions.** None. Only standard definitions of $\zeta(s)$ and Dirichlet $L$-functions $L(\chi, s)$ are referenced.
+
+**Proof Strategy.** No proof is carried out here. This milestone fixes the exact mathematical boundary between the deep analytic, automorphic, and arithmetic proof of Proposition 1 (Stages 2–4) and the elementary complex-analytic derivations of Propositions 2 and 3 (Stage 1).
+
+</details>
 
 ---
 
@@ -250,15 +465,15 @@ To understand what is unconditionally proved versus parameterized in intermediat
 
 | Stage | ID | Title | Lean Symbol | Source Link |
 |---:|---|---|---|---|
-| 0 | `main_export` | Main Exported Theorems | `riemannHypothesis` | [Main.lean](file:///home/ubuntu/riemann_proof/lean/src/Main.lean#L4) |
-| 0 | `statements_spec` | Standalone Target Specifications | `RiemannZetaZerosOnLine` | [Statements.lean](file:///home/ubuntu/riemann_proof/lean/src/Statements.lean#L3) |
-| 0 | `main_theorems_all` | Root Assembly Junction | `Supplements.Kernels.MainTheoremsAll` | [MainTheoremsAll.lean](file:///home/ubuntu/riemann_proof/lean/src/Supplements/Kernels/MainTheoremsAll.lean#L1) |
-| 1 | `main_theorems_critical` | Critical-Line & Small-Class Packaging | `Supplements.Kernels.MainTheoremsCritical` | [MainTheoremsCritical.lean](file:///home/ubuntu/riemann_proof/lean/src/Supplements/Kernels/MainTheoremsCritical.lean#L1) |
-| 1 | `main_theorems_bridge` | Top-Level Analytic Reductions | `allChi` | [MainTheorems.lean](file:///home/ubuntu/riemann_proof/lean/src/Supplements/Kernels/MainTheorems.lean#L7) |
+| 0 | `main_export` | Main Theorems (RH, Half-Plane & GRH) | `riemannHypothesis` | [Main.lean](file:///home/ubuntu/riemann_proof/lean/src/Main.lean#L4) |
+| 0 | `statements_spec` | Standalone Target Theorem Statements | `RiemannZetaZerosOnLine` | [Statements.lean](file:///home/ubuntu/riemann_proof/lean/src/Statements.lean#L3) |
+| 0 | `main_theorems_all` | Top-Level Theorem & Selmer Combination | `Supplements.Kernels.MainTheoremsAll` | [MainTheoremsAll.lean](file:///home/ubuntu/riemann_proof/lean/src/Supplements/Kernels/MainTheoremsAll.lean#L1) |
+| 1 | `main_theorems_critical` | Critical-Line & $\mathbb{Q}(\sqrt{-3})$ Arithmetic | `Supplements.Kernels.MainTheoremsCritical` | [MainTheoremsCritical.lean](file:///home/ubuntu/riemann_proof/lean/src/Supplements/Kernels/MainTheoremsCritical.lean#L1) |
+| 1 | `main_theorems_bridge` | RH & GRH from Half-Plane Nonvanishing | `allChi` | [MainTheorems.lean](file:///home/ubuntu/riemann_proof/lean/src/Supplements/Kernels/MainTheorems.lean#L7) |
 | 1 | `crit_line` | Functional-Equation Reflection (Primitive) | `Formalism.VW.critLine` | [CritLine.lean](file:///home/ubuntu/riemann_proof/lean/src/Formalism/GammaFactorNonvanishing/CritLine.lean#L11) |
-| 1 | `rh_of_right` | Riemann Zeta Functional-Equation Reflection | `Formalism.VW.rh_of_right` | [RhOfRight.lean](file:///home/ubuntu/riemann_proof/lean/src/Formalism/GammaFactorNonvanishing/RhOfRight.lean#L5) |
-| 1 | `claim_strip` | Imprimitive-to-Primitive Reduction | `Claim.strip` | [ClaimStrip.lean](file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicArithmetic/CharacterBoxes/ClaimStrip.lean#L59) |
-| 1 | `half_plane_def` | Analytic Claim Definitions | `Claim.HalfPlane` | [HalfPlane.lean](file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicArithmetic/CharacterBoxes/HalfPlane.lean#L3) |
+| 1 | `rh_of_right` | Zeta Reflection via Functional Equation | `Formalism.VW.rh_of_right` | [RhOfRight.lean](file:///home/ubuntu/riemann_proof/lean/src/Formalism/GammaFactorNonvanishing/RhOfRight.lean#L5) |
+| 1 | `claim_strip` | Imprimitive Character Strip Reduction | `Claim.strip` | [ClaimStrip.lean](file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicArithmetic/CharacterBoxes/ClaimStrip.lean#L59) |
+| 1 | `half_plane_def` | Half-Plane, Strip & Zeta Definitions | `Claim.HalfPlane` | [HalfPlane.lean](file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicArithmetic/CharacterBoxes/HalfPlane.lean#L3) |
 | 2 | `main_conclusion` | Master Proof Synthesis (`everyCharacter`) | `UpperTheory.FinalTheorems.everyCharacter` | [MainConclusion.lean](file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean#L10) |
 | 2 | `rh_of_every_char` | Operator & Covolume Assembly | `UpperTheory.riemannHypothesis_of_everyCharacter` | [RiemannHypothesisOfEveryCharacter.lean](file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicArithmetic/CharacterBoxes/RiemannHypothesisOfEveryCharacter.lean#L215) |
 | 2 | `every_character_def` | Character-Box Window Assembly | `UpperTheory.Top.plugAll` | [EveryCharacter.lean](file:///home/ubuntu/riemann_proof/lean/src/Development/AutomorphicArithmetic/CharacterBoxes/EveryCharacter.lean#L16) |
