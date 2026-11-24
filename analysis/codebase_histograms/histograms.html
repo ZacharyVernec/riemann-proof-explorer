@@ -415,16 +415,10 @@
 <div class="tooltip" id="tooltip"></div>
 
 <script>
-function initHistograms(DATA) {
+(function () {
   "use strict";
-  if (!DATA) {
-    document.body.innerHTML = "<p style='padding:24px'>Missing histograms_data.js. Run <code>python3 analysis/build_all.py</code>.</p>";
-    return;
-  }
-  if (window.RHVersion && RHVersion.current) {
-    document.getElementById("histSubtitle").innerHTML =
-      `Empirical distributions across <code>${RHVersion.current.label}</code> — attributes, proof glue, typeclass hypotheses, proof strategies, equivalence bridges, non-<code>@[simp]</code> fan-in, and declaration structure.`;
-  }
+
+  let DATA = null;
 
   const TIER_COLORS = {
     core_algebra: "#334155",
@@ -1331,9 +1325,29 @@ function initHistograms(DATA) {
     renderCard6(dom);
   }
 
-  renderAll();
-}
-RHVersion.loadDataScript("codebase_histograms/histograms_data.js", "__HISTOGRAMS_DATA__", initHistograms);
+  function applyHistograms(data, ver) {
+    hideTip();
+    if (!data || !data.by_domain) {
+      const mainEl = document.querySelector("main");
+      if (mainEl) {
+        mainEl.innerHTML = "<p style='padding:24px'>Missing histograms_data.js. Run <code>python3 analysis/build_all.py</code>.</p>";
+      }
+      return;
+    }
+    DATA = data;
+    if (!DATA.by_domain[state.domain]) {
+      state.domain = "ALL";
+    }
+    const curVer = ver || (window.RHVersion ? RHVersion.current : null);
+    if (curVer) {
+      document.getElementById("histSubtitle").innerHTML =
+        `Empirical distributions across <code>${esc(curVer.label)}</code> — attributes, proof glue, typeclass hypotheses, proof strategies, equivalence bridges, non-<code>@[simp]</code> fan-in, and declaration structure.`;
+    }
+    renderAll();
+  }
+
+  RHVersion.loadDataScript("codebase_histograms/histograms_data.js", "__HISTOGRAMS_DATA__", applyHistograms);
+})();
 </script>
 </body>
 </html>

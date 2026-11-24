@@ -890,41 +890,67 @@ function renderDomTree() {
   if (DATA.dom_top100.length > 2) showModuleDetail("dom-detail", DATA.dom_top100[2]);
 }
 
+function updateDomTable() {
+  if (!DATA) return;
+  const sel = document.getElementById("dom-dir-filter");
+  const q = document.getElementById("dom-search").value.trim().toLowerCase();
+  const df = sel.value;
+  const rows = DATA.dom_top100.filter(x => (!df || x.t === df) && (!q || x.n.toLowerCase().includes(q)));
+  document.querySelector("#dom-table tbody").innerHTML = rows.map(d => `
+    <tr data-rk="${d.rk}">
+      <td class="num">${d.rk}</td>
+      <td class="num">${d.dd}</td>
+      <td class="num">${d.dm} / ${d.h}</td>
+      <td>${dirPill(d.t)}</td>
+      <td class="mod-name">${esc(d.n)}</td>
+    </tr>
+  `).join("");
+  document.querySelectorAll("#dom-table tbody tr").forEach(tr => {
+    tr.addEventListener("click", () => {
+      document.querySelectorAll("#dom-table tbody tr").forEach(x => x.classList.remove("selected"));
+      tr.classList.add("selected");
+      const rk = Number(tr.dataset.rk);
+      const obj = DATA.dom_top100.find(x => x.rk === rk);
+      if (obj) showModuleDetail("dom-detail", obj);
+    });
+  });
+}
+
 function renderDomTable() {
   const dirs = [...new Set(DATA.dom_top100.map(x => x.t))].sort();
   const sel = document.getElementById("dom-dir-filter");
+  const prevDir = sel.value;
+  sel.innerHTML = '<option value="">All theories</option>';
   dirs.forEach(d => sel.insertAdjacentHTML("beforeend", `<option value="${esc(d)}">${esc(d)}</option>`));
-
-  function update() {
-    const q = document.getElementById("dom-search").value.trim().toLowerCase();
-    const df = sel.value;
-    const rows = DATA.dom_top100.filter(x => (!df || x.t === df) && (!q || x.n.toLowerCase().includes(q)));
-    document.querySelector("#dom-table tbody").innerHTML = rows.map(d => `
-      <tr data-rk="${d.rk}">
-        <td class="num">${d.rk}</td>
-        <td class="num">${d.dd}</td>
-        <td class="num">${d.dm} / ${d.h}</td>
-        <td>${dirPill(d.t)}</td>
-        <td class="mod-name">${esc(d.n)}</td>
-      </tr>
-    `).join("");
-    document.querySelectorAll("#dom-table tbody tr").forEach(tr => {
-      tr.addEventListener("click", () => {
-        document.querySelectorAll("#dom-table tbody tr").forEach(x => x.classList.remove("selected"));
-        tr.classList.add("selected");
-        const rk = Number(tr.dataset.rk);
-        const obj = DATA.dom_top100.find(x => x.rk === rk);
-        if (obj) showModuleDetail("dom-detail", obj);
-      });
-    });
+  if (prevDir && dirs.includes(prevDir)) {
+    sel.value = prevDir;
   }
-  document.getElementById("dom-search").addEventListener("input", update);
-  sel.addEventListener("change", update);
-  update();
+  updateDomTable();
 }
+document.getElementById("dom-search").addEventListener("input", updateDomTable);
+document.getElementById("dom-dir-filter").addEventListener("change", updateDomTable);
 
 // ================= TAB 3: CRITICAL PATH =================
 let critStep = 0;
+function selectCritStep(idx) {
+  if (!DATA || !DATA.crit || !DATA.crit.chain || !DATA.crit.chain.length) return;
+  const chain = DATA.crit.chain;
+  const mm = document.getElementById("crit-minimap");
+  critStep = Math.max(0, Math.min(chain.length - 1, idx));
+  mm.querySelectorAll(".mm-cell").forEach((c, i) => c.classList.toggle("active", i === critStep));
+  const n = chain[critStep];
+  const brInfo = DATA.crit.branches.find(b => b.height === n.h);
+  const brHtml = brInfo
+    ? `<div class="note-box" style="background:rgba(251,191,36,0.1);border-color:rgba(251,191,36,0.45)"><b>Branching Diamond at h=${n.h} (width ${brInfo.count}):</b> ${brInfo.modules.map(m => `<code>${esc(m)}</code>`).join(", ")}</div>`
+    : `<div style="font-size:0.78rem;color:var(--good);margin-top:6px;">Mandatory single-node choke at h=${n.h} (100% of ${fmt(DATA.crit.total_paths)} critical paths pass here)</div>`;
+  showModuleDetail("crit-detail", n);
+  document.getElementById("crit-detail").insertAdjacentHTML("beforeend",
+    `<div style="margin-top:8px;font-size:0.8rem;color:var(--muted)"><b>Step ${critStep} / ${chain.length - 1}</b> &middot; Remaining longest paths to leaf: <b>${fmt(n.cw)}</b></div>${brHtml}`
+  );
+  const activeCell = mm.querySelector(".mm-cell.active");
+  if (activeCell) activeCell.scrollIntoView({inline: "nearest", block: "nearest"});
+}
+
 function renderCriticalPath() {
   const chain = DATA.crit.chain;
   const mm = document.getElementById("crit-minimap");
@@ -943,24 +969,8 @@ function renderCriticalPath() {
     return "";
   }).join("");
 
-  function selectStep(idx) {
-    critStep = Math.max(0, Math.min(chain.length - 1, idx));
-    mm.querySelectorAll(".mm-cell").forEach((c, i) => c.classList.toggle("active", i === critStep));
-    const n = chain[critStep];
-    const brInfo = DATA.crit.branches.find(b => b.height === n.h);
-    const brHtml = brInfo
-      ? `<div class="note-box" style="background:rgba(251,191,36,0.1);border-color:rgba(251,191,36,0.45)"><b>Branching Diamond at h=${n.h} (width ${brInfo.count}):</b> ${brInfo.modules.map(m => `<code>${esc(m)}</code>`).join(", ")}</div>`
-      : `<div style="font-size:0.78rem;color:var(--good);margin-top:6px;">Mandatory single-node choke at h=${n.h} (100% of ${fmt(DATA.crit.total_paths)} critical paths pass here)</div>`;
-    showModuleDetail("crit-detail", n);
-    document.getElementById("crit-detail").insertAdjacentHTML("beforeend",
-      `<div style="margin-top:8px;font-size:0.8rem;color:var(--muted)"><b>Step ${critStep} / ${chain.length - 1}</b> &middot; Remaining longest paths to leaf: <b>${fmt(n.cw)}</b></div>${brHtml}`
-    );
-    const activeCell = mm.querySelector(".mm-cell.active");
-    if (activeCell) activeCell.scrollIntoView({inline: "nearest", block: "nearest"});
-  }
-
   mm.querySelectorAll(".mm-cell").forEach(c => {
-    c.addEventListener("click", () => selectStep(Number(c.dataset.step)));
+    c.addEventListener("click", () => selectCritStep(Number(c.dataset.step)));
     c.addEventListener("mousemove", (e) => {
       const idx = Number(c.dataset.step);
       const n = chain[idx];
@@ -968,16 +978,6 @@ function renderCriticalPath() {
     });
     c.addEventListener("mouseleave", hideTip);
   });
-  document.getElementById("crit-prev").addEventListener("click", () => selectStep(critStep - 1));
-  document.getElementById("crit-next").addEventListener("click", () => selectStep(critStep + 1));
-  document.getElementById("crit-jump-trans").addEventListener("click", () => {
-    const curDir = chain[critStep].t;
-    for (let i = critStep + 1; i < chain.length; i++) {
-      if (chain[i].t !== curDir) { selectStep(i); return; }
-    }
-    selectStep(0);
-  });
-  sel.addEventListener("change", () => selectStep(Number(sel.value)));
 
   // Intra-dir table
   const intraRows = Object.entries(DATA.crit.intra).sort((a,b) => b[1].max_intra_edges - a[1].max_intra_edges);
@@ -989,8 +989,20 @@ function renderCriticalPath() {
     </tr>
   `).join("");
 
-  selectStep(0);
+  selectCritStep(0);
 }
+document.getElementById("crit-prev").addEventListener("click", () => selectCritStep(critStep - 1));
+document.getElementById("crit-next").addEventListener("click", () => selectCritStep(critStep + 1));
+document.getElementById("crit-jump-trans").addEventListener("click", () => {
+  if (!DATA || !DATA.crit || !DATA.crit.chain || !DATA.crit.chain.length) return;
+  const chain = DATA.crit.chain;
+  const curDir = chain[critStep].t;
+  for (let i = critStep + 1; i < chain.length; i++) {
+    if (chain[i].t !== curDir) { selectCritStep(i); return; }
+  }
+  selectCritStep(0);
+});
+document.getElementById("crit-jump-sel").addEventListener("change", (e) => selectCritStep(Number(e.target.value)));
 
 // ================= TAB 4: HUBS & BRIDGES =================
 let hubMode = "bc_cross";
@@ -1097,13 +1109,17 @@ function renderLeavesTab() {
   `).join("");
 }
 
-function initSpine(data) {
+function initSpine(data, ver) {
+  hideTip();
   DATA = data;
+  activeDirs.clear();
   DATA.profiles.forEach(p => activeDirs.add(p.top_dir));
-  if (window.RHVersion && RHVersion.current) {
-    document.getElementById("version-badge").textContent = RHVersion.current.short_label || RHVersion.current.label || RHVersion.current.id;
+  critStep = 0;
+  const curVer = ver || (window.RHVersion && RHVersion.current);
+  if (curVer) {
+    document.getElementById("version-badge").textContent = curVer.short_label || curVer.label || curVer.id;
     document.getElementById("page-subtitle").textContent =
-      `Lean 4 Riemann Hypothesis (${RHVersion.current.label}) — Exact Reachability, Stratigraphy, Dominator Tree, Critical Spine & Cross-Directory Bridges`;
+      `Lean 4 Riemann Hypothesis (${curVer.label}) — Exact Reachability, Stratigraphy, Dominator Tree, Critical Spine & Cross-Directory Bridges`;
   }
   document.getElementById("crit-card-title").textContent =
     `Exact Critical Path Stepper (${DATA.crit.max_edges} Edges / ${DATA.crit.max_nodes} Modules)`;
@@ -1116,6 +1132,9 @@ function initSpine(data) {
     const botP = sortedH[sortedH.length - 1];
     document.getElementById("strat-profile-desc").textContent =
       `Click column headers to sort. ${topP.top_dir} sits high (med h=${topP.height_median}) while ${botP.top_dir} sits near the base (med h=${botP.height_median}).`;
+  } else {
+    document.getElementById("strat-profile-desc").textContent =
+      `Click column headers to sort by distance from Main or height from leaves.`;
   }
 
   renderKPIs();

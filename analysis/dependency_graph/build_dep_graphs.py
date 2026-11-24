@@ -1584,67 +1584,28 @@ def write_explorer_html(data: dict[str, Any], out_path: Path) -> None:
 </div>
 
 <script>
-function initDepExplorer(GRAPH_DATA) {
+(function () {
   "use strict";
 
-  const nodesById = GRAPH_DATA.tree.nodes;
-  const leafEdges = GRAPH_DATA.tree.leaf_edges;
-  const rootIds = GRAPH_DATA.tree.root_ids;
-  const colors = GRAPH_DATA.colors;
-  const repoRoot = GRAPH_DATA.meta.repo_root;
-
-  document.getElementById("btn-l1").textContent = `Level 1 (${rootIds.length})`;
-  if (window.RHVersion && RHVersion.current) {
-    document.getElementById("ver-pill").innerHTML = `<strong>${RHVersion.current.short_label || RHVersion.current.label}</strong> &middot; Strict Module DAG`;
-  }
-
-  // Build quick exact lookup maps for L1, L2, L3 edge metrics (src_files / dst_files)
-  const exactL1 = new Map();
-  for (const e of GRAPH_DATA.levels["1"].edges) {
-    exactL1.set(e.src + "|" + e.dst, e);
-  }
-  const exactL2 = new Map();
-  for (const e of GRAPH_DATA.levels["2"].edges) {
-    exactL2.set(e.src + "|" + e.dst, e);
-  }
-  const exactL3 = new Map();
-  for (const e of leafEdges) {
-    exactL3.set(e[0] + "|" + e[1], e);
-  }
-
-  // Precompute leaf -> ancestor chain [L1, L2?, L3?]
-  const leafIds = [];
-  const leafChain = new Map();
-  for (const nid of Object.keys(nodesById)) {
-    const nd = nodesById[nid];
-    if (nd.is_leaf) {
-      leafIds.push(nid);
-      const chain = [];
-      let cur = nid;
-      while (cur) {
-        chain.push(cur);
-        cur = nodesById[cur].parent_id;
-      }
-      chain.reverse();
-      leafChain.set(nid, chain);
-    }
-  }
-
-  // Precompute SCC membership at L1 and L2
-  const sccInfoByKey = new Map();
-  for (const lvl of ["1", "2", "3"]) {
-    for (const comp of GRAPH_DATA.levels[lvl].sccs) {
-      for (const k of comp) {
-        sccInfoByKey.set(lvl + ":" + k, comp.length);
-      }
-    }
-  }
+  let GRAPH_DATA = null;
+  let nodesById = {};
+  let leafEdges = [];
+  let rootIds = [];
+  let colors = {};
+  let repoRoot = "";
+  let exactL1 = new Map();
+  let exactL2 = new Map();
+  let exactL3 = new Map();
+  let leafIds = [];
+  let leafChain = new Map();
+  let sccInfoByKey = new Map();
+  let allSearchNodes = [];
 
   // Application state
   const state = {
     expandedIds: new Set(),
     treeOpenIds: new Set(),
-    selectedId: nodesById["L1:Development"] ? "L1:Development" : (rootIds[0] || null),
+    selectedId: null,
     hoveredNodeId: null,
     hoveredEdge: null,
     minWeight: 1,
@@ -2515,236 +2476,349 @@ function initDepExplorer(GRAPH_DATA) {
     fitToScreen();
   }
 
-  document.getElementById("btn-l1").addEventListener("click", () => setPreset("l1"));
-  document.getElementById("btn-l2-major").addEventListener("click", () => setPreset("l2-major"));
-  document.getElementById("btn-l2-all").addEventListener("click", () => setPreset("l2-all"));
+  function setupStaticListeners() {
+    document.getElementById("btn-l1").addEventListener("click", () => { if (GRAPH_DATA) setPreset("l1"); });
+    document.getElementById("btn-l2-major").addEventListener("click", () => { if (GRAPH_DATA) setPreset("l2-major"); });
+    document.getElementById("btn-l2-all").addEventListener("click", () => { if (GRAPH_DATA) setPreset("l2-all"); });
 
-  document.getElementById("btn-layout-height").addEventListener("click", (ev) => {
-    state.layoutMode = "height";
-    ev.target.classList.add("active");
-    document.getElementById("btn-layout-dist").classList.remove("active");
-    layoutVisibleNodes();
-    fitToScreen();
-  });
-  document.getElementById("btn-layout-dist").addEventListener("click", (ev) => {
-    state.layoutMode = "dist";
-    ev.target.classList.add("active");
-    document.getElementById("btn-layout-height").classList.remove("active");
-    layoutVisibleNodes();
-    fitToScreen();
-  });
+    document.getElementById("btn-layout-height").addEventListener("click", (ev) => {
+      state.layoutMode = "height";
+      ev.target.classList.add("active");
+      document.getElementById("btn-layout-dist").classList.remove("active");
+      if (!GRAPH_DATA) return;
+      layoutVisibleNodes();
+      fitToScreen();
+    });
+    document.getElementById("btn-layout-dist").addEventListener("click", (ev) => {
+      state.layoutMode = "dist";
+      ev.target.classList.add("active");
+      document.getElementById("btn-layout-height").classList.remove("active");
+      if (!GRAPH_DATA) return;
+      layoutVisibleNodes();
+      fitToScreen();
+    });
 
-  document.getElementById("btn-hop-1").addEventListener("click", (ev) => {
-    state.hopMode = "direct";
-    ev.target.classList.add("active");
-    document.getElementById("btn-hop-all").classList.remove("active");
-    renderCanvas();
-  });
-  document.getElementById("btn-hop-all").addEventListener("click", (ev) => {
-    state.hopMode = "transitive";
-    ev.target.classList.add("active");
-    document.getElementById("btn-hop-1").classList.remove("active");
-    renderCanvas();
-  });
+    document.getElementById("btn-hop-1").addEventListener("click", (ev) => {
+      state.hopMode = "direct";
+      ev.target.classList.add("active");
+      document.getElementById("btn-hop-all").classList.remove("active");
+      if (GRAPH_DATA) renderCanvas();
+    });
+    document.getElementById("btn-hop-all").addEventListener("click", (ev) => {
+      state.hopMode = "transitive";
+      ev.target.classList.add("active");
+      document.getElementById("btn-hop-1").classList.remove("active");
+      if (GRAPH_DATA) renderCanvas();
+    });
+
+    weightSlider.addEventListener("input", () => applyWeightFilter(sliderToWeight(weightSlider.value)));
+    for (const b of document.querySelectorAll(".preset-w")) {
+      b.addEventListener("click", () => applyWeightFilter(Number(b.getAttribute("data-w"))));
+    }
+    chkKeepSel.addEventListener("change", () => {
+      state.keepSelectedEdges = chkKeepSel.checked;
+      if (!GRAPH_DATA) return;
+      updateCountsBadge();
+      renderCanvas();
+    });
+
+    searchInput.addEventListener("input", () => {
+      if (!GRAPH_DATA) return;
+      const q = searchInput.value.trim().toLowerCase();
+      if (!q) {
+        searchResults.style.display = "none";
+        return;
+      }
+      const matches = allSearchNodes
+        .filter((n) => n.id.toLowerCase().includes(q) || n.dir_key.toLowerCase().includes(q))
+        .slice(0, 25);
+      if (matches.length === 0) {
+        searchResults.innerHTML = '<div class="search-item"><span class="sname">No matching directories</span></div>';
+      } else {
+        searchResults.innerHTML = matches
+          .map(
+            (m) => `
+            <div class="search-item" data-nid="${escHtml(m.id)}">
+              <span class="sname">${escHtml(m.id.replace(/^L\d:/, ""))}</span>
+              <span class="smeta">L${m.level} · ${fmt(m.files)}f</span>
+            </div>`
+          )
+          .join("");
+        for (const el of searchResults.querySelectorAll(".search-item")) {
+          el.addEventListener("click", () => {
+            const nid = el.getAttribute("data-nid");
+            searchResults.style.display = "none";
+            selectAndFocus(nid, true);
+          });
+        }
+      }
+      searchResults.style.display = "block";
+    });
+    document.addEventListener("click", (ev) => {
+      if (!searchResults.contains(ev.target) && ev.target !== searchInput) {
+        searchResults.style.display = "none";
+      }
+    });
+
+    canvas.addEventListener("mousedown", (ev) => {
+      if (!GRAPH_DATA) return;
+      state.dragging = true;
+      state.dragMoved = false;
+      state.dragStart = { x: ev.clientX, y: ev.clientY, camX: state.cam.x, camY: state.cam.y };
+      canvas.classList.add("dragging");
+    });
+    window.addEventListener("mousemove", (ev) => {
+      if (!GRAPH_DATA) return;
+      if (state.dragging) {
+        const dx = ev.clientX - state.dragStart.x;
+        const dy = ev.clientY - state.dragStart.y;
+        if (Math.hypot(dx, dy) > 4) state.dragMoved = true;
+        state.cam.x = state.dragStart.camX + dx;
+        state.cam.y = state.dragStart.camY + dy;
+        tooltip.style.display = "none";
+        renderCanvas();
+        return;
+      }
+      if (ev.target !== canvas) {
+        tooltip.style.display = "none";
+        return;
+      }
+      const rect = canvas.getBoundingClientRect();
+      const sx = ev.clientX - rect.left;
+      const sy = ev.clientY - rect.top;
+      const wpt = screenToWorld(sx, sy);
+      const nid = hitTestNode(wpt.x, wpt.y);
+      const edge = nid ? null : hitTestEdge(wpt.x, wpt.y);
+      if (nid !== state.hoveredNodeId || edge !== state.hoveredEdge) {
+        state.hoveredNodeId = nid;
+        state.hoveredEdge = edge;
+        renderCanvas();
+      }
+      if (nid) {
+        const nd = nodesById[nid];
+        tooltip.innerHTML = `
+          <div style="font-weight:700;margin-bottom:3px;">${escHtml(nd.id.replace(/^L\d:/, ""))}</div>
+          <div>Min dist: ${nd.min_dist} · Max height: ${nd.max_height}</div>
+          ${!nd.is_leaf ? '<div style="color:#94a3b8;margin-top:3px;">Double-click to expand/collapse</div>' : ""}
+        `;
+        tooltip.style.left = Math.min(rect.width - 280, sx + 14) + "px";
+        tooltip.style.top = Math.min(rect.height - 95, sy + 14) + "px";
+        tooltip.style.display = "block";
+        canvas.style.cursor = "pointer";
+      } else if (edge) {
+        const revTxt = edge.hasReverse ? `<br/>Reverse (${escHtml(edge.dst.replace(/^L\d:/,""))} → ${escHtml(edge.src.replace(/^L\d:/,""))}): <strong>${fmt(edge.reverseWeight)}</strong>` : "";
+        tooltip.innerHTML = `
+          <div><strong>${escHtml(edge.src.replace(/^L\d:/, ""))}</strong></div>
+          <div>imports → <strong>${escHtml(edge.dst.replace(/^L\d:/, ""))}</strong></div>
+          <div style="margin-top:3px;">Weight: <strong>${fmt(edge.weight)}</strong> file imports${revTxt}</div>
+        `;
+        tooltip.style.left = Math.min(rect.width - 310, sx + 14) + "px";
+        tooltip.style.top = Math.min(rect.height - 95, sy + 14) + "px";
+        tooltip.style.display = "block";
+        canvas.style.cursor = "pointer";
+      } else {
+        tooltip.style.display = "none";
+        canvas.style.cursor = "grab";
+      }
+    });
+    window.addEventListener("mouseup", (ev) => {
+      if (!state.dragging) return;
+      state.dragging = false;
+      canvas.classList.remove("dragging");
+      if (!GRAPH_DATA) return;
+      if (!state.dragMoved && ev.target === canvas) {
+        const rect = canvas.getBoundingClientRect();
+        const wpt = screenToWorld(ev.clientX - rect.left, ev.clientY - rect.top);
+        const nid = hitTestNode(wpt.x, wpt.y);
+        if (nid) {
+          state.selectedId = nid;
+          let cur = nodesById[nid].parent_id;
+          while (cur) { state.treeOpenIds.add(cur); cur = nodesById[cur].parent_id; }
+          updateCountsBadge();
+          renderTreeSidebar();
+          renderInspector();
+          renderCanvas();
+        }
+      }
+    });
+    canvas.addEventListener("dblclick", (ev) => {
+      if (!GRAPH_DATA) return;
+      const rect = canvas.getBoundingClientRect();
+      const wpt = screenToWorld(ev.clientX - rect.left, ev.clientY - rect.top);
+      const nid = hitTestNode(wpt.x, wpt.y);
+      if (nid) {
+        toggleExpandNode(nid);
+        fitToScreen();
+      }
+    });
+    canvas.addEventListener(
+      "wheel",
+      (ev) => {
+        ev.preventDefault();
+        if (!GRAPH_DATA) return;
+        const rect = canvas.getBoundingClientRect();
+        const sx = ev.clientX - rect.left;
+        const sy = ev.clientY - rect.top;
+        const factor = ev.deltaY < 0 ? 1.12 : 1 / 1.12;
+        const newScale = Math.min(2.8, Math.max(0.08, state.cam.scale * factor));
+        const ratio = newScale / state.cam.scale;
+        state.cam.x = sx - (sx - state.cam.x) * ratio;
+        state.cam.y = sy - (sy - state.cam.y) * ratio;
+        state.cam.scale = newScale;
+        renderCanvas();
+      },
+      { passive: false }
+    );
+
+    document.getElementById("btn-zoom-in").addEventListener("click", () => {
+      if (!GRAPH_DATA) return;
+      const rect = wrap.getBoundingClientRect();
+      const cx = rect.width / 2, cy = rect.height / 2;
+      const ns = Math.min(2.8, state.cam.scale * 1.25);
+      const r = ns / state.cam.scale;
+      state.cam.x = cx - (cx - state.cam.x) * r;
+      state.cam.y = cy - (cy - state.cam.y) * r;
+      state.cam.scale = ns;
+      renderCanvas();
+    });
+    document.getElementById("btn-zoom-out").addEventListener("click", () => {
+      if (!GRAPH_DATA) return;
+      const rect = wrap.getBoundingClientRect();
+      const cx = rect.width / 2, cy = rect.height / 2;
+      const ns = Math.max(0.08, state.cam.scale / 1.25);
+      const r = ns / state.cam.scale;
+      state.cam.x = cx - (cx - state.cam.x) * r;
+      state.cam.y = cy - (cy - state.cam.y) * r;
+      state.cam.scale = ns;
+      renderCanvas();
+    });
+    document.getElementById("btn-fit").addEventListener("click", () => { if (GRAPH_DATA) fitToScreen(); });
+    document.getElementById("btn-clear-sel").addEventListener("click", () => {
+      if (!GRAPH_DATA) return;
+      state.selectedId = null;
+      updateCountsBadge();
+      renderTreeSidebar();
+      renderInspector();
+      renderCanvas();
+    });
+
+    window.addEventListener("resize", () => { if (GRAPH_DATA) renderCanvas(); });
+  }
 
   function applyWeightFilter(w) {
     state.minWeight = w;
     weightVal.textContent = "≥ " + fmt(w);
     weightSlider.value = weightToSlider(w);
+    if (!GRAPH_DATA) return;
     updateCountsBadge();
     renderCanvas();
   }
-  weightSlider.addEventListener("input", () => applyWeightFilter(sliderToWeight(weightSlider.value)));
-  for (const b of document.querySelectorAll(".preset-w")) {
-    b.addEventListener("click", () => applyWeightFilter(Number(b.getAttribute("data-w"))));
-  }
-  chkKeepSel.addEventListener("change", () => {
-    state.keepSelectedEdges = chkKeepSel.checked;
-    updateCountsBadge();
-    renderCanvas();
-  });
 
-  // Search box across all 877 nodes
-  const allSearchNodes = Object.values(nodesById).sort((a, b) => b.files - a.files);
-  searchInput.addEventListener("input", () => {
-    const q = searchInput.value.trim().toLowerCase();
-    if (!q) {
-      searchResults.style.display = "none";
-      return;
+  function prepareDepData(data) {
+    const pNodesById = data.tree.nodes;
+    const pLeafEdges = data.tree.leaf_edges;
+
+    const pExactL1 = new Map();
+    for (const e of data.levels["1"].edges) {
+      pExactL1.set(e.src + "|" + e.dst, e);
     }
-    const matches = allSearchNodes
-      .filter((n) => n.id.toLowerCase().includes(q) || n.dir_key.toLowerCase().includes(q))
-      .slice(0, 25);
-    if (matches.length === 0) {
-      searchResults.innerHTML = '<div class="search-item"><span class="sname">No matching directories</span></div>';
-    } else {
-      searchResults.innerHTML = matches
-        .map(
-          (m) => `
-          <div class="search-item" data-nid="${escHtml(m.id)}">
-            <span class="sname">${escHtml(m.id.replace(/^L\\d:/, ""))}</span>
-            <span class="smeta">L${m.level} · ${fmt(m.files)}f</span>
-          </div>`
-        )
-        .join("");
-      for (const el of searchResults.querySelectorAll(".search-item")) {
-        el.addEventListener("click", () => {
-          const nid = el.getAttribute("data-nid");
-          searchResults.style.display = "none";
-          selectAndFocus(nid, true);
-        });
+    const pExactL2 = new Map();
+    for (const e of data.levels["2"].edges) {
+      pExactL2.set(e.src + "|" + e.dst, e);
+    }
+    const pExactL3 = new Map();
+    for (const e of pLeafEdges) {
+      pExactL3.set(e[0] + "|" + e[1], e);
+    }
+
+    const pLeafIds = [];
+    const pLeafChain = new Map();
+    for (const nid of Object.keys(pNodesById)) {
+      const nd = pNodesById[nid];
+      if (nd.is_leaf) {
+        pLeafIds.push(nid);
+        const chain = [];
+        let cur = nid;
+        while (cur) {
+          chain.push(cur);
+          cur = pNodesById[cur].parent_id;
+        }
+        chain.reverse();
+        pLeafChain.set(nid, chain);
       }
     }
-    searchResults.style.display = "block";
-  });
-  document.addEventListener("click", (ev) => {
-    if (!searchResults.contains(ev.target) && ev.target !== searchInput) {
-      searchResults.style.display = "none";
-    }
-  });
 
-  // Canvas interactions (pan, zoom, click, double-click, hover)
-  canvas.addEventListener("mousedown", (ev) => {
-    state.dragging = true;
-    state.dragMoved = false;
-    state.dragStart = { x: ev.clientX, y: ev.clientY, camX: state.cam.x, camY: state.cam.y };
-    canvas.classList.add("dragging");
-  });
-  window.addEventListener("mousemove", (ev) => {
-    if (state.dragging) {
-      const dx = ev.clientX - state.dragStart.x;
-      const dy = ev.clientY - state.dragStart.y;
-      if (Math.hypot(dx, dy) > 4) state.dragMoved = true;
-      state.cam.x = state.dragStart.camX + dx;
-      state.cam.y = state.dragStart.camY + dy;
-      tooltip.style.display = "none";
-      renderCanvas();
-      return;
+    const pSccInfoByKey = new Map();
+    for (const lvl of ["1", "2", "3"]) {
+      for (const comp of data.levels[lvl].sccs) {
+        for (const k of comp) {
+          pSccInfoByKey.set(lvl + ":" + k, comp.length);
+        }
+      }
     }
-    if (ev.target !== canvas) {
-      tooltip.style.display = "none";
-      return;
-    }
-    const rect = canvas.getBoundingClientRect();
-    const sx = ev.clientX - rect.left;
-    const sy = ev.clientY - rect.top;
-    const wpt = screenToWorld(sx, sy);
-    const nid = hitTestNode(wpt.x, wpt.y);
-    const edge = nid ? null : hitTestEdge(wpt.x, wpt.y);
-    if (nid !== state.hoveredNodeId || edge !== state.hoveredEdge) {
-      state.hoveredNodeId = nid;
-      state.hoveredEdge = edge;
-      renderCanvas();
-    }
-    if (nid) {
-      const nd = nodesById[nid];
-      tooltip.innerHTML = `
-        <div style="font-weight:700;margin-bottom:3px;">${escHtml(nd.id.replace(/^L\\d:/, ""))}</div>
-        <div>Min dist: ${nd.min_dist} · Max height: ${nd.max_height}</div>
-        ${!nd.is_leaf ? '<div style="color:#94a3b8;margin-top:3px;">Double-click to expand/collapse</div>' : ""}
-      `;
-      tooltip.style.left = Math.min(rect.width - 280, sx + 14) + "px";
-      tooltip.style.top = Math.min(rect.height - 95, sy + 14) + "px";
-      tooltip.style.display = "block";
-      canvas.style.cursor = "pointer";
-    } else if (edge) {
-      const revTxt = edge.hasReverse ? `<br/>Reverse (${escHtml(edge.dst.replace(/^L\\d:/,""))} → ${escHtml(edge.src.replace(/^L\\d:/,""))}): <strong>${fmt(edge.reverseWeight)}</strong>` : "";
-      tooltip.innerHTML = `
-        <div><strong>${escHtml(edge.src.replace(/^L\\d:/, ""))}</strong></div>
-        <div>imports → <strong>${escHtml(edge.dst.replace(/^L\\d:/, ""))}</strong></div>
-        <div style="margin-top:3px;">Weight: <strong>${fmt(edge.weight)}</strong> file imports${revTxt}</div>
-      `;
-      tooltip.style.left = Math.min(rect.width - 310, sx + 14) + "px";
-      tooltip.style.top = Math.min(rect.height - 95, sy + 14) + "px";
-      tooltip.style.display = "block";
-      canvas.style.cursor = "pointer";
-    } else {
-      tooltip.style.display = "none";
-      canvas.style.cursor = "grab";
-    }
-  });
-  window.addEventListener("mouseup", (ev) => {
-    if (!state.dragging) return;
+
+    const pAllSearchNodes = Object.values(pNodesById).sort((a, b) => b.files - a.files);
+    return {
+      data,
+      exactL1: pExactL1,
+      exactL2: pExactL2,
+      exactL3: pExactL3,
+      leafIds: pLeafIds,
+      leafChain: pLeafChain,
+      sccInfoByKey: pSccInfoByKey,
+      allSearchNodes: pAllSearchNodes
+    };
+  }
+
+  function applyDepData(prepared, ver) {
+    tooltip.style.display = "none";
+    searchResults.style.display = "none";
+
+    GRAPH_DATA = prepared.data;
+    nodesById = GRAPH_DATA.tree.nodes;
+    leafEdges = GRAPH_DATA.tree.leaf_edges;
+    rootIds = GRAPH_DATA.tree.root_ids;
+    colors = GRAPH_DATA.colors;
+    repoRoot = GRAPH_DATA.meta.repo_root;
+    exactL1 = prepared.exactL1;
+    exactL2 = prepared.exactL2;
+    exactL3 = prepared.exactL3;
+    leafIds = prepared.leafIds;
+    leafChain = prepared.leafChain;
+    sccInfoByKey = prepared.sccInfoByKey;
+    allSearchNodes = prepared.allSearchNodes;
+
+    state.hoveredNodeId = null;
+    state.hoveredEdge = null;
     state.dragging = false;
-    canvas.classList.remove("dragging");
-    if (!state.dragMoved && ev.target === canvas) {
-      const rect = canvas.getBoundingClientRect();
-      const wpt = screenToWorld(ev.clientX - rect.left, ev.clientY - rect.top);
-      const nid = hitTestNode(wpt.x, wpt.y);
-      if (nid) {
-        state.selectedId = nid;
-        let cur = nodesById[nid].parent_id;
-        while (cur) { state.treeOpenIds.add(cur); cur = nodesById[cur].parent_id; }
-        updateCountsBadge();
-        renderTreeSidebar();
-        renderInspector();
-        renderCanvas();
-      }
+    state.dragMoved = false;
+
+    for (const id of Array.from(state.expandedIds)) {
+      if (!nodesById[id] || nodesById[id].is_leaf) state.expandedIds.delete(id);
     }
-  });
-  canvas.addEventListener("dblclick", (ev) => {
-    const rect = canvas.getBoundingClientRect();
-    const wpt = screenToWorld(ev.clientX - rect.left, ev.clientY - rect.top);
-    const nid = hitTestNode(wpt.x, wpt.y);
-    if (nid) {
-      toggleExpandNode(nid);
-      fitToScreen();
+    for (const id of Array.from(state.treeOpenIds)) {
+      if (!nodesById[id]) state.treeOpenIds.delete(id);
     }
-  });
-  canvas.addEventListener(
-    "wheel",
-    (ev) => {
-      ev.preventDefault();
-      const rect = canvas.getBoundingClientRect();
-      const sx = ev.clientX - rect.left;
-      const sy = ev.clientY - rect.top;
-      const factor = ev.deltaY < 0 ? 1.12 : 1 / 1.12;
-      const newScale = Math.min(2.8, Math.max(0.08, state.cam.scale * factor));
-      const ratio = newScale / state.cam.scale;
-      state.cam.x = sx - (sx - state.cam.x) * ratio;
-      state.cam.y = sy - (sy - state.cam.y) * ratio;
-      state.cam.scale = newScale;
-      renderCanvas();
-    },
-    { passive: false }
-  );
+    if (!state.selectedId || !nodesById[state.selectedId]) {
+      state.selectedId = nodesById["L1:Development"] ? "L1:Development" : (rootIds[0] || null);
+    }
 
-  document.getElementById("btn-zoom-in").addEventListener("click", () => {
-    const rect = wrap.getBoundingClientRect();
-    const cx = rect.width / 2, cy = rect.height / 2;
-    const ns = Math.min(2.8, state.cam.scale * 1.25);
-    const r = ns / state.cam.scale;
-    state.cam.x = cx - (cx - state.cam.x) * r;
-    state.cam.y = cy - (cy - state.cam.y) * r;
-    state.cam.scale = ns;
-    renderCanvas();
-  });
-  document.getElementById("btn-zoom-out").addEventListener("click", () => {
-    const rect = wrap.getBoundingClientRect();
-    const cx = rect.width / 2, cy = rect.height / 2;
-    const ns = Math.max(0.08, state.cam.scale / 1.25);
-    const r = ns / state.cam.scale;
-    state.cam.x = cx - (cx - state.cam.x) * r;
-    state.cam.y = cy - (cy - state.cam.y) * r;
-    state.cam.scale = ns;
-    renderCanvas();
-  });
-  document.getElementById("btn-fit").addEventListener("click", fitToScreen);
-  document.getElementById("btn-clear-sel").addEventListener("click", () => {
-    state.selectedId = null;
-    updateCountsBadge();
-    renderTreeSidebar();
-    renderInspector();
-    renderCanvas();
-  });
+    document.getElementById("btn-l1").textContent = `Level 1 (${rootIds.length})`;
+    document.getElementById("tree-summary").textContent = `${Object.keys(nodesById).length} nodes`;
+    const curVer = ver || (window.RHVersion && RHVersion.current);
+    if (curVer) {
+      document.getElementById("ver-pill").innerHTML = `<strong>${curVer.short_label || curVer.label}</strong> &middot; Strict Module DAG`;
+    }
 
-  window.addEventListener("resize", renderCanvas);
+    recomputeVisibleGraph();
+    fitToScreen();
+  }
 
-  // Initialize view
-  recomputeVisibleGraph();
-  fitToScreen();
-}
-RHVersion.loadDataScript("dependency_graph/dir_graph_data.js", "__DEP_GRAPH_DATA__", initDepExplorer);
+  setupStaticListeners();
+  RHVersion.loadDataScript("dependency_graph/dir_graph_data.js", "__DEP_GRAPH_DATA__", applyDepData, {
+    prepare: prepareDepData
+  });
+})();
 </script>
 </body>
 </html>

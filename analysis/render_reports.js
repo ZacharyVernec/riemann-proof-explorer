@@ -189,6 +189,18 @@
       if (url.startsWith(LOCAL_PREFIX)) {
         return FALLBACK_BLOB_BASE + url.slice(LOCAL_PREFIX.length);
       }
+      if (
+        opts.resolveVersionedAsset &&
+        !/^(https?:|file:|mailto:|javascript:|data:|#|\/|\.\.)/i.test(url)
+      ) {
+        const pathOnly = url.split(/[?#]/)[0];
+        if (/\.(json|js|dot|mmd)$/i.test(pathOnly)) {
+          const resolved = opts.resolveVersionedAsset(pathOnly);
+          if (resolved) {
+            return resolved + url.slice(pathOnly.length);
+          }
+        }
+      }
       return url;
     };
   }
@@ -499,7 +511,7 @@
   // ---------------------------------------------------------------------------
   if (typeof window !== "undefined" && typeof document !== "undefined") {
     function renderMath(el) {
-      if (!el || typeof window.renderMathInElement !== "function") return;
+      if (!el || typeof window.renderMathInElement !== "function") return false;
       window.renderMathInElement(el, {
         delimiters: [
           { left: "$$", right: "$$", display: true },
@@ -509,9 +521,12 @@
         ],
         throwOnError: false,
       });
+      return true;
     }
 
     const mainEl = document.querySelector("main");
+    const initialStaticHtml = mainEl ? mainEl.innerHTML : "";
+    const initialStaticTitle = document.title;
     const scriptEl = document.currentScript;
     const mdHref =
       (scriptEl && scriptEl.getAttribute("data-md")) ||
@@ -521,61 +536,132 @@
       ? reportRelPath.split("/").slice(0, -1).join("/")
       : "";
 
-    function runMathWhenReady() {
-      const target = document.querySelector("main");
-      if (typeof window.renderMathInElement === "function") {
-        renderMath(target);
-      } else {
-        window.addEventListener("load", () => renderMath(document.querySelector("main")), {
-          once: true,
+    let currentPanel = null;
+    let mathLoadBound = false;
+
+    function ensureMathLoadListener() {
+      if (mathLoadBound) return;
+      mathLoadBound = true;
+      window.addEventListener(
+        "load",
+        () => {
+          if (currentPanel && !currentPanel.dataset.mathRendered) {
+            if (renderMath(currentPanel)) {
+              currentPanel.dataset.mathRendered = "1";
+            }
+          }
+        },
+        { once: true }
+      );
+    }
+
+    function rewritePanelVersionAssets(panel, verId) {
+      if (!window.RHVersion || !reportDir) return;
+      // Point relative data/source-graph assets (.json, .js, .dot, .mmd) to versioned storage for all versions
+      panel.querySelectorAll("a[href]").forEach((a) => {
+        const href = (a.getAttribute("href") || "").trim();
+        if (!href || /^(https?:|mailto:|javascript:|data:|#|\/)/i.test(href)) return;
+        const pathOnly = href.split(/[?#]/)[0];
+        if (/\.(json|js|dot|mmd)$/i.test(pathOnly) && !href.startsWith("..")) {
+          a.setAttribute("href", window.RHVersion.versionAssetUrl(reportDir + "/" + href, verId));
+        }
+      });
+      if (verId !== window.RHVersion.defaultVersion.id) {
+        // Point relative .svg / .md links inside non-default reports to versioned assets
+        panel.querySelectorAll("img[src]").forEach((img) => {
+          const src = img.getAttribute("src") || "";
+          if (src && !/^(https?:|data:|\/|\.\.)/.test(src)) {
+            img.setAttribute("src", window.RHVersion.versionAssetUrl(reportDir + "/" + src, verId));
+          }
+        });
+        panel.querySelectorAll("a[href]").forEach((a) => {
+          const href = (a.getAttribute("href") || "").trim();
+          if (!href || /^(https?:|mailto:|javascript:|data:|#|\/)/i.test(href)) return;
+          const pathOnly = href.split(/[?#]/)[0];
+          if (!/\.(svg|md)$/i.test(pathOnly)) return;
+          if (href.startsWith("../")) {
+            a.setAttribute("href", window.RHVersion.versionAssetUrl(href.slice(3), verId));
+          } else {
+            a.setAttribute("href", window.RHVersion.versionAssetUrl(reportDir + "/" + href, verId));
+          }
         });
       }
     }
 
-    function applyRenderedMarkdown(mdText, urlOpts) {
-      const { title, bodyHtml } = convertMarkdown(mdText, urlOpts);
-      document.title = title;
-      if (mainEl) {
-        mainEl.innerHTML = bodyHtml;
-        if (window.RHVersion && !window.RHVersion.isDefault && reportDir) {
-          // Point relative .svg / .html links inside non-default reports to versioned assets
-          mainEl.querySelectorAll("img[src]").forEach((img) => {
-            const src = img.getAttribute("src") || "";
-            if (src && !/^(https?:|data:|\/|\.\.)/.test(src)) {
-              img.setAttribute("src", window.RHVersion.versionAssetUrl(reportDir + "/" + src));
-            }
-          });
-          mainEl.querySelectorAll("a[href]").forEach((a) => {
-            const href = (a.getAttribute("href") || "").trim();
-            if (!href || /^(https?:|mailto:|javascript:|data:|#|\/)/i.test(href)) return;
-            const pathOnly = href.split(/[?#]/)[0];
-            if (!/\.(svg|json|md|dot|mmd)$/i.test(pathOnly)) return;
-            if (href.startsWith("../")) {
-              a.setAttribute("href", window.RHVersion.versionAssetUrl(href.slice(3)));
-            } else {
-              a.setAttribute("href", window.RHVersion.versionAssetUrl(reportDir + "/" + href));
-            }
-          });
-        }
-        if (window.RHVersion) window.RHVersion.rewriteLinks(mainEl);
+    function prepareReport(payload, ver) {
+      const panel = document.createElement("div");
+      panel.className = "rh-report-panel";
+      let title = initialStaticTitle;
+
+      if (payload && typeof payload.preRenderedHtml === "string") {
+        title = payload.title || initialStaticTitle;
+        panel.innerHTML = payload.preRenderedHtml;
+      } else if (payload && typeof payload.markdown === "string") {
+        const urlOpts = ver
+          ? { sourceBlobBase: ver.source_blob_base, localSrcDir: ver.local_src_dir }
+          : {};
+        const converted = convertMarkdown(payload.markdown, urlOpts);
+        title = converted.title;
+        panel.innerHTML = converted.bodyHtml;
+      } else {
+        panel.innerHTML = initialStaticHtml;
       }
-      runMathWhenReady();
+
+      if (ver) {
+        rewritePanelVersionAssets(panel, ver.id);
+        if (window.RHVersion) window.RHVersion.rewriteLinks(panel, ver.id);
+      }
+
+      if (renderMath(panel)) {
+        panel.dataset.mathRendered = "1";
+      }
+      return { title, panel };
+    }
+
+    function applyPreparedReport(entry) {
+      document.title = entry.title;
+      if (mainEl) {
+        mainEl.style.opacity = "";
+        if (typeof mainEl.replaceChildren === "function") {
+          mainEl.replaceChildren(entry.panel);
+        } else {
+          mainEl.innerHTML = "";
+          mainEl.appendChild(entry.panel);
+        }
+      }
+      currentPanel = entry.panel;
+      if (!entry.panel.dataset.mathRendered) {
+        if (renderMath(entry.panel)) {
+          entry.panel.dataset.mathRendered = "1";
+        } else {
+          ensureMathLoadListener();
+        }
+      }
     }
 
     const rhv = window.RHVersion;
-    const curVer = rhv && rhv.current ? rhv.current : null;
-    const urlOpts = curVer
-      ? { sourceBlobBase: curVer.source_blob_base, localSrcDir: curVer.local_src_dir }
-      : {};
-
-    if (rhv && !rhv.isDefault && reportRelPath) {
-      // Load pre-packaged .md.js wrapper for offline + HTTP support across older versions
-      rhv.loadDataScript(reportRelPath + ".js", "__REPORT_MD__", (payload) => {
-        if (payload && typeof payload.markdown === "string") {
-          applyRenderedMarkdown(payload.markdown, urlOpts);
-        } else {
-          runMathWhenReady();
-        }
+    if (rhv && reportRelPath) {
+      rhv.loadDataScript(reportRelPath + ".js", "__REPORT_MD__", applyPreparedReport, {
+        customLoad: async (ver) => {
+          if (ver.id === rhv.defaultVersion.id) {
+            if (mdHref && window.location.protocol !== "file:") {
+              try {
+                const res = await fetch(mdHref, { cache: "no-store" });
+                if (res.ok) {
+                  return { markdown: await res.text() };
+                }
+              } catch (_) {
+                // Fall back to static HTML or .md.js wrapper
+              }
+            }
+            return { preRenderedHtml: initialStaticHtml, title: initialStaticTitle };
+          }
+          return undefined;
+        },
+        prepare: prepareReport,
+        onLoading: () => {
+          if (mainEl) mainEl.style.opacity = "0.55";
+        },
       });
     } else if (mdHref && window.location.protocol !== "file:") {
       fetch(mdHref, { cache: "no-store" })
@@ -583,10 +669,14 @@
           if (!res.ok) throw new Error(`HTTP ${res.status}`);
           return res.text();
         })
-        .then((mdText) => applyRenderedMarkdown(mdText, urlOpts))
-        .catch(() => runMathWhenReady());
+        .then((mdText) => applyPreparedReport(prepareReport({ markdown: mdText }, null)))
+        .catch(() => {
+          currentPanel = mainEl;
+          if (mainEl && !renderMath(mainEl)) ensureMathLoadListener();
+        });
     } else {
-      runMathWhenReady();
+      currentPanel = mainEl;
+      if (mainEl && !renderMath(mainEl)) ensureMathLoadListener();
     }
     return;
   }
@@ -658,8 +748,22 @@
       const mdPath = path.join(analysisDir, relMd);
       if (!fs.existsSync(mdPath)) continue;
 
+      const reportDir = path.dirname(relMd);
+      const urlOpts = {
+        ...defaultUrlOpts,
+        resolveVersionedAsset(fileRel) {
+          const directPath = path.join(analysisDir, reportDir, fileRel);
+          if (fs.existsSync(directPath)) return null;
+          const verPath = path.join(analysisDir, "versions", defaultVer.id, reportDir, fileRel);
+          if (fs.existsSync(verPath)) {
+            return "../versions/" + encodeURIComponent(defaultVer.id) + "/" + reportDir + "/" + fileRel;
+          }
+          return null;
+        },
+      };
+
       const mdText = fs.readFileSync(mdPath, "utf8");
-      const { title, bodyHtml } = convertMarkdown(mdText, defaultUrlOpts);
+      const { title, bodyHtml } = convertMarkdown(mdText, urlOpts);
       const mdName = path.basename(mdPath);
       const htmlPath = mdPath.replace(/\.md$/i, ".html");
 

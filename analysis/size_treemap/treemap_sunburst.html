@@ -730,20 +730,15 @@
 
 <script src="../version_picker.js"></script>
 <script>
-function initTreemap(DATA) {
+(function () {
   "use strict";
 
-  if (!DATA || !DATA.tree) {
-    document.body.innerHTML = "<div style='padding:24px;color:#b91c1c;font-family:monospace'>Missing hierarchy_data.js dataset.</div>";
-    return;
-  }
-
-  if (window.RHVersion && RHVersion.current) {
-    document.getElementById("treemap-title").textContent =
-      `Riemann Proof (${RHVersion.current.short_label || RHVersion.current.label}) — Size, Treemap & Sunburst Explorer`;
-  }
-  const SRC_ROOT = DATA.src_root || "src";
-  const ROOT = DATA.tree;
+  let DATA = null;
+  let SRC_ROOT = "src";
+  let ROOT = null;
+  let nodeByPath = new Map();
+  let parentByPath = new Map();
+  let allDirNodes = [];
 
   const THEORY_COLORS = {
     "Development": "#3b82f6",
@@ -790,23 +785,6 @@ function initTreemap(DATA) {
     zoomPath: "",
     directOnlyMode: false
   };
-
-  // Index all nodes by path & build flat search list
-  const nodeByPath = new Map();
-  const parentByPath = new Map();
-  const allDirNodes = [];
-
-  function indexTree(node, parent) {
-    nodeByPath.set(node.path, node);
-    parentByPath.set(node.path, parent);
-    allDirNodes.push(node);
-    const ch = node.children || [];
-    for (let i = 0; i < ch.length; i++) {
-      indexTree(ch[i], node);
-    }
-  }
-  indexTree(ROOT, null);
-  allDirNodes.sort((a, b) => b.lines - a.lines);
 
   const svgEl = document.getElementById("viz-svg");
   const SVG_NS = svgEl.namespaceURI;
@@ -1859,28 +1837,17 @@ function initTreemap(DATA) {
         btn.classList.add("active");
         state[key] = btn.getAttribute("data-val");
         if (key === "view") updateDepthControl();
-        renderAll();
+        if (DATA && ROOT) renderAll();
       });
     });
   }
-
-  bindSeg("ctrl-view", "view");
-  bindSeg("ctrl-metric", "metric");
-  bindSeg("ctrl-color", "colorMode");
-  updateDepthControl();
-
-  document.getElementById("btn-up").addEventListener("click", zoomUp);
-  document.getElementById("btn-root").addEventListener("click", () => zoomTo("", false));
-
-  document.querySelectorAll(".qp-btn").forEach(btn => {
-    btn.addEventListener("click", () => zoomTo(btn.getAttribute("data-jump"), false));
-  });
 
   // Search box
   const searchInput = document.getElementById("dir-search");
   const searchRes = document.getElementById("search-results");
 
   function updateSearch() {
+    if (!DATA || !ROOT) return;
     const q = searchInput.value.trim().toLowerCase();
     if (!q) {
       searchRes.classList.remove("open");
@@ -1916,38 +1883,116 @@ function initTreemap(DATA) {
     searchRes.classList.add("open");
   }
 
-  searchInput.addEventListener("input", updateSearch);
-  searchInput.addEventListener("focus", () => { if (searchInput.value.trim()) updateSearch(); });
-  searchInput.addEventListener("keydown", ev => {
-    if (ev.key === "Enter") {
-      const first = searchRes.querySelector(".search-item[data-path]");
-      if (first) {
-        zoomTo(first.getAttribute("data-path"), false);
+  function setupStaticListeners() {
+    bindSeg("ctrl-view", "view");
+    bindSeg("ctrl-metric", "metric");
+    bindSeg("ctrl-color", "colorMode");
+    updateDepthControl();
+
+    document.getElementById("btn-up").addEventListener("click", () => { if (DATA && ROOT) zoomUp(); });
+    document.getElementById("btn-root").addEventListener("click", () => { if (DATA && ROOT) zoomTo("", false); });
+
+    document.querySelectorAll(".qp-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        if (DATA && ROOT) zoomTo(btn.getAttribute("data-jump"), false);
+      });
+    });
+
+    searchInput.addEventListener("input", updateSearch);
+    searchInput.addEventListener("focus", () => { if (searchInput.value.trim()) updateSearch(); });
+    searchInput.addEventListener("keydown", ev => {
+      if (ev.key === "Enter") {
+        const first = searchRes.querySelector(".search-item[data-path]");
+        if (first && DATA && ROOT) {
+          zoomTo(first.getAttribute("data-path"), false);
+          searchRes.classList.remove("open");
+        }
+      } else if (ev.key === "Escape") {
         searchRes.classList.remove("open");
       }
-    } else if (ev.key === "Escape") {
-      searchRes.classList.remove("open");
-    }
-  });
-  document.addEventListener("click", ev => {
-    if (!ev.target.closest(".search-wrap")) searchRes.classList.remove("open");
-  });
+    });
+    document.addEventListener("click", ev => {
+      if (!ev.target.closest(".search-wrap")) searchRes.classList.remove("open");
+    });
 
-  // Resize observer
-  if (typeof ResizeObserver !== "undefined") {
-    let rafId = null;
-    new ResizeObserver(() => {
-      if (rafId) cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(renderViz);
-    }).observe(stageEl);
-  } else {
-    window.addEventListener("resize", renderViz);
+    if (typeof ResizeObserver !== "undefined") {
+      let rafId = null;
+      new ResizeObserver(() => {
+        if (!DATA || !ROOT) return;
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(renderViz);
+      }).observe(stageEl);
+    } else {
+      window.addEventListener("resize", () => {
+        if (DATA && ROOT) renderViz();
+      });
+    }
   }
 
-  renderHeader();
-  renderAll();
-}
-RHVersion.loadDataScript("size_treemap/hierarchy_data.js", "__HIERARCHY_DATA__", initTreemap);
+  function prepareHierarchy(data) {
+    if (!data || !data.tree) {
+      return { data: null, root: null, srcRoot: "src", nodeByPath: new Map(), parentByPath: new Map(), allDirNodes: [] };
+    }
+    const pNodeByPath = new Map();
+    const pParentByPath = new Map();
+    const pAllDirNodes = [];
+    function indexTree(node, parent) {
+      pNodeByPath.set(node.path, node);
+      pParentByPath.set(node.path, parent);
+      pAllDirNodes.push(node);
+      const ch = node.children || [];
+      for (let i = 0; i < ch.length; i++) {
+        indexTree(ch[i], node);
+      }
+    }
+    indexTree(data.tree, null);
+    pAllDirNodes.sort((a, b) => b.lines - a.lines);
+    return {
+      data,
+      root: data.tree,
+      srcRoot: data.src_root || "src",
+      nodeByPath: pNodeByPath,
+      parentByPath: pParentByPath,
+      allDirNodes: pAllDirNodes
+    };
+  }
+
+  function applyHierarchy(prepared, ver) {
+    hideTooltip();
+    searchRes.classList.remove("open");
+    if (!prepared || !prepared.data || !prepared.root) {
+      stageEl.innerHTML = "<div style='padding:24px;color:#b91c1c;font-family:monospace'>Missing hierarchy_data.js dataset.</div>";
+      return;
+    }
+
+    DATA = prepared.data;
+    SRC_ROOT = prepared.srcRoot;
+    ROOT = prepared.root;
+    nodeByPath = prepared.nodeByPath;
+    parentByPath = prepared.parentByPath;
+    allDirNodes = prepared.allDirNodes;
+
+    const curVer = ver || (window.RHVersion && RHVersion.current);
+    if (curVer) {
+      document.getElementById("treemap-title").textContent =
+        `Riemann Proof (${curVer.short_label || curVer.label}) — Size, Treemap & Sunburst Explorer`;
+    }
+
+    if (state.zoomPath && !nodeByPath.has(state.zoomPath)) {
+      state.zoomPath = "";
+      state.directOnlyMode = false;
+    }
+
+    updateDepthControl();
+    renderHeader();
+    renderAll();
+  }
+
+  setupStaticListeners();
+  RHVersion.loadDataScript("size_treemap/hierarchy_data.js", "__HIERARCHY_DATA__", applyHierarchy, {
+    prepare: prepareHierarchy
+  });
+})();
 </script>
 </body>
 </html>

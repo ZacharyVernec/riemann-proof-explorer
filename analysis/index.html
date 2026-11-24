@@ -269,23 +269,23 @@
 (function () {
   "use strict";
   const fmt = (n) => Number(n).toLocaleString("en-US");
-  const ver = window.RHVersion ? RHVersion.current : null;
-  if (ver && window.RHVersion) {
-    const mainL = document.getElementById("footer-main-link");
-    const stmtL = document.getElementById("footer-stmt-link");
-    if (mainL) mainL.href = RHVersion.sourceUrl("Main.lean");
-    if (stmtL) stmtL.href = RHVersion.sourceUrl("Statements.lean");
+  if (window.RHVersion) {
+    RHVersion.loadDataScript("data/meta_summary.js", "__META_SUMMARY__", (m, ver) => {
+      const curVer = ver || RHVersion.current;
+      const mainL = document.getElementById("footer-main-link");
+      const stmtL = document.getElementById("footer-stmt-link");
+      if (mainL) mainL.href = RHVersion.sourceUrl("Main.lean", null, curVer.id);
+      if (stmtL) stmtL.href = RHVersion.sourceUrl("Statements.lean", null, curVer.id);
 
-    RHVersion.loadDataScript("data/meta_summary.js", "__META_SUMMARY__", (m) => {
       const box = document.getElementById("version-meta");
       if (!box || !m) return;
       const declsTotal = Object.values(m.reachable_decl_counts || m.decl_counts || {}).reduce((a, b) => a + b, 0);
       const unreachNote = m.unreachable_files
         ? `<span><strong>Excluded standalone/unreachable:</strong> ${fmt(m.unreachable_files)}</span>`
         : "";
-      const repoHtml = ver.repo_url
-        ? `<a href="${ver.repo_url}" target="_blank" rel="noopener">${ver.repo_name}</a>`
-        : ver.repo_name;
+      const repoHtml = curVer.repo_url
+        ? `<a href="${curVer.repo_url}" target="_blank" rel="noopener">${curVer.repo_name}</a>`
+        : curVer.repo_name;
       box.innerHTML = [
         `<span><strong>Repository:</strong> ${repoHtml}</span>`,
         `<span><strong>Reachable modules:</strong> ${fmt(m.reachable_files)}</span>`,
@@ -297,9 +297,11 @@
       ].filter(Boolean).join("");
       const histEl = document.getElementById("hist-meta-counts");
       if (histEl) histEl.textContent = `${fmt(m.reachable_files)} reachable modules and ${fmt(declsTotal)} declarations`;
-      if (m.blueprint_nodes) {
-        const bpEl = document.getElementById("bp-meta-count");
-        if (bpEl) bpEl.textContent = `${m.blueprint_nodes} verified milestones across stages 0–4`;
+      const bpEl = document.getElementById("bp-meta-count");
+      if (bpEl) {
+        bpEl.textContent = m.blueprint_nodes
+          ? `${m.blueprint_nodes} verified milestones across stages 0–4`
+          : "stages 0–4";
       }
     });
   }

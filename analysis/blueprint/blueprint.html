@@ -996,32 +996,16 @@
 <div class="dag-tooltip" id="dag-tooltip" role="tooltip"></div>
 
 <script>
-function initBlueprint(BLUEPRINT_DATA) {
-  const CODE_ROOT = BLUEPRINT_DATA.meta.codebase_root || "/home/ubuntu/riemann_proof/lean/src";
-  const nodes = BLUEPRINT_DATA.nodes;
-  const nodeMap = new Map();
-  const groupMap = new Map();
-  const stageMap = new Map();
-  const dependentsMap = new Map();
+(function () {
+  "use strict";
 
-  for (const g of BLUEPRINT_DATA.meta.theory_groups) {
-    groupMap.set(g.id, g);
-  }
-  for (const s of BLUEPRINT_DATA.meta.stages) {
-    stageMap.set(s.stage, s);
-  }
-  nodes.forEach((n, idx) => {
-    n._index = idx;
-    nodeMap.set(n.id, n);
-    dependentsMap.set(n.id, []);
-  });
-  for (const n of nodes) {
-    for (const depId of n.depends_on) {
-      if (dependentsMap.has(depId)) {
-        dependentsMap.get(depId).push(n.id);
-      }
-    }
-  }
+  let BLUEPRINT_DATA = null;
+  let CODE_ROOT = "/home/ubuntu/riemann_proof/lean/src";
+  let nodes = [];
+  let nodeMap = new Map();
+  let groupMap = new Map();
+  let stageMap = new Map();
+  let dependentsMap = new Map();
 
   const state = {
     stage: "all",
@@ -1166,14 +1150,6 @@ function initBlueprint(BLUEPRINT_DATA) {
       stageBtns.push(`<button class="chip-btn" data-stage="${s.stage}" type="button" title="${escapeHtml(s.label)}">${shortName}</button>`);
     }
     stageWrap.innerHTML = `<span class="filter-label">Stage</span>` + stageBtns.join("");
-
-    stageWrap.addEventListener("click", (e) => {
-      const btn = e.target.closest("button[data-stage]");
-      if (!btn) return;
-      state.stage = btn.dataset.stage;
-      syncFilterButtons();
-      applyFiltersAndSelection();
-    });
   }
 
   function syncFilterButtons() {
@@ -1263,13 +1239,13 @@ function initBlueprint(BLUEPRINT_DATA) {
     return lines;
   }
 
-  function computeDagLayout() {
+  function computeDagLayout(layoutNodes, layoutDependentsMap, layoutStageMap) {
     const stages = [0, 1, 2, 3, 4];
     const subRowsByStage = new Map();
     const globalRowList = [];
 
     for (const s of stages) {
-      const sNodes = nodes.filter((n) => n.stage === s);
+      const sNodes = layoutNodes.filter((n) => n.stage === s);
       const sSet = new Set(sNodes.map((n) => n.id));
       const rowOf = new Map();
       for (const n of sNodes) rowOf.set(n.id, 0);
@@ -1314,7 +1290,7 @@ function initBlueprint(BLUEPRINT_DATA) {
         const rowObj = globalRowList[rIdx];
         rowObj.nodes.sort((a, b) => {
           const score = (node) => {
-            const parents = dependentsMap.get(node.id) || [];
+            const parents = layoutDependentsMap.get(node.id) || [];
             if (!parents.length) return relX.get(node.id);
             let sum = 0;
             for (const p of parents) sum += relX.get(p) ?? 0.5;
@@ -1345,7 +1321,7 @@ function initBlueprint(BLUEPRINT_DATA) {
       }
     }
 
-    const maxCols = Math.max(...globalRowList.map((r) => r.nodes.length));
+    const maxCols = Math.max(1, ...globalRowList.map((r) => r.nodes.length));
     const innerW = maxCols * NODE_W + (maxCols - 1) * GAP_X;
     const width = innerW + PAD_X * 2;
 
@@ -1369,8 +1345,8 @@ function initBlueprint(BLUEPRINT_DATA) {
       const bandBot = y + STAGE_PAD_BOT;
       stageBoxes.push({
         stage: s,
-        label: stageMap.get(s).label,
-        count: nodes.filter((n) => n.stage === s).length,
+        label: (layoutStageMap.get(s) || { label: `Stage ${s}` }).label,
+        count: layoutNodes.filter((n) => n.stage === s).length,
         x: 12,
         y: bandTop,
         w: width - 24,
@@ -1397,7 +1373,6 @@ function initBlueprint(BLUEPRINT_DATA) {
   }
 
   function renderDagSvg() {
-    dagLayout = computeDagLayout();
     const svg = document.getElementById("dag-svg");
     svg.innerHTML = "";
     svg.setAttribute("width", dagLayout.width);
@@ -1560,20 +1535,6 @@ function initBlueprint(BLUEPRINT_DATA) {
       nodeDom.set(n.id, g);
     }
     svg.appendChild(nodesLayer);
-
-    // Click empty background clears selection (unless dragged)
-    svg.addEventListener("click", (ev) => {
-      if (state.suppressBgClick) {
-        state.suppressBgClick = false;
-        return;
-      }
-      if (ev.target === svg || ev.target.classList.contains("stage-band")) {
-        if (state.selectedIds.size > 0) {
-          state.selectedIds.clear();
-          applyFiltersAndSelection();
-        }
-      }
-    });
   }
 
   /* Tooltip */
@@ -1843,39 +1804,6 @@ function initBlueprint(BLUEPRINT_DATA) {
       sec.appendChild(grid);
       container.appendChild(sec);
     }
-
-    container.addEventListener("click", (e) => {
-      const toggleBtn = e.target.closest("button[data-toggle-expl]");
-      if (toggleBtn) {
-        const targetId = toggleBtn.dataset.toggleExpl;
-        if (state.expandedExplIds.has(targetId)) {
-          state.expandedExplIds.delete(targetId);
-        } else {
-          state.expandedExplIds.add(targetId);
-        }
-        syncCardExplanation(targetId);
-        syncToggleAllExplBtn();
-        return;
-      }
-      const jumpBtn = e.target.closest("button[data-jump-id]");
-      if (jumpBtn) {
-        const targetId = jumpBtn.dataset.jumpId;
-        selectNode(targetId, { scrollToCard: true });
-        return;
-      }
-      const focusBtn = e.target.closest("button[data-focus-dag]");
-      if (focusBtn) {
-        const targetId = focusBtn.dataset.focusDag;
-        selectNode(targetId, { scrollToDag: true });
-        return;
-      }
-      const hideBtn = e.target.closest("button[data-hide-card]");
-      if (hideBtn) {
-        const targetId = hideBtn.dataset.hideCard;
-        state.selectedIds.delete(targetId);
-        applyFiltersAndSelection();
-      }
-    });
   }
 
   function syncCardExplanation(nodeId) {
@@ -2116,64 +2044,190 @@ function initBlueprint(BLUEPRINT_DATA) {
     applyFiltersAndSelection();
   }
 
-  /* Init */
-  document.getElementById("hero-node-count").textContent = String(nodes.length);
-  if (window.RHVersion && RHVersion.current) {
-    document.getElementById("hero-kicker").textContent = `Interactive Mathematical Proof Blueprint · ${RHVersion.current.label}`;
+  function setupStaticInteractions() {
+    setupZoomAndPan();
+
+    const stageWrap = document.getElementById("stage-filters");
+    stageWrap.addEventListener("click", (e) => {
+      const btn = e.target.closest("button[data-stage]");
+      if (!btn) return;
+      state.stage = btn.dataset.stage;
+      syncFilterButtons();
+      applyFiltersAndSelection();
+    });
+
+    const svg = document.getElementById("dag-svg");
+    svg.addEventListener("click", (ev) => {
+      if (state.suppressBgClick) {
+        state.suppressBgClick = false;
+        return;
+      }
+      if (ev.target === svg || ev.target.classList.contains("stage-band")) {
+        if (state.selectedIds.size > 0) {
+          state.selectedIds.clear();
+          applyFiltersAndSelection();
+        }
+      }
+    });
+
+    const container = document.getElementById("cards-container");
+    container.addEventListener("click", (e) => {
+      const toggleBtn = e.target.closest("button[data-toggle-expl]");
+      if (toggleBtn) {
+        const targetId = toggleBtn.dataset.toggleExpl;
+        if (state.expandedExplIds.has(targetId)) {
+          state.expandedExplIds.delete(targetId);
+        } else {
+          state.expandedExplIds.add(targetId);
+        }
+        syncCardExplanation(targetId);
+        syncToggleAllExplBtn();
+        return;
+      }
+      const jumpBtn = e.target.closest("button[data-jump-id]");
+      if (jumpBtn) {
+        const targetId = jumpBtn.dataset.jumpId;
+        selectNode(targetId, { scrollToCard: true });
+        return;
+      }
+      const focusBtn = e.target.closest("button[data-focus-dag]");
+      if (focusBtn) {
+        const targetId = focusBtn.dataset.focusDag;
+        selectNode(targetId, { scrollToDag: true });
+        return;
+      }
+      const hideBtn = e.target.closest("button[data-hide-card]");
+      if (hideBtn) {
+        const targetId = hideBtn.dataset.hideCard;
+        state.selectedIds.delete(targetId);
+        applyFiltersAndSelection();
+      }
+    });
+
+    const searchInput = document.getElementById("search-input");
+    searchInput.addEventListener("input", () => {
+      state.search = searchInput.value;
+      syncFilterButtons();
+      applyFiltersAndSelection();
+    });
+    document.getElementById("search-clear").addEventListener("click", () => {
+      state.search = "";
+      syncFilterButtons();
+      applyFiltersAndSelection();
+      searchInput.focus();
+    });
+    document.getElementById("reset-filters-btn").addEventListener("click", resetAllFilters);
+    document.getElementById("toggle-all-expl-btn").addEventListener("click", () => {
+      const ids = getRevealedExplIds();
+      if (ids.length === 0) return;
+      const allExpanded = ids.every((id) => state.expandedExplIds.has(id));
+      for (const id of ids) {
+        if (allExpanded) state.expandedExplIds.delete(id);
+        else state.expandedExplIds.add(id);
+        syncCardExplanation(id);
+      }
+      syncToggleAllExplBtn();
+    });
+    document.getElementById("hide-all-cards-btn").addEventListener("click", () => {
+      state.selectedIds.clear();
+      applyFiltersAndSelection();
+    });
+
+    document.getElementById("inspector-clear-btn").addEventListener("click", () => {
+      state.selectedIds.clear();
+      applyFiltersAndSelection();
+    });
+    document.getElementById("inspector-jump-btn").addEventListener("click", () => {
+      if (state.selectedIds.size === 0) return;
+      if (state.selectedIds.size === 1) {
+        const [onlyId] = state.selectedIds;
+        selectNode(onlyId, { scrollToCard: true });
+      } else {
+        document.getElementById("revealed-header").scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    });
   }
-  renderHeroStats();
-  renderFilterControls();
-  renderGroupLegend();
-  renderDagSvg();
-  renderCards();
-  setupZoomAndPan();
-  fitWidth();
-  applyFiltersAndSelection();
 
-  const searchInput = document.getElementById("search-input");
-  searchInput.addEventListener("input", () => {
-    state.search = searchInput.value;
-    syncFilterButtons();
-    applyFiltersAndSelection();
-  });
-  document.getElementById("search-clear").addEventListener("click", () => {
-    state.search = "";
-    syncFilterButtons();
-    applyFiltersAndSelection();
-    searchInput.focus();
-  });
-  document.getElementById("reset-filters-btn").addEventListener("click", resetAllFilters);
-  document.getElementById("toggle-all-expl-btn").addEventListener("click", () => {
-    const ids = getRevealedExplIds();
-    if (ids.length === 0) return;
-    const allExpanded = ids.every((id) => state.expandedExplIds.has(id));
-    for (const id of ids) {
-      if (allExpanded) state.expandedExplIds.delete(id);
-      else state.expandedExplIds.add(id);
-      syncCardExplanation(id);
-    }
-    syncToggleAllExplBtn();
-  });
-  document.getElementById("hide-all-cards-btn").addEventListener("click", () => {
-    state.selectedIds.clear();
-    applyFiltersAndSelection();
-  });
+  function prepareBlueprint(data) {
+    const pNodes = data.nodes || [];
+    const pNodeMap = new Map();
+    const pGroupMap = new Map();
+    const pStageMap = new Map();
+    const pDependentsMap = new Map();
 
-  document.getElementById("inspector-clear-btn").addEventListener("click", () => {
-    state.selectedIds.clear();
-    applyFiltersAndSelection();
-  });
-  document.getElementById("inspector-jump-btn").addEventListener("click", () => {
-    if (state.selectedIds.size === 0) return;
-    if (state.selectedIds.size === 1) {
-      const [onlyId] = state.selectedIds;
-      selectNode(onlyId, { scrollToCard: true });
-    } else {
-      document.getElementById("revealed-header").scrollIntoView({ behavior: "smooth", block: "start" });
+    for (const g of data.meta.theory_groups) {
+      pGroupMap.set(g.id, g);
     }
+    for (const s of data.meta.stages) {
+      pStageMap.set(s.stage, s);
+    }
+    pNodes.forEach((n, idx) => {
+      n._index = idx;
+      pNodeMap.set(n.id, n);
+      pDependentsMap.set(n.id, []);
+    });
+    for (const n of pNodes) {
+      for (const depId of n.depends_on) {
+        if (pDependentsMap.has(depId)) {
+          pDependentsMap.get(depId).push(n.id);
+        }
+      }
+    }
+
+    const pDagLayout = computeDagLayout(pNodes, pDependentsMap, pStageMap);
+    return {
+      data,
+      nodes: pNodes,
+      nodeMap: pNodeMap,
+      groupMap: pGroupMap,
+      stageMap: pStageMap,
+      dependentsMap: pDependentsMap,
+      dagLayout: pDagLayout
+    };
+  }
+
+  function applyBlueprint(prepared, ver) {
+    hideTooltip();
+    BLUEPRINT_DATA = prepared.data;
+    CODE_ROOT = BLUEPRINT_DATA.meta.codebase_root || "/home/ubuntu/riemann_proof/lean/src";
+    nodes = prepared.nodes;
+    nodeMap = prepared.nodeMap;
+    groupMap = prepared.groupMap;
+    stageMap = prepared.stageMap;
+    dependentsMap = prepared.dependentsMap;
+    dagLayout = prepared.dagLayout;
+
+    for (const id of Array.from(state.selectedIds)) {
+      if (!nodeMap.has(id)) state.selectedIds.delete(id);
+    }
+    for (const id of Array.from(state.expandedExplIds)) {
+      if (!nodeMap.has(id)) state.expandedExplIds.delete(id);
+    }
+    if (state.stage !== "all" && !stageMap.has(Number(state.stage))) {
+      state.stage = "all";
+    }
+
+    document.getElementById("hero-node-count").textContent = String(nodes.length);
+    const curVer = ver || (window.RHVersion ? RHVersion.current : null);
+    if (curVer) {
+      document.getElementById("hero-kicker").textContent = `Interactive Mathematical Proof Blueprint · ${curVer.label}`;
+    }
+
+    renderHeroStats();
+    renderFilterControls();
+    syncFilterButtons();
+    renderGroupLegend();
+    renderDagSvg();
+    renderCards();
+    fitWidth();
+    applyFiltersAndSelection();
+  }
+
+  setupStaticInteractions();
+  RHVersion.loadDataScript("blueprint/blueprint_data.js", "__BLUEPRINT_DATA__", applyBlueprint, {
+    prepare: prepareBlueprint
   });
-}
-RHVersion.loadDataScript("blueprint/blueprint_data.js", "__BLUEPRINT_DATA__", initBlueprint);
+})();
 </script>
 </body>
 </html>

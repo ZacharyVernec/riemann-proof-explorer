@@ -566,10 +566,14 @@
 <div class="svg-tooltip" id="svgTooltip"></div>
 
 <script>
-function initInterfaces(DATA) {
-  const ANALYZED_MAP = new Map(DATA.analyzed_interfaces.map(x => [x.rel_path, x]));
-  const TOP_DIR_MAP = new Map(DATA.top_dirs.map(x => [x.dir_key, x]));
-  const D2_DIR_MAP = new Map(DATA.depth2_dirs.map(x => [x.dir_key, x]));
+(function () {
+  "use strict";
+
+  let DATA = null;
+  let ANALYZED_MAP = new Map();
+  let TOP_DIR_MAP = new Map();
+  let D2_DIR_MAP = new Map();
+  let THEORY_ORDER = [];
 
   const CANONICAL_THEORY_ORDER = [
     "(root)", "Supplements",
@@ -577,14 +581,6 @@ function initInterfaces(DATA) {
     "Formalism", "ReciprocityTheory",
     "GroundTheory", "Lemmata", "BuildAid"
   ];
-  const THEORY_ORDER = [
-    ...CANONICAL_THEORY_ORDER.filter(t => TOP_DIR_MAP.has(t)),
-    ...DATA.top_dirs.map(d => d.dir_key).filter(t => !CANONICAL_THEORY_ORDER.includes(t))
-  ];
-  if (window.RHVersion && RHVersion.current) {
-    document.getElementById("ifaceSubtitle").textContent =
-      `Lean 4 (${RHVersion.current.label}) — Cross-theory contract architecture, boundary flows & Lean APIs`;
-  }
   const THEORY_META = {
     "(root)":            { color: "#334155", bg: "#f1f5f9", border: "#94a3b8", tier: 0, label: "(root)" },
     "Supplements":       { color: "#3730a3", bg: "#eef2ff", border: "#818cf8", tier: 0, label: "Supplements" },
@@ -620,13 +616,15 @@ function initInterfaces(DATA) {
     query: "",
     sort: "ext",
     selectedDir: "Development",
-    selectedFile: DATA.analyzed_interfaces[0] ? DATA.analyzed_interfaces[0].rel_path : null,
+    selectedFile: null,
     fileFilter: "",
     importerFilter: "",
     declKindFilter: "all",
     showAllLeftBf: false,
     showAllRightBf: false
   };
+
+  let activeDagDrag = null;
 
   function getTheoryMeta(key) {
     if (THEORY_META[key]) return THEORY_META[key];
@@ -648,16 +646,6 @@ function initInterfaces(DATA) {
   const fileUrl = (rel, line) => (window.RHVersion && RHVersion.sourceUrl)
     ? RHVersion.sourceUrl(rel, line)
     : (rel + (line ? "#L" + line : ""));
-
-  // Header stats
-  document.getElementById("cntTop").textContent = DATA.top_dirs.length;
-  document.getElementById("cntD2").textContent = DATA.depth2_dirs.length;
-  document.getElementById("cntAn").textContent = DATA.analyzed_interfaces.length;
-  document.getElementById("topStats").innerHTML = [
-    `<span class="pill">Top-Level Theories: <b>${DATA.top_dirs.length}</b></span>`,
-    `<span class="pill">Sub-Theories: <b>${DATA.depth2_dirs.length}</b></span>`,
-    `<span class="pill">Analyzed Mathematical Interfaces: <b>${DATA.analyzed_interfaces.length}</b></span>`
-  ].join("");
 
   // Tooltip helpers
   const tooltipEl = document.getElementById("svgTooltip");
@@ -1978,30 +1966,17 @@ function initInterfaces(DATA) {
     // Drag-to-pan on DAG viewport
     const dagScroll = document.getElementById("dagScroll");
     if (dagScroll) {
-      let isDown = false, startX = 0, startY = 0, scrollL = 0, scrollT = 0;
       dagScroll.addEventListener("mousedown", (e) => {
         if (e.button !== 0) return;
-        isDown = true;
         window._dagJustDragged = false;
-        startX = e.clientX;
-        startY = e.clientY;
-        scrollL = dagScroll.scrollLeft;
-        scrollT = dagScroll.scrollTop;
+        activeDagDrag = {
+          scrollEl: dagScroll,
+          startX: e.clientX,
+          startY: e.clientY,
+          scrollL: dagScroll.scrollLeft,
+          scrollT: dagScroll.scrollTop
+        };
         dagScroll.classList.add("grabbing");
-      });
-      window.addEventListener("mousemove", (e) => {
-        if (!isDown) return;
-        const dx = e.clientX - startX;
-        const dy = e.clientY - startY;
-        if (Math.hypot(dx, dy) > 4) window._dagJustDragged = true;
-        dagScroll.scrollLeft = scrollL - dx;
-        dagScroll.scrollTop = scrollT - dy;
-      });
-      window.addEventListener("mouseup", () => {
-        if (!isDown) return;
-        isDown = false;
-        dagScroll.classList.remove("grabbing");
-        setTimeout(() => { window._dagJustDragged = false; }, 50);
       });
     }
   }
@@ -2198,31 +2173,104 @@ function initInterfaces(DATA) {
     renderMain();
   }
 
-  document.querySelectorAll(".tab").forEach(btn => {
-    btn.onclick = () => {
-      state.mode = btn.dataset.mode;
-      state.importerFilter = "";
-      state.fileFilter = "";
-      if (state.mode === "analyzed" && !ANALYZED_MAP.has(state.selectedFile)) {
-        state.selectedFile = DATA.analyzed_interfaces[0].rel_path;
-      }
-      render();
-    };
-  });
+  function setupStaticListeners() {
+    document.querySelectorAll(".tab").forEach(btn => {
+      btn.onclick = () => {
+        state.mode = btn.dataset.mode;
+        state.importerFilter = "";
+        state.fileFilter = "";
+        if (DATA && state.mode === "analyzed" && !ANALYZED_MAP.has(state.selectedFile)) {
+          state.selectedFile = DATA.analyzed_interfaces[0] ? DATA.analyzed_interfaces[0].rel_path : null;
+        }
+        if (DATA) render();
+      };
+    });
 
-  document.getElementById("globalSearch").addEventListener("input", (e) => {
-    state.query = e.target.value;
+    document.getElementById("globalSearch").addEventListener("input", (e) => {
+      state.query = e.target.value;
+      if (DATA) render();
+    });
+
+    document.getElementById("sortSelect").addEventListener("change", (e) => {
+      state.sort = e.target.value;
+      if (DATA) renderSidebar();
+    });
+
+    window.addEventListener("mousemove", (e) => {
+      if (!activeDagDrag) return;
+      const dx = e.clientX - activeDagDrag.startX;
+      const dy = e.clientY - activeDagDrag.startY;
+      if (Math.hypot(dx, dy) > 4) window._dagJustDragged = true;
+      activeDagDrag.scrollEl.scrollLeft = activeDagDrag.scrollL - dx;
+      activeDagDrag.scrollEl.scrollTop = activeDagDrag.scrollT - dy;
+    });
+
+    window.addEventListener("mouseup", () => {
+      if (!activeDagDrag) return;
+      activeDagDrag.scrollEl.classList.remove("grabbing");
+      activeDagDrag = null;
+      setTimeout(() => { window._dagJustDragged = false; }, 50);
+    });
+  }
+
+  function prepareInterfaces(data) {
+    const analyzedMap = new Map(data.analyzed_interfaces.map(x => [x.rel_path, x]));
+    const topDirMap = new Map(data.top_dirs.map(x => [x.dir_key, x]));
+    const d2DirMap = new Map(data.depth2_dirs.map(x => [x.dir_key, x]));
+    const theoryOrder = [
+      ...CANONICAL_THEORY_ORDER.filter(t => topDirMap.has(t)),
+      ...data.top_dirs.map(d => d.dir_key).filter(t => !CANONICAL_THEORY_ORDER.includes(t))
+    ];
+    return { data, analyzedMap, topDirMap, d2DirMap, theoryOrder };
+  }
+
+  function applyInterfaces(prepared, ver) {
+    hideTooltip();
+    activeDagDrag = null;
+    DATA = prepared.data;
+    ANALYZED_MAP = prepared.analyzedMap;
+    TOP_DIR_MAP = prepared.topDirMap;
+    D2_DIR_MAP = prepared.d2DirMap;
+    THEORY_ORDER = prepared.theoryOrder;
+
+    const curVer = ver || (window.RHVersion && RHVersion.current);
+    if (curVer) {
+      document.getElementById("ifaceSubtitle").textContent =
+        `Lean 4 (${curVer.label}) — Cross-theory contract architecture, boundary flows & Lean APIs`;
+    }
+
+    document.getElementById("cntTop").textContent = DATA.top_dirs.length;
+    document.getElementById("cntD2").textContent = DATA.depth2_dirs.length;
+    document.getElementById("cntAn").textContent = DATA.analyzed_interfaces.length;
+    document.getElementById("topStats").innerHTML = [
+      `<span class="pill">Top-Level Theories: <b>${DATA.top_dirs.length}</b></span>`,
+      `<span class="pill">Sub-Theories: <b>${DATA.depth2_dirs.length}</b></span>`,
+      `<span class="pill">Analyzed Mathematical Interfaces: <b>${DATA.analyzed_interfaces.length}</b></span>`
+    ].join("");
+
+    if (state.mode === "top" && !TOP_DIR_MAP.has(state.selectedDir)) {
+      state.selectedDir = TOP_DIR_MAP.has("Development") ? "Development" : (DATA.top_dirs[0] ? DATA.top_dirs[0].dir_key : "");
+    } else if (state.mode === "d2" && !D2_DIR_MAP.has(state.selectedDir)) {
+      state.selectedDir = DATA.depth2_dirs[0] ? DATA.depth2_dirs[0].dir_key : "";
+    } else if (!TOP_DIR_MAP.has(state.selectedDir) && !D2_DIR_MAP.has(state.selectedDir)) {
+      state.selectedDir = TOP_DIR_MAP.has("Development") ? "Development" : (DATA.top_dirs[0] ? DATA.top_dirs[0].dir_key : "");
+    }
+
+    if (!state.selectedFile || !ANALYZED_MAP.has(state.selectedFile)) {
+      state.selectedFile = DATA.analyzed_interfaces[0] ? DATA.analyzed_interfaces[0].rel_path : null;
+    }
+
+    state.importerFilter = "";
+    state.fileFilter = "";
+    state.declKindFilter = "all";
     render();
-  });
+  }
 
-  document.getElementById("sortSelect").addEventListener("change", (e) => {
-    state.sort = e.target.value;
-    renderSidebar();
+  setupStaticListeners();
+  RHVersion.loadDataScript("interfaces/interface_browser_data.js", "__INTERFACES_DATA__", applyInterfaces, {
+    prepare: prepareInterfaces
   });
-
-  render();
-}
-RHVersion.loadDataScript("interfaces/interface_browser_data.js", "__INTERFACES_DATA__", initInterfaces);
+})();
 </script>
 </body>
 </html>
