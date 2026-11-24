@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Codebase Structural Histograms — Riemann Hypothesis Lean 4 Formalization</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg2: #f7f7f7;
+    --border: #cccccc;
+    --border-light: #e5e5e5;
+    --text: #111111;
+    --muted: #555555;
+    --accent: #0056b3;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0 auto;
+    max-width: 1120px;
+    padding: 20px 20px 60px;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.5;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  code {
+    font-family: var(--mono);
+    font-size: 0.88em;
+    background: #f4f4f4;
+    padding: 0.12em 0.32em;
+    border-radius: 3px;
+  }
+  nav.top-nav {
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+    color: var(--muted);
+  }
+  header {
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+  h1 {
+    margin: 0 0 6px;
+    font-size: 1.6em;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .subtitle {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.92rem;
+  }
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+    margin-top: 14px;
+  }
+  .kpi {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    padding: 10px 12px;
+  }
+  .kpi-label {
+    font-size: 0.78rem;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .kpi-val {
+    font-size: 1.25rem;
+    font-weight: 700;
+    font-family: var(--mono);
+    margin-top: 2px;
+  }
+  .kpi-sub {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .domain-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 12px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    margin-bottom: 18px;
+  }
+  .domain-label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--muted);
+    margin-right: 4px;
+  }
+  .pill-btn {
+    border: 1px solid var(--border);
+    background: #ffffff;
+    color: var(--text);
+    padding: 4px 10px;
+    font-size: 0.82rem;
+    font-family: inherit;
+    cursor: pointer;
+    border-radius: 3px;
+  }
+  .pill-btn:hover { background: #eeeeee; }
+  .pill-btn.active {
+    background: #222222;
+    color: #ffffff;
+    border-color: #222222;
+  }
+  .card {
+    border: 1px solid var(--border);
+    background: #ffffff;
+    padding: 16px 18px;
+    margin-bottom: 18px;
+    border-radius: 3px;
+  }
+  .card-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .card h2 {
+    margin: 0;
+    font-size: 1.12rem;
+    font-weight: 700;
+  }
+  .card-sub {
+    margin: 3px 0 0;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+  }
+  .tab-btn {
+    border: 1px solid var(--border);
+    background: #ffffff;
+    color: var(--text);
+    padding: 4px 9px;
+    font-size: 0.8rem;
+    font-family: inherit;
+    cursor: pointer;
+    border-radius: 2px;
+  }
+  .tab-btn:hover { background: #eeeeee; }
+  .tab-btn.active {
+    background: #222222;
+    color: #ffffff;
+    border-color: #222222;
+  }
+  .ctrl-sep {
+    width: 1px;
+    height: 18px;
+    background: var(--border);
+    margin: 0 2px;
+  }
+  .takeaway {
+    margin: 6px 0 10px;
+    padding: 7px 10px;
+    background: var(--bg2);
+    border-left: 3px solid #666666;
+    font-size: 0.85rem;
+    color: #333333;
+  }
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 6px 0 8px;
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+  .legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .swatch {
+    width: 11px;
+    height: 11px;
+    display: inline-block;
+    border: 1px solid rgba(0, 0, 0, 0.18);
+  }
+  .chart-wrap {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid var(--border-light);
+    background: #ffffff;
+    padding: 8px 6px;
+  }
+  svg.chart {
+    display: block;
+    width: 100%;
+    height: auto;
+    font-family: var(--sans);
+  }
+  .bar-hover {
+    cursor: pointer;
+  }
+  .bar-hover:hover {
+    opacity: 0.84;
+  }
+  details {
+    margin-top: 10px;
+    padding: 6px 10px;
+    border: 1px solid var(--border-light);
+    background: #fafafa;
+    font-size: 0.84rem;
+  }
+  summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: #222222;
+  }
+  .table-wrap {
+    overflow-x: auto;
+    margin-top: 8px;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 0.83rem;
+  }
+  th, td {
+    border: 1px solid var(--border);
+    padding: 5px 8px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th {
+    background: #f0f0f0;
+    font-weight: 600;
+  }
+  td.num, th.num {
+    text-align: right;
+    font-family: var(--mono);
+  }
+  .empty-note {
+    padding: 20px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.88rem;
+  }
+  .tooltip {
+    position: fixed;
+    pointer-events: none;
+    display: none;
+    z-index: 999;
+    background: #ffffff;
+    border: 1px solid #444444;
+    padding: 7px 10px;
+    font-size: 0.8rem;
+    color: #111111;
+    max-width: 340px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+    line-height: 1.4;
+  }
+  .tooltip .tt-title {
+    font-weight: 700;
+    margin-bottom: 2px;
+    word-break: break-word;
+  }
+  .tooltip .tt-mono {
+    font-family: var(--mono);
+  }
+  footer {
+    margin-top: 24px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    font-size: 0.84rem;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+<nav class="top-nav">
+  <a href="../index.html">&larr; Back to Analysis Portal</a> &middot;
+  <a href="CODEBASE_HISTOGRAMS.html">Methodology &amp; Findings Report</a> &middot;
+  <a href="histograms_data.json">Raw JSON</a>
+</nav>
+
+<header>
+  <h1>Codebase Structural Histograms</h1>
+  <p class="subtitle">
+    Empirical distributions of attributes, proof glue, typeclass hypotheses, proof strategies, equivalence bridges, non-<code>@[simp]</code> import fan-in, and declaration structure across <code>lean/src/</code>.
+  </p>
+  <div class="kpi-grid" id="kpiGrid"></div>
+</header>
+
+<div class="domain-bar" id="domainBar">
+  <span class="domain-label">Domain filter:</span>
+</div>
+
+<main>
+  <!-- Card 1 -->
+  <section class="card" id="card1">
+    <div class="card-head">
+      <div>
+        <h2>1. Automation Attributes &amp; Proof Glue</h2>
+        <p class="card-sub">Separating one-line forwarding/mechanical glue and <code>@[simp]</code>/<code>attribute</code> plumbing from multi-step mathematical proofs.</p>
+      </div>
+      <div class="controls" id="c1Tabs"></div>
+    </div>
+    <div class="takeaway" id="c1Takeaway"></div>
+    <div class="chart-wrap" id="c1Chart"></div>
+    <details id="c1Details">
+      <summary>Top <code>attribute [local instance]</code> targets &amp; compiler options</summary>
+      <div id="c1Table"></div>
+    </details>
+  </section>
+
+  <!-- Card 2 -->
+  <section class="card" id="card2">
+    <div class="card-head">
+      <div>
+        <h2>2. Typeclass Usage &amp; Mathematical Hypotheses</h2>
+        <p class="card-sub">Signature-only binder extraction showing where baseline algebraic/topological classes give way to arithmetic, local-field, and geometric hypotheses.</p>
+      </div>
+      <div class="controls" id="c2Tabs"></div>
+    </div>
+    <div class="takeaway" id="c2Takeaway"></div>
+    <div class="legend" id="c2Legend"></div>
+    <div class="chart-wrap" id="c2Chart"></div>
+  </section>
+
+  <!-- Card 3 -->
+  <section class="card" id="card3">
+    <div class="card-head">
+      <div>
+        <h2>3. Proof Strategies: Conceptual Moves vs. Automated Solvers</h2>
+        <p class="card-sub">Frequency of conceptual proof steps (<code>have</code>, <code>obtain</code>, <code>induction</code>, <code>by_contra</code>, <code>classical</code>) compared against algebraic/arithmetic solvers and direct rewriting.</p>
+      </div>
+      <div class="controls" id="c3Tabs"></div>
+    </div>
+    <div class="takeaway" id="c3Takeaway"></div>
+    <div class="legend" id="c3Legend"></div>
+    <div class="chart-wrap" id="c3Chart"></div>
+  </section>
+
+  <!-- Card 4 -->
+  <section class="card" id="card4">
+    <div class="card-head">
+      <div>
+        <h2>4. Cross-Namespace &amp; Equivalence &ldquo;Bridge&rdquo; Signatures</h2>
+        <p class="card-sub">Explicit bundled equivalence constructors in declaration types alongside cross-subtheory import breadth and opened namespace counts.</p>
+      </div>
+      <div class="controls" id="c4Tabs"></div>
+    </div>
+    <div class="takeaway" id="c4Takeaway"></div>
+    <div class="chart-wrap" id="c4Chart"></div>
+    <details id="c4Details">
+      <summary>Top opened root namespaces &amp; cross-domain import breadth</summary>
+      <div id="c4Table"></div>
+    </details>
+  </section>
+
+  <!-- Card 5 -->
+  <section class="card" id="card5">
+    <div class="card-head">
+      <div>
+        <h2>5. Non-<code>@[simp]</code> Reference Fan-In &amp; Reuse</h2>
+        <p class="card-sub">Module import in-degree and cross-subtheory importer count, isolating core structural definitions/theorems from single-consumer leaves.</p>
+      </div>
+      <div class="controls" id="c5Tabs"></div>
+    </div>
+    <div class="takeaway" id="c5Takeaway"></div>
+    <div class="legend" id="c5Legend"></div>
+    <div class="chart-wrap" id="c5Chart"></div>
+    <details id="c5Details">
+      <summary>Top 15 non-<code>@[simp]</code> hub modules by import fan-in</summary>
+      <div id="c5Table"></div>
+    </details>
+  </section>
+
+  <!-- Card 6 -->
+  <section class="card" id="card6">
+    <div class="card-head">
+      <div>
+        <h2>6. Declaration Taxonomy &amp; Top-to-Bottom File Order</h2>
+        <p class="card-sub">How declarations distribute across file quintiles (top-down build order), public vs. <code>private</code> visibility, and module granularity.</p>
+      </div>
+      <div class="controls" id="c6Tabs"></div>
+    </div>
+    <div class="takeaway" id="c6Takeaway"></div>
+    <div class="legend" id="c6Legend"></div>
+    <div class="chart-wrap" id="c6Chart"></div>
+  </section>
+</main>
+
+<footer>
+  Generated deterministically by <a href="build_histograms.py">build_histograms.py</a> from <code>lean/src/</code> and <code>analysis/data/graph.sqlite</code>.
+</footer>
+
+<div class="tooltip" id="tooltip"></div>
+
+<script src="histograms_data.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  const DATA = window.__HISTOGRAMS_DATA__;
+  if (!DATA) {
+    document.body.innerHTML = "<p style='padding:24px'>Missing histograms_data.js. Run <code>python3 analysis/codebase_histograms/build_histograms.py</code>.</p>";
+    return;
+  }
+
+  const TIER_COLORS = {
+    core_algebra: "#334155",
+    number_local_fields: "#0056b3",
+    comm_alg_geom: "#0d9488",
+    analysis_topology_measure: "#b45309",
+    finiteness_logic: "#64748b",
+    other: "#9333ea"
+  };
+
+  const STRATEGY_COLORS = {
+    conceptual: "#0056b3",
+    solver: "#b45309",
+    plumbing: "#64748b"
+  };
+
+  const QUINTILE_COLORS = {
+    public_theorem: "#0056b3",
+    def_abbrev: "#0d9488",
+    private_thm_lem: "#b45309",
+    public_lemma: "#6366f1",
+    struct_class_ind: "#64748b"
+  };
+
+  const VIS_COLORS = {
+    public: "#1e40af",
+    private: "#b45309",
+    protected: "#0d9488"
+  };
+
+  const state = {
+    domain: "ALL",
+    c1Tab: "proof_shapes",
+    c2Tab: "top_all",
+    c3Filter: "conceptual_solver",
+    c3Metric: "proof_count",
+    c4Tab: "equivalences",
+    c5Tab: "in_degree",
+    c5Scale: "log",
+    c6Tab: "file_order"
+  };
+
+  const tooltipEl = document.getElementById("tooltip");
+
+  function fmt(n) {
+    return Number(n || 0).toLocaleString("en-US");
+  }
+
+  function pct(part, total) {
+    if (!total) return "0.0%";
+    const v = (100 * part) / total;
+    return (v >= 10 || v === 0 ? v.toFixed(1) : v.toFixed(2)) + "%";
+  }
+
+  function esc(s) {
+    return String(s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function trunc(s, maxLen) {
+    return s.length > maxLen ? s.slice(0, maxLen - 1) + "…" : s;
+  }
+
+  function showTip(evt, title, lines) {
+    const html = ['<div class="tt-title">' + esc(title) + "</div>"];
+    for (const ln of lines) {
+      html.push('<div class="tt-mono">' + esc(ln) + "</div>");
+    }
+    tooltipEl.innerHTML = html.join("");
+    tooltipEl.style.display = "block";
+    moveTip(evt);
+  }
+
+  function moveTip(evt) {
+    const pad = 14;
+    let x = evt.clientX + pad;
+    let y = evt.clientY + pad;
+    const rect = tooltipEl.getBoundingClientRect();
+    if (x + rect.width > window.innerWidth - 8) x = Math.max(8, evt.clientX - rect.width - pad);
+    if (y + rect.height > window.innerHeight - 8) y = Math.max(8, evt.clientY - rect.height - pad);
+    tooltipEl.style.left = x + "px";
+    tooltipEl.style.top = y + "px";
+  }
+
+  function hideTip() {
+    tooltipEl.style.display = "none";
+  }
+
+  function bindSvgTooltips(container) {
+    const nodes = container.querySelectorAll("[data-tip-title]");
+    for (const el of nodes) {
+      el.addEventListener("mouseenter", (e) => {
+        const title = el.getAttribute("data-tip-title") || "";
+        const raw = el.getAttribute("data-tip-lines") || "";
+        showTip(e, title, raw ? raw.split("||") : []);
+      });
+      el.addEventListener("mousemove", moveTip);
+      el.addEventListener("mouseleave", hideTip);
+    }
+  }
+
+  function makeTabs(containerId, items, activeKey, onSelect, extraSepIdx) {
+    const el = document.getElementById(containerId);
+    el.innerHTML = "";
+    items.forEach((it, idx) => {
+      if (extraSepIdx !== undefined && idx === extraSepIdx) {
+        const sep = document.createElement("span");
+        sep.className = "ctrl-sep";
+        el.appendChild(sep);
+      }
+      if (it.isToggle) {
+        const btn = document.createElement("button");
+        btn.className = "tab-btn" + (it.active ? " active" : "");
+        btn.textContent = it.label;
+        btn.addEventListener("click", () => it.onClick());
+        el.appendChild(btn);
+      } else {
+        const btn = document.createElement("button");
+        btn.className = "tab-btn" + (it.key === activeKey ? " active" : "");
+        btn.textContent = it.label;
+        btn.addEventListener("click", () => onSelect(it.key));
+        el.appendChild(btn);
+      }
+    });
+  }
+
+  function renderHorizBars(container, rows, opts) {
+    if (!rows || rows.length === 0 || rows.every((r) => r.value === 0)) {
+      container.innerHTML = '<div class="empty-note">No items recorded in this category for the selected domain.</div>';
+      return;
+    }
+    const width = 920;
+    const labelW = opts.labelW || 255;
+    const rightW = opts.rightW || 140;
+    const plotW = width - labelW - rightW;
+    const rowH = opts.rowH || 24;
+    const topPad = 10;
+    const botPad = 10;
+    const height = topPad + botPad + rows.length * rowH;
+    const maxVal = Math.max(1, ...rows.map((r) => r.value));
+    const denom = opts.denom || rows.reduce((a, b) => a + b.value, 0) || 1;
+
+    const parts = [
+      `<svg class="chart" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">`
+    ];
+    // Subtle vertical grid lines
+    for (let g = 1; g <= 4; g++) {
+      const gx = labelW + (plotW * g) / 4;
+      parts.push(`<line x1="${gx}" y1="${topPad}" x2="${gx}" y2="${height - botPad}" stroke="#f0f0f0" stroke-width="1"/>`);
+    }
+    parts.push(`<line x1="${labelW}" y1="${topPad}" x2="${labelW}" y2="${height - botPad}" stroke="#bbbbbb" stroke-width="1"/>`);
+
+    rows.forEach((r, idx) => {
+      const y = topPad + idx * rowH;
+      const bw = r.value > 0 ? Math.max(2, (r.value / maxVal) * plotW) : 0;
+      const color = r.color || "#0056b3";
+      const tipLines = r.tipLines || [
+        `${fmt(r.value)} (${pct(r.value, denom)})`
+      ];
+      parts.push(`<g class="bar-hover" data-tip-title="${esc(r.fullLabel || r.label)}" data-tip-lines="${esc(tipLines.join("||"))}">`);
+      parts.push(`<rect x="0" y="${y}" width="${width}" height="${rowH}" fill="transparent"/>`);
+      parts.push(
+        `<text x="${labelW - 8}" y="${y + rowH * 0.68}" text-anchor="end" font-size="12" fill="#222222">${esc(trunc(r.label, opts.maxLabelChars || 36))}</text>`
+      );
+      if (r.segments && r.segments.length > 0) {
+        let sx = labelW;
+        const rowSum = r.segments.reduce((a, s) => a + s.value, 0) || 1;
+        const totalBw = (r.value / maxVal) * plotW;
+        for (const seg of r.segments) {
+          const sw = seg.value > 0 ? Math.max(1, (seg.value / rowSum) * totalBw) : 0;
+          if (sw > 0) {
+            parts.push(`<rect x="${sx}" y="${y + 4}" width="${sw}" height="${rowH - 8}" fill="${seg.color}"/>`);
+            sx += sw;
+          }
+        }
+      } else {
+        parts.push(`<rect x="${labelW}" y="${y + 4}" width="${bw}" height="${rowH - 8}" fill="${color}"/>`);
+      }
+      const statStr = opts.hidePct
+        ? fmt(r.value)
+        : `${fmt(r.value)} (${pct(r.value, denom)})`;
+      parts.push(
+        `<text x="${labelW + plotW + 8}" y="${y + rowH * 0.68}" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#333333">${esc(statStr)}</text>`
+      );
+      parts.push("</g>");
+    });
+    parts.push("</svg>");
+    container.innerHTML = parts.join("");
+    bindSvgTooltips(container);
+  }
+
+  function renderVertBars(container, cols, opts) {
+    if (!cols || cols.length === 0) {
+      container.innerHTML = '<div class="empty-note">No data for this selection.</div>';
+      return;
+    }
+    const width = 920;
+    const height = opts.height || 260;
+    const padL = 62;
+    const padR = 20;
+    const padT = 22;
+    const padB = 48;
+    const plotW = width - padL - padR;
+    const plotH = height - padT - padB;
+    const useLog = opts.scale === "log";
+
+    const totals = cols.map((c) => c.total !== undefined ? c.total : c.value);
+    const maxVal = Math.max(1, ...totals);
+    const maxLog = Math.log10(maxVal + 1);
+    const grandTotal = totals.reduce((a, b) => a + b, 0) || 1;
+
+    function yPos(val) {
+      if (val <= 0) return padT + plotH;
+      if (useLog) {
+        return padT + plotH - (Math.log10(val + 1) / Math.max(1e-9, maxLog)) * plotH;
+      }
+      return padT + plotH - (val / maxVal) * plotH;
+    }
+
+    const parts = [
+      `<svg class="chart" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">`
+    ];
+
+    // Grid lines
+    if (useLog) {
+      const maxPow = Math.ceil(maxLog);
+      for (let p = 0; p <= maxPow; p++) {
+        const v = Math.pow(10, p) - 1;
+        const val = p === 0 ? 0 : Math.pow(10, p);
+        if (val > maxVal * 1.2 && p > 0) continue;
+        const gy = yPos(val);
+        parts.push(`<line x1="${padL}" y1="${gy}" x2="${width - padR}" y2="${gy}" stroke="#eeeeee" stroke-width="1"/>`);
+        parts.push(
+          `<text x="${padL - 8}" y="${gy + 4}" text-anchor="end" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#555555">${p === 0 ? "0" : fmt(val)}</text>`
+        );
+      }
+    } else {
+      for (let g = 0; g <= 4; g++) {
+        const val = Math.round((maxVal * g) / 4);
+        const gy = yPos(val);
+        parts.push(`<line x1="${padL}" y1="${gy}" x2="${width - padR}" y2="${gy}" stroke="#eeeeee" stroke-width="1"/>`);
+        parts.push(
+          `<text x="${padL - 8}" y="${gy + 4}" text-anchor="end" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#555555">${fmt(val)}</text>`
+        );
+      }
+    }
+
+    parts.push(`<line x1="${padL}" y1="${padT}" x2="${padL}" y2="${padT + plotH}" stroke="#bbbbbb" stroke-width="1"/>`);
+    parts.push(`<line x1="${padL}" y1="${padT + plotH}" x2="${width - padR}" y2="${padT + plotH}" stroke="#bbbbbb" stroke-width="1"/>`);
+
+    const slotW = plotW / cols.length;
+    const barW = Math.min(64, slotW * 0.66);
+
+    cols.forEach((c, idx) => {
+      const total = c.total !== undefined ? c.total : c.value;
+      const cx = padL + idx * slotW + slotW / 2;
+      const bx = cx - barW / 2;
+      const topY = yPos(total);
+      const bh = padT + plotH - topY;
+      const tipLines = c.tipLines || [`Count: ${fmt(total)} (${pct(total, grandTotal)})`];
+
+      parts.push(`<g class="bar-hover" data-tip-title="${esc(c.tipTitle || c.label)}" data-tip-lines="${esc(tipLines.join("||"))}">`);
+      if (c.segments && total > 0) {
+        // Proportional split of total bar height so log & linear stacked heights stay intuitive
+        let curBottom = padT + plotH;
+        for (let si = 0; si < c.segments.length; si++) {
+          const seg = c.segments[si];
+          if (seg.value <= 0) continue;
+          const sh = (seg.value / total) * bh;
+          const sy = curBottom - sh;
+          parts.push(`<rect x="${bx}" y="${sy}" width="${barW}" height="${sh}" fill="${seg.color}"/>`);
+          curBottom = sy;
+        }
+      } else if (total > 0) {
+        parts.push(`<rect x="${bx}" y="${topY}" width="${barW}" height="${bh}" fill="${c.color || "#0056b3"}"/>`);
+      }
+
+      parts.push(
+        `<text x="${cx}" y="${Math.max(12, topY - 4)}" text-anchor="middle" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#333333">${fmt(total)}</text>`
+      );
+      parts.push(
+        `<text x="${cx}" y="${padT + plotH + 17}" text-anchor="middle" font-size="11.5" fill="#222222">${esc(c.label)}</text>`
+      );
+      parts.push(
+        `<text x="${cx}" y="${padT + plotH + 32}" text-anchor="middle" font-size="10" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#666666">${esc(pct(total, grandTotal))}</text>`
+      );
+      parts.push("</g>");
+    });
+    parts.push("</svg>");
+    container.innerHTML = parts.join("");
+    bindSvgTooltips(container);
+  }
+
+  function renderStackedPercentCols(container, cols, groupsMeta) {
+    if (!cols || cols.length === 0 || cols.every((c) => c.total === 0)) {
+      container.innerHTML = '<div class="empty-note">Not enough multi-declaration files in this domain.</div>';
+      return;
+    }
+    const width = 920;
+    const height = 270;
+    const padL = 52;
+    const padR = 20;
+    const padT = 18;
+    const padB = 46;
+    const plotW = width - padL - padR;
+    const plotH = height - padT - padB;
+
+    const parts = [
+      `<svg class="chart" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">`
+    ];
+    for (let p = 0; p <= 100; p += 25) {
+      const gy = padT + plotH - (p / 100) * plotH;
+      parts.push(`<line x1="${padL}" y1="${gy}" x2="${width - padR}" y2="${gy}" stroke="#eeeeee" stroke-width="1"/>`);
+      parts.push(
+        `<text x="${padL - 8}" y="${gy + 4}" text-anchor="end" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#555555">${p}%</text>`
+      );
+    }
+    parts.push(`<line x1="${padL}" y1="${padT}" x2="${padL}" y2="${padT + plotH}" stroke="#bbbbbb" stroke-width="1"/>`);
+    parts.push(`<line x1="${padL}" y1="${padT + plotH}" x2="${width - padR}" y2="${padT + plotH}" stroke="#bbbbbb" stroke-width="1"/>`);
+
+    const slotW = plotW / cols.length;
+    const barW = Math.min(76, slotW * 0.64);
+
+    cols.forEach((col, idx) => {
+      if (col.sepBefore) {
+        const sx = padL + idx * slotW;
+        parts.push(`<line x1="${sx}" y1="${padT}" x2="${sx}" y2="${padT + plotH + 34}" stroke="#999999" stroke-dasharray="4 3" stroke-width="1"/>`);
+      }
+      const cx = padL + idx * slotW + slotW / 2;
+      const bx = cx - barW / 2;
+      const tot = col.total || 1;
+      const tipLines = groupsMeta.map(
+        (g) => `${g.label}: ${fmt(col.counts[g.key] || 0)} (${pct(col.counts[g.key] || 0, col.total)})`
+      );
+      tipLines.push(`Total: ${fmt(col.total)}`);
+
+      parts.push(`<g class="bar-hover" data-tip-title="${esc(col.label)}" data-tip-lines="${esc(tipLines.join("||"))}">`);
+      let curBottom = padT + plotH;
+      for (const g of groupsMeta) {
+        const val = col.counts[g.key] || 0;
+        if (val <= 0) continue;
+        const sh = (val / tot) * plotH;
+        const sy = curBottom - sh;
+        parts.push(`<rect x="${bx}" y="${sy}" width="${barW}" height="${sh}" fill="${QUINTILE_COLORS[g.key] || "#666"}"/>`);
+        if (sh >= 16) {
+          parts.push(
+            `<text x="${cx}" y="${sy + sh / 2 + 4}" text-anchor="middle" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#ffffff">${Math.round((100 * val) / tot)}%</text>`
+          );
+        }
+        curBottom = sy;
+      }
+      parts.push(`<text x="${cx}" y="${padT + plotH + 17}" text-anchor="middle" font-size="11.5" font-weight="${col.sepBefore ? "700" : "400"}" fill="#222222">${esc(col.label)}</text>`);
+      parts.push(`<text x="${cx}" y="${padT + plotH + 32}" text-anchor="middle" font-size="10" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#666666">n=${fmt(col.total)}</text>`);
+      parts.push("</g>");
+    });
+
+    parts.push("</svg>");
+    container.innerHTML = parts.join("");
+    bindSvgTooltips(container);
+  }
+
+  function renderDomainBar() {
+    const bar = document.getElementById("domainBar");
+    bar.innerHTML = '<span class="domain-label">Domain filter:</span>';
+    for (const d of DATA.domains) {
+      const btn = document.createElement("button");
+      btn.className = "pill-btn" + (d.key === state.domain ? " active" : "");
+      btn.textContent = d.key === "ALL" ? `All domains (${fmt(d.modules)})` : `${d.label} (${fmt(d.modules)})`;
+      btn.addEventListener("click", () => {
+        state.domain = d.key;
+        renderAll();
+      });
+      bar.appendChild(btn);
+    }
+  }
+
+  function renderKpis(dom) {
+    const s = dom.summary;
+    const simpPct = pct(s.simp_modules, s.modules);
+    const thmPct = pct(s.theorems_lemmas, s.declarations);
+    const attrPct = pct(s.attr_tagged_decls, s.declarations);
+    const kpis = [
+      {
+        label: "Modules",
+        val: fmt(s.modules),
+        sub: `${fmt(s.non_simp_modules)} non-@[simp] · ${fmt(s.simp_modules)} with @[simp] (${simpPct})`
+      },
+      {
+        label: "Declarations",
+        val: fmt(s.declarations),
+        sub: `${fmt(s.theorems_lemmas)} theorems/lemmas (${thmPct})`
+      },
+      {
+        label: "Attribute-Tagged Decls",
+        val: fmt(s.attr_tagged_decls),
+        sub: `${attrPct} of decls · ${fmt(s.file_directives)} attribute directives`
+      },
+      {
+        label: "Docstrings (/-!, /--)",
+        val: `${fmt(s.doc_module_files)} / ${fmt(s.doc_decl_count)}`,
+        sub: `${fmt(s.blueprint_tags)} @[blueprint] · ${fmt(s.line_comments)} line comments`
+      }
+    ];
+    document.getElementById("kpiGrid").innerHTML = kpis
+      .map(
+        (k) =>
+          `<div class="kpi"><div class="kpi-label">${esc(k.label)}</div><div class="kpi-val">${esc(k.val)}</div><div class="kpi-sub">${esc(k.sub)}</div></div>`
+      )
+      .join("");
+  }
+
+  function renderCard1(dom) {
+    makeTabs(
+      "c1Tabs",
+      [
+        { key: "proof_shapes", label: "Proof-Shape & Glue" },
+        { key: "decl_attrs", label: "Declaration Tags @[…]" },
+        { key: "file_directives", label: "File Directives (attribute […])" }
+      ],
+      state.c1Tab,
+      (k) => {
+        state.c1Tab = k;
+        renderCard1(dom);
+      }
+    );
+
+    const s = dom.summary;
+    const chartEl = document.getElementById("c1Chart");
+    const takeawayEl = document.getElementById("c1Takeaway");
+    const shapes = dom.proof_shapes;
+    const shapeMap = Object.fromEntries(shapes.map((r) => [r.key, r.count]));
+    const glueCount =
+      (shapeMap.wrapper_forwarding || 0) +
+      (shapeMap.oneliner_mech || 0) +
+      (shapeMap.oneliner_solver || 0) +
+      (shapeMap.oneliner_other || 0);
+    const mediumPlus =
+      (shapeMap.medium_6_20 || 0) +
+      (shapeMap.long_21_50 || 0) +
+      (shapeMap.deep_51_plus || 0);
+
+    if (state.c1Tab === "proof_shapes") {
+      takeawayEl.innerHTML =
+        `Out of <strong>${fmt(s.theorems_lemmas)}</strong> theorem/lemma proofs: ` +
+        `<strong>${fmt(glueCount)}</strong> (${pct(glueCount, s.theorems_lemmas)}) are wrappers or 1-line tactics, ` +
+        `<strong>${fmt(shapeMap.term_mode || 0)}</strong> (${pct(shapeMap.term_mode || 0, s.theorems_lemmas)}) are term-mode, ` +
+        `and <strong>${fmt(mediumPlus)}</strong> (${pct(mediumPlus, s.theorems_lemmas)}) are multi-step proofs of 6+ tactic lines.`;
+      const colors = {
+        wrapper_forwarding: "#64748b",
+        oneliner_mech: "#475569",
+        oneliner_solver: "#b45309",
+        oneliner_other: "#94a3b8",
+        term_mode: "#0d9488",
+        short_2_5: "#3b82f6",
+        medium_6_20: "#0056b3",
+        long_21_50: "#1e40af",
+        deep_51_plus: "#172554"
+      };
+      renderHorizBars(
+        chartEl,
+        shapes.map((r) => ({
+          label: r.label,
+          value: r.count,
+          color: colors[r.key] || "#0056b3"
+        })),
+        { denom: s.theorems_lemmas || 1, labelW: 290, maxLabelChars: 42 }
+      );
+    } else if (state.c1Tab === "decl_attrs") {
+      const simpCnt = (dom.decl_attrs.find((x) => x.tag === "simp") || { count: 0 }).count;
+      takeawayEl.innerHTML =
+        `Only <strong>${fmt(s.attr_tagged_decls)}</strong> declarations (<strong>${pct(s.attr_tagged_decls, s.declarations)}</strong>) carry inline/preceding <code>@[…]</code> tags ` +
+        `(<strong>${fmt(simpCnt)}</strong> <code>@[simp]</code>; <code>@[norm_cast]</code> and <code>@[aesop]</code> appear <code>0</code> times in this repo).`;
+      renderHorizBars(
+        chartEl,
+        dom.decl_attrs.slice(0, 16).map((r) => ({
+          label: `@[${r.tag}]`,
+          value: r.count,
+          color: r.tag === "simp" ? "#b45309" : "#0056b3",
+          tipLines: [`Tag occurrences: ${fmt(r.count)}`, `Share of all declarations: ${pct(r.count, s.declarations)}`]
+        })),
+        { denom: s.attr_occurrences || 1, labelW: 210, hidePct: false }
+      );
+    } else {
+      takeawayEl.innerHTML =
+        `Instead of declaration-level <code>@[simp]</code>, this codebase relies heavily on <strong>${fmt(s.file_directives)}</strong> file-scoped <code>attribute […]</code> directives (dominantly <code>local instance</code>) to activate typeclasses per file.`;
+      renderHorizBars(
+        chartEl,
+        dom.file_directives.map((r) => ({
+          label: `attribute [${r.directive}]`,
+          value: r.count,
+          color: r.directive === "local instance" ? "#0056b3" : "#475569"
+        })),
+        { denom: s.file_directives || 1, labelW: 270, maxLabelChars: 38 }
+      );
+    }
+
+    // Details table: local instances + set_options
+    const instRows = dom.local_instance_targets || [];
+    const optRows = dom.set_options || [];
+    let html = '<div class="table-wrap">';
+    if (instRows.length > 0) {
+      html += "<table><thead><tr><th>Top <code>attribute [local instance]</code> Target</th><th class='num'>Files / Uses</th></tr></thead><tbody>";
+      for (const r of instRows.slice(0, 10)) {
+        html += `<tr><td><code>${esc(r.target)}</code></td><td class="num">${fmt(r.count)}</td></tr>`;
+      }
+      html += "</tbody></table>";
+    } else {
+      html += "<p>No <code>attribute [local instance]</code> directives in this domain.</p>";
+    }
+    if (optRows.length > 0) {
+      html += "<table style='margin-top:10px'><thead><tr><th>Top <code>set_option</code></th><th class='num'>Occurrences</th></tr></thead><tbody>";
+      for (const r of optRows.slice(0, 8)) {
+        html += `<tr><td><code>${esc(r.option)}</code></td><td class="num">${fmt(r.count)}</td></tr>`;
+      }
+      html += "</tbody></table>";
+    }
+    html += "</div>";
+    document.getElementById("c1Table").innerHTML = html;
+  }
+
+  function renderCard2(dom) {
+    makeTabs(
+      "c2Tabs",
+      [
+        { key: "top_all", label: "Top 20 Typeclasses" },
+        { key: "top_strong", label: "Stronger Hypotheses Only" }
+      ],
+      state.c2Tab,
+      (k) => {
+        state.c2Tab = k;
+        renderCard2(dom);
+      }
+    );
+
+    const tierMeta = DATA.meta.tier_meta;
+    const tierTotalsMap = Object.fromEntries(dom.typeclasses.tier_totals.map((t) => [t.tier, t.count]));
+    const totalTc = dom.typeclasses.tier_totals.reduce((a, b) => a + b.count, 0) || 1;
+    document.getElementById("c2Legend").innerHTML = tierMeta
+      .map(
+        (t) =>
+          `<span class="legend-item"><span class="swatch" style="background:${TIER_COLORS[t.key]}"></span>${esc(t.label)} (${pct(tierTotalsMap[t.key] || 0, totalTc)})</span>`
+      )
+      .join("");
+
+    const list = (state.c2Tab === "top_all" ? dom.typeclasses.top_all : dom.typeclasses.top_strong).slice(0, 20);
+    const tierLblMap = Object.fromEntries(tierMeta.map((t) => [t.key, t.label]));
+    const topStrong = dom.typeclasses.top_strong.slice(0, 3).map((x) => `<code>${esc(x.name)}</code>`).join(", ");
+
+    document.getElementById("c2Takeaway").innerHTML =
+      state.c2Tab === "top_all"
+        ? `Extracted strictly from declaration signatures &amp; <code>variable</code> lines (${fmt(totalTc)} binder occurrences). Baseline algebra (<code>Field</code>, <code>CommRing</code>, <code>Algebra</code>) dominates volume, while specialized hypotheses (${topStrong || "none"}) mark domain-specific arithmetic/geometric entry points.`
+        : `Excluding baseline typeclasses (<code>Field</code>, <code>CommRing</code>, <code>Algebra</code>, <code>Fintype</code>, <code>TopologicalSpace</code>, …) exposes where heavier mathematical hypotheses enter: ${topStrong || "none"}.`;
+
+    renderHorizBars(
+      document.getElementById("c2Chart"),
+      list.map((r) => ({
+        label: r.name,
+        value: r.count,
+        color: TIER_COLORS[r.tier] || "#666666",
+        tipLines: [
+          `Tier: ${tierLblMap[r.tier] || r.tier}`,
+          `Signature binder occurrences: ${fmt(r.count)} (${pct(r.count, totalTc)})`
+        ]
+      })),
+      { denom: totalTc, labelW: 250, maxLabelChars: 34 }
+    );
+  }
+
+  function renderCard3(dom) {
+    const filterItems = [
+      { key: "conceptual_solver", label: "Conceptual + Solvers" },
+      { key: "conceptual", label: "Conceptual Moves" },
+      { key: "solver", label: "Solvers Only" },
+      { key: "plumbing", label: "Direct Rewriting" },
+      {
+        isToggle: true,
+        label: state.c3Metric === "proof_count" ? "Metric: Proofs using (%)" : "Metric: Total invocations",
+        active: state.c3Metric === "total_count",
+        onClick: () => {
+          state.c3Metric = state.c3Metric === "proof_count" ? "total_count" : "proof_count";
+          renderCard3(dom);
+        }
+      }
+    ];
+    makeTabs(
+      "c3Tabs",
+      filterItems,
+      state.c3Filter,
+      (k) => {
+        state.c3Filter = k;
+        renderCard3(dom);
+      },
+      4
+    );
+
+    const groups = DATA.meta.strategy_groups;
+    document.getElementById("c3Legend").innerHTML = groups
+      .map(
+        (g) =>
+          `<span class="legend-item"><span class="swatch" style="background:${STRATEGY_COLORS[g.key]}"></span>${esc(g.label)}</span>`
+      )
+      .join("");
+
+    let rows = dom.proof_strategies.slice();
+    if (state.c3Filter === "conceptual_solver") {
+      rows = rows.filter((r) => r.group === "conceptual" || r.group === "solver");
+    } else {
+      rows = rows.filter((r) => r.group === state.c3Filter);
+    }
+
+    const metric = state.c3Metric;
+    rows.sort((a, b) => b[metric] - a[metric]);
+    rows = rows.slice(0, 20);
+
+    const tacTotal = dom.summary.tactic_proofs || 1;
+    const haveRow = dom.proof_strategies.find((r) => r.key === "have") || { proof_count: 0, total_count: 0 };
+    const indRow = dom.proof_strategies.find((r) => r.key === "induction") || { proof_count: 0, total_count: 0 };
+    const contraRow = dom.proof_strategies.find((r) => r.key === "by_contra") || { proof_count: 0, total_count: 0 };
+
+    document.getElementById("c3Takeaway").innerHTML =
+      `Across <strong>${fmt(dom.summary.tactic_proofs)}</strong> tactic proofs: ` +
+      `<code>have</code> appears in <strong>${pct(haveRow.proof_count, tacTotal)}</strong> of tactic proofs (${fmt(haveRow.total_count)} uses), ` +
+      `while rarer structural moves like <code>induction</code> (${fmt(indRow.proof_count)} proofs, ${pct(indRow.proof_count, tacTotal)}) ` +
+      `and <code>by_contra</code>/${"…"} (${fmt(contraRow.proof_count)} proofs, ${pct(contraRow.proof_count, tacTotal)}) pinpoint non-routine steps.`;
+
+    const denom = metric === "proof_count" ? tacTotal : rows.reduce((a, r) => a + r.total_count, 0) || 1;
+    renderHorizBars(
+      document.getElementById("c3Chart"),
+      rows.map((r) => ({
+        label: r.label,
+        value: r[metric],
+        color: STRATEGY_COLORS[r.group] || "#0056b3",
+        tipLines: [
+          `Proofs using move: ${fmt(r.proof_count)} (${pct(r.proof_count, tacTotal)} of tactic proofs)`,
+          `Total occurrences: ${fmt(r.total_count)}`
+        ]
+      })),
+      { denom, labelW: 280, maxLabelChars: 40 }
+    );
+  }
+
+  function renderCard4(dom) {
+    makeTabs(
+      "c4Tabs",
+      [
+        { key: "equivalences", label: "Equivalence Constructors" },
+        { key: "cross_subtheory", label: "Cross-Subtheory Imports" },
+        { key: "open_namespaces", label: "Open Namespaces / File" }
+      ],
+      state.c4Tab,
+      (k) => {
+        state.c4Tab = k;
+        renderCard4(dom);
+      }
+    );
+
+    const chartEl = document.getElementById("c4Chart");
+    const takeawayEl = document.getElementById("c4Takeaway");
+
+    if (state.c4Tab === "equivalences") {
+      const totEq = dom.equivalences.reduce((a, r) => a + r.decl_count, 0);
+      const bundled = dom.equivalences
+        .filter((r) => r.symbol !== "↔")
+        .reduce((a, r) => a + r.decl_count, 0);
+      takeawayEl.innerHTML =
+        `Signature-only longest-match scan finds <strong>${fmt(totEq)}</strong> equivalence-bearing declaration signatures ` +
+        `(<strong>${fmt(bundled)}</strong> bundled algebraic/topological/categorical equivalences beyond logical <code>↔</code>), marking abstraction-bridge theorems and definitions.`;
+      renderHorizBars(
+        chartEl,
+        dom.equivalences.map((r) => ({
+          label: r.label,
+          value: r.decl_count,
+          color: r.symbol === "↔" ? "#64748b" : "#0d9488",
+          tipLines: [
+            `Declarations mentioning ${r.symbol}: ${fmt(r.decl_count)}`,
+            `Total signature occurrences: ${fmt(r.total_count)}`
+          ]
+        })),
+        { denom: dom.summary.declarations || 1, labelW: 250 }
+      );
+    } else if (state.c4Tab === "cross_subtheory") {
+      const multi = dom.cross_subtheory_imports
+        .filter((r) => r.bucket !== "0 (leaf)" && r.bucket !== "1")
+        .reduce((a, r) => a + r.count, 0);
+      takeawayEl.innerHTML =
+        `<strong>${fmt(multi)}</strong> modules (${pct(multi, dom.summary.modules)}) import from <strong>2+</strong> distinct <code>depth-2</code> sub-theories directly, bridging separate mathematical modules.`;
+      renderVertBars(
+        chartEl,
+        dom.cross_subtheory_imports.map((r) => ({
+          label: r.bucket,
+          value: r.count,
+          color: "#0056b3",
+          tipTitle: `Distinct depth-2 sub-theories imported: ${r.bucket}`,
+          tipLines: [`Modules: ${fmt(r.count)} (${pct(r.count, dom.summary.modules)})`]
+        })),
+        { scale: "linear" }
+      );
+    } else {
+      const heavyOpen = dom.open_namespaces.buckets
+        .filter((r) => r.bucket === "5-7" || r.bucket === "8-10" || r.bucket === "11+")
+        .reduce((a, r) => a + r.count, 0);
+      takeawayEl.innerHTML =
+        `<strong>${fmt(heavyOpen)}</strong> modules (${pct(heavyOpen, dom.summary.modules)}) open <strong>5+</strong> distinct root namespaces simultaneously, reflecting multi-domain synthesis files.`;
+      renderVertBars(
+        chartEl,
+        dom.open_namespaces.buckets.map((r) => ({
+          label: r.bucket,
+          value: r.count,
+          color: "#0d9488",
+          tipTitle: `Distinct opened root namespaces: ${r.bucket}`,
+          tipLines: [`Modules: ${fmt(r.count)} (${pct(r.count, dom.summary.modules)})`]
+        })),
+        { scale: "linear" }
+      );
+    }
+
+    // Details table: top open roots + cross-domain breadth
+    const openTop = dom.open_namespaces.top_roots || [];
+    const domBreadth = dom.cross_domain_imports || [];
+    let html = '<div class="table-wrap">';
+    if (openTop.length > 0) {
+      html += "<table><thead><tr><th>Top Opened Root Namespace</th><th class='num'>Files Opening</th><th class='num'>Share</th></tr></thead><tbody>";
+      for (const r of openTop.slice(0, 12)) {
+        html += `<tr><td><code>${esc(r.namespace)}</code></td><td class="num">${fmt(r.count)}</td><td class="num">${pct(r.count, dom.summary.modules)}</td></tr>`;
+      }
+      html += "</tbody></table>";
+    }
+    html += "<table style='margin-top:10px'><thead><tr><th>Distinct Top-Level Domains Imported</th><th class='num'>Modules</th><th class='num'>Share</th></tr></thead><tbody>";
+    for (const r of domBreadth) {
+      html += `<tr><td>${esc(r.bucket)}</td><td class="num">${fmt(r.count)}</td><td class="num">${pct(r.count, dom.summary.modules)}</td></tr>`;
+    }
+    html += "</tbody></table></div>";
+    document.getElementById("c4Table").innerHTML = html;
+  }
+
+  function renderCard5(dom) {
+    makeTabs(
+      "c5Tabs",
+      [
+        { key: "in_degree", label: "Module Import Fan-In (in_degree)" },
+        { key: "cross_subtheory", label: "Cross-Subtheory Fan-In" },
+        {
+          isToggle: true,
+          label: state.c5Scale === "log" ? "Scale: Log₁₀" : "Scale: Linear",
+          active: state.c5Scale === "log",
+          onClick: () => {
+            state.c5Scale = state.c5Scale === "log" ? "linear" : "log";
+            renderCard5(dom);
+          }
+        }
+      ],
+      state.c5Tab,
+      (k) => {
+        state.c5Tab = k;
+        renderCard5(dom);
+      },
+      2
+    );
+
+    document.getElementById("c5Legend").innerHTML =
+      `<span class="legend-item"><span class="swatch" style="background:#0056b3"></span>Non-<code>@[simp]</code> modules (${fmt(dom.summary.non_simp_modules)})</span>` +
+      `<span class="legend-item"><span class="swatch" style="background:#b45309"></span><code>@[simp]</code>-bearing modules (${fmt(dom.summary.simp_modules)})</span>`;
+
+    const rows = state.c5Tab === "in_degree" ? dom.fan_in.in_degree : dom.fan_in.cross_subtheory;
+    const highHubs = dom.fan_in.in_degree
+      .filter((r) => r.bucket === "26-100" || r.bucket === "101-500" || r.bucket === "500+")
+      .reduce((a, r) => a + r.non_simp, 0);
+    const singleImporter = (dom.fan_in.in_degree.find((r) => r.bucket === "1") || { total: 0 }).total;
+
+    document.getElementById("c5Takeaway").innerHTML =
+      state.c5Tab === "in_degree"
+        ? `<strong>${fmt(singleImporter)}</strong> modules (${pct(singleImporter, dom.summary.modules)}) have <code>in_degree = 1</code>, whereas only <strong>${fmt(highHubs)}</strong> non-<code>@[simp]</code> modules reach <code>in_degree &ge; 26</code>—pinpointing the core structural hubs.`
+        : `Counting distinct <code>depth-2</code> sub-theories importing each module highlights cross-cutting contracts used across many independent theory branches.`;
+
+    renderVertBars(
+      document.getElementById("c5Chart"),
+      rows.map((r) => ({
+        label: r.bucket,
+        total: r.total,
+        tipTitle: `${state.c5Tab === "in_degree" ? "Module import in-degree" : "Distinct importer sub-theories"}: ${r.bucket}`,
+        tipLines: [
+          `Total modules: ${fmt(r.total)} (${pct(r.total, dom.summary.modules)})`,
+          `Non-@[simp]: ${fmt(r.non_simp)}`,
+          `With @[simp]: ${fmt(r.simp)}`
+        ],
+        segments: [
+          { value: r.non_simp, color: "#0056b3" },
+          { value: r.simp, color: "#b45309" }
+        ]
+      })),
+      { scale: state.c5Scale }
+    );
+
+    const hubs = dom.fan_in.top_non_simp_hubs || [];
+    let html = '<div class="table-wrap"><table><thead><tr><th>Module</th><th>Sub-theory</th><th class="num">in_degree</th><th class="num">Importer sub-theories</th><th class="num">Thm/Lem</th><th class="num">Def/Struct</th></tr></thead><tbody>';
+    for (const h of hubs) {
+      html += `<tr><td><code>${esc(h.name)}</code></td><td><code>${esc(h.depth2_dir)}</code></td><td class="num">${fmt(h.in_degree)}</td><td class="num">${fmt(h.cross_subtheory_importers)}</td><td class="num">${fmt(h.n_theorems_lemmas)}</td><td class="num">${fmt(h.n_defs_structs)}</td></tr>`;
+    }
+    html += "</tbody></table></div>";
+    document.getElementById("c5Table").innerHTML = html;
+  }
+
+  function renderCard6(dom) {
+    makeTabs(
+      "c6Tabs",
+      [
+        { key: "file_order", label: "Top-to-Bottom File Position" },
+        { key: "taxonomy", label: "Declaration Kinds & Visibility" },
+        { key: "decls_per_file", label: "Declarations per File" }
+      ],
+      state.c6Tab,
+      (k) => {
+        state.c6Tab = k;
+        renderCard6(dom);
+      }
+    );
+
+    const chartEl = document.getElementById("c6Chart");
+    const legendEl = document.getElementById("c6Legend");
+    const takeawayEl = document.getElementById("c6Takeaway");
+
+    if (state.c6Tab === "file_order") {
+      const fo = dom.file_order;
+      const gMeta = DATA.meta.quintile_groups;
+      legendEl.innerHTML = gMeta
+        .map((g) => `<span class="legend-item"><span class="swatch" style="background:${QUINTILE_COLORS[g.key]}"></span>${esc(g.label)}</span>`)
+        .join("");
+      const q1Def = pct(fo.quintiles[0].counts.def_abbrev || 0, fo.quintiles[0].total);
+      const finalThm = pct(fo.last_decl.counts.public_theorem || 0, fo.last_decl.total);
+      takeawayEl.innerHTML =
+        `Across <strong>${fmt(fo.multi_decl_3plus_files)}</strong> files with 3+ declarations, definitions cluster early (<code>Q1</code> has <strong>${q1Def}</strong> <code>def/abbrev</code>), ` +
+        `while across <strong>${fmt(fo.multi_decl_2plus_files)}</strong> multi-declaration files the final declaration is a public <code>theorem</code> <strong>${finalThm}</strong> of the time.`;
+      const cols = fo.quintiles.map((q) => ({
+        label: q.label,
+        counts: q.counts,
+        total: q.total
+      }));
+      cols.push({
+        label: "Final Decl",
+        counts: fo.last_decl.counts,
+        total: fo.last_decl.total,
+        sepBefore: true
+      });
+      renderStackedPercentCols(chartEl, cols, gMeta);
+    } else if (state.c6Tab === "taxonomy") {
+      legendEl.innerHTML =
+        `<span class="legend-item"><span class="swatch" style="background:${VIS_COLORS.public}"></span>public</span>` +
+        `<span class="legend-item"><span class="swatch" style="background:${VIS_COLORS.private}"></span>private</span>` +
+        `<span class="legend-item"><span class="swatch" style="background:${VIS_COLORS.protected}"></span>protected</span>`;
+      const thmRow = dom.decl_taxonomy.kinds.find((k) => k.kind === "theorem") || { total: 0, private: 0 };
+      const lemRow = dom.decl_taxonomy.kinds.find((k) => k.kind === "lemma") || { total: 0, private: 0 };
+      takeawayEl.innerHTML =
+        `<code>theorem</code> dominates over <code>lemma</code> (<strong>${fmt(thmRow.total)}</strong> vs <strong>${fmt(lemRow.total)}</strong>), ` +
+        `and <code>private</code> visibility is concentrated on local helper theorems/lemmas (` +
+        `<strong>${fmt(thmRow.private + lemRow.private)}</strong> private, plus <strong>${fmt(dom.summary.aux_named_decls)}</strong> <code>*aux</code>-named declarations).`;
+      renderHorizBars(
+        chartEl,
+        dom.decl_taxonomy.kinds.map((k) => ({
+          label: k.kind,
+          value: k.total,
+          segments: [
+            { value: k.public, color: VIS_COLORS.public },
+            { value: k.private, color: VIS_COLORS.private },
+            { value: k.protected, color: VIS_COLORS.protected }
+          ],
+          tipLines: [
+            `Total: ${fmt(k.total)} (${pct(k.total, dom.summary.declarations)})`,
+            `public: ${fmt(k.public)} · private: ${fmt(k.private)} · protected: ${fmt(k.protected)}`
+          ]
+        })),
+        { denom: dom.summary.declarations || 1, labelW: 160 }
+      );
+    } else {
+      legendEl.innerHTML = "";
+      const oneDecl = (dom.decl_taxonomy.decls_per_file.find((r) => r.bucket === "1") || { count: 0 }).count;
+      takeawayEl.innerHTML =
+        `<strong>${fmt(oneDecl)}</strong> modules (${pct(oneDecl, dom.summary.modules)}) contain a single declaration, making module-level granularity close to declaration-level structure.`;
+      renderVertBars(
+        chartEl,
+        dom.decl_taxonomy.decls_per_file.map((r) => ({
+          label: r.bucket,
+          value: r.count,
+          color: "#0056b3",
+          tipTitle: `Declarations in file: ${r.bucket}`,
+          tipLines: [`Modules: ${fmt(r.count)} (${pct(r.count, dom.summary.modules)})`]
+        })),
+        { scale: "linear" }
+      );
+    }
+  }
+
+  function renderAll() {
+    const dom = DATA.by_domain[state.domain] || DATA.by_domain.ALL;
+    renderDomainBar();
+    renderKpis(dom);
+    renderCard1(dom);
+    renderCard2(dom);
+    renderCard3(dom);
+    renderCard4(dom);
+    renderCard5(dom);
+    renderCard6(dom);
+  }
+
+  renderAll();
+})();
+</script>
+</body>
+</html>

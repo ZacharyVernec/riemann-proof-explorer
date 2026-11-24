@@ -237,6 +237,22 @@
         <a class="btn" href="full_dag/layout_summary.json">layout_summary.json</a>
       </div>
     </div>
+
+    <div class="section-item">
+      <h2>7. Codebase Structural Histograms</h2>
+      <p>Interactive empirical histograms across all 175,187 modules and 1,061,375 declarations in <code>lean/src/</code>, testing Lean 4 comprehension heuristics against measured codebase signals.</p>
+      <ul>
+        <li><strong>Glue &amp; Attributes:</strong> Proof-shape classification (1-line tactics and <code>first | exact …</code> forwarding wrappers vs. multi-step proofs), declaration <code>@[…]</code> tags, and file-scoped <code>attribute [local instance]</code> directives.</li>
+        <li><strong>Typeclasses, Moves &amp; Bridges:</strong> Signature-only typeclass tiers, conceptual proof steps (<code>have</code>, <code>obtain</code>, <code>induction</code>, <code>by_contra</code>, <code>classical</code>) vs. solvers, and bundled equivalence constructors (<code>≃ₗ</code>, <code>≃+*</code>, <code>≃ₐ</code>, <code>≅</code>).</li>
+        <li><strong>Fan-In &amp; File Order:</strong> Non-<code>@[simp]</code> import fan-in distributions, top hub modules, and top-to-bottom declaration quintiles.</li>
+      </ul>
+      <div class="links">
+        <a class="btn primary" href="codebase_histograms/histograms.html">Interactive Structural Histograms</a>
+        <a class="btn" href="codebase_histograms/CODEBASE_HISTOGRAMS.html">CODEBASE_HISTOGRAMS.html</a>
+        <a class="btn" href="codebase_histograms/CODEBASE_HISTOGRAMS.md">CODEBASE_HISTOGRAMS.md</a>
+        <a class="btn" href="codebase_histograms/histograms_data.json">histograms_data.json</a>
+      </div>
+    </div>
   </section>
 
   <footer>
