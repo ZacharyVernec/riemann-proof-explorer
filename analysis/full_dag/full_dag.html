@@ -185,6 +185,84 @@
   .collapse-pill button[aria-pressed="true"] .label-off {
     visibility: hidden;
   }
+  .depth-pill {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 214px;
+    padding: 6px 9px 7px;
+    background: var(--pill-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    backdrop-filter: blur(4px);
+  }
+  .depth-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 11.5px;
+    font-weight: 500;
+    line-height: 1.2;
+  }
+  .depth-title {
+    color: var(--text);
+    white-space: nowrap;
+  }
+  .depth-inputs {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+  }
+  .depth-number {
+    width: 44px;
+    padding: 1px 4px;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    color: var(--text);
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+  }
+  .depth-total {
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .depth-all-btn {
+    appearance: none;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    background: #ffffff;
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 10.5px;
+    font-weight: 500;
+    line-height: 1.2;
+    padding: 2px 6px;
+    cursor: pointer;
+  }
+  .depth-all-btn:hover {
+    background: var(--btn-hover);
+  }
+  .depth-all-btn[aria-pressed="true"] {
+    background: #1e293b;
+    border-color: #1e293b;
+    color: #ffffff;
+  }
+  .depth-all-btn[aria-pressed="true"]:hover {
+    background: #0f172a;
+  }
+  .depth-slider {
+    width: 100%;
+    margin: 0;
+    accent-color: #1e293b;
+    cursor: pointer;
+  }
   .stats-pill {
     background: var(--pill-bg);
     border: 1px solid var(--border);
@@ -470,6 +548,17 @@
       <span class="chain-dot" aria-hidden="true"></span>
     </button>
   </div>
+  <div class="depth-pill" id="depth-pill" role="group" aria-label="Max depth from root">
+    <div class="depth-header">
+      <label class="depth-title" for="depth-slider" title="Maximum shortest-path import depth from root (Main). Shortcuts: [ and ]">Max depth</label>
+      <span class="depth-inputs">
+        <input id="depth-number" class="depth-number" type="number" min="0" max="0" step="1" value="0" aria-label="Max depth from root">
+        <span id="depth-total" class="depth-total">/ 0</span>
+        <button id="btn-depth-all" class="depth-all-btn" type="button" aria-pressed="true" title="Show all depths from root">All</button>
+      </span>
+    </div>
+    <input id="depth-slider" class="depth-slider" type="range" min="0" max="0" step="1" value="0" aria-label="Max depth from root slider">
+  </div>
   <div class="stats-pill" id="stats-pill" aria-live="polite">
     <table class="stats-table" aria-label="Active graph counts">
       <thead>
@@ -545,6 +634,11 @@
   const lblHasseOn = document.getElementById("lbl-hasse-on");
   const lblChainsOff = document.getElementById("lbl-chains-off");
   const lblChainsOn = document.getElementById("lbl-chains-on");
+  const depthPill = document.getElementById("depth-pill");
+  const depthSlider = document.getElementById("depth-slider");
+  const depthNumber = document.getElementById("depth-number");
+  const depthTotal = document.getElementById("depth-total");
+  const btnDepthAll = document.getElementById("btn-depth-all");
   const statsPill = document.getElementById("stats-pill");
   const statNodesAbs = document.getElementById("stat-nodes-abs");
   const statEdgesAbs = document.getElementById("stat-edges-abs");
@@ -981,7 +1075,131 @@
     for (let i = 0; i < roots.length; i++) fullLandmarkIds[i] = roots[i];
     for (let i = 0; i < maxLandmarks; i++) fullLandmarkIds[roots.length + i] = nonRoots[i];
 
-    // Build stratified Edge VBO (12 bytes/vertex: f32 x, f32 y, u8 r,g,b,a)
+    // Compute shortest-path BFS depth from root nodes (inDeg == 0) plus per-depth stats & bounds
+    function computeRootDepths(
+      vNodeCount,
+      vNodeX,
+      vNodeLayer,
+      vNumLayers,
+      vLayerDy,
+      vNodeInDeg,
+      vEdgeOffsets,
+      vEdgeTargets,
+      vFullBounds
+    ) {
+      const nodeDepth = new Uint16Array(vNodeCount);
+      nodeDepth.fill(65535);
+      const queue = new Uint32Array(vNodeCount);
+      let qHead = 0;
+      let qTail = 0;
+      for (let i = 0; i < vNodeCount; i++) {
+        if (vNodeInDeg[i] === 0) {
+          nodeDepth[i] = 0;
+          queue[qTail++] = i;
+        }
+      }
+      if (qTail === 0 && vNodeCount > 0) {
+        nodeDepth[0] = 0;
+        queue[qTail++] = 0;
+      }
+
+      let maxDepth = 0;
+      while (qHead < qTail) {
+        const u = queue[qHead++];
+        const nextD = nodeDepth[u] + 1;
+        const a = vEdgeOffsets[u];
+        const b = vEdgeOffsets[u + 1];
+        for (let k = a; k < b; k++) {
+          const v = vEdgeTargets[k];
+          if (nodeDepth[v] === 65535) {
+            nodeDepth[v] = nextD;
+            if (nextD > maxDepth) maxDepth = nextD;
+            queue[qTail++] = v;
+          }
+        }
+      }
+
+      if (qTail < vNodeCount) {
+        for (let i = 0; i < vNodeCount; i++) {
+          if (nodeDepth[i] === 65535) nodeDepth[i] = maxDepth;
+        }
+      }
+
+      const dLen = maxDepth + 1;
+      const nodesByDepth = new Uint32Array(dLen);
+      const edgesByDepth = new Uint32Array(dLen);
+      const layersByDepth = new Uint32Array(dLen);
+      const minLayerDepth = new Uint16Array(vNumLayers);
+      minLayerDepth.fill(65535);
+
+      const xminD = new Float64Array(dLen);
+      const xmaxD = new Float64Array(dLen);
+      const yminD = new Float64Array(dLen);
+      const ymaxD = new Float64Array(dLen);
+      for (let d = 0; d < dLen; d++) {
+        xminD[d] = Infinity;
+        xmaxD[d] = -Infinity;
+        yminD[d] = Infinity;
+        ymaxD[d] = -Infinity;
+      }
+
+      for (let i = 0; i < vNodeCount; i++) {
+        const d = nodeDepth[i];
+        nodesByDepth[d]++;
+        const ly = vNodeLayer[i];
+        if (d < minLayerDepth[ly]) minLayerDepth[ly] = d;
+        const x = vNodeX[i];
+        const y = ly * vLayerDy;
+        if (x < xminD[d]) xminD[d] = x;
+        if (x > xmaxD[d]) xmaxD[d] = x;
+        if (y < yminD[d]) yminD[d] = y;
+        if (y > ymaxD[d]) ymaxD[d] = y;
+
+        const a = vEdgeOffsets[i];
+        const b = vEdgeOffsets[i + 1];
+        for (let k = a; k < b; k++) {
+          const v = vEdgeTargets[k];
+          const dv = nodeDepth[v];
+          edgesByDepth[d >= dv ? d : dv]++;
+        }
+      }
+
+      for (let ly = 0; ly < vNumLayers; ly++) {
+        const md = minLayerDepth[ly];
+        if (md < dLen) layersByDepth[md]++;
+      }
+
+      const boundsByDepth = new Array(dLen);
+      let accXmin = Infinity, accXmax = -Infinity, accYmin = Infinity, accYmax = -Infinity;
+      for (let d = 0; d < dLen; d++) {
+        if (d > 0) {
+          nodesByDepth[d] += nodesByDepth[d - 1];
+          edgesByDepth[d] += edgesByDepth[d - 1];
+          layersByDepth[d] += layersByDepth[d - 1];
+        }
+        if (xminD[d] < accXmin) accXmin = xminD[d];
+        if (xmaxD[d] > accXmax) accXmax = xmaxD[d];
+        if (yminD[d] < accYmin) accYmin = yminD[d];
+        if (ymaxD[d] > accYmax) accYmax = ymaxD[d];
+        boundsByDepth[d] =
+          d === maxDepth
+            ? vFullBounds
+            : Number.isFinite(accXmin)
+              ? { xmin: accXmin, xmax: accXmax, ymin: accYmin, ymax: accYmax }
+              : vFullBounds;
+      }
+
+      return {
+        nodeDepth,
+        maxDepth,
+        nodesByDepth,
+        edgesByDepth,
+        layersByDepth,
+        boundsByDepth,
+      };
+    }
+
+    // Build stratified Edge VBO (12 bytes/vertex: f32 x, f32 y, u8 r,g,b,a) + matching edge depth VBO
     function createEdgeVboData(
       vNodeCount,
       vEdgeCount,
@@ -993,7 +1211,8 @@
       vEdgeTargets,
       vEdgeWeights,
       vBucketCounts,
-      vNodeFullId
+      vNodeFullId,
+      vNodeDepth
     ) {
       const bucketEdgeEnd = new Uint32Array(8);
       const bucketWriteVert = new Uint32Array(8);
@@ -1007,12 +1226,14 @@
       const edgeBuf = new ArrayBuffer(vEdgeCount * 24);
       const edgeF32 = new Float32Array(edgeBuf);
       const edgeU8 = new Uint8Array(edgeBuf);
+      const edgeDepthArr = new Uint16Array(vEdgeCount * 2);
 
       for (let u = 0; u < vNodeCount; u++) {
         const ux = vNodeX[u];
         const uy = vNodeLayer[u] * vLayerDy;
         const ug = vNodeGroup[u];
         const ur = groupR[ug], ugr = groupG[ug], ub = groupB[ug];
+        const du = vNodeDepth[u];
         const a = vEdgeOffsets[u];
         const b = vEdgeOffsets[u + 1];
         for (let k = a; k < b; k++) {
@@ -1020,6 +1241,11 @@
           const bkt = ((Math.imul(u, 2654435761) ^ Math.imul(v, 2246822519)) >>> 29) & 7;
           const vIdx = bucketWriteVert[bkt];
           bucketWriteVert[bkt] = vIdx + 2;
+
+          const dv = vNodeDepth[v];
+          const ed = du >= dv ? du : dv;
+          edgeDepthArr[vIdx] = ed;
+          edgeDepthArr[vIdx + 1] = ed;
 
           let alphaByte = 64; // 1.0x baseline via (v_color.a * 4.0)
           if (vEdgeWeights !== null) {
@@ -1056,7 +1282,7 @@
         }
       }
 
-      return { edgeBuf, bucketEdgeEnd };
+      return { edgeBuf, edgeDepthArr, bucketEdgeEnd };
     }
 
     function createNodeVboData(
@@ -1104,8 +1330,11 @@
       return nodeBuf;
     }
 
+    const fullDepthInfo = computeRootDepths(
+      N, nodeX, nodeLayer, numLayers, layerDy, nodeInDeg, edgeOffsets, edgeTargets, bounds
+    );
     const fullEdgePack = createEdgeVboData(
-      N, M, nodeX, nodeLayer, layerDy, nodeGroup, edgeOffsets, edgeTargets, null, bucketCounts, null
+      N, M, nodeX, nodeLayer, layerDy, nodeGroup, edgeOffsets, edgeTargets, null, bucketCounts, null, fullDepthInfo.nodeDepth
     );
     const fullNodeBuf = createNodeVboData(N, nodeX, nodeLayer, layerDy, nodeGroup, nodeInDeg, null, null);
 
@@ -1133,10 +1362,17 @@
       const edgeVs = [
         "attribute vec2 a_pos;",
         "attribute vec4 a_color;",
+        "attribute float a_depth;",
         "uniform vec2 u_scale;",
         "uniform vec2 u_offset;",
+        "uniform float u_maxDepth;",
         "varying vec4 v_color;",
         "void main() {",
+        "  if (a_depth > u_maxDepth) {",
+        "    gl_Position = vec4(2.0, 2.0, 2.0, 1.0);",
+        "    v_color = vec4(0.0);",
+        "    return;",
+        "  }",
         "  gl_Position = vec4(a_pos * u_scale + u_offset, 0.0, 1.0);",
         "  v_color = a_color;",
         "}",
@@ -1156,16 +1392,27 @@
         "attribute vec2 a_pos;",
         "attribute float a_weight;",
         "attribute vec4 a_color;",
+        "attribute float a_depth;",
         "uniform vec2 u_scale;",
         "uniform vec2 u_offset;",
         "uniform float u_zoom;",
         "uniform float u_dpr;",
         "uniform float u_maxPointSize;",
+        "uniform float u_maxDepth;",
         "varying vec4 v_color;",
         "varying float v_pointSize;",
         "varying float v_rimStrength;",
         "varying float v_isSuper;",
         "void main() {",
+        "  if (a_depth > u_maxDepth) {",
+        "    gl_Position = vec4(2.0, 2.0, 2.0, 1.0);",
+        "    gl_PointSize = 0.0;",
+        "    v_pointSize = 0.0;",
+        "    v_rimStrength = 0.0;",
+        "    v_isSuper = 0.0;",
+        "    v_color = vec4(0.0);",
+        "    return;",
+        "  }",
         "  gl_Position = vec4(a_pos * u_scale + u_offset, 0.0, 1.0);",
         "  float sz = (1.25 + 0.55 * a_weight) * (0.72 + 0.38 * sqrt(max(u_zoom, 0.05))) * u_dpr;",
         "  if (u_zoom >= 4.0) {",
@@ -1228,19 +1475,23 @@
       edgeLocs = {
         a_pos: gl.getAttribLocation(edgeProg, "a_pos"),
         a_color: gl.getAttribLocation(edgeProg, "a_color"),
+        a_depth: gl.getAttribLocation(edgeProg, "a_depth"),
         u_scale: gl.getUniformLocation(edgeProg, "u_scale"),
         u_offset: gl.getUniformLocation(edgeProg, "u_offset"),
         u_alpha: gl.getUniformLocation(edgeProg, "u_alpha"),
+        u_maxDepth: gl.getUniformLocation(edgeProg, "u_maxDepth"),
       };
       nodeLocs = {
         a_pos: gl.getAttribLocation(nodeProg, "a_pos"),
         a_weight: gl.getAttribLocation(nodeProg, "a_weight"),
         a_color: gl.getAttribLocation(nodeProg, "a_color"),
+        a_depth: gl.getAttribLocation(nodeProg, "a_depth"),
         u_scale: gl.getUniformLocation(nodeProg, "u_scale"),
         u_offset: gl.getUniformLocation(nodeProg, "u_offset"),
         u_zoom: gl.getUniformLocation(nodeProg, "u_zoom"),
         u_dpr: gl.getUniformLocation(nodeProg, "u_dpr"),
         u_maxPointSize: gl.getUniformLocation(nodeProg, "u_maxPointSize"),
+        u_maxDepth: gl.getUniformLocation(nodeProg, "u_maxDepth"),
       };
 
       const ptRange = gl.getParameter(gl.ALIASED_POINT_SIZE_RANGE);
@@ -1393,8 +1644,16 @@
       landmarkIds: fullLandmarkIds,
       heavyEdgeList: null,
       bucketEdgeEnd: fullEdgePack.bucketEdgeEnd,
+      nodeDepth: fullDepthInfo.nodeDepth,
+      maxDepth: fullDepthInfo.maxDepth,
+      nodesByDepth: fullDepthInfo.nodesByDepth,
+      edgesByDepth: fullDepthInfo.edgesByDepth,
+      layersByDepth: fullDepthInfo.layersByDepth,
+      boundsByDepth: fullDepthInfo.boundsByDepth,
       edgeVbo: uploadVbo(fullEdgePack.edgeBuf),
+      edgeDepthVbo: uploadVbo(fullEdgePack.edgeDepthArr),
       nodeVbo: uploadVbo(fullNodeBuf),
+      nodeDepthVbo: uploadVbo(fullDepthInfo.nodeDepth),
     };
 
     const viewsCache = { full: fullView };
@@ -1551,12 +1810,15 @@
         }
       }
 
+      const cDepthInfo = computeRootDepths(
+        cN, cNodeX, cNodeLayer, cNumLayers, cLayerDy, cNodeInDeg, cEdgeOffsets, cEdgeTargets, cMeta.bounds
+      );
       const cLandmarks = buildLandmarkIds(cN, cNodeLayer, cNodeInDeg, cNodeFullId, cNodeWeight);
       const cHeavyEdgeList = buildHeavyEdgeList(
         cN, cEdgeOffsets, cEdgeTargets, cEdgeWeights, cEdgeWeights, null, cNodeFullId, 2500
       );
       const cEdgePack = createEdgeVboData(
-        cN, ctIdx, cNodeX, cNodeLayer, cLayerDy, cNodeGroup, cEdgeOffsets, cEdgeTargets, cEdgeWeights, cBucketCounts, cNodeFullId
+        cN, ctIdx, cNodeX, cNodeLayer, cLayerDy, cNodeGroup, cEdgeOffsets, cEdgeTargets, cEdgeWeights, cBucketCounts, cNodeFullId, cDepthInfo.nodeDepth
       );
       const cNodeBuf = createNodeVboData(
         cN, cNodeX, cNodeLayer, cLayerDy, cNodeGroup, cNodeInDeg, cNodeFullId, cNodeWeight
@@ -1592,8 +1854,16 @@
         landmarkIds: cLandmarks,
         heavyEdgeList: cHeavyEdgeList,
         bucketEdgeEnd: cEdgePack.bucketEdgeEnd,
+        nodeDepth: cDepthInfo.nodeDepth,
+        maxDepth: cDepthInfo.maxDepth,
+        nodesByDepth: cDepthInfo.nodesByDepth,
+        edgesByDepth: cDepthInfo.edgesByDepth,
+        layersByDepth: cDepthInfo.layersByDepth,
+        boundsByDepth: cDepthInfo.boundsByDepth,
         edgeVbo: uploadVbo(cEdgePack.edgeBuf),
+        edgeDepthVbo: uploadVbo(cEdgePack.edgeDepthArr),
         nodeVbo: uploadVbo(cNodeBuf),
+        nodeDepthVbo: uploadVbo(cDepthInfo.nodeDepth),
       };
       return viewsCache.existing;
     }
@@ -1656,6 +1926,10 @@
         }
       }
 
+      const hDepthInfo = computeRootDepths(
+        vN, baseView.nodeX, baseView.nodeLayer, baseView.numLayers, baseView.layerDy,
+        hNodeInDeg, hEdgeOffsets, hEdgeTargets, baseView.bounds
+      );
       const hLandmarks = buildLandmarkIds(
         vN, baseView.nodeLayer, hNodeInDeg, baseView.nodeFullId, baseView.nodeWeight
       );
@@ -1664,7 +1938,7 @@
       );
       const hEdgePack = createEdgeVboData(
         vN, htIdx, baseView.nodeX, baseView.nodeLayer, baseView.layerDy, baseView.nodeGroup,
-        hEdgeOffsets, hEdgeTargets, hEdgeWeights, hBucketCounts, baseView.nodeFullId
+        hEdgeOffsets, hEdgeTargets, hEdgeWeights, hBucketCounts, baseView.nodeFullId, hDepthInfo.nodeDepth
       );
 
       viewsCache[key] = {
@@ -1697,8 +1971,16 @@
         landmarkIds: hLandmarks,
         heavyEdgeList: hHeavyEdgeList,
         bucketEdgeEnd: hEdgePack.bucketEdgeEnd,
+        nodeDepth: hDepthInfo.nodeDepth,
+        maxDepth: hDepthInfo.maxDepth,
+        nodesByDepth: hDepthInfo.nodesByDepth,
+        edgesByDepth: hDepthInfo.edgesByDepth,
+        layersByDepth: hDepthInfo.layersByDepth,
+        boundsByDepth: hDepthInfo.boundsByDepth,
         edgeVbo: uploadVbo(hEdgePack.edgeBuf),
+        edgeDepthVbo: uploadVbo(hEdgePack.edgeDepthArr),
         nodeVbo: baseView.nodeVbo,
+        nodeDepthVbo: uploadVbo(hDepthInfo.nodeDepth),
       };
       return viewsCache[key];
     }
@@ -1827,12 +2109,15 @@
         }
       }
 
+      const sDepthInfo = computeRootDepths(
+        sN, sNodeX, sNodeLayer, sNumLayers, sLayerDy, sNodeInDeg, sEdgeOffsets, sEdgeTargets, sm.bounds
+      );
       const sLandmarks = buildLandmarkIds(sN, sNodeLayer, sNodeInDeg, sNodeFullId, sNodeWeight);
       const sHeavyEdgeList = buildHeavyEdgeList(
         sN, sEdgeOffsets, sEdgeTargets, sEdgeWeights, sEdgeMults, sEdgeChains, sNodeFullId, 2500
       );
       const sEdgePack = createEdgeVboData(
-        sN, stIdx, sNodeX, sNodeLayer, sLayerDy, sNodeGroup, sEdgeOffsets, sEdgeTargets, sEdgeWeights, sBucketCounts, sNodeFullId
+        sN, stIdx, sNodeX, sNodeLayer, sLayerDy, sNodeGroup, sEdgeOffsets, sEdgeTargets, sEdgeWeights, sBucketCounts, sNodeFullId, sDepthInfo.nodeDepth
       );
       const sNodeBuf = createNodeVboData(
         sN, sNodeX, sNodeLayer, sLayerDy, sNodeGroup, sNodeInDeg, sNodeFullId, sNodeWeight
@@ -1868,8 +2153,16 @@
         landmarkIds: sLandmarks,
         heavyEdgeList: sHeavyEdgeList,
         bucketEdgeEnd: sEdgePack.bucketEdgeEnd,
+        nodeDepth: sDepthInfo.nodeDepth,
+        maxDepth: sDepthInfo.maxDepth,
+        nodesByDepth: sDepthInfo.nodesByDepth,
+        edgesByDepth: sDepthInfo.edgesByDepth,
+        layersByDepth: sDepthInfo.layersByDepth,
+        boundsByDepth: sDepthInfo.boundsByDepth,
         edgeVbo: uploadVbo(sEdgePack.edgeBuf),
+        edgeDepthVbo: uploadVbo(sEdgePack.edgeDepthArr),
         nodeVbo: uploadVbo(sNodeBuf),
+        nodeDepthVbo: uploadVbo(sDepthInfo.nodeDepth),
       };
       return viewsCache[key];
     }
@@ -1903,6 +2196,13 @@
 
     const viewState = { existing: false, hasse: false, simplify: false };
     let activeView = fullView;
+    let maxDepthLimit = null; // null = All (unbounded)
+
+    function getEffectiveMaxDepth(av) {
+      const v = av || activeView;
+      if (maxDepthLimit === null) return v.maxDepth;
+      return Math.max(0, Math.min(v.maxDepth, maxDepthLimit));
+    }
 
     // Viewport state
     let cssW = window.innerWidth || 1280;
@@ -1914,13 +2214,14 @@
     let fitZoom = 0.35;
 
     function computeFitTransform() {
-      const b = activeView.bounds;
-      const worldW = Math.max(1, b.xmax - b.xmin);
-      const worldH = Math.max(1, b.ymax - b.ymin);
+      const curD = getEffectiveMaxDepth(activeView);
+      const b = (activeView.boundsByDepth && activeView.boundsByDepth[curD]) || activeView.bounds;
+      const worldW = Math.max(20, b.xmax - b.xmin);
+      const worldH = Math.max(20, b.ymax - b.ymin);
       const padX = Math.max(40, cssW * 0.04);
       const padY = Math.max(44, cssH * 0.055);
       const z = Math.min((cssW - 2 * padX) / worldW, (cssH - 2 * padY) / worldH);
-      fitZoom = Math.max(0.05, z);
+      fitZoom = Math.max(0.05, Math.min(48.0, z));
       const cx = 0.5 * (b.xmin + b.xmax);
       const cy = 0.5 * (b.ymin + b.ymax);
       return {
@@ -2004,7 +2305,7 @@
 
     function reserveUiRects(placed) {
       const pad = 6;
-      const els = [navPill, collapsePill, statsPill, legendPill, zoomPill];
+      const els = [navPill, collapsePill, depthPill, statsPill, legendPill, zoomPill];
       for (let i = 0; i < els.length; i++) {
         const el = els[i];
         if (!el) continue;
@@ -2017,6 +2318,9 @@
 
     function drawOverlay() {
       const av = activeView;
+      const curMaxDepth = getEffectiveMaxDepth(av);
+      const depthFiltered = curMaxDepth < av.maxDepth;
+      const nDepth = av.nodeDepth;
       ovCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ovCtx.clearRect(0, 0, cssW, cssH);
 
@@ -2041,7 +2345,13 @@
         const b = upperBound(av.nodeX, a, lEnd, wxMax + marginWorldX);
         if (a < b) {
           slices.push(a, b);
-          visibleCount += (b - a);
+          if (!depthFiltered) {
+            visibleCount += (b - a);
+          } else {
+            for (let i = a; i < b; i++) {
+              if (nDepth[i] <= curMaxDepth) visibleCount++;
+            }
+          }
         }
       }
 
@@ -2063,6 +2373,7 @@
             for (let i = 0; i < wList.length; i += 4) {
               const cu = wList[i];
               const cv = wList[i + 1];
+              if (depthFiltered && (nDepth[cu] > curMaxDepth || nDepth[cv] > curMaxDepth)) continue;
               const mult = wList[i + 2];
               const ch = wList[i + 3];
               strokes.push(cu, cv, mult, ch);
@@ -2076,6 +2387,7 @@
           const candC = [];
           const candW = [];
           function addEdgeCand(cu, cv, mult, ch, w) {
+            if (depthFiltered && (nDepth[cu] > curMaxDepth || nDepth[cv] > curMaxDepth)) return;
             const isLargeSuper =
               av.nodeFullId !== null &&
               av.nodeFullId[cv] < 0 &&
@@ -2094,6 +2406,7 @@
             const a = slices[s];
             const b = slices[s + 1];
             for (let u = a; u < b; u++) {
+              if (depthFiltered && nDepth[u] > curMaxDepth) continue;
               const ea = av.edgeOffsets[u];
               const eb = av.edgeOffsets[u + 1];
               for (let k = ea; k < eb; k++) {
@@ -2246,6 +2559,7 @@
           const a = slices[s];
           const b = slices[s + 1];
           for (let v = a; v < b && drawnArrows < maxArrows; v++) {
+            if (depthFiltered && nDepth[v] > curMaxDepth) continue;
             const vx = av.nodeX[v] * zoom + panX;
             const vy = av.nodeLayer[v] * av.layerDy * zoom + panY;
             const padR = nodeRadiusCss(av, v) + 2.0;
@@ -2254,6 +2568,7 @@
             const rLim = Math.min(rB, rA + 24);
             for (let k = rA; k < rLim && drawnArrows < maxArrows; k++) {
               const u = av.revSources[k];
+              if (depthFiltered && nDepth[u] > curMaxDepth) continue;
               const w = av.revWeights ? av.revWeights[k] : 1;
               const arrowLen = w >= 2 ? Math.min(13.0, baseArrowLen + 1.1 * Math.log2(w)) : baseArrowLen;
               const arrowHalfW = arrowLen * 0.44;
@@ -2291,6 +2606,7 @@
         candidates = [];
         for (let i = 0; i < av.landmarkIds.length; i++) {
           const id = av.landmarkIds[i];
+          if (depthFiltered && nDepth[id] > curMaxDepth) continue;
           const wx = av.nodeX[id];
           const wy = av.nodeLayer[id] * av.layerDy;
           if (wx >= wxMin && wx <= wxMax && wy >= wyMin && wy <= wyMax) {
@@ -2303,6 +2619,7 @@
           const a = slices[s];
           const b = slices[s + 1];
           for (let i = a; i < b; i++) {
+            if (depthFiltered && nDepth[i] > curMaxDepth) continue;
             candidates.push(i);
           }
         }
@@ -2446,6 +2763,8 @@
 
     function drawFallback2D() {
       const av = activeView;
+      const curMaxDepth = getEffectiveMaxDepth(av);
+      const nDepth = av.nodeDepth;
       const ctx = glCanvas.getContext("2d");
       if (!ctx) return;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -2459,6 +2778,7 @@
 
       const baseAlpha = Math.max(0.03, Math.min(0.55, 0.036 * Math.pow(zoom / fitZoom, 0.55)));
       for (let u = 0; u < av.nodeCount; u++) {
+        if (nDepth[u] > curMaxDepth) continue;
         const ux = av.nodeX[u];
         const uy = av.nodeLayer[u] * av.layerDy;
         const sx0 = ux * zoom + panX;
@@ -2467,6 +2787,7 @@
         const b = av.edgeOffsets[u + 1];
         for (let k = a; k < b; k++) {
           const v = av.edgeTargets[k];
+          if (nDepth[v] > curMaxDepth) continue;
           const vx = av.nodeX[v];
           const vy = av.nodeLayer[v] * av.layerDy;
           if ((ux < wxMin && vx < wxMin) || (ux > wxMax && vx > wxMax)) continue;
@@ -2483,6 +2804,7 @@
       }
       ctx.globalAlpha = 1.0;
       for (let i = 0; i < av.nodeCount; i++) {
+        if (nDepth[i] > curMaxDepth) continue;
         const sx = av.nodeX[i] * zoom + panX;
         const sy = av.nodeLayer[i] * av.layerDy * zoom + panY;
         if (sx < -8 || sx > cssW + 8 || sy < -8 || sy > cssH + 8) continue;
@@ -2545,21 +2867,36 @@
       const drawVerts = av.bucketEdgeEnd[useBuckets - 1] * 2;
       const edgeAlpha = useBuckets === 8 ? baseAlpha : Math.min(0.85, baseAlpha * (8.0 / useBuckets));
 
+      const curMaxDepth = getEffectiveMaxDepth(av);
+
       // Pass 1: Edges
       gl.useProgram(edgeProg);
+      if (
+        nodeLocs.a_weight >= 0 &&
+        nodeLocs.a_weight !== edgeLocs.a_pos &&
+        nodeLocs.a_weight !== edgeLocs.a_color &&
+        nodeLocs.a_weight !== edgeLocs.a_depth
+      ) {
+        gl.disableVertexAttribArray(nodeLocs.a_weight);
+      }
       gl.bindBuffer(gl.ARRAY_BUFFER, av.edgeVbo);
       gl.enableVertexAttribArray(edgeLocs.a_pos);
       gl.vertexAttribPointer(edgeLocs.a_pos, 2, gl.FLOAT, false, 12, 0);
       gl.enableVertexAttribArray(edgeLocs.a_color);
       gl.vertexAttribPointer(edgeLocs.a_color, 4, gl.UNSIGNED_BYTE, true, 12, 8);
-      if (nodeLocs.a_weight >= 0) gl.disableVertexAttribArray(nodeLocs.a_weight);
+      if (edgeLocs.a_depth >= 0) {
+        gl.bindBuffer(gl.ARRAY_BUFFER, av.edgeDepthVbo);
+        gl.enableVertexAttribArray(edgeLocs.a_depth);
+        gl.vertexAttribPointer(edgeLocs.a_depth, 1, gl.UNSIGNED_SHORT, false, 2, 0);
+      }
 
       gl.uniform2f(edgeLocs.u_scale, scaleX, scaleY);
       gl.uniform2f(edgeLocs.u_offset, offX, offY);
       gl.uniform1f(edgeLocs.u_alpha, edgeAlpha);
+      gl.uniform1f(edgeLocs.u_maxDepth, curMaxDepth + 0.5);
       gl.drawArrays(gl.LINES, 0, drawVerts);
 
-      // Pass 2: Nodes (always 100%)
+      // Pass 2: Nodes (always 100% up to curMaxDepth)
       gl.useProgram(nodeProg);
       gl.bindBuffer(gl.ARRAY_BUFFER, av.nodeVbo);
       gl.enableVertexAttribArray(nodeLocs.a_pos);
@@ -2568,12 +2905,18 @@
       gl.vertexAttribPointer(nodeLocs.a_weight, 1, gl.FLOAT, false, 16, 8);
       gl.enableVertexAttribArray(nodeLocs.a_color);
       gl.vertexAttribPointer(nodeLocs.a_color, 4, gl.UNSIGNED_BYTE, true, 16, 12);
+      if (nodeLocs.a_depth >= 0) {
+        gl.bindBuffer(gl.ARRAY_BUFFER, av.nodeDepthVbo);
+        gl.enableVertexAttribArray(nodeLocs.a_depth);
+        gl.vertexAttribPointer(nodeLocs.a_depth, 1, gl.UNSIGNED_SHORT, false, 2, 0);
+      }
 
       gl.uniform2f(nodeLocs.u_scale, scaleX, scaleY);
       gl.uniform2f(nodeLocs.u_offset, offX, offY);
       gl.uniform1f(nodeLocs.u_zoom, zoom);
       gl.uniform1f(nodeLocs.u_dpr, dpr);
       gl.uniform1f(nodeLocs.u_maxPointSize, maxPointSize);
+      gl.uniform1f(nodeLocs.u_maxDepth, curMaxDepth + 0.5);
       gl.drawArrays(gl.POINTS, 0, av.nodeCount);
 
       if (useBuckets === 8) {
@@ -2630,25 +2973,71 @@
       setToggleLabelAria(lblChainsOff, lblChainsOn, viewState.simplify);
     }
 
+    function syncDepthControls() {
+      const av = activeView;
+      const curD = getEffectiveMaxDepth(av);
+      const isAll = maxDepthLimit === null || curD >= av.maxDepth;
+      if (depthSlider) {
+        depthSlider.max = String(av.maxDepth);
+        depthSlider.value = String(curD);
+      }
+      if (depthNumber) {
+        depthNumber.max = String(av.maxDepth);
+        depthNumber.value = String(curD);
+      }
+      if (depthTotal) {
+        depthTotal.textContent = "/ " + av.maxDepth;
+      }
+      if (btnDepthAll) {
+        btnDepthAll.setAttribute("aria-pressed", String(isAll));
+      }
+    }
+
+    function setMaxDepth(val) {
+      const av = activeView;
+      if (val === null || val >= av.maxDepth) {
+        maxDepthLimit = null;
+      } else {
+        maxDepthLimit = Math.max(0, Math.floor(val));
+      }
+      syncDepthControls();
+      updateViewStats();
+      updateModeMetadata();
+      scheduleRender();
+    }
+
     function updateViewStats() {
-      if (statNodesAbs) statNodesAbs.textContent = activeView.nodeCount.toLocaleString();
-      if (statEdgesAbs) statEdgesAbs.textContent = activeView.edgeCount.toLocaleString();
-      if (statLayersAbs) statLayersAbs.textContent = activeView.numLayers.toLocaleString();
-      if (statNodesPct) statNodesPct.textContent = formatPct(activeView.nodeCount, N);
-      if (statEdgesPct) statEdgesPct.textContent = formatPct(activeView.edgeCount, M);
-      if (statLayersPct) statLayersPct.textContent = formatPct(activeView.numLayers, numLayers);
+      const av = activeView;
+      const curD = getEffectiveMaxDepth(av);
+      const shownNodes = av.nodesByDepth ? av.nodesByDepth[curD] : av.nodeCount;
+      const shownEdges = av.edgesByDepth ? av.edgesByDepth[curD] : av.edgeCount;
+      const shownLayers = av.layersByDepth ? av.layersByDepth[curD] : av.numLayers;
+      if (statNodesAbs) statNodesAbs.textContent = shownNodes.toLocaleString();
+      if (statEdgesAbs) statEdgesAbs.textContent = shownEdges.toLocaleString();
+      if (statLayersAbs) statLayersAbs.textContent = shownLayers.toLocaleString();
+      if (statNodesPct) statNodesPct.textContent = formatPct(shownNodes, N);
+      if (statEdgesPct) statEdgesPct.textContent = formatPct(shownEdges, M);
+      if (statLayersPct) statLayersPct.textContent = formatPct(shownLayers, numLayers);
     }
 
     function updateModeMetadata() {
-      window.__FULL_DAG_MODE__ = activeView.key;
+      const av = activeView;
+      const curD = getEffectiveMaxDepth(av);
+      const shownNodes = av.nodesByDepth ? av.nodesByDepth[curD] : av.nodeCount;
+      const shownEdges = av.edgesByDepth ? av.edgesByDepth[curD] : av.edgeCount;
+      const shownLayers = av.layersByDepth ? av.layersByDepth[curD] : av.numLayers;
+      window.__FULL_DAG_MODE__ = av.key;
       window.__FULL_DAG_STATS__ = {
-        mode: activeView.key,
+        mode: av.key,
         existing: viewState.existing,
         hasse: viewState.hasse,
         simplify: viewState.simplify,
-        nodeCount: activeView.nodeCount,
-        edgeCount: activeView.edgeCount,
-        numLayers: activeView.numLayers,
+        maxDepth: maxDepthLimit,
+        effectiveMaxDepth: curD,
+        viewMaxDepth: av.maxDepth,
+        nodeCount: shownNodes,
+        edgeCount: shownEdges,
+        numLayers: shownLayers,
         collapsedModules: viewState.existing && cMeta ? cMeta.collapsed_module_count : 0,
         supernodeCount: viewState.existing && cMeta ? cMeta.supernode_count : 0,
       };
@@ -2664,6 +3053,7 @@
       if (btnCollapseChains) btnCollapseChains.setAttribute("aria-pressed", String(viewState.simplify));
 
       updateToggleLabels();
+      syncDepthControls();
       updateViewStats();
 
       if (legendSuperNote) legendSuperNote.classList.toggle("visible", viewState.existing);
@@ -2716,6 +3106,29 @@
       collapsePill.hidden = true;
     }
 
+    if (depthSlider) {
+      depthSlider.addEventListener("input", () => {
+        const val = parseInt(depthSlider.value, 10);
+        if (!Number.isNaN(val)) setMaxDepth(val);
+      });
+    }
+    if (depthNumber) {
+      depthNumber.addEventListener("input", () => {
+        const raw = depthNumber.value.trim();
+        if (raw === "") return;
+        const val = parseInt(raw, 10);
+        if (!Number.isNaN(val)) setMaxDepth(Math.max(0, Math.min(activeView.maxDepth, val)));
+      });
+      depthNumber.addEventListener("blur", () => {
+        syncDepthControls();
+      });
+    }
+    if (btnDepthAll) {
+      btnDepthAll.addEventListener("click", () => {
+        setMaxDepth(null);
+      });
+    }
+
     if (btnLegendToggle && legendPill) {
       btnLegendToggle.addEventListener("click", () => {
         const isCollapsed = legendPill.classList.toggle("collapsed");
@@ -2729,6 +3142,7 @@
 
     // Initial sizing & first draw
     updateToggleLabels();
+    syncDepthControls();
     updateViewStats();
     resizeCanvases(false);
     loadingEl.remove();
@@ -2851,6 +3265,12 @@
       } else if (ev.key === "l" || ev.key === "L") {
         ev.preventDefault();
         toggleCollapseChains();
+      } else if (ev.key === "[") {
+        ev.preventDefault();
+        setMaxDepth(Math.max(0, getEffectiveMaxDepth() - 1));
+      } else if (ev.key === "]") {
+        ev.preventDefault();
+        setMaxDepth(Math.min(activeView.maxDepth, getEffectiveMaxDepth() + 1));
       } else if (ev.key === "+" || ev.key === "=") {
         ev.preventDefault();
         zoomAt(cssW * 0.5, cssH * 0.5, 1.35);
