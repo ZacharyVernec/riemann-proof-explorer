@@ -1,0 +1,5366 @@
+{
+  "meta": {
+    "total_modules": 803,
+    "total_declarations": 23879,
+    "total_theorems_lemmas": 18228,
+    "tier_meta": [
+      {
+        "key": "core_algebra",
+        "label": "Core Algebra"
+      },
+      {
+        "key": "number_local_fields",
+        "label": "Number & Local Fields"
+      },
+      {
+        "key": "comm_alg_geom",
+        "label": "Commutative & Algebraic Geometry"
+      },
+      {
+        "key": "analysis_topology_measure",
+        "label": "Analysis, Topology & Measure"
+      },
+      {
+        "key": "finiteness_logic",
+        "label": "Finiteness & Type-Level"
+      },
+      {
+        "key": "other",
+        "label": "Other Domain-Specific"
+      }
+    ],
+    "baseline_typeclasses": [
+      "AddCommGroup",
+      "AddCommMonoid",
+      "Algebra",
+      "CharZero",
+      "CommGroup",
+      "CommRing",
+      "DecidableEq",
+      "Fact",
+      "Field",
+      "Finite",
+      "Fintype",
+      "Group",
+      "Inhabited",
+      "LinearOrder",
+      "Module",
+      "Monoid",
+      "NeZero",
+      "Nonempty",
+      "Nontrivial",
+      "Ring",
+      "TopologicalSpace"
+    ],
+    "quintile_groups": [
+      {
+        "key": "public_theorem",
+        "label": "Public theorem"
+      },
+      {
+        "key": "def_abbrev",
+        "label": "def / abbrev"
+      },
+      {
+        "key": "private_thm_lem",
+        "label": "Private thm/lem"
+      },
+      {
+        "key": "public_lemma",
+        "label": "Public lemma"
+      },
+      {
+        "key": "struct_class_ind",
+        "label": "Struct / class / inst"
+      }
+    ],
+    "strategy_groups": [
+      {
+        "key": "conceptual",
+        "label": "Conceptual moves"
+      },
+      {
+        "key": "solver",
+        "label": "Automated solvers"
+      },
+      {
+        "key": "plumbing",
+        "label": "Direct rewriting / plumbing"
+      }
+    ],
+    "elapsed_seconds": 6.51
+  },
+  "domains": [
+    {
+      "key": "ALL",
+      "label": "All domains",
+      "modules": 803,
+      "declarations": 23879
+    },
+    {
+      "key": "Lib",
+      "label": "Lib",
+      "modules": 495,
+      "declarations": 14672
+    },
+    {
+      "key": "New",
+      "label": "New",
+      "modules": 306,
+      "declarations": 9198
+    },
+    {
+      "key": "(root)",
+      "label": "(root)",
+      "modules": 2,
+      "declarations": 9
+    }
+  ],
+  "by_domain": {
+    "ALL": {
+      "summary": {
+        "modules": 803,
+        "declarations": 23879,
+        "theorems_lemmas": 18228,
+        "tactic_proofs": 14372,
+        "term_proofs": 3856,
+        "attr_tagged_decls": 1170,
+        "attr_occurrences": 1183,
+        "file_directives": 201,
+        "doc_module_files": 801,
+        "doc_decl_count": 23737,
+        "blueprint_tags": 0,
+        "line_comments": 1010,
+        "block_comments": 13797,
+        "aux_named_decls": 1,
+        "simp_modules": 252,
+        "non_simp_modules": 551
+      },
+      "proof_shapes": [
+        {
+          "key": "wrapper_forwarding",
+          "label": "Wrapper (first | exact …)",
+          "count": 1
+        },
+        {
+          "key": "oneliner_mech",
+          "label": "1-line mechanical (simp/rfl/rw/exact/…)",
+          "count": 489
+        },
+        {
+          "key": "oneliner_solver",
+          "label": "1-line solver (ring/omega/linarith/…)",
+          "count": 66
+        },
+        {
+          "key": "oneliner_other",
+          "label": "1-line other tactic",
+          "count": 26
+        },
+        {
+          "key": "term_mode",
+          "label": "Term-mode (no by)",
+          "count": 3856
+        },
+        {
+          "key": "short_2_5",
+          "label": "Short tactic (2–5 lines)",
+          "count": 3458
+        },
+        {
+          "key": "medium_6_20",
+          "label": "Medium tactic (6–20 lines)",
+          "count": 7163
+        },
+        {
+          "key": "long_21_50",
+          "label": "Long tactic (21–50 lines)",
+          "count": 2745
+        },
+        {
+          "key": "deep_51_plus",
+          "label": "Deep tactic (51+ lines)",
+          "count": 424
+        }
+      ],
+      "decl_attrs": [
+        {
+          "tag": "simp",
+          "count": 815
+        },
+        {
+          "tag": "fun_prop",
+          "count": 151
+        },
+        {
+          "tag": "simps",
+          "count": 82
+        },
+        {
+          "tag": "to_additive",
+          "count": 35
+        },
+        {
+          "tag": "grind",
+          "count": 27
+        },
+        {
+          "tag": "irreducible",
+          "count": 16
+        },
+        {
+          "tag": "ext",
+          "count": 11
+        },
+        {
+          "tag": "instance_reducible",
+          "count": 8
+        },
+        {
+          "tag": "mk_iff",
+          "count": 6
+        },
+        {
+          "tag": "reducible",
+          "count": 6
+        },
+        {
+          "tag": "elab_as_elim",
+          "count": 5
+        },
+        {
+          "tag": "reassoc",
+          "count": 4
+        },
+        {
+          "tag": "grind!",
+          "count": 3
+        },
+        {
+          "tag": "congr",
+          "count": 2
+        },
+        {
+          "tag": "implicit_reducible",
+          "count": 2
+        },
+        {
+          "tag": "induction_eliminator",
+          "count": 2
+        },
+        {
+          "tag": "norm_cast",
+          "count": 2
+        },
+        {
+          "tag": "aesop",
+          "count": 1
+        },
+        {
+          "tag": "bound",
+          "count": 1
+        },
+        {
+          "tag": "gcongr",
+          "count": 1
+        }
+      ],
+      "file_directives": [
+        {
+          "directive": "local instance",
+          "count": 83
+        },
+        {
+          "directive": "instance",
+          "count": 32
+        },
+        {
+          "directive": "local simp",
+          "count": 12
+        },
+        {
+          "directive": "irreducible",
+          "count": 10
+        },
+        {
+          "directive": "-simp",
+          "count": 9
+        },
+        {
+          "directive": "fun_prop",
+          "count": 9
+        },
+        {
+          "directive": "simp",
+          "count": 7
+        },
+        {
+          "directive": "local fun_prop",
+          "count": 5
+        },
+        {
+          "directive": "-instance",
+          "count": 3
+        },
+        {
+          "directive": "local implicit_reducible",
+          "count": 3
+        },
+        {
+          "directive": "scoped simp",
+          "count": 3
+        },
+        {
+          "directive": "grind .",
+          "count": 2
+        },
+        {
+          "directive": "grind! .",
+          "count": 2
+        },
+        {
+          "directive": "instance_reducible, instance",
+          "count": 2
+        },
+        {
+          "directive": "local grind",
+          "count": 2
+        }
+      ],
+      "local_instance_targets": [
+        {
+          "target": "Fintype.ofFinite",
+          "count": 64
+        },
+        {
+          "target": "Prop.linearOrder",
+          "count": 3
+        },
+        {
+          "target": "algebraMvPolynomial",
+          "count": 3
+        },
+        {
+          "target": "FormallyEtale.of_isSeparable",
+          "count": 2
+        },
+        {
+          "target": "MonoidHomClass.toMulHomClass",
+          "count": 2
+        },
+        {
+          "target": "Quotient.field",
+          "count": 2
+        },
+        {
+          "target": "RingHomClass.toAddMonoidHomClass",
+          "count": 2
+        },
+        {
+          "target": "ZMod.algebra",
+          "count": 2
+        },
+        {
+          "target": "isUniformAddGroup_of_addCommGroup",
+          "count": 2
+        },
+        {
+          "target": "rightUniformSpace",
+          "count": 2
+        },
+        {
+          "target": "EtaleChart.polyAlgebra",
+          "count": 1
+        },
+        {
+          "target": "FractionRing.liftAlgebra",
+          "count": 1
+        },
+        {
+          "target": "LieRing.ofAssociativeRing",
+          "count": 1
+        },
+        {
+          "target": "SMulCommClass.symm",
+          "count": 1
+        },
+        {
+          "target": "gradedAlgebra",
+          "count": 1
+        }
+      ],
+      "set_options": [
+        {
+          "option": "backward.isDefEq.respectTransparency",
+          "count": 33
+        },
+        {
+          "option": "synthInstance.maxHeartbeats",
+          "count": 5
+        },
+        {
+          "option": "synthInstance.maxSize",
+          "count": 4
+        },
+        {
+          "option": "warning.simp.varHead",
+          "count": 1
+        }
+      ],
+      "typeclasses": {
+        "top_all": [
+          {
+            "name": "Fintype",
+            "count": 2557,
+            "tier": "finiteness_logic"
+          },
+          {
+            "name": "DecidableEq",
+            "count": 1842,
+            "tier": "finiteness_logic"
+          },
+          {
+            "name": "Field",
+            "count": 1736,
+            "tier": "core_algebra"
+          },
+          {
+            "name": "CommRing",
+            "count": 1167,
+            "tier": "core_algebra"
+          },
+          {
+            "name": "CMType",
+            "count": 670,
+            "tier": "other"
+          },
+          {
+            "name": "Algebra",
+            "count": 597,
+            "tier": "core_algebra"
+          },
+          {
+            "name": "Fact",
+            "count": 521,
+            "tier": "finiteness_logic"
+          },
+          {
+            "name": "ThePrime",
+            "count": 444,
+            "tier": "other"
+          },
+          {
+            "name": "WeilData",
+            "count": 349,
+            "tier": "other"
+          },
+          {
+            "name": "Group",
+            "count": 346,
+            "tier": "core_algebra"
+          },
+          {
+            "name": "NumberField",
+            "count": 342,
+            "tier": "number_local_fields"
+          },
+          {
+            "name": "AddCommGroup",
+            "count": 313,
+            "tier": "core_algebra"
+          },
+          {
+            "name": "Finite",
+            "count": 311,
+            "tier": "finiteness_logic"
+          },
+          {
+            "name": "TopologicalSpace",
+            "count": 300,
+            "tier": "analysis_topology_measure"
+          },
+          {
+            "name": "NeZero",
+            "count": 295,
+            "tier": "core_algebra"
+          },
+          {
+            "name": "Module",
+            "count": 267,
+            "tier": "core_algebra"
+          },
+          {
+            "name": "HasPrimitiveRoot5040",
+            "count": 221,
+            "tier": "other"
+          },
+          {
+            "name": "Nonempty",
+            "count": 211,
+            "tier": "finiteness_logic"
+          },
+          {
+            "name": "S.IsAdmissible",
+            "count": 185,
+            "tier": "other"
+          },
+          {
+            "name": "IsCMField",
+            "count": 182,
+            "tier": "number_local_fields"
+          },
+          {
+            "name": "EmbeddedNumberField",
+            "count": 161,
+            "tier": "number_local_fields"
+          },
+          {
+            "name": "MeasurableSpace",
+            "count": 147,
+            "tier": "analysis_topology_measure"
+          },
+          {
+            "name": "PadicPlace",
+            "count": 147,
+            "tier": "other"
+          },
+          {
+            "name": "StarRing",
+            "count": 145,
+            "tier": "core_algebra"
+          },
+          {
+            "name": "PadicIso",
+            "count": 136,
+            "tier": "other"
+          }
+        ],
+        "top_strong": [
+          {
+            "name": "CMType",
+            "count": 670,
+            "tier": "other"
+          },
+          {
+            "name": "ThePrime",
+            "count": 444,
+            "tier": "other"
+          },
+          {
+            "name": "WeilData",
+            "count": 349,
+            "tier": "other"
+          },
+          {
+            "name": "NumberField",
+            "count": 342,
+            "tier": "number_local_fields"
+          },
+          {
+            "name": "HasPrimitiveRoot5040",
+            "count": 221,
+            "tier": "other"
+          },
+          {
+            "name": "S.IsAdmissible",
+            "count": 185,
+            "tier": "other"
+          },
+          {
+            "name": "IsCMField",
+            "count": 182,
+            "tier": "number_local_fields"
+          },
+          {
+            "name": "EmbeddedNumberField",
+            "count": 161,
+            "tier": "number_local_fields"
+          },
+          {
+            "name": "MeasurableSpace",
+            "count": 147,
+            "tier": "analysis_topology_measure"
+          },
+          {
+            "name": "PadicPlace",
+            "count": 147,
+            "tier": "other"
+          },
+          {
+            "name": "StarRing",
+            "count": 145,
+            "tier": "core_algebra"
+          },
+          {
+            "name": "PadicIso",
+            "count": 136,
+            "tier": "other"
+          },
+          {
+            "name": "IsLocalRing",
+            "count": 122,
+            "tier": "comm_alg_geom"
+          },
+          {
+            "name": "IsDomain",
+            "count": 116,
+            "tier": "core_algebra"
+          },
+          {
+            "name": "Module.Finite",
+            "count": 98,
+            "tier": "core_algebra"
+          },
+          {
+            "name": "Category",
+            "count": 96,
+            "tier": "other"
+          },
+          {
+            "name": "SFinite",
+            "count": 96,
+            "tier": "analysis_topology_measure"
+          },
+          {
+            "name": "CMBase",
+            "count": 91,
+            "tier": "other"
+          },
+          {
+            "name": "IsBaseAdapted",
+            "count": 91,
+            "tier": "other"
+          },
+          {
+            "name": "IsTopologicalGroup",
+            "count": 86,
+            "tier": "analysis_topology_measure"
+          },
+          {
+            "name": "IsAlgClosed",
+            "count": 80,
+            "tier": "number_local_fields"
+          },
+          {
+            "name": "PrimeSevenModEight",
+            "count": 76,
+            "tier": "other"
+          },
+          {
+            "name": "NormedAddCommGroup",
+            "count": 75,
+            "tier": "analysis_topology_measure"
+          },
+          {
+            "name": "FinComplexSpace",
+            "count": 67,
+            "tier": "other"
+          },
+          {
+            "name": "IsScalarTower",
+            "count": 65,
+            "tier": "core_algebra"
+          }
+        ],
+        "tier_totals": [
+          {
+            "tier": "core_algebra",
+            "label": "Core Algebra",
+            "count": 5633
+          },
+          {
+            "tier": "number_local_fields",
+            "label": "Number & Local Fields",
+            "count": 940
+          },
+          {
+            "tier": "comm_alg_geom",
+            "label": "Commutative & Algebraic Geometry",
+            "count": 301
+          },
+          {
+            "tier": "analysis_topology_measure",
+            "label": "Analysis, Topology & Measure",
+            "count": 1193
+          },
+          {
+            "tier": "finiteness_logic",
+            "label": "Finiteness & Type-Level",
+            "count": 5527
+          },
+          {
+            "tier": "other",
+            "label": "Other Domain-Specific",
+            "count": 4413
+          }
+        ]
+      },
+      "proof_strategies": [
+        {
+          "key": "have",
+          "label": "have (intermediate claim/object)",
+          "group": "conceptual",
+          "proof_count": 9410,
+          "total_count": 33033
+        },
+        {
+          "key": "obtain_rcases",
+          "label": "obtain / rcases / cases",
+          "group": "conceptual",
+          "proof_count": 5727,
+          "total_count": 11217
+        },
+        {
+          "key": "let_set",
+          "label": "let / set (local binding)",
+          "group": "conceptual",
+          "proof_count": 5506,
+          "total_count": 11848
+        },
+        {
+          "key": "by_cases",
+          "label": "by_cases (case split)",
+          "group": "conceptual",
+          "proof_count": 602,
+          "total_count": 729
+        },
+        {
+          "key": "induction",
+          "label": "induction",
+          "group": "conceptual",
+          "proof_count": 637,
+          "total_count": 724
+        },
+        {
+          "key": "choose",
+          "label": "choose (choice extraction)",
+          "group": "conceptual",
+          "proof_count": 632,
+          "total_count": 813
+        },
+        {
+          "key": "classical",
+          "label": "classical",
+          "group": "conceptual",
+          "proof_count": 645,
+          "total_count": 646
+        },
+        {
+          "key": "calc",
+          "label": "calc (calculational chain)",
+          "group": "conceptual",
+          "proof_count": 2023,
+          "total_count": 2334
+        },
+        {
+          "key": "by_contra",
+          "label": "by_contra / contrapose / exfalso",
+          "group": "conceptual",
+          "proof_count": 382,
+          "total_count": 422
+        },
+        {
+          "key": "suffices",
+          "label": "suffices",
+          "group": "conceptual",
+          "proof_count": 333,
+          "total_count": 358
+        },
+        {
+          "key": "filter_upwards",
+          "label": "filter_upwards",
+          "group": "conceptual",
+          "proof_count": 261,
+          "total_count": 298
+        },
+        {
+          "key": "wlog",
+          "label": "wlog",
+          "group": "conceptual",
+          "proof_count": 22,
+          "total_count": 22
+        },
+        {
+          "key": "simp_family",
+          "label": "simp / simpa / simp_all / dsimp",
+          "group": "solver",
+          "proof_count": 10862,
+          "total_count": 27133
+        },
+        {
+          "key": "omega",
+          "label": "omega",
+          "group": "solver",
+          "proof_count": 404,
+          "total_count": 781
+        },
+        {
+          "key": "ring",
+          "label": "ring / noncomm_ring",
+          "group": "solver",
+          "proof_count": 1494,
+          "total_count": 1878
+        },
+        {
+          "key": "linarith",
+          "label": "linarith / nlinarith",
+          "group": "solver",
+          "proof_count": 591,
+          "total_count": 1087
+        },
+        {
+          "key": "cast_tactics",
+          "label": "exact_mod_cast / push_cast / norm_cast",
+          "group": "solver",
+          "proof_count": 301,
+          "total_count": 352
+        },
+        {
+          "key": "positivity",
+          "label": "positivity",
+          "group": "solver",
+          "proof_count": 624,
+          "total_count": 972
+        },
+        {
+          "key": "norm_num",
+          "label": "norm_num",
+          "group": "solver",
+          "proof_count": 198,
+          "total_count": 256
+        },
+        {
+          "key": "linear_combination",
+          "label": "linear_combination",
+          "group": "solver",
+          "proof_count": 302,
+          "total_count": 381
+        },
+        {
+          "key": "field_simp",
+          "label": "field_simp",
+          "group": "solver",
+          "proof_count": 130,
+          "total_count": 147
+        },
+        {
+          "key": "abel_group_module",
+          "label": "abel / group / module",
+          "group": "solver",
+          "proof_count": 1673,
+          "total_count": 2076
+        },
+        {
+          "key": "gcongr",
+          "label": "gcongr",
+          "group": "solver",
+          "proof_count": 396,
+          "total_count": 506
+        },
+        {
+          "key": "fun_prop_cont_meas",
+          "label": "fun_prop / continuity / measurability",
+          "group": "solver",
+          "proof_count": 907,
+          "total_count": 1580
+        },
+        {
+          "key": "fin_cases_decide_tauto_aesop",
+          "label": "fin_cases / decide / tauto / aesop",
+          "group": "solver",
+          "proof_count": 297,
+          "total_count": 346
+        },
+        {
+          "key": "rw_rwa",
+          "label": "rw / rwa",
+          "group": "plumbing",
+          "proof_count": 7858,
+          "total_count": 14287
+        },
+        {
+          "key": "exact",
+          "label": "exact",
+          "group": "plumbing",
+          "proof_count": 6373,
+          "total_count": 9473
+        },
+        {
+          "key": "refine",
+          "label": "refine",
+          "group": "plumbing",
+          "proof_count": 5110,
+          "total_count": 7236
+        },
+        {
+          "key": "intro_family",
+          "label": "intro / intros / rintro",
+          "group": "plumbing",
+          "proof_count": 1769,
+          "total_count": 2240
+        },
+        {
+          "key": "rfl",
+          "label": "rfl",
+          "group": "plumbing",
+          "proof_count": 3609,
+          "total_count": 6021
+        },
+        {
+          "key": "ext_funext",
+          "label": "ext / funext",
+          "group": "plumbing",
+          "proof_count": 2483,
+          "total_count": 3335
+        },
+        {
+          "key": "apply",
+          "label": "apply",
+          "group": "plumbing",
+          "proof_count": 272,
+          "total_count": 298
+        },
+        {
+          "key": "trans",
+          "label": "trans",
+          "group": "plumbing",
+          "proof_count": 1970,
+          "total_count": 2801
+        },
+        {
+          "key": "congr",
+          "label": "congr",
+          "group": "plumbing",
+          "proof_count": 363,
+          "total_count": 412
+        },
+        {
+          "key": "subst",
+          "label": "subst",
+          "group": "plumbing",
+          "proof_count": 192,
+          "total_count": 267
+        },
+        {
+          "key": "change_convert",
+          "label": "change / convert",
+          "group": "plumbing",
+          "proof_count": 667,
+          "total_count": 722
+        },
+        {
+          "key": "constructor",
+          "label": "constructor",
+          "group": "plumbing",
+          "proof_count": 198,
+          "total_count": 200
+        }
+      ],
+      "equivalences": [
+        {
+          "symbol": "↔",
+          "label": "Logical iff (↔)",
+          "decl_count": 1072,
+          "total_count": 1102
+        },
+        {
+          "symbol": "≃",
+          "label": "Type equivalence (≃)",
+          "decl_count": 365,
+          "total_count": 413
+        },
+        {
+          "symbol": "≃+*",
+          "label": "Ring equiv (≃+*)",
+          "decl_count": 107,
+          "total_count": 109
+        },
+        {
+          "symbol": "≃ₗ",
+          "label": "Linear equiv (≃ₗ)",
+          "decl_count": 53,
+          "total_count": 53
+        },
+        {
+          "symbol": "≃*",
+          "label": "Multiplicative equiv (≃*)",
+          "decl_count": 27,
+          "total_count": 29
+        },
+        {
+          "symbol": "≃ₜ",
+          "label": "Homeomorphism (≃ₜ)",
+          "decl_count": 20,
+          "total_count": 20
+        },
+        {
+          "symbol": "≃L",
+          "label": "Continuous linear equiv (≃L)",
+          "decl_count": 18,
+          "total_count": 19
+        },
+        {
+          "symbol": "≅",
+          "label": "Categorical iso (≅)",
+          "decl_count": 16,
+          "total_count": 16
+        },
+        {
+          "symbol": "≃+",
+          "label": "Additive equiv (≃+)",
+          "decl_count": 11,
+          "total_count": 11
+        },
+        {
+          "symbol": "≃ₐ",
+          "label": "Algebra equiv (≃ₐ)",
+          "decl_count": 6,
+          "total_count": 6
+        },
+        {
+          "symbol": "≃ₗᵢ",
+          "label": "Linear isometric equiv (≃ₗᵢ)",
+          "decl_count": 2,
+          "total_count": 2
+        },
+        {
+          "symbol": "≃ᵐ",
+          "label": "Measurable equiv (≃ᵐ)",
+          "decl_count": 1,
+          "total_count": 2
+        }
+      ],
+      "cross_subtheory_imports": [
+        {
+          "bucket": "0 (leaf)",
+          "count": 2
+        },
+        {
+          "bucket": "1",
+          "count": 434
+        },
+        {
+          "bucket": "2",
+          "count": 259
+        },
+        {
+          "bucket": "3-5",
+          "count": 108
+        },
+        {
+          "bucket": "6-10",
+          "count": 0
+        },
+        {
+          "bucket": "11+",
+          "count": 0
+        }
+      ],
+      "cross_domain_imports": [
+        {
+          "bucket": "0 (leaf)",
+          "count": 2
+        },
+        {
+          "bucket": "1",
+          "count": 697
+        },
+        {
+          "bucket": "2",
+          "count": 104
+        },
+        {
+          "bucket": "3",
+          "count": 0
+        },
+        {
+          "bucket": "4",
+          "count": 0
+        },
+        {
+          "bucket": "5+",
+          "count": 0
+        }
+      ],
+      "open_namespaces": {
+        "buckets": [
+          {
+            "bucket": "0",
+            "count": 5
+          },
+          {
+            "bucket": "1",
+            "count": 10
+          },
+          {
+            "bucket": "2",
+            "count": 22
+          },
+          {
+            "bucket": "3-4",
+            "count": 57
+          },
+          {
+            "bucket": "5-7",
+            "count": 153
+          },
+          {
+            "bucket": "8-10",
+            "count": 224
+          },
+          {
+            "bucket": "11+",
+            "count": 332
+          }
+        ],
+        "top_roots": [
+          {
+            "namespace": "Matrix",
+            "count": 459
+          },
+          {
+            "namespace": "Finset",
+            "count": 394
+          },
+          {
+            "namespace": "Fintype",
+            "count": 298
+          },
+          {
+            "namespace": "NumberField",
+            "count": 255
+          },
+          {
+            "namespace": "MeasureTheory",
+            "count": 231
+          },
+          {
+            "namespace": "Function",
+            "count": 222
+          },
+          {
+            "namespace": "Classical",
+            "count": 190
+          },
+          {
+            "namespace": "Module",
+            "count": 181
+          },
+          {
+            "namespace": "Set",
+            "count": 176
+          },
+          {
+            "namespace": "Submodule",
+            "count": 147
+          },
+          {
+            "namespace": "Complex",
+            "count": 143
+          },
+          {
+            "namespace": "Ideal",
+            "count": 121
+          },
+          {
+            "namespace": "Polynomial",
+            "count": 121
+          },
+          {
+            "namespace": "New",
+            "count": 120
+          },
+          {
+            "namespace": "Real",
+            "count": 120
+          }
+        ]
+      },
+      "fan_in": {
+        "in_degree": [
+          {
+            "bucket": "0",
+            "non_simp": 1,
+            "simp": 0,
+            "total": 1
+          },
+          {
+            "bucket": "1",
+            "non_simp": 322,
+            "simp": 60,
+            "total": 382
+          },
+          {
+            "bucket": "2",
+            "non_simp": 121,
+            "simp": 67,
+            "total": 188
+          },
+          {
+            "bucket": "3-5",
+            "non_simp": 94,
+            "simp": 102,
+            "total": 196
+          },
+          {
+            "bucket": "6-10",
+            "non_simp": 12,
+            "simp": 21,
+            "total": 33
+          },
+          {
+            "bucket": "11-25",
+            "non_simp": 1,
+            "simp": 2,
+            "total": 3
+          },
+          {
+            "bucket": "26-100",
+            "non_simp": 0,
+            "simp": 0,
+            "total": 0
+          },
+          {
+            "bucket": "101-500",
+            "non_simp": 0,
+            "simp": 0,
+            "total": 0
+          },
+          {
+            "bucket": "500+",
+            "non_simp": 0,
+            "simp": 0,
+            "total": 0
+          }
+        ],
+        "cross_subtheory": [
+          {
+            "bucket": "0",
+            "non_simp": 1,
+            "simp": 0,
+            "total": 1
+          },
+          {
+            "bucket": "1",
+            "non_simp": 412,
+            "simp": 108,
+            "total": 520
+          },
+          {
+            "bucket": "2",
+            "non_simp": 99,
+            "simp": 81,
+            "total": 180
+          },
+          {
+            "bucket": "3-5",
+            "non_simp": 34,
+            "simp": 54,
+            "total": 88
+          },
+          {
+            "bucket": "6-10",
+            "non_simp": 5,
+            "simp": 9,
+            "total": 14
+          },
+          {
+            "bucket": "11-20",
+            "non_simp": 0,
+            "simp": 0,
+            "total": 0
+          },
+          {
+            "bucket": "21+",
+            "non_simp": 0,
+            "simp": 0,
+            "total": 0
+          }
+        ],
+        "top_non_simp_hubs": [
+          {
+            "name": "Lib.Base",
+            "top_dir": "Lib",
+            "depth2_dir": "Lib",
+            "in_degree": 20,
+            "cross_subtheory_importers": 7,
+            "n_theorems_lemmas": 1,
+            "n_defs_structs": 0
+          },
+          {
+            "name": "Lib.General.Analysis.HolomorphicIntegrals",
+            "top_dir": "Lib",
+            "depth2_dir": "Lib/General",
+            "in_degree": 9,
+            "cross_subtheory_importers": 6,
+            "n_theorems_lemmas": 29,
+            "n_defs_structs": 2
+          },
+          {
+            "name": "Lib.General.LinearAlgebra.Eigenvalues",
+            "top_dir": "Lib",
+            "depth2_dir": "Lib/General",
+            "in_degree": 9,
+            "cross_subtheory_importers": 6,
+            "n_theorems_lemmas": 30,
+            "n_defs_structs": 1
+          },
+          {
+            "name": "New.UpperBound.Objects.Rows",
+            "top_dir": "New",
+            "depth2_dir": "New/UpperBound",
+            "in_degree": 9,
+            "cross_subtheory_importers": 4,
+            "n_theorems_lemmas": 28,
+            "n_defs_structs": 13
+          },
+          {
+            "name": "Lib.PadicComparison.Descent.TestCategory",
+            "top_dir": "Lib",
+            "depth2_dir": "Lib/PadicComparison",
+            "in_degree": 8,
+            "cross_subtheory_importers": 7,
+            "n_theorems_lemmas": 22,
+            "n_defs_structs": 20
+          },
+          {
+            "name": "Lib.Analytic.EntireLFunction",
+            "top_dir": "Lib",
+            "depth2_dir": "Lib/Analytic",
+            "in_degree": 7,
+            "cross_subtheory_importers": 4,
+            "n_theorems_lemmas": 11,
+            "n_defs_structs": 1
+          },
+          {
+            "name": "Lib.General.Algebra.MultivariatePolynomials",
+            "top_dir": "Lib",
+            "depth2_dir": "Lib/General",
+            "in_degree": 7,
+            "cross_subtheory_importers": 5,
+            "n_theorems_lemmas": 14,
+            "n_defs_structs": 0
+          },
+          {
+            "name": "Lib.Adelic.AutomorphicForms.PAdicGauge",
+            "top_dir": "Lib",
+            "depth2_dir": "Lib/Adelic",
+            "in_degree": 6,
+            "cross_subtheory_importers": 6,
+            "n_theorems_lemmas": 37,
+            "n_defs_structs": 13
+          },
+          {
+            "name": "Lib.DiscreteSeries.Bruhat.ComplexPlace",
+            "top_dir": "Lib",
+            "depth2_dir": "Lib/DiscreteSeries",
+            "in_degree": 6,
+            "cross_subtheory_importers": 4,
+            "n_theorems_lemmas": 16,
+            "n_defs_structs": 4
+          },
+          {
+            "name": "Lib.General.Geometry.GeometricPoints",
+            "top_dir": "Lib",
+            "depth2_dir": "Lib/General",
+            "in_degree": 6,
+            "cross_subtheory_importers": 3,
+            "n_theorems_lemmas": 17,
+            "n_defs_structs": 1
+          },
+          {
+            "name": "Lib.General.Topology",
+            "top_dir": "Lib",
+            "depth2_dir": "Lib/General",
+            "in_degree": 6,
+            "cross_subtheory_importers": 4,
+            "n_theorems_lemmas": 9,
+            "n_defs_structs": 1
+          },
+          {
+            "name": "New.OneLift.ComparisonOperator.ExchangeData",
+            "top_dir": "New",
+            "depth2_dir": "New/OneLift",
+            "in_degree": 6,
+            "cross_subtheory_importers": 4,
+            "n_theorems_lemmas": 34,
+            "n_defs_structs": 13
+          },
+          {
+            "name": "New.Spanning.Unfolding.Climbing",
+            "top_dir": "New",
+            "depth2_dir": "New/Spanning",
+            "in_degree": 6,
+            "cross_subtheory_importers": 2,
+            "n_theorems_lemmas": 60,
+            "n_defs_structs": 10
+          },
+          {
+            "name": "Lib.Adelic.AutomorphicForms.HeckeEigenforms",
+            "top_dir": "Lib",
+            "depth2_dir": "Lib/Adelic",
+            "in_degree": 5,
+            "cross_subtheory_importers": 2,
+            "n_theorems_lemmas": 23,
+            "n_defs_structs": 6
+          },
+          {
+            "name": "Lib.ClassField.Global.Chebotarev",
+            "top_dir": "Lib",
+            "depth2_dir": "Lib/ClassField",
+            "in_degree": 5,
+            "cross_subtheory_importers": 4,
+            "n_theorems_lemmas": 1,
+            "n_defs_structs": 0
+          }
+        ]
+      },
+      "file_order": {
+        "multi_decl_3plus_files": 796,
+        "multi_decl_2plus_files": 798,
+        "groups": [
+          "public_theorem",
+          "def_abbrev",
+          "private_thm_lem",
+          "public_lemma",
+          "struct_class_ind"
+        ],
+        "quintiles": [
+          {
+            "label": "Q1 (0–20%)",
+            "counts": {
+              "public_theorem": 252,
+              "def_abbrev": 1521,
+              "private_thm_lem": 114,
+              "public_lemma": 2846,
+              "struct_class_ind": 373
+            },
+            "total": 5106
+          },
+          {
+            "label": "Q2 (20–40%)",
+            "counts": {
+              "public_theorem": 245,
+              "def_abbrev": 1012,
+              "private_thm_lem": 131,
+              "public_lemma": 3117,
+              "struct_class_ind": 261
+            },
+            "total": 4766
+          },
+          {
+            "label": "Q3 (40–60%)",
+            "counts": {
+              "public_theorem": 242,
+              "def_abbrev": 816,
+              "private_thm_lem": 145,
+              "public_lemma": 3332,
+              "struct_class_ind": 239
+            },
+            "total": 4774
+          },
+          {
+            "label": "Q4 (60–80%)",
+            "counts": {
+              "public_theorem": 324,
+              "def_abbrev": 640,
+              "private_thm_lem": 171,
+              "public_lemma": 3412,
+              "struct_class_ind": 219
+            },
+            "total": 4766
+          },
+          {
+            "label": "Q5 (80–100%)",
+            "counts": {
+              "public_theorem": 467,
+              "def_abbrev": 384,
+              "private_thm_lem": 157,
+              "public_lemma": 3265,
+              "struct_class_ind": 185
+            },
+            "total": 4458
+          }
+        ],
+        "first_decl": {
+          "counts": {
+            "public_theorem": 34,
+            "def_abbrev": 281,
+            "private_thm_lem": 16,
+            "public_lemma": 383,
+            "struct_class_ind": 84
+          },
+          "total": 798
+        },
+        "last_decl": {
+          "counts": {
+            "public_theorem": 174,
+            "def_abbrev": 24,
+            "private_thm_lem": 0,
+            "public_lemma": 570,
+            "struct_class_ind": 30
+          },
+          "total": 798
+        }
+      },
+      "decl_taxonomy": {
+        "kinds": [
+          {
+            "kind": "lemma",
+            "public": 15967,
+            "private": 706,
+            "protected": 11,
+            "total": 16684
+          },
+          {
+            "kind": "def",
+            "public": 3250,
+            "private": 75,
+            "protected": 4,
+            "total": 3329
+          },
+          {
+            "kind": "theorem",
+            "public": 1532,
+            "private": 12,
+            "protected": 0,
+            "total": 1544
+          },
+          {
+            "kind": "abbrev",
+            "public": 1021,
+            "private": 19,
+            "protected": 5,
+            "total": 1045
+          },
+          {
+            "kind": "instance",
+            "public": 753,
+            "private": 0,
+            "protected": 0,
+            "total": 753
+          },
+          {
+            "kind": "structure",
+            "public": 390,
+            "private": 8,
+            "protected": 0,
+            "total": 398
+          },
+          {
+            "kind": "class",
+            "public": 117,
+            "private": 0,
+            "protected": 0,
+            "total": 117
+          },
+          {
+            "kind": "inductive",
+            "public": 9,
+            "private": 0,
+            "protected": 0,
+            "total": 9
+          }
+        ],
+        "decls_per_file": [
+          {
+            "bucket": "0",
+            "count": 0
+          },
+          {
+            "bucket": "1",
+            "count": 5
+          },
+          {
+            "bucket": "2",
+            "count": 2
+          },
+          {
+            "bucket": "3-5",
+            "count": 20
+          },
+          {
+            "bucket": "6-10",
+            "count": 66
+          },
+          {
+            "bucket": "11-25",
+            "count": 296
+          },
+          {
+            "bucket": "26-50",
+            "count": 307
+          },
+          {
+            "bucket": "51+",
+            "count": 107
+          }
+        ]
+      }
+    },
+    "Lib": {
+      "summary": {
+        "modules": 495,
+        "declarations": 14672,
+        "theorems_lemmas": 11074,
+        "tactic_proofs": 8566,
+        "term_proofs": 2508,
+        "attr_tagged_decls": 1005,
+        "attr_occurrences": 1017,
+        "file_directives": 153,
+        "doc_module_files": 495,
+        "doc_decl_count": 14214,
+        "blueprint_tags": 0,
+        "line_comments": 846,
+        "block_comments": 8687,
+        "aux_named_decls": 1,
+        "simp_modules": 204,
+        "non_simp_modules": 291
+      },
+      "proof_shapes": [
+        {
+          "key": "wrapper_forwarding",
+          "label": "Wrapper (first | exact …)",
+          "count": 0
+        },
+        {
+          "key": "oneliner_mech",
+          "label": "1-line mechanical (simp/rfl/rw/exact/…)",
+          "count": 337
+        },
+        {
+          "key": "oneliner_solver",
+          "label": "1-line solver (ring/omega/linarith/…)",
+          "count": 39
+        },
+        {
+          "key": "oneliner_other",
+          "label": "1-line other tactic",
+          "count": 14
+        },
+        {
+          "key": "term_mode",
+          "label": "Term-mode (no by)",
+          "count": 2508
+        },
+        {
+          "key": "short_2_5",
+          "label": "Short tactic (2–5 lines)",
+          "count": 2247
+        },
+        {
+          "key": "medium_6_20",
+          "label": "Medium tactic (6–20 lines)",
+          "count": 4193
+        },
+        {
+          "key": "long_21_50",
+          "label": "Long tactic (21–50 lines)",
+          "count": 1470
+        },
+        {
+          "key": "deep_51_plus",
+          "label": "Deep tactic (51+ lines)",
+          "count": 266
+        }
+      ],
+      "decl_attrs": [
+        {
+          "tag": "simp",
+          "count": 714
+        },
+        {
+          "tag": "fun_prop",
+          "count": 118
+        },
+        {
+          "tag": "simps",
+          "count": 70
+        },
+        {
+          "tag": "to_additive",
+          "count": 35
+        },
+        {
+          "tag": "grind",
+          "count": 20
+        },
+        {
+          "tag": "irreducible",
+          "count": 13
+        },
+        {
+          "tag": "ext",
+          "count": 11
+        },
+        {
+          "tag": "instance_reducible",
+          "count": 7
+        },
+        {
+          "tag": "elab_as_elim",
+          "count": 5
+        },
+        {
+          "tag": "mk_iff",
+          "count": 5
+        },
+        {
+          "tag": "reassoc",
+          "count": 4
+        },
+        {
+          "tag": "reducible",
+          "count": 4
+        },
+        {
+          "tag": "induction_eliminator",
+          "count": 2
+        },
+        {
+          "tag": "norm_cast",
+          "count": 2
+        },
+        {
+          "tag": "aesop",
+          "count": 1
+        },
+        {
+          "tag": "congr",
+          "count": 1
+        },
+        {
+          "tag": "gcongr",
+          "count": 1
+        },
+        {
+          "tag": "implicit_reducible",
+          "count": 1
+        },
+        {
+          "tag": "instance",
+          "count": 1
+        },
+        {
+          "tag": "match_pattern",
+          "count": 1
+        }
+      ],
+      "file_directives": [
+        {
+          "directive": "local instance",
+          "count": 59
+        },
+        {
+          "directive": "instance",
+          "count": 27
+        },
+        {
+          "directive": "irreducible",
+          "count": 10
+        },
+        {
+          "directive": "local simp",
+          "count": 9
+        },
+        {
+          "directive": "-simp",
+          "count": 8
+        },
+        {
+          "directive": "fun_prop",
+          "count": 8
+        },
+        {
+          "directive": "simp",
+          "count": 7
+        },
+        {
+          "directive": "local fun_prop",
+          "count": 5
+        },
+        {
+          "directive": "-instance",
+          "count": 3
+        },
+        {
+          "directive": "grind .",
+          "count": 2
+        },
+        {
+          "directive": "instance_reducible, instance",
+          "count": 2
+        },
+        {
+          "directive": "scoped simp",
+          "count": 2
+        },
+        {
+          "directive": "local aesop 1%",
+          "count": 1
+        },
+        {
+          "directive": "local ext",
+          "count": 1
+        },
+        {
+          "directive": "local grind",
+          "count": 1
+        }
+      ],
+      "local_instance_targets": [
+        {
+          "target": "Fintype.ofFinite",
+          "count": 46
+        },
+        {
+          "target": "Prop.linearOrder",
+          "count": 3
+        },
+        {
+          "target": "FormallyEtale.of_isSeparable",
+          "count": 2
+        },
+        {
+          "target": "isUniformAddGroup_of_addCommGroup",
+          "count": 2
+        },
+        {
+          "target": "rightUniformSpace",
+          "count": 2
+        },
+        {
+          "target": "EtaleChart.polyAlgebra",
+          "count": 1
+        },
+        {
+          "target": "FractionRing.liftAlgebra",
+          "count": 1
+        },
+        {
+          "target": "LieRing.ofAssociativeRing",
+          "count": 1
+        },
+        {
+          "target": "Quotient.field",
+          "count": 1
+        },
+        {
+          "target": "SMulCommClass.symm",
+          "count": 1
+        },
+        {
+          "target": "ZMod.algebra",
+          "count": 1
+        },
+        {
+          "target": "gradedAlgebra",
+          "count": 1
+        },
+        {
+          "target": "preservesSmallestFilteredColimits_of_preservesFilteredColimits",
+          "count": 1
+        }
+      ],
+      "set_options": [
+        {
+          "option": "backward.isDefEq.respectTransparency",
+          "count": 28
+        },
+        {
+          "option": "synthInstance.maxHeartbeats",
+          "count": 2
+        },
+        {
+          "option": "synthInstance.maxSize",
+          "count": 1
+        },
+        {
+          "option": "warning.simp.varHead",
+          "count": 1
+        }
+      ],
+      "typeclasses": {
+        "top_all": [
+          {
+            "name": "Fintype",
+            "count": 1344,
+            "tier": "finiteness_logic"
+          },
+          {
+            "name": "Field",
+            "count": 1328,
+            "tier": "core_algebra"
+          },
+          {
+            "name": "DecidableEq",
+            "count": 973,
+            "tier": "finiteness_logic"
+          },
+          {
+            "name": "CommRing",
+            "count": 732,
+            "tier": "core_algebra"
+          },
+          {
+            "name": "Algebra",
+            "count": 560,
+            "tier": "core_algebra"
+          },
+          {
+            "name": "CMType",
+            "count": 417,
+            "tier": "other"
+          },
+          {
+            "name": "NumberField",
+            "count": 310,
+            "tier": "number_local_fields"
+          },
+          {
+            "name": "Group",
+            "count": 285,
+            "tier": "core_algebra"
+          },
+          {
+            "name": "Fact",
+            "count": 257,
+            "tier": "finiteness_logic"
+          },
+          {
+            "name": "Finite",
+            "count": 255,
+            "tier": "finiteness_logic"
+          },
+          {
+            "name": "ThePrime",
+            "count": 251,
+            "tier": "other"
+          },
+          {
+            "name": "TopologicalSpace",
+            "count": 250,
+            "tier": "analysis_topology_measure"
+          },
+          {
+            "name": "AddCommGroup",
+            "count": 242,
+            "tier": "core_algebra"
+          },
+          {
+            "name": "Module",
+            "count": 201,
+            "tier": "core_algebra"
+          },
+          {
+            "name": "WeilData",
+            "count": 193,
+            "tier": "other"
+          },
+          {
+            "name": "NeZero",
+            "count": 187,
+            "tier": "core_algebra"
+          },
+          {
+            "name": "IsCMField",
+            "count": 173,
+            "tier": "number_local_fields"
+          },
+          {
+            "name": "Nonempty",
+            "count": 131,
+            "tier": "finiteness_logic"
+          },
+          {
+            "name": "EmbeddedNumberField",
+            "count": 122,
+            "tier": "number_local_fields"
+          },
+          {
+            "name": "MeasurableSpace",
+            "count": 118,
+            "tier": "analysis_topology_measure"
+          },
+          {
+            "name": "Category",
+            "count": 96,
+            "tier": "other"
+          },
+          {
+            "name": "CMBase",
+            "count": 91,
+            "tier": "other"
+          },
+          {
+            "name": "CharZero",
+            "count": 84,
+            "tier": "core_algebra"
+          },
+          {
+            "name": "Module.Finite",
+            "count": 84,
+            "tier": "core_algebra"
+          },
+          {
+            "name": "HasPrimitiveRoot5040",
+            "count": 82,
+            "tier": "other"
+          }
+        ],
+        "top_strong": [
+          {
+            "name": "CMType",
+            "count": 417,
+            "tier": "other"
+          },
+          {
+            "name": "NumberField",
+            "count": 310,
+            "tier": "number_local_fields"
+          },
+          {
+            "name": "ThePrime",
+            "count": 251,
+            "tier": "other"
+          },
+          {
+            "name": "WeilData",
+            "count": 193,
+            "tier": "other"
+          },
+          {
+            "name": "IsCMField",
+            "count": 173,
+            "tier": "number_local_fields"
+          },
+          {
+            "name": "EmbeddedNumberField",
+            "count": 122,
+            "tier": "number_local_fields"
+          },
+          {
+            "name": "MeasurableSpace",
+            "count": 118,
+            "tier": "analysis_topology_measure"
+          },
+          {
+            "name": "Category",
+            "count": 96,
+            "tier": "other"
+          },
+          {
+            "name": "CMBase",
+            "count": 91,
+            "tier": "other"
+          },
+          {
+            "name": "Module.Finite",
+            "count": 84,
+            "tier": "core_algebra"
+          },
+          {
+            "name": "HasPrimitiveRoot5040",
+            "count": 82,
+            "tier": "other"
+          },
+          {
+            "name": "IsAlgClosed",
+            "count": 79,
+            "tier": "number_local_fields"
+          },
+          {
+            "name": "IsTopologicalGroup",
+            "count": 79,
+            "tier": "analysis_topology_measure"
+          },
+          {
+            "name": "StarRing",
+            "count": 79,
+            "tier": "core_algebra"
+          },
+          {
+            "name": "IsDomain",
+            "count": 76,
+            "tier": "core_algebra"
+          },
+          {
+            "name": "PadicIso",
+            "count": 73,
+            "tier": "other"
+          },
+          {
+            "name": "SFinite",
+            "count": 73,
+            "tier": "analysis_topology_measure"
+          },
+          {
+            "name": "IsLocalRing",
+            "count": 71,
+            "tier": "comm_alg_geom"
+          },
+          {
+            "name": "FinComplexSpace",
+            "count": 67,
+            "tier": "other"
+          },
+          {
+            "name": "IsScalarTower",
+            "count": 64,
+            "tier": "core_algebra"
+          },
+          {
+            "name": "NormedAddCommGroup",
+            "count": 59,
+            "tier": "analysis_topology_measure"
+          },
+          {
+            "name": "CompactSpace",
+            "count": 57,
+            "tier": "analysis_topology_measure"
+          },
+          {
+            "name": "PrimeSevenModEight",
+            "count": 55,
+            "tier": "other"
+          },
+          {
+            "name": "HasQuadSubfield",
+            "count": 52,
+            "tier": "other"
+          },
+          {
+            "name": "MulSemiringAction",
+            "count": 52,
+            "tier": "other"
+          }
+        ],
+        "tier_totals": [
+          {
+            "tier": "core_algebra",
+            "label": "Core Algebra",
+            "count": 4206
+          },
+          {
+            "tier": "number_local_fields",
+            "label": "Number & Local Fields",
+            "count": 784
+          },
+          {
+            "tier": "comm_alg_geom",
+            "label": "Commutative & Algebraic Geometry",
+            "count": 249
+          },
+          {
+            "tier": "analysis_topology_measure",
+            "label": "Analysis, Topology & Measure",
+            "count": 1019
+          },
+          {
+            "tier": "finiteness_logic",
+            "label": "Finiteness & Type-Level",
+            "count": 3014
+          },
+          {
+            "tier": "other",
+            "label": "Other Domain-Specific",
+            "count": 2760
+          }
+        ]
+      },
+      "proof_strategies": [
+        {
+          "key": "have",
+          "label": "have (intermediate claim/object)",
+          "group": "conceptual",
+          "proof_count": 5461,
+          "total_count": 19518
+        },
+        {
+          "key": "obtain_rcases",
+          "label": "obtain / rcases / cases",
+          "group": "conceptual",
+          "proof_count": 3460,
+          "total_count": 7022
+        },
+        {
+          "key": "let_set",
+          "label": "let / set (local binding)",
+          "group": "conceptual",
+          "proof_count": 3092,
+          "total_count": 6610
+        },
+        {
+          "key": "by_cases",
+          "label": "by_cases (case split)",
+          "group": "conceptual",
+          "proof_count": 324,
+          "total_count": 386
+        },
+        {
+          "key": "induction",
+          "label": "induction",
+          "group": "conceptual",
+          "proof_count": 416,
+          "total_count": 475
+        },
+        {
+          "key": "choose",
+          "label": "choose (choice extraction)",
+          "group": "conceptual",
+          "proof_count": 401,
+          "total_count": 523
+        },
+        {
+          "key": "classical",
+          "label": "classical",
+          "group": "conceptual",
+          "proof_count": 346,
+          "total_count": 347
+        },
+        {
+          "key": "calc",
+          "label": "calc (calculational chain)",
+          "group": "conceptual",
+          "proof_count": 1005,
+          "total_count": 1128
+        },
+        {
+          "key": "by_contra",
+          "label": "by_contra / contrapose / exfalso",
+          "group": "conceptual",
+          "proof_count": 264,
+          "total_count": 282
+        },
+        {
+          "key": "suffices",
+          "label": "suffices",
+          "group": "conceptual",
+          "proof_count": 224,
+          "total_count": 241
+        },
+        {
+          "key": "filter_upwards",
+          "label": "filter_upwards",
+          "group": "conceptual",
+          "proof_count": 190,
+          "total_count": 221
+        },
+        {
+          "key": "wlog",
+          "label": "wlog",
+          "group": "conceptual",
+          "proof_count": 13,
+          "total_count": 13
+        },
+        {
+          "key": "simp_family",
+          "label": "simp / simpa / simp_all / dsimp",
+          "group": "solver",
+          "proof_count": 6649,
+          "total_count": 17067
+        },
+        {
+          "key": "omega",
+          "label": "omega",
+          "group": "solver",
+          "proof_count": 121,
+          "total_count": 203
+        },
+        {
+          "key": "ring",
+          "label": "ring / noncomm_ring",
+          "group": "solver",
+          "proof_count": 852,
+          "total_count": 1074
+        },
+        {
+          "key": "linarith",
+          "label": "linarith / nlinarith",
+          "group": "solver",
+          "proof_count": 192,
+          "total_count": 362
+        },
+        {
+          "key": "cast_tactics",
+          "label": "exact_mod_cast / push_cast / norm_cast",
+          "group": "solver",
+          "proof_count": 129,
+          "total_count": 147
+        },
+        {
+          "key": "positivity",
+          "label": "positivity",
+          "group": "solver",
+          "proof_count": 241,
+          "total_count": 381
+        },
+        {
+          "key": "norm_num",
+          "label": "norm_num",
+          "group": "solver",
+          "proof_count": 90,
+          "total_count": 118
+        },
+        {
+          "key": "linear_combination",
+          "label": "linear_combination",
+          "group": "solver",
+          "proof_count": 218,
+          "total_count": 279
+        },
+        {
+          "key": "field_simp",
+          "label": "field_simp",
+          "group": "solver",
+          "proof_count": 55,
+          "total_count": 58
+        },
+        {
+          "key": "abel_group_module",
+          "label": "abel / group / module",
+          "group": "solver",
+          "proof_count": 911,
+          "total_count": 1093
+        },
+        {
+          "key": "gcongr",
+          "label": "gcongr",
+          "group": "solver",
+          "proof_count": 130,
+          "total_count": 157
+        },
+        {
+          "key": "fun_prop_cont_meas",
+          "label": "fun_prop / continuity / measurability",
+          "group": "solver",
+          "proof_count": 629,
+          "total_count": 1056
+        },
+        {
+          "key": "fin_cases_decide_tauto_aesop",
+          "label": "fin_cases / decide / tauto / aesop",
+          "group": "solver",
+          "proof_count": 244,
+          "total_count": 280
+        },
+        {
+          "key": "rw_rwa",
+          "label": "rw / rwa",
+          "group": "plumbing",
+          "proof_count": 4405,
+          "total_count": 7848
+        },
+        {
+          "key": "exact",
+          "label": "exact",
+          "group": "plumbing",
+          "proof_count": 3811,
+          "total_count": 5657
+        },
+        {
+          "key": "refine",
+          "label": "refine",
+          "group": "plumbing",
+          "proof_count": 3177,
+          "total_count": 4630
+        },
+        {
+          "key": "intro_family",
+          "label": "intro / intros / rintro",
+          "group": "plumbing",
+          "proof_count": 1096,
+          "total_count": 1429
+        },
+        {
+          "key": "rfl",
+          "label": "rfl",
+          "group": "plumbing",
+          "proof_count": 2195,
+          "total_count": 3698
+        },
+        {
+          "key": "ext_funext",
+          "label": "ext / funext",
+          "group": "plumbing",
+          "proof_count": 1650,
+          "total_count": 2270
+        },
+        {
+          "key": "apply",
+          "label": "apply",
+          "group": "plumbing",
+          "proof_count": 199,
+          "total_count": 214
+        },
+        {
+          "key": "trans",
+          "label": "trans",
+          "group": "plumbing",
+          "proof_count": 1122,
+          "total_count": 1596
+        },
+        {
+          "key": "congr",
+          "label": "congr",
+          "group": "plumbing",
+          "proof_count": 238,
+          "total_count": 275
+        },
+        {
+          "key": "subst",
+          "label": "subst",
+          "group": "plumbing",
+          "proof_count": 122,
+          "total_count": 167
+        },
+        {
+          "key": "change_convert",
+          "label": "change / convert",
+          "group": "plumbing",
+          "proof_count": 396,
+          "total_count": 424
+        },
+        {
+          "key": "constructor",
+          "label": "constructor",
+          "group": "plumbing",
+          "proof_count": 120,
+          "total_count": 121
+        }
+      ],
+      "equivalences": [
+        {
+          "symbol": "↔",
+          "label": "Logical iff (↔)",
+          "decl_count": 746,
+          "total_count": 771
+        },
+        {
+          "symbol": "≃",
+          "label": "Type equivalence (≃)",
+          "decl_count": 170,
+          "total_count": 178
+        },
+        {
+          "symbol": "≃ₗ",
+          "label": "Linear equiv (≃ₗ)",
+          "decl_count": 43,
+          "total_count": 43
+        },
+        {
+          "symbol": "≃+*",
+          "label": "Ring equiv (≃+*)",
+          "decl_count": 19,
+          "total_count": 19
+        },
+        {
+          "symbol": "≃*",
+          "label": "Multiplicative equiv (≃*)",
+          "decl_count": 18,
+          "total_count": 20
+        },
+        {
+          "symbol": "≅",
+          "label": "Categorical iso (≅)",
+          "decl_count": 16,
+          "total_count": 16
+        },
+        {
+          "symbol": "≃L",
+          "label": "Continuous linear equiv (≃L)",
+          "decl_count": 15,
+          "total_count": 16
+        },
+        {
+          "symbol": "≃ₜ",
+          "label": "Homeomorphism (≃ₜ)",
+          "decl_count": 15,
+          "total_count": 15
+        },
+        {
+          "symbol": "≃+",
+          "label": "Additive equiv (≃+)",
+          "decl_count": 11,
+          "total_count": 11
+        },
+        {
+          "symbol": "≃ₐ",
+          "label": "Algebra equiv (≃ₐ)",
+          "decl_count": 5,
+          "total_count": 5
+        },
+        {
+          "symbol": "≃ᵐ",
+          "label": "Measurable equiv (≃ᵐ)",
+          "decl_count": 1,
+          "total_count": 2
+        },
+        {
+          "symbol": "≃ₗᵢ",
+          "label": "Linear isometric equiv (≃ₗᵢ)",
+          "decl_count": 0,
+          "total_count": 0
+        }
+      ],
+      "cross_subtheory_imports": [
+        {
+          "bucket": "0 (leaf)",
+          "count": 1
+        },
+        {
+          "bucket": "1",
+          "count": 277
+        },
+        {
+          "bucket": "2",
+          "count": 158
+        },
+        {
+          "bucket": "3-5",
+          "count": 59
+        },
+        {
+          "bucket": "6-10",
+          "count": 0
+        },
+        {
+          "bucket": "11+",
+          "count": 0
+        }
+      ],
+      "cross_domain_imports": [
+        {
+          "bucket": "0 (leaf)",
+          "count": 1
+        },
+        {
+          "bucket": "1",
+          "count": 494
+        },
+        {
+          "bucket": "2",
+          "count": 0
+        },
+        {
+          "bucket": "3",
+          "count": 0
+        },
+        {
+          "bucket": "4",
+          "count": 0
+        },
+        {
+          "bucket": "5+",
+          "count": 0
+        }
+      ],
+      "open_namespaces": {
+        "buckets": [
+          {
+            "bucket": "0",
+            "count": 3
+          },
+          {
+            "bucket": "1",
+            "count": 5
+          },
+          {
+            "bucket": "2",
+            "count": 14
+          },
+          {
+            "bucket": "3-4",
+            "count": 28
+          },
+          {
+            "bucket": "5-7",
+            "count": 75
+          },
+          {
+            "bucket": "8-10",
+            "count": 140
+          },
+          {
+            "bucket": "11+",
+            "count": 230
+          }
+        ],
+        "top_roots": [
+          {
+            "namespace": "Matrix",
+            "count": 260
+          },
+          {
+            "namespace": "Finset",
+            "count": 194
+          },
+          {
+            "namespace": "Function",
+            "count": 166
+          },
+          {
+            "namespace": "NumberField",
+            "count": 165
+          },
+          {
+            "namespace": "Fintype",
+            "count": 142
+          },
+          {
+            "namespace": "MeasureTheory",
+            "count": 142
+          },
+          {
+            "namespace": "Set",
+            "count": 131
+          },
+          {
+            "namespace": "Module",
+            "count": 111
+          },
+          {
+            "namespace": "Classical",
+            "count": 101
+          },
+          {
+            "namespace": "Complex",
+            "count": 101
+          },
+          {
+            "namespace": "Submodule",
+            "count": 98
+          },
+          {
+            "namespace": "Ideal",
+            "count": 89
+          },
+          {
+            "namespace": "New",
+            "count": 85
+          },
+          {
+            "namespace": "Polynomial",
+            "count": 85
+          },
+          {
+            "namespace": "CategoryTheory",
+            "count": 84
+          }
+        ]
+      },
+      "fan_in": {
+        "in_degree": [
+          {
+            "bucket": "0",
+            "non_simp": 0,
+            "simp": 0,
+            "total": 0
+          },
+          {
+            "bucket": "1",
+            "non_simp": 157,
+            "simp": 41,
+            "total": 198
+          },
+          {
+            "bucket": "2",
+            "non_simp": 69,
+            "simp": 54,
+            "total": 123
+          },
+          {
+            "bucket": "3-5",
+            "non_simp": 55,
+            "simp": 87,
+            "total": 142
+          },
+          {
+            "bucket": "6-10",
+            "non_simp": 9,
+            "simp": 20,
+            "total": 29
+          },
+          {
+            "bucket": "11-25",
+            "non_simp": 1,
+            "simp": 2,
+            "total": 3
+          },
+          {
+            "bucket": "26-100",
+            "non_simp": 0,
+            "simp": 0,
+            "total": 0
+          },
+          {
+            "bucket": "101-500",
+            "non_simp": 0,
+            "simp": 0,
+            "total": 0
+          },
+          {
+            "bucket": "500+",
+            "non_simp": 0,
+            "simp": 0,
+            "total": 0
+          }
+        ],
+        "cross_subtheory": [
+          {
+            "bucket": "0",
+            "non_simp": 0,
+            "simp": 0,
+            "total": 0
+          },
+          {
+            "bucket": "1",
+            "non_simp": 196,
+            "simp": 71,
+            "total": 267
+          },
+          {
+            "bucket": "2",
+            "non_simp": 64,
+            "simp": 72,
+            "total": 136
+          },
+          {
+            "bucket": "3-5",
+            "non_simp": 26,
+            "simp": 52,
+            "total": 78
+          },
+          {
+            "bucket": "6-10",
+            "non_simp": 5,
+            "simp": 9,
+            "total": 14
+          },
+          {
+            "bucket": "11-20",
+            "non_simp": 0,
+            "simp": 0,
+            "total": 0
+          },
+          {
+            "bucket": "21+",
+            "non_simp": 0,
+            "simp": 0,
+            "total": 0
+          }
+        ],
+        "top_non_simp_hubs": [
+          {
+            "name": "Lib.Base",
+            "top_dir": "Lib",
+            "depth2_dir": "Lib",
+            "in_degree": 20,
+            "cross_subtheory_importers": 7,
+            "n_theorems_lemmas": 1,
+            "n_defs_structs": 0
+          },
+          {
+            "name": "Lib.General.Analysis.HolomorphicIntegrals",
+            "top_dir": "Lib",
+            "depth2_dir": "Lib/General",
+            "in_degree": 9,
+            "cross_subtheory_importers": 6,
+            "n_theorems_lemmas": 29,
+            "n_defs_structs": 2
+          },
+          {
+            "name": "Lib.General.LinearAlgebra.Eigenvalues",
+            "top_dir": "Lib",
+            "depth2_dir": "Lib/General",
+            "in_degree": 9,
+            "cross_subtheory_importers": 6,
+            "n_theorems_lemmas": 30,
+            "n_defs_structs": 1
+          },
+          {
+            "name": "Lib.PadicComparison.Descent.TestCategory",
+            "top_dir": "Lib",
+            "depth2_dir": "Lib/PadicComparison",
+            "in_degree": 8,
+            "cross_subtheory_importers": 7,
+            "n_theorems_lemmas": 22,
+            "n_defs_structs": 20
+          },
+          {
+            "name": "Lib.Analytic.EntireLFunction",
+            "top_dir": "Lib",
+            "depth2_dir": "Lib/Analytic",
+            "in_degree": 7,
+            "cross_subtheory_importers": 4,
+            "n_theorems_lemmas": 11,
+            "n_defs_structs": 1
+          },
+          {
+            "name": "Lib.General.Algebra.MultivariatePolynomials",
+            "top_dir": "Lib",
+            "depth2_dir": "Lib/General",
+            "in_degree": 7,
+            "cross_subtheory_importers": 5,
+            "n_theorems_lemmas": 14,
+            "n_defs_structs": 0
+          },
+          {
+            "name": "Lib.Adelic.AutomorphicForms.PAdicGauge",
+            "top_dir": "Lib",
+            "depth2_dir": "Lib/Adelic",
+            "in_degree": 6,
+            "cross_subtheory_importers": 6,
+            "n_theorems_lemmas": 37,
+            "n_defs_structs": 13
+          },
+          {
+            "name": "Lib.DiscreteSeries.Bruhat.ComplexPlace",
+            "top_dir": "Lib",
+            "depth2_dir": "Lib/DiscreteSeries",
+            "in_degree": 6,
+            "cross_subtheory_importers": 4,
+            "n_theorems_lemmas": 16,
+            "n_defs_structs": 4
+          },
+          {
+            "name": "Lib.General.Geometry.GeometricPoints",
+            "top_dir": "Lib",
+            "depth2_dir": "Lib/General",
+            "in_degree": 6,
+            "cross_subtheory_importers": 3,
+            "n_theorems_lemmas": 17,
+            "n_defs_structs": 1
+          },
+          {
+            "name": "Lib.General.Topology",
+            "top_dir": "Lib",
+            "depth2_dir": "Lib/General",
+            "in_degree": 6,
+            "cross_subtheory_importers": 4,
+            "n_theorems_lemmas": 9,
+            "n_defs_structs": 1
+          },
+          {
+            "name": "Lib.Adelic.AutomorphicForms.HeckeEigenforms",
+            "top_dir": "Lib",
+            "depth2_dir": "Lib/Adelic",
+            "in_degree": 5,
+            "cross_subtheory_importers": 2,
+            "n_theorems_lemmas": 23,
+            "n_defs_structs": 6
+          },
+          {
+            "name": "Lib.ClassField.Global.Chebotarev",
+            "top_dir": "Lib",
+            "depth2_dir": "Lib/ClassField",
+            "in_degree": 5,
+            "cross_subtheory_importers": 4,
+            "n_theorems_lemmas": 1,
+            "n_defs_structs": 0
+          },
+          {
+            "name": "Lib.DiscreteSeries.Bessel.UnipotentHaarMeasure",
+            "top_dir": "Lib",
+            "depth2_dir": "Lib/DiscreteSeries",
+            "in_degree": 5,
+            "cross_subtheory_importers": 2,
+            "n_theorems_lemmas": 40,
+            "n_defs_structs": 5
+          },
+          {
+            "name": "Lib.GLn.SchurModule.SchurNorm",
+            "top_dir": "Lib",
+            "depth2_dir": "Lib/GLn",
+            "in_degree": 5,
+            "cross_subtheory_importers": 4,
+            "n_theorems_lemmas": 14,
+            "n_defs_structs": 0
+          },
+          {
+            "name": "Lib.General.NumberTheory.SUnitsAndClassNumber",
+            "top_dir": "Lib",
+            "depth2_dir": "Lib/General",
+            "in_degree": 5,
+            "cross_subtheory_importers": 4,
+            "n_theorems_lemmas": 10,
+            "n_defs_structs": 0
+          }
+        ]
+      },
+      "file_order": {
+        "multi_decl_3plus_files": 491,
+        "multi_decl_2plus_files": 492,
+        "groups": [
+          "public_theorem",
+          "def_abbrev",
+          "private_thm_lem",
+          "public_lemma",
+          "struct_class_ind"
+        ],
+        "quintiles": [
+          {
+            "label": "Q1 (0–20%)",
+            "counts": {
+              "public_theorem": 175,
+              "def_abbrev": 925,
+              "private_thm_lem": 111,
+              "public_lemma": 1659,
+              "struct_class_ind": 271
+            },
+            "total": 3141
+          },
+          {
+            "label": "Q2 (20–40%)",
+            "counts": {
+              "public_theorem": 159,
+              "def_abbrev": 612,
+              "private_thm_lem": 128,
+              "public_lemma": 1832,
+              "struct_class_ind": 201
+            },
+            "total": 2932
+          },
+          {
+            "label": "Q3 (40–60%)",
+            "counts": {
+              "public_theorem": 149,
+              "def_abbrev": 492,
+              "private_thm_lem": 141,
+              "public_lemma": 1967,
+              "struct_class_ind": 176
+            },
+            "total": 2925
+          },
+          {
+            "label": "Q4 (60–80%)",
+            "counts": {
+              "public_theorem": 205,
+              "def_abbrev": 382,
+              "private_thm_lem": 170,
+              "public_lemma": 2024,
+              "struct_class_ind": 151
+            },
+            "total": 2932
+          },
+          {
+            "label": "Q5 (80–100%)",
+            "counts": {
+              "public_theorem": 243,
+              "def_abbrev": 255,
+              "private_thm_lem": 155,
+              "public_lemma": 1952,
+              "struct_class_ind": 132
+            },
+            "total": 2737
+          }
+        ],
+        "first_decl": {
+          "counts": {
+            "public_theorem": 25,
+            "def_abbrev": 171,
+            "private_thm_lem": 16,
+            "public_lemma": 225,
+            "struct_class_ind": 55
+          },
+          "total": 492
+        },
+        "last_decl": {
+          "counts": {
+            "public_theorem": 76,
+            "def_abbrev": 17,
+            "private_thm_lem": 0,
+            "public_lemma": 377,
+            "struct_class_ind": 22
+          },
+          "total": 492
+        }
+      },
+      "decl_taxonomy": {
+        "kinds": [
+          {
+            "kind": "lemma",
+            "public": 9431,
+            "private": 695,
+            "protected": 7,
+            "total": 10133
+          },
+          {
+            "kind": "def",
+            "public": 1928,
+            "private": 75,
+            "protected": 2,
+            "total": 2005
+          },
+          {
+            "kind": "theorem",
+            "public": 931,
+            "private": 10,
+            "protected": 0,
+            "total": 941
+          },
+          {
+            "kind": "abbrev",
+            "public": 642,
+            "private": 19,
+            "protected": 1,
+            "total": 662
+          },
+          {
+            "kind": "instance",
+            "public": 601,
+            "private": 0,
+            "protected": 0,
+            "total": 601
+          },
+          {
+            "kind": "structure",
+            "public": 225,
+            "private": 8,
+            "protected": 0,
+            "total": 233
+          },
+          {
+            "kind": "class",
+            "public": 93,
+            "private": 0,
+            "protected": 0,
+            "total": 93
+          },
+          {
+            "kind": "inductive",
+            "public": 4,
+            "private": 0,
+            "protected": 0,
+            "total": 4
+          }
+        ],
+        "decls_per_file": [
+          {
+            "bucket": "0",
+            "count": 0
+          },
+          {
+            "bucket": "1",
+            "count": 3
+          },
+          {
+            "bucket": "2",
+            "count": 1
+          },
+          {
+            "bucket": "3-5",
+            "count": 14
+          },
+          {
+            "bucket": "6-10",
+            "count": 43
+          },
+          {
+            "bucket": "11-25",
+            "count": 179
+          },
+          {
+            "bucket": "26-50",
+            "count": 191
+          },
+          {
+            "bucket": "51+",
+            "count": 64
+          }
+        ]
+      }
+    },
+    "New": {
+      "summary": {
+        "modules": 306,
+        "declarations": 9198,
+        "theorems_lemmas": 7149,
+        "tactic_proofs": 5806,
+        "term_proofs": 1343,
+        "attr_tagged_decls": 165,
+        "attr_occurrences": 166,
+        "file_directives": 48,
+        "doc_module_files": 306,
+        "doc_decl_count": 9518,
+        "blueprint_tags": 0,
+        "line_comments": 163,
+        "block_comments": 5109,
+        "aux_named_decls": 0,
+        "simp_modules": 48,
+        "non_simp_modules": 258
+      },
+      "proof_shapes": [
+        {
+          "key": "wrapper_forwarding",
+          "label": "Wrapper (first | exact …)",
+          "count": 1
+        },
+        {
+          "key": "oneliner_mech",
+          "label": "1-line mechanical (simp/rfl/rw/exact/…)",
+          "count": 152
+        },
+        {
+          "key": "oneliner_solver",
+          "label": "1-line solver (ring/omega/linarith/…)",
+          "count": 27
+        },
+        {
+          "key": "oneliner_other",
+          "label": "1-line other tactic",
+          "count": 12
+        },
+        {
+          "key": "term_mode",
+          "label": "Term-mode (no by)",
+          "count": 1343
+        },
+        {
+          "key": "short_2_5",
+          "label": "Short tactic (2–5 lines)",
+          "count": 1211
+        },
+        {
+          "key": "medium_6_20",
+          "label": "Medium tactic (6–20 lines)",
+          "count": 2970
+        },
+        {
+          "key": "long_21_50",
+          "label": "Long tactic (21–50 lines)",
+          "count": 1275
+        },
+        {
+          "key": "deep_51_plus",
+          "label": "Deep tactic (51+ lines)",
+          "count": 158
+        }
+      ],
+      "decl_attrs": [
+        {
+          "tag": "simp",
+          "count": 101
+        },
+        {
+          "tag": "fun_prop",
+          "count": 33
+        },
+        {
+          "tag": "simps",
+          "count": 12
+        },
+        {
+          "tag": "grind",
+          "count": 7
+        },
+        {
+          "tag": "grind!",
+          "count": 3
+        },
+        {
+          "tag": "irreducible",
+          "count": 3
+        },
+        {
+          "tag": "reducible",
+          "count": 2
+        },
+        {
+          "tag": "bound",
+          "count": 1
+        },
+        {
+          "tag": "congr",
+          "count": 1
+        },
+        {
+          "tag": "implicit_reducible",
+          "count": 1
+        },
+        {
+          "tag": "instance_reducible",
+          "count": 1
+        },
+        {
+          "tag": "mk_iff",
+          "count": 1
+        },
+        {
+          "tag": "reassoc",
+          "count": 0
+        },
+        {
+          "tag": "ext",
+          "count": 0
+        },
+        {
+          "tag": "to_additive",
+          "count": 0
+        },
+        {
+          "tag": "elab_as_elim",
+          "count": 0
+        },
+        {
+          "tag": "nolint",
+          "count": 0
+        },
+        {
+          "tag": "coe",
+          "count": 0
+        },
+        {
+          "tag": "refl",
+          "count": 0
+        },
+        {
+          "tag": "symm",
+          "count": 0
+        }
+      ],
+      "file_directives": [
+        {
+          "directive": "local instance",
+          "count": 24
+        },
+        {
+          "directive": "instance",
+          "count": 5
+        },
+        {
+          "directive": "local simp",
+          "count": 3
+        },
+        {
+          "directive": "grind! .",
+          "count": 2
+        },
+        {
+          "directive": "local implicit_reducible",
+          "count": 2
+        },
+        {
+          "directive": "local irreducible",
+          "count": 2
+        },
+        {
+          "directive": "-grind",
+          "count": 1
+        },
+        {
+          "directive": "-simp",
+          "count": 1
+        },
+        {
+          "directive": "fun_prop",
+          "count": 1
+        },
+        {
+          "directive": "grind",
+          "count": 1
+        },
+        {
+          "directive": "grind =",
+          "count": 1
+        },
+        {
+          "directive": "local aesop simp",
+          "count": 1
+        },
+        {
+          "directive": "local grind",
+          "count": 1
+        },
+        {
+          "directive": "local simp ←",
+          "count": 1
+        },
+        {
+          "directive": "mk_iff",
+          "count": 1
+        }
+      ],
+      "local_instance_targets": [
+        {
+          "target": "Fintype.ofFinite",
+          "count": 18
+        },
+        {
+          "target": "algebraMvPolynomial",
+          "count": 3
+        },
+        {
+          "target": "MonoidHomClass.toMulHomClass",
+          "count": 2
+        },
+        {
+          "target": "RingHomClass.toAddMonoidHomClass",
+          "count": 2
+        },
+        {
+          "target": "Quotient.field",
+          "count": 1
+        },
+        {
+          "target": "ZMod.algebra",
+          "count": 1
+        }
+      ],
+      "set_options": [
+        {
+          "option": "backward.isDefEq.respectTransparency",
+          "count": 5
+        },
+        {
+          "option": "synthInstance.maxHeartbeats",
+          "count": 3
+        },
+        {
+          "option": "synthInstance.maxSize",
+          "count": 3
+        }
+      ],
+      "typeclasses": {
+        "top_all": [
+          {
+            "name": "Fintype",
+            "count": 1213,
+            "tier": "finiteness_logic"
+          },
+          {
+            "name": "DecidableEq",
+            "count": 869,
+            "tier": "finiteness_logic"
+          },
+          {
+            "name": "CommRing",
+            "count": 435,
+            "tier": "core_algebra"
+          },
+          {
+            "name": "Field",
+            "count": 408,
+            "tier": "core_algebra"
+          },
+          {
+            "name": "Fact",
+            "count": 264,
+            "tier": "finiteness_logic"
+          },
+          {
+            "name": "CMType",
+            "count": 253,
+            "tier": "other"
+          },
+          {
+            "name": "ThePrime",
+            "count": 193,
+            "tier": "other"
+          },
+          {
+            "name": "S.IsAdmissible",
+            "count": 185,
+            "tier": "other"
+          },
+          {
+            "name": "WeilData",
+            "count": 156,
+            "tier": "other"
+          },
+          {
+            "name": "HasPrimitiveRoot5040",
+            "count": 139,
+            "tier": "other"
+          },
+          {
+            "name": "PadicPlace",
+            "count": 122,
+            "tier": "other"
+          },
+          {
+            "name": "NeZero",
+            "count": 108,
+            "tier": "core_algebra"
+          },
+          {
+            "name": "Nonempty",
+            "count": 80,
+            "tier": "finiteness_logic"
+          },
+          {
+            "name": "AddCommGroup",
+            "count": 71,
+            "tier": "core_algebra"
+          },
+          {
+            "name": "Module",
+            "count": 66,
+            "tier": "core_algebra"
+          },
+          {
+            "name": "StarRing",
+            "count": 66,
+            "tier": "core_algebra"
+          },
+          {
+            "name": "PadicIso",
+            "count": 63,
+            "tier": "other"
+          },
+          {
+            "name": "Group",
+            "count": 61,
+            "tier": "core_algebra"
+          },
+          {
+            "name": "Finite",
+            "count": 56,
+            "tier": "finiteness_logic"
+          },
+          {
+            "name": "IsLocalRing",
+            "count": 51,
+            "tier": "comm_alg_geom"
+          },
+          {
+            "name": "IsBaseAdapted",
+            "count": 50,
+            "tier": "other"
+          },
+          {
+            "name": "TopologicalSpace",
+            "count": 50,
+            "tier": "analysis_topology_measure"
+          },
+          {
+            "name": "IsDomain",
+            "count": 40,
+            "tier": "core_algebra"
+          },
+          {
+            "name": "EmbeddedNumberField",
+            "count": 39,
+            "tier": "number_local_fields"
+          },
+          {
+            "name": "Algebra",
+            "count": 37,
+            "tier": "core_algebra"
+          }
+        ],
+        "top_strong": [
+          {
+            "name": "CMType",
+            "count": 253,
+            "tier": "other"
+          },
+          {
+            "name": "ThePrime",
+            "count": 193,
+            "tier": "other"
+          },
+          {
+            "name": "S.IsAdmissible",
+            "count": 185,
+            "tier": "other"
+          },
+          {
+            "name": "WeilData",
+            "count": 156,
+            "tier": "other"
+          },
+          {
+            "name": "HasPrimitiveRoot5040",
+            "count": 139,
+            "tier": "other"
+          },
+          {
+            "name": "PadicPlace",
+            "count": 122,
+            "tier": "other"
+          },
+          {
+            "name": "StarRing",
+            "count": 66,
+            "tier": "core_algebra"
+          },
+          {
+            "name": "PadicIso",
+            "count": 63,
+            "tier": "other"
+          },
+          {
+            "name": "IsLocalRing",
+            "count": 51,
+            "tier": "comm_alg_geom"
+          },
+          {
+            "name": "IsBaseAdapted",
+            "count": 50,
+            "tier": "other"
+          },
+          {
+            "name": "IsDomain",
+            "count": 40,
+            "tier": "core_algebra"
+          },
+          {
+            "name": "EmbeddedNumberField",
+            "count": 39,
+            "tier": "number_local_fields"
+          },
+          {
+            "name": "NumberField.IsCMField",
+            "count": 35,
+            "tier": "number_local_fields"
+          },
+          {
+            "name": "CMFieldWithRoot5040",
+            "count": 34,
+            "tier": "number_local_fields"
+          },
+          {
+            "name": "NumberField",
+            "count": 32,
+            "tier": "number_local_fields"
+          },
+          {
+            "name": "DVR",
+            "count": 31,
+            "tier": "other"
+          },
+          {
+            "name": "IntegralPlace",
+            "count": 29,
+            "tier": "other"
+          },
+          {
+            "name": "MeasurableSpace",
+            "count": 29,
+            "tier": "analysis_topology_measure"
+          },
+          {
+            "name": "P.IsLargeLatticeData",
+            "count": 27,
+            "tier": "other"
+          },
+          {
+            "name": "V.IsStd",
+            "count": 27,
+            "tier": "other"
+          },
+          {
+            "name": "CharP",
+            "count": 25,
+            "tier": "core_algebra"
+          },
+          {
+            "name": "IsHermitianUnit",
+            "count": 24,
+            "tier": "other"
+          },
+          {
+            "name": "SemilocalField",
+            "count": 24,
+            "tier": "other"
+          },
+          {
+            "name": "ValuationRing",
+            "count": 24,
+            "tier": "other"
+          },
+          {
+            "name": "SFinite",
+            "count": 23,
+            "tier": "analysis_topology_measure"
+          }
+        ],
+        "tier_totals": [
+          {
+            "tier": "core_algebra",
+            "label": "Core Algebra",
+            "count": 1427
+          },
+          {
+            "tier": "number_local_fields",
+            "label": "Number & Local Fields",
+            "count": 156
+          },
+          {
+            "tier": "comm_alg_geom",
+            "label": "Commutative & Algebraic Geometry",
+            "count": 52
+          },
+          {
+            "tier": "analysis_topology_measure",
+            "label": "Analysis, Topology & Measure",
+            "count": 174
+          },
+          {
+            "tier": "finiteness_logic",
+            "label": "Finiteness & Type-Level",
+            "count": 2513
+          },
+          {
+            "tier": "other",
+            "label": "Other Domain-Specific",
+            "count": 1653
+          }
+        ]
+      },
+      "proof_strategies": [
+        {
+          "key": "have",
+          "label": "have (intermediate claim/object)",
+          "group": "conceptual",
+          "proof_count": 3949,
+          "total_count": 13515
+        },
+        {
+          "key": "obtain_rcases",
+          "label": "obtain / rcases / cases",
+          "group": "conceptual",
+          "proof_count": 2267,
+          "total_count": 4195
+        },
+        {
+          "key": "let_set",
+          "label": "let / set (local binding)",
+          "group": "conceptual",
+          "proof_count": 2414,
+          "total_count": 5238
+        },
+        {
+          "key": "by_cases",
+          "label": "by_cases (case split)",
+          "group": "conceptual",
+          "proof_count": 278,
+          "total_count": 343
+        },
+        {
+          "key": "induction",
+          "label": "induction",
+          "group": "conceptual",
+          "proof_count": 221,
+          "total_count": 249
+        },
+        {
+          "key": "choose",
+          "label": "choose (choice extraction)",
+          "group": "conceptual",
+          "proof_count": 231,
+          "total_count": 290
+        },
+        {
+          "key": "classical",
+          "label": "classical",
+          "group": "conceptual",
+          "proof_count": 299,
+          "total_count": 299
+        },
+        {
+          "key": "calc",
+          "label": "calc (calculational chain)",
+          "group": "conceptual",
+          "proof_count": 1018,
+          "total_count": 1206
+        },
+        {
+          "key": "by_contra",
+          "label": "by_contra / contrapose / exfalso",
+          "group": "conceptual",
+          "proof_count": 118,
+          "total_count": 140
+        },
+        {
+          "key": "suffices",
+          "label": "suffices",
+          "group": "conceptual",
+          "proof_count": 109,
+          "total_count": 117
+        },
+        {
+          "key": "filter_upwards",
+          "label": "filter_upwards",
+          "group": "conceptual",
+          "proof_count": 71,
+          "total_count": 77
+        },
+        {
+          "key": "wlog",
+          "label": "wlog",
+          "group": "conceptual",
+          "proof_count": 9,
+          "total_count": 9
+        },
+        {
+          "key": "simp_family",
+          "label": "simp / simpa / simp_all / dsimp",
+          "group": "solver",
+          "proof_count": 4213,
+          "total_count": 10066
+        },
+        {
+          "key": "omega",
+          "label": "omega",
+          "group": "solver",
+          "proof_count": 283,
+          "total_count": 578
+        },
+        {
+          "key": "ring",
+          "label": "ring / noncomm_ring",
+          "group": "solver",
+          "proof_count": 642,
+          "total_count": 804
+        },
+        {
+          "key": "linarith",
+          "label": "linarith / nlinarith",
+          "group": "solver",
+          "proof_count": 399,
+          "total_count": 725
+        },
+        {
+          "key": "cast_tactics",
+          "label": "exact_mod_cast / push_cast / norm_cast",
+          "group": "solver",
+          "proof_count": 172,
+          "total_count": 205
+        },
+        {
+          "key": "positivity",
+          "label": "positivity",
+          "group": "solver",
+          "proof_count": 383,
+          "total_count": 591
+        },
+        {
+          "key": "norm_num",
+          "label": "norm_num",
+          "group": "solver",
+          "proof_count": 108,
+          "total_count": 138
+        },
+        {
+          "key": "linear_combination",
+          "label": "linear_combination",
+          "group": "solver",
+          "proof_count": 84,
+          "total_count": 102
+        },
+        {
+          "key": "field_simp",
+          "label": "field_simp",
+          "group": "solver",
+          "proof_count": 75,
+          "total_count": 89
+        },
+        {
+          "key": "abel_group_module",
+          "label": "abel / group / module",
+          "group": "solver",
+          "proof_count": 762,
+          "total_count": 983
+        },
+        {
+          "key": "gcongr",
+          "label": "gcongr",
+          "group": "solver",
+          "proof_count": 266,
+          "total_count": 349
+        },
+        {
+          "key": "fun_prop_cont_meas",
+          "label": "fun_prop / continuity / measurability",
+          "group": "solver",
+          "proof_count": 278,
+          "total_count": 524
+        },
+        {
+          "key": "fin_cases_decide_tauto_aesop",
+          "label": "fin_cases / decide / tauto / aesop",
+          "group": "solver",
+          "proof_count": 53,
+          "total_count": 66
+        },
+        {
+          "key": "rw_rwa",
+          "label": "rw / rwa",
+          "group": "plumbing",
+          "proof_count": 3453,
+          "total_count": 6439
+        },
+        {
+          "key": "exact",
+          "label": "exact",
+          "group": "plumbing",
+          "proof_count": 2562,
+          "total_count": 3816
+        },
+        {
+          "key": "refine",
+          "label": "refine",
+          "group": "plumbing",
+          "proof_count": 1933,
+          "total_count": 2606
+        },
+        {
+          "key": "intro_family",
+          "label": "intro / intros / rintro",
+          "group": "plumbing",
+          "proof_count": 673,
+          "total_count": 811
+        },
+        {
+          "key": "rfl",
+          "label": "rfl",
+          "group": "plumbing",
+          "proof_count": 1414,
+          "total_count": 2323
+        },
+        {
+          "key": "ext_funext",
+          "label": "ext / funext",
+          "group": "plumbing",
+          "proof_count": 833,
+          "total_count": 1065
+        },
+        {
+          "key": "apply",
+          "label": "apply",
+          "group": "plumbing",
+          "proof_count": 73,
+          "total_count": 84
+        },
+        {
+          "key": "trans",
+          "label": "trans",
+          "group": "plumbing",
+          "proof_count": 848,
+          "total_count": 1205
+        },
+        {
+          "key": "congr",
+          "label": "congr",
+          "group": "plumbing",
+          "proof_count": 125,
+          "total_count": 137
+        },
+        {
+          "key": "subst",
+          "label": "subst",
+          "group": "plumbing",
+          "proof_count": 70,
+          "total_count": 100
+        },
+        {
+          "key": "change_convert",
+          "label": "change / convert",
+          "group": "plumbing",
+          "proof_count": 271,
+          "total_count": 298
+        },
+        {
+          "key": "constructor",
+          "label": "constructor",
+          "group": "plumbing",
+          "proof_count": 78,
+          "total_count": 79
+        }
+      ],
+      "equivalences": [
+        {
+          "symbol": "↔",
+          "label": "Logical iff (↔)",
+          "decl_count": 326,
+          "total_count": 331
+        },
+        {
+          "symbol": "≃",
+          "label": "Type equivalence (≃)",
+          "decl_count": 195,
+          "total_count": 235
+        },
+        {
+          "symbol": "≃+*",
+          "label": "Ring equiv (≃+*)",
+          "decl_count": 88,
+          "total_count": 90
+        },
+        {
+          "symbol": "≃ₗ",
+          "label": "Linear equiv (≃ₗ)",
+          "decl_count": 10,
+          "total_count": 10
+        },
+        {
+          "symbol": "≃*",
+          "label": "Multiplicative equiv (≃*)",
+          "decl_count": 9,
+          "total_count": 9
+        },
+        {
+          "symbol": "≃ₜ",
+          "label": "Homeomorphism (≃ₜ)",
+          "decl_count": 5,
+          "total_count": 5
+        },
+        {
+          "symbol": "≃L",
+          "label": "Continuous linear equiv (≃L)",
+          "decl_count": 3,
+          "total_count": 3
+        },
+        {
+          "symbol": "≃ₗᵢ",
+          "label": "Linear isometric equiv (≃ₗᵢ)",
+          "decl_count": 2,
+          "total_count": 2
+        },
+        {
+          "symbol": "≃ₐ",
+          "label": "Algebra equiv (≃ₐ)",
+          "decl_count": 1,
+          "total_count": 1
+        },
+        {
+          "symbol": "≃+",
+          "label": "Additive equiv (≃+)",
+          "decl_count": 0,
+          "total_count": 0
+        },
+        {
+          "symbol": "≅",
+          "label": "Categorical iso (≅)",
+          "decl_count": 0,
+          "total_count": 0
+        }
+      ],
+      "cross_subtheory_imports": [
+        {
+          "bucket": "0 (leaf)",
+          "count": 0
+        },
+        {
+          "bucket": "1",
+          "count": 156
+        },
+        {
+          "bucket": "2",
+          "count": 101
+        },
+        {
+          "bucket": "3-5",
+          "count": 49
+        },
+        {
+          "bucket": "6-10",
+          "count": 0
+        },
+        {
+          "bucket": "11+",
+          "count": 0
+        }
+      ],
+      "cross_domain_imports": [
+        {
+          "bucket": "0 (leaf)",
+          "count": 0
+        },
+        {
+          "bucket": "1",
+          "count": 202
+        },
+        {
+          "bucket": "2",
+          "count": 104
+        },
+        {
+          "bucket": "3",
+          "count": 0
+        },
+        {
+          "bucket": "4",
+          "count": 0
+        },
+        {
+          "bucket": "5+",
+          "count": 0
+        }
+      ],
+      "open_namespaces": {
+        "buckets": [
+          {
+            "bucket": "0",
+            "count": 0
+          },
+          {
+            "bucket": "1",
+            "count": 5
+          },
+          {
+            "bucket": "2",
+            "count": 8
+          },
+          {
+            "bucket": "3-4",
+            "count": 29
+          },
+          {
+            "bucket": "5-7",
+            "count": 78
+          },
+          {
+            "bucket": "8-10",
+            "count": 84
+          },
+          {
+            "bucket": "11+",
+            "count": 102
+          }
+        ],
+        "top_roots": [
+          {
+            "namespace": "Finset",
+            "count": 200
+          },
+          {
+            "namespace": "Matrix",
+            "count": 199
+          },
+          {
+            "namespace": "Fintype",
+            "count": 156
+          },
+          {
+            "namespace": "NumberField",
+            "count": 90
+          },
+          {
+            "namespace": "Classical",
+            "count": 89
+          },
+          {
+            "namespace": "MeasureTheory",
+            "count": 89
+          },
+          {
+            "namespace": "Module",
+            "count": 70
+          },
+          {
+            "namespace": "Real",
+            "count": 70
+          },
+          {
+            "namespace": "Space",
+            "count": 59
+          },
+          {
+            "namespace": "Function",
+            "count": 56
+          },
+          {
+            "namespace": "ENNReal",
+            "count": 54
+          },
+          {
+            "namespace": "Submodule",
+            "count": 49
+          },
+          {
+            "namespace": "ComplexConjugate",
+            "count": 45
+          },
+          {
+            "namespace": "Set",
+            "count": 45
+          },
+          {
+            "namespace": "Complex",
+            "count": 42
+          }
+        ]
+      },
+      "fan_in": {
+        "in_degree": [
+          {
+            "bucket": "0",
+            "non_simp": 0,
+            "simp": 0,
+            "total": 0
+          },
+          {
+            "bucket": "1",
+            "non_simp": 164,
+            "simp": 19,
+            "total": 183
+          },
+          {
+            "bucket": "2",
+            "non_simp": 52,
+            "simp": 13,
+            "total": 65
+          },
+          {
+            "bucket": "3-5",
+            "non_simp": 39,
+            "simp": 15,
+            "total": 54
+          },
+          {
+            "bucket": "6-10",
+            "non_simp": 3,
+            "simp": 1,
+            "total": 4
+          },
+          {
+            "bucket": "11-25",
+            "non_simp": 0,
+            "simp": 0,
+            "total": 0
+          },
+          {
+            "bucket": "26-100",
+            "non_simp": 0,
+            "simp": 0,
+            "total": 0
+          },
+          {
+            "bucket": "101-500",
+            "non_simp": 0,
+            "simp": 0,
+            "total": 0
+          },
+          {
+            "bucket": "500+",
+            "non_simp": 0,
+            "simp": 0,
+            "total": 0
+          }
+        ],
+        "cross_subtheory": [
+          {
+            "bucket": "0",
+            "non_simp": 0,
+            "simp": 0,
+            "total": 0
+          },
+          {
+            "bucket": "1",
+            "non_simp": 215,
+            "simp": 37,
+            "total": 252
+          },
+          {
+            "bucket": "2",
+            "non_simp": 35,
+            "simp": 9,
+            "total": 44
+          },
+          {
+            "bucket": "3-5",
+            "non_simp": 8,
+            "simp": 2,
+            "total": 10
+          },
+          {
+            "bucket": "6-10",
+            "non_simp": 0,
+            "simp": 0,
+            "total": 0
+          },
+          {
+            "bucket": "11-20",
+            "non_simp": 0,
+            "simp": 0,
+            "total": 0
+          },
+          {
+            "bucket": "21+",
+            "non_simp": 0,
+            "simp": 0,
+            "total": 0
+          }
+        ],
+        "top_non_simp_hubs": [
+          {
+            "name": "New.UpperBound.Objects.Rows",
+            "top_dir": "New",
+            "depth2_dir": "New/UpperBound",
+            "in_degree": 9,
+            "cross_subtheory_importers": 4,
+            "n_theorems_lemmas": 28,
+            "n_defs_structs": 13
+          },
+          {
+            "name": "New.OneLift.ComparisonOperator.ExchangeData",
+            "top_dir": "New",
+            "depth2_dir": "New/OneLift",
+            "in_degree": 6,
+            "cross_subtheory_importers": 4,
+            "n_theorems_lemmas": 34,
+            "n_defs_structs": 13
+          },
+          {
+            "name": "New.Spanning.Unfolding.Climbing",
+            "top_dir": "New",
+            "depth2_dir": "New/Spanning",
+            "in_degree": 6,
+            "cross_subtheory_importers": 2,
+            "n_theorems_lemmas": 60,
+            "n_defs_structs": 10
+          },
+          {
+            "name": "New.Congruences.Selmer.AuxiliaryPrimes",
+            "top_dir": "New",
+            "depth2_dir": "New/Congruences",
+            "in_degree": 5,
+            "cross_subtheory_importers": 1,
+            "n_theorems_lemmas": 8,
+            "n_defs_structs": 8
+          },
+          {
+            "name": "New.OneLift.ComparisonOperator.GluedLattices",
+            "top_dir": "New",
+            "depth2_dir": "New/OneLift",
+            "in_degree": 5,
+            "cross_subtheory_importers": 2,
+            "n_theorems_lemmas": 23,
+            "n_defs_structs": 13
+          },
+          {
+            "name": "New.UpperBound.Seesaw.AdmissibleCombinations",
+            "top_dir": "New",
+            "depth2_dir": "New/UpperBound",
+            "in_degree": 5,
+            "cross_subtheory_importers": 2,
+            "n_theorems_lemmas": 33,
+            "n_defs_structs": 10
+          },
+          {
+            "name": "New.UpperBound.Size.ShortColumns",
+            "top_dir": "New",
+            "depth2_dir": "New/UpperBound",
+            "in_degree": 5,
+            "cross_subtheory_importers": 4,
+            "n_theorems_lemmas": 42,
+            "n_defs_structs": 19
+          },
+          {
+            "name": "New.Determinant.Exchange.MatchingPartners",
+            "top_dir": "New",
+            "depth2_dir": "New/Determinant",
+            "in_degree": 4,
+            "cross_subtheory_importers": 2,
+            "n_theorems_lemmas": 23,
+            "n_defs_structs": 7
+          },
+          {
+            "name": "New.Spanning.Unfolding.AmplitudeSums",
+            "top_dir": "New",
+            "depth2_dir": "New/Spanning",
+            "in_degree": 4,
+            "cross_subtheory_importers": 1,
+            "n_theorems_lemmas": 34,
+            "n_defs_structs": 1
+          },
+          {
+            "name": "New.UpperBound.Divisibility.ChainValuation",
+            "top_dir": "New",
+            "depth2_dir": "New/UpperBound",
+            "in_degree": 4,
+            "cross_subtheory_importers": 2,
+            "n_theorems_lemmas": 13,
+            "n_defs_structs": 0
+          },
+          {
+            "name": "New.UpperBound.Divisibility.MarkedPrimes",
+            "top_dir": "New",
+            "depth2_dir": "New/UpperBound",
+            "in_degree": 4,
+            "cross_subtheory_importers": 1,
+            "n_theorems_lemmas": 32,
+            "n_defs_structs": 6
+          },
+          {
+            "name": "New.UpperBound.Kernels.JetConjugatesAndBounds",
+            "top_dir": "New",
+            "depth2_dir": "New/UpperBound",
+            "in_degree": 4,
+            "cross_subtheory_importers": 3,
+            "n_theorems_lemmas": 28,
+            "n_defs_structs": 5
+          },
+          {
+            "name": "New.UpperBound.Objects.LabelsAndIndexTypes",
+            "top_dir": "New",
+            "depth2_dir": "New/UpperBound",
+            "in_degree": 4,
+            "cross_subtheory_importers": 2,
+            "n_theorems_lemmas": 16,
+            "n_defs_structs": 15
+          },
+          {
+            "name": "New.UpperBound.Objects.RowChain",
+            "top_dir": "New",
+            "depth2_dir": "New/UpperBound",
+            "in_degree": 4,
+            "cross_subtheory_importers": 2,
+            "n_theorems_lemmas": 15,
+            "n_defs_structs": 8
+          },
+          {
+            "name": "New.Appendix.DiscreteSeries.SteepParameters",
+            "top_dir": "New",
+            "depth2_dir": "New/Appendix",
+            "in_degree": 3,
+            "cross_subtheory_importers": 2,
+            "n_theorems_lemmas": 1,
+            "n_defs_structs": 4
+          }
+        ]
+      },
+      "file_order": {
+        "multi_decl_3plus_files": 303,
+        "multi_decl_2plus_files": 304,
+        "groups": [
+          "public_theorem",
+          "def_abbrev",
+          "private_thm_lem",
+          "public_lemma",
+          "struct_class_ind"
+        ],
+        "quintiles": [
+          {
+            "label": "Q1 (0–20%)",
+            "counts": {
+              "public_theorem": 76,
+              "def_abbrev": 595,
+              "private_thm_lem": 3,
+              "public_lemma": 1187,
+              "struct_class_ind": 102
+            },
+            "total": 1963
+          },
+          {
+            "label": "Q2 (20–40%)",
+            "counts": {
+              "public_theorem": 85,
+              "def_abbrev": 399,
+              "private_thm_lem": 3,
+              "public_lemma": 1285,
+              "struct_class_ind": 60
+            },
+            "total": 1832
+          },
+          {
+            "label": "Q3 (40–60%)",
+            "counts": {
+              "public_theorem": 92,
+              "def_abbrev": 323,
+              "private_thm_lem": 4,
+              "public_lemma": 1365,
+              "struct_class_ind": 63
+            },
+            "total": 1847
+          },
+          {
+            "label": "Q4 (60–80%)",
+            "counts": {
+              "public_theorem": 118,
+              "def_abbrev": 257,
+              "private_thm_lem": 1,
+              "public_lemma": 1388,
+              "struct_class_ind": 68
+            },
+            "total": 1832
+          },
+          {
+            "label": "Q5 (80–100%)",
+            "counts": {
+              "public_theorem": 223,
+              "def_abbrev": 129,
+              "private_thm_lem": 2,
+              "public_lemma": 1313,
+              "struct_class_ind": 53
+            },
+            "total": 1720
+          }
+        ],
+        "first_decl": {
+          "counts": {
+            "public_theorem": 8,
+            "def_abbrev": 109,
+            "private_thm_lem": 0,
+            "public_lemma": 158,
+            "struct_class_ind": 29
+          },
+          "total": 304
+        },
+        "last_decl": {
+          "counts": {
+            "public_theorem": 97,
+            "def_abbrev": 6,
+            "private_thm_lem": 0,
+            "public_lemma": 193,
+            "struct_class_ind": 8
+          },
+          "total": 304
+        }
+      },
+      "decl_taxonomy": {
+        "kinds": [
+          {
+            "kind": "lemma",
+            "public": 6536,
+            "private": 11,
+            "protected": 4,
+            "total": 6551
+          },
+          {
+            "kind": "def",
+            "public": 1318,
+            "private": 0,
+            "protected": 2,
+            "total": 1320
+          },
+          {
+            "kind": "theorem",
+            "public": 596,
+            "private": 2,
+            "protected": 0,
+            "total": 598
+          },
+          {
+            "kind": "abbrev",
+            "public": 379,
+            "private": 0,
+            "protected": 4,
+            "total": 383
+          },
+          {
+            "kind": "structure",
+            "public": 165,
+            "private": 0,
+            "protected": 0,
+            "total": 165
+          },
+          {
+            "kind": "instance",
+            "public": 152,
+            "private": 0,
+            "protected": 0,
+            "total": 152
+          },
+          {
+            "kind": "class",
+            "public": 24,
+            "private": 0,
+            "protected": 0,
+            "total": 24
+          },
+          {
+            "kind": "inductive",
+            "public": 5,
+            "private": 0,
+            "protected": 0,
+            "total": 5
+          }
+        ],
+        "decls_per_file": [
+          {
+            "bucket": "0",
+            "count": 0
+          },
+          {
+            "bucket": "1",
+            "count": 2
+          },
+          {
+            "bucket": "2",
+            "count": 1
+          },
+          {
+            "bucket": "3-5",
+            "count": 4
+          },
+          {
+            "bucket": "6-10",
+            "count": 23
+          },
+          {
+            "bucket": "11-25",
+            "count": 117
+          },
+          {
+            "bucket": "26-50",
+            "count": 116
+          },
+          {
+            "bucket": "51+",
+            "count": 43
+          }
+        ]
+      }
+    },
+    "(root)": {
+      "summary": {
+        "modules": 2,
+        "declarations": 9,
+        "theorems_lemmas": 5,
+        "tactic_proofs": 0,
+        "term_proofs": 5,
+        "attr_tagged_decls": 0,
+        "attr_occurrences": 0,
+        "file_directives": 0,
+        "doc_module_files": 0,
+        "doc_decl_count": 5,
+        "blueprint_tags": 0,
+        "line_comments": 1,
+        "block_comments": 1,
+        "aux_named_decls": 0,
+        "simp_modules": 0,
+        "non_simp_modules": 2
+      },
+      "proof_shapes": [
+        {
+          "key": "wrapper_forwarding",
+          "label": "Wrapper (first | exact …)",
+          "count": 0
+        },
+        {
+          "key": "oneliner_mech",
+          "label": "1-line mechanical (simp/rfl/rw/exact/…)",
+          "count": 0
+        },
+        {
+          "key": "oneliner_solver",
+          "label": "1-line solver (ring/omega/linarith/…)",
+          "count": 0
+        },
+        {
+          "key": "oneliner_other",
+          "label": "1-line other tactic",
+          "count": 0
+        },
+        {
+          "key": "term_mode",
+          "label": "Term-mode (no by)",
+          "count": 5
+        },
+        {
+          "key": "short_2_5",
+          "label": "Short tactic (2–5 lines)",
+          "count": 0
+        },
+        {
+          "key": "medium_6_20",
+          "label": "Medium tactic (6–20 lines)",
+          "count": 0
+        },
+        {
+          "key": "long_21_50",
+          "label": "Long tactic (21–50 lines)",
+          "count": 0
+        },
+        {
+          "key": "deep_51_plus",
+          "label": "Deep tactic (51+ lines)",
+          "count": 0
+        }
+      ],
+      "decl_attrs": [
+        {
+          "tag": "simp",
+          "count": 0
+        },
+        {
+          "tag": "reducible",
+          "count": 0
+        },
+        {
+          "tag": "reassoc",
+          "count": 0
+        },
+        {
+          "tag": "ext",
+          "count": 0
+        },
+        {
+          "tag": "instance_reducible",
+          "count": 0
+        },
+        {
+          "tag": "simps",
+          "count": 0
+        },
+        {
+          "tag": "to_additive",
+          "count": 0
+        },
+        {
+          "tag": "fun_prop",
+          "count": 0
+        },
+        {
+          "tag": "irreducible",
+          "count": 0
+        },
+        {
+          "tag": "elab_as_elim",
+          "count": 0
+        },
+        {
+          "tag": "nolint",
+          "count": 0
+        },
+        {
+          "tag": "coe",
+          "count": 0
+        },
+        {
+          "tag": "refl",
+          "count": 0
+        },
+        {
+          "tag": "symm",
+          "count": 0
+        },
+        {
+          "tag": "trans",
+          "count": 0
+        },
+        {
+          "tag": "gcongr",
+          "count": 0
+        },
+        {
+          "tag": "norm_cast",
+          "count": 0
+        },
+        {
+          "tag": "aesop",
+          "count": 0
+        }
+      ],
+      "file_directives": [],
+      "local_instance_targets": [],
+      "set_options": [],
+      "typeclasses": {
+        "top_all": [],
+        "top_strong": [],
+        "tier_totals": [
+          {
+            "tier": "core_algebra",
+            "label": "Core Algebra",
+            "count": 0
+          },
+          {
+            "tier": "number_local_fields",
+            "label": "Number & Local Fields",
+            "count": 0
+          },
+          {
+            "tier": "comm_alg_geom",
+            "label": "Commutative & Algebraic Geometry",
+            "count": 0
+          },
+          {
+            "tier": "analysis_topology_measure",
+            "label": "Analysis, Topology & Measure",
+            "count": 0
+          },
+          {
+            "tier": "finiteness_logic",
+            "label": "Finiteness & Type-Level",
+            "count": 0
+          },
+          {
+            "tier": "other",
+            "label": "Other Domain-Specific",
+            "count": 0
+          }
+        ]
+      },
+      "proof_strategies": [
+        {
+          "key": "have",
+          "label": "have (intermediate claim/object)",
+          "group": "conceptual",
+          "proof_count": 0,
+          "total_count": 0
+        },
+        {
+          "key": "obtain_rcases",
+          "label": "obtain / rcases / cases",
+          "group": "conceptual",
+          "proof_count": 0,
+          "total_count": 0
+        },
+        {
+          "key": "let_set",
+          "label": "let / set (local binding)",
+          "group": "conceptual",
+          "proof_count": 0,
+          "total_count": 0
+        },
+        {
+          "key": "by_cases",
+          "label": "by_cases (case split)",
+          "group": "conceptual",
+          "proof_count": 0,
+          "total_count": 0
+        },
+        {
+          "key": "induction",
+          "label": "induction",
+          "group": "conceptual",
+          "proof_count": 0,
+          "total_count": 0
+        },
+        {
+          "key": "choose",
+          "label": "choose (choice extraction)",
+          "group": "conceptual",
+          "proof_count": 0,
+          "total_count": 0
+        },
+        {
+          "key": "classical",
+          "label": "classical",
+          "group": "conceptual",
+          "proof_count": 0,
+          "total_count": 0
+        },
+        {
+          "key": "calc",
+          "label": "calc (calculational chain)",
+          "group": "conceptual",
+          "proof_count": 0,
+          "total_count": 0
+        },
+        {
+          "key": "by_contra",
+          "label": "by_contra / contrapose / exfalso",
+          "group": "conceptual",
+          "proof_count": 0,
+          "total_count": 0
+        },
+        {
+          "key": "suffices",
+          "label": "suffices",
+          "group": "conceptual",
+          "proof_count": 0,
+          "total_count": 0
+        },
+        {
+          "key": "filter_upwards",
+          "label": "filter_upwards",
+          "group": "conceptual",
+          "proof_count": 0,
+          "total_count": 0
+        },
+        {
+          "key": "wlog",
+          "label": "wlog",
+          "group": "conceptual",
+          "proof_count": 0,
+          "total_count": 0
+        },
+        {
+          "key": "simp_family",
+          "label": "simp / simpa / simp_all / dsimp",
+          "group": "solver",
+          "proof_count": 0,
+          "total_count": 0
+        },
+        {
+          "key": "omega",
+          "label": "omega",
+          "group": "solver",
+          "proof_count": 0,
+          "total_count": 0
+        },
+        {
+          "key": "ring",
+          "label": "ring / noncomm_ring",
+          "group": "solver",
+          "proof_count": 0,
+          "total_count": 0
+        },
+        {
+          "key": "linarith",
+          "label": "linarith / nlinarith",
+          "group": "solver",
+          "proof_count": 0,
+          "total_count": 0
+        },
+        {
+          "key": "cast_tactics",
+          "label": "exact_mod_cast / push_cast / norm_cast",
+          "group": "solver",
+          "proof_count": 0,
+          "total_count": 0
+        },
+        {
+          "key": "positivity",
+          "label": "positivity",
+          "group": "solver",
+          "proof_count": 0,
+          "total_count": 0
+        },
+        {
+          "key": "norm_num",
+          "label": "norm_num",
+          "group": "solver",
+          "proof_count": 0,
+          "total_count": 0
+        },
+        {
+          "key": "linear_combination",
+          "label": "linear_combination",
+          "group": "solver",
+          "proof_count": 0,
+          "total_count": 0
+        },
+        {
+          "key": "field_simp",
+          "label": "field_simp",
+          "group": "solver",
+          "proof_count": 0,
+          "total_count": 0
+        },
+        {
+          "key": "abel_group_module",
+          "label": "abel / group / module",
+          "group": "solver",
+          "proof_count": 0,
+          "total_count": 0
+        },
+        {
+          "key": "gcongr",
+          "label": "gcongr",
+          "group": "solver",
+          "proof_count": 0,
+          "total_count": 0
+        },
+        {
+          "key": "fun_prop_cont_meas",
+          "label": "fun_prop / continuity / measurability",
+          "group": "solver",
+          "proof_count": 0,
+          "total_count": 0
+        },
+        {
+          "key": "fin_cases_decide_tauto_aesop",
+          "label": "fin_cases / decide / tauto / aesop",
+          "group": "solver",
+          "proof_count": 0,
+          "total_count": 0
+        },
+        {
+          "key": "rw_rwa",
+          "label": "rw / rwa",
+          "group": "plumbing",
+          "proof_count": 0,
+          "total_count": 0
+        },
+        {
+          "key": "exact",
+          "label": "exact",
+          "group": "plumbing",
+          "proof_count": 0,
+          "total_count": 0
+        },
+        {
+          "key": "refine",
+          "label": "refine",
+          "group": "plumbing",
+          "proof_count": 0,
+          "total_count": 0
+        },
+        {
+          "key": "intro_family",
+          "label": "intro / intros / rintro",
+          "group": "plumbing",
+          "proof_count": 0,
+          "total_count": 0
+        },
+        {
+          "key": "rfl",
+          "label": "rfl",
+          "group": "plumbing",
+          "proof_count": 0,
+          "total_count": 0
+        },
+        {
+          "key": "ext_funext",
+          "label": "ext / funext",
+          "group": "plumbing",
+          "proof_count": 0,
+          "total_count": 0
+        },
+        {
+          "key": "apply",
+          "label": "apply",
+          "group": "plumbing",
+          "proof_count": 0,
+          "total_count": 0
+        },
+        {
+          "key": "trans",
+          "label": "trans",
+          "group": "plumbing",
+          "proof_count": 0,
+          "total_count": 0
+        },
+        {
+          "key": "congr",
+          "label": "congr",
+          "group": "plumbing",
+          "proof_count": 0,
+          "total_count": 0
+        },
+        {
+          "key": "subst",
+          "label": "subst",
+          "group": "plumbing",
+          "proof_count": 0,
+          "total_count": 0
+        },
+        {
+          "key": "change_convert",
+          "label": "change / convert",
+          "group": "plumbing",
+          "proof_count": 0,
+          "total_count": 0
+        },
+        {
+          "key": "constructor",
+          "label": "constructor",
+          "group": "plumbing",
+          "proof_count": 0,
+          "total_count": 0
+        }
+      ],
+      "equivalences": [
+        {
+          "symbol": "↔",
+          "label": "Logical iff (↔)",
+          "decl_count": 0,
+          "total_count": 0
+        },
+        {
+          "symbol": "≃",
+          "label": "Type equivalence (≃)",
+          "decl_count": 0,
+          "total_count": 0
+        },
+        {
+          "symbol": "≃*",
+          "label": "Multiplicative equiv (≃*)",
+          "decl_count": 0,
+          "total_count": 0
+        },
+        {
+          "symbol": "≃+",
+          "label": "Additive equiv (≃+)",
+          "decl_count": 0,
+          "total_count": 0
+        },
+        {
+          "symbol": "≃+*",
+          "label": "Ring equiv (≃+*)",
+          "decl_count": 0,
+          "total_count": 0
+        },
+        {
+          "symbol": "≃L",
+          "label": "Continuous linear equiv (≃L)",
+          "decl_count": 0,
+          "total_count": 0
+        },
+        {
+          "symbol": "≃ₐ",
+          "label": "Algebra equiv (≃ₐ)",
+          "decl_count": 0,
+          "total_count": 0
+        },
+        {
+          "symbol": "≃ₗ",
+          "label": "Linear equiv (≃ₗ)",
+          "decl_count": 0,
+          "total_count": 0
+        },
+        {
+          "symbol": "≃ₗᵢ",
+          "label": "Linear isometric equiv (≃ₗᵢ)",
+          "decl_count": 0,
+          "total_count": 0
+        },
+        {
+          "symbol": "≃ₜ",
+          "label": "Homeomorphism (≃ₜ)",
+          "decl_count": 0,
+          "total_count": 0
+        },
+        {
+          "symbol": "≅",
+          "label": "Categorical iso (≅)",
+          "decl_count": 0,
+          "total_count": 0
+        }
+      ],
+      "cross_subtheory_imports": [
+        {
+          "bucket": "0 (leaf)",
+          "count": 1
+        },
+        {
+          "bucket": "1",
+          "count": 1
+        },
+        {
+          "bucket": "2",
+          "count": 0
+        },
+        {
+          "bucket": "3-5",
+          "count": 0
+        },
+        {
+          "bucket": "6-10",
+          "count": 0
+        },
+        {
+          "bucket": "11+",
+          "count": 0
+        }
+      ],
+      "cross_domain_imports": [
+        {
+          "bucket": "0 (leaf)",
+          "count": 1
+        },
+        {
+          "bucket": "1",
+          "count": 1
+        },
+        {
+          "bucket": "2",
+          "count": 0
+        },
+        {
+          "bucket": "3",
+          "count": 0
+        },
+        {
+          "bucket": "4",
+          "count": 0
+        },
+        {
+          "bucket": "5+",
+          "count": 0
+        }
+      ],
+      "open_namespaces": {
+        "buckets": [
+          {
+            "bucket": "0",
+            "count": 2
+          },
+          {
+            "bucket": "1",
+            "count": 0
+          },
+          {
+            "bucket": "2",
+            "count": 0
+          },
+          {
+            "bucket": "3-4",
+            "count": 0
+          },
+          {
+            "bucket": "5-7",
+            "count": 0
+          },
+          {
+            "bucket": "8-10",
+            "count": 0
+          },
+          {
+            "bucket": "11+",
+            "count": 0
+          }
+        ],
+        "top_roots": []
+      },
+      "fan_in": {
+        "in_degree": [
+          {
+            "bucket": "0",
+            "non_simp": 1,
+            "simp": 0,
+            "total": 1
+          },
+          {
+            "bucket": "1",
+            "non_simp": 1,
+            "simp": 0,
+            "total": 1
+          },
+          {
+            "bucket": "2",
+            "non_simp": 0,
+            "simp": 0,
+            "total": 0
+          },
+          {
+            "bucket": "3-5",
+            "non_simp": 0,
+            "simp": 0,
+            "total": 0
+          },
+          {
+            "bucket": "6-10",
+            "non_simp": 0,
+            "simp": 0,
+            "total": 0
+          },
+          {
+            "bucket": "11-25",
+            "non_simp": 0,
+            "simp": 0,
+            "total": 0
+          },
+          {
+            "bucket": "26-100",
+            "non_simp": 0,
+            "simp": 0,
+            "total": 0
+          },
+          {
+            "bucket": "101-500",
+            "non_simp": 0,
+            "simp": 0,
+            "total": 0
+          },
+          {
+            "bucket": "500+",
+            "non_simp": 0,
+            "simp": 0,
+            "total": 0
+          }
+        ],
+        "cross_subtheory": [
+          {
+            "bucket": "0",
+            "non_simp": 1,
+            "simp": 0,
+            "total": 1
+          },
+          {
+            "bucket": "1",
+            "non_simp": 1,
+            "simp": 0,
+            "total": 1
+          },
+          {
+            "bucket": "2",
+            "non_simp": 0,
+            "simp": 0,
+            "total": 0
+          },
+          {
+            "bucket": "3-5",
+            "non_simp": 0,
+            "simp": 0,
+            "total": 0
+          },
+          {
+            "bucket": "6-10",
+            "non_simp": 0,
+            "simp": 0,
+            "total": 0
+          },
+          {
+            "bucket": "11-20",
+            "non_simp": 0,
+            "simp": 0,
+            "total": 0
+          },
+          {
+            "bucket": "21+",
+            "non_simp": 0,
+            "simp": 0,
+            "total": 0
+          }
+        ],
+        "top_non_simp_hubs": [
+          {
+            "name": "Statements",
+            "top_dir": "(root)",
+            "depth2_dir": "(root)",
+            "in_degree": 1,
+            "cross_subtheory_importers": 1,
+            "n_theorems_lemmas": 0,
+            "n_defs_structs": 4
+          },
+          {
+            "name": "Main",
+            "top_dir": "(root)",
+            "depth2_dir": "(root)",
+            "in_degree": 0,
+            "cross_subtheory_importers": 0,
+            "n_theorems_lemmas": 5,
+            "n_defs_structs": 0
+          }
+        ]
+      },
+      "file_order": {
+        "multi_decl_3plus_files": 2,
+        "multi_decl_2plus_files": 2,
+        "groups": [
+          "public_theorem",
+          "def_abbrev",
+          "private_thm_lem",
+          "public_lemma",
+          "struct_class_ind"
+        ],
+        "quintiles": [
+          {
+            "label": "Q1 (0–20%)",
+            "counts": {
+              "public_theorem": 1,
+              "def_abbrev": 1,
+              "private_thm_lem": 0,
+              "public_lemma": 0,
+              "struct_class_ind": 0
+            },
+            "total": 2
+          },
+          {
+            "label": "Q2 (20–40%)",
+            "counts": {
+              "public_theorem": 1,
+              "def_abbrev": 1,
+              "private_thm_lem": 0,
+              "public_lemma": 0,
+              "struct_class_ind": 0
+            },
+            "total": 2
+          },
+          {
+            "label": "Q3 (40–60%)",
+            "counts": {
+              "public_theorem": 1,
+              "def_abbrev": 1,
+              "private_thm_lem": 0,
+              "public_lemma": 0,
+              "struct_class_ind": 0
+            },
+            "total": 2
+          },
+          {
+            "label": "Q4 (60–80%)",
+            "counts": {
+              "public_theorem": 1,
+              "def_abbrev": 1,
+              "private_thm_lem": 0,
+              "public_lemma": 0,
+              "struct_class_ind": 0
+            },
+            "total": 2
+          },
+          {
+            "label": "Q5 (80–100%)",
+            "counts": {
+              "public_theorem": 1,
+              "def_abbrev": 0,
+              "private_thm_lem": 0,
+              "public_lemma": 0,
+              "struct_class_ind": 0
+            },
+            "total": 1
+          }
+        ],
+        "first_decl": {
+          "counts": {
+            "public_theorem": 1,
+            "def_abbrev": 1,
+            "private_thm_lem": 0,
+            "public_lemma": 0,
+            "struct_class_ind": 0
+          },
+          "total": 2
+        },
+        "last_decl": {
+          "counts": {
+            "public_theorem": 1,
+            "def_abbrev": 1,
+            "private_thm_lem": 0,
+            "public_lemma": 0,
+            "struct_class_ind": 0
+          },
+          "total": 2
+        }
+      },
+      "decl_taxonomy": {
+        "kinds": [
+          {
+            "kind": "theorem",
+            "public": 5,
+            "private": 0,
+            "protected": 0,
+            "total": 5
+          },
+          {
+            "kind": "def",
+            "public": 4,
+            "private": 0,
+            "protected": 0,
+            "total": 4
+          }
+        ],
+        "decls_per_file": [
+          {
+            "bucket": "0",
+            "count": 0
+          },
+          {
+            "bucket": "1",
+            "count": 0
+          },
+          {
+            "bucket": "2",
+            "count": 0
+          },
+          {
+            "bucket": "3-5",
+            "count": 2
+          },
+          {
+            "bucket": "6-10",
+            "count": 0
+          },
+          {
+            "bucket": "11-25",
+            "count": 0
+          },
+          {
+            "bucket": "26-50",
+            "count": 0
+          },
+          {
+            "bucket": "51+",
+            "count": 0
+          }
+        ]
+      }
+    }
+  }
+}

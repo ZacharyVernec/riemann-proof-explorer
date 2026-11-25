@@ -1,0 +1,30 @@
+%%{init: {'theme': 'base', 'themeVariables': {'fontFamily': 'Inter, system-ui, sans-serif'}}}%%
+flowchart TD
+  %% Directed edge A --> B means A imports B (A depends on B)
+  %% Heavy (>=1000): bold ==> | Medium (50..999): --> | Light (<50): -.->
+
+  subgraph LEGEND["Legend: Edge A → B means A imports B (depends on B)"]
+    direction LR
+    L_src["Importer"] ==>|"≥ 1,000 imports"| L_dst["Imported"]
+    L_src2["Importer"] -->|"50–999 imports"| L_dst2["Imported"]
+    L_src3["Importer"] -.->|"< 50 / weaker reverse"| L_dst3["Imported"]
+  end
+
+  _root_["(root)<br/>min dist 0 · max height 53"]
+  New["New<br/>min dist 1 · max height 52"]
+  Lib["Lib<br/>min dist 4 · max height 36"]
+
+  New -->|"208"| Lib
+  _root_ -->|"1"| New
+  New -.->|"1"| _root_
+
+  style _root_ fill:#334155,stroke:#94a3b8,stroke-width:2px,color:#ffffff
+  style New fill:#1d4ed8,stroke:#60a5fa,stroke-width:2px,color:#ffffff
+  style Lib fill:#047857,stroke:#34d399,stroke-width:2px,color:#ffffff
+  style LEGEND fill:#0f172a,stroke:#475569,color:#e2e8f0
+  style L_src fill:#1e293b,stroke:#64748b,color:#f8fafc
+  style L_dst fill:#1e293b,stroke:#64748b,color:#f8fafc
+  style L_src2 fill:#1e293b,stroke:#64748b,color:#f8fafc
+  style L_dst2 fill:#1e293b,stroke:#64748b,color:#f8fafc
+  style L_src3 fill:#1e293b,stroke:#64748b,color:#f8fafc
+  style L_dst3 fill:#1e293b,stroke:#64748b,color:#f8fafc

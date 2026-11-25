@@ -576,13 +576,16 @@
   let THEORY_ORDER = [];
 
   const CANONICAL_THEORY_ORDER = [
-    "(root)", "Supplements",
+    "(root)", "New", "Lib",
+    "Supplements",
     "Development", "CompanionTheory", "PositivityTheory",
     "Formalism", "ReciprocityTheory",
     "GroundTheory", "Lemmata", "BuildAid"
   ];
   const THEORY_META = {
     "(root)":            { color: "#334155", bg: "#f1f5f9", border: "#94a3b8", tier: 0, label: "(root)" },
+    "New":               { color: "#1d4ed8", bg: "#eff6ff", border: "#60a5fa", tier: 1, label: "New" },
+    "Lib":               { color: "#047857", bg: "#ecfdf5", border: "#34d399", tier: 2, label: "Lib" },
     "Supplements":       { color: "#3730a3", bg: "#eef2ff", border: "#818cf8", tier: 0, label: "Supplements" },
     "Development":       { color: "#1d4ed8", bg: "#eff6ff", border: "#60a5fa", tier: 1, label: "Development" },
     "CompanionTheory":   { color: "#047857", bg: "#ecfdf5", border: "#34d399", tier: 1, label: "CompanionTheory" },
@@ -906,26 +909,46 @@
       );
     });
 
-    const tierConfigs = [
-      { label: "Tier 0: Apex & Entrypoints", items: [
-        { key: "(root)", cols: 2 },
-        { key: "Supplements", cols: 2 }
-      ]},
-      { label: "Tier 1: Core Synthesis & Automorphic/Positivity Pillars", items: [
-        { key: "Development", cols: 4 },
-        { key: "CompanionTheory", cols: 2 },
-        { key: "PositivityTheory", cols: 2 }
-      ]},
-      { label: "Tier 2: Specification & Contract Hubs", items: [
-        { key: "Formalism", cols: 5 },
-        { key: "ReciprocityTheory", cols: 3 }
-      ]},
-      { label: "Tier 3: Foundational & Support Machinery", items: [
-        { key: "GroundTheory", cols: 3 },
-        { key: "Lemmata", cols: 1 },
-        { key: "BuildAid", cols: 1 }
-      ]}
-    ];
+    const tierConfigs = TOP_DIR_MAP.has("New") && TOP_DIR_MAP.has("Lib")
+      ? [
+          { label: "Tier 0: Apex & Entrypoints", items: [
+            { key: "(root)", cols: 2 }
+          ]},
+          { label: "Tier 1: Main Proof Architecture (New)", items: [
+            { key: "New", cols: 5 }
+          ]},
+          { label: "Tier 2: Background Mathematical Library (Lib)", items: [
+            { key: "Lib", cols: 5 }
+          ]}
+        ]
+      : [
+          { label: "Tier 0: Apex & Entrypoints", items: [
+            { key: "(root)", cols: 2 },
+            { key: "Supplements", cols: 2 }
+          ]},
+          { label: "Tier 1: Core Synthesis & Automorphic/Positivity Pillars", items: [
+            { key: "Development", cols: 4 },
+            { key: "CompanionTheory", cols: 2 },
+            { key: "PositivityTheory", cols: 2 }
+          ]},
+          { label: "Tier 2: Specification & Contract Hubs", items: [
+            { key: "Formalism", cols: 5 },
+            { key: "ReciprocityTheory", cols: 3 }
+          ]},
+          { label: "Tier 3: Foundational & Support Machinery", items: [
+            { key: "GroundTheory", cols: 3 },
+            { key: "Lemmata", cols: 1 },
+            { key: "BuildAid", cols: 1 }
+          ]}
+        ];
+    const coveredKeys = new Set(tierConfigs.flatMap(t => t.items.map(i => i.key)));
+    const extraKeys = Array.from(byTop.keys()).filter(k => !coveredKeys.has(k) && ((byTop.get(k) || []).length > 0 || TOP_DIR_MAP.has(k)));
+    if (extraKeys.length) {
+      tierConfigs.push({
+        label: "Additional Top-Level Domains",
+        items: extraKeys.map(k => ({ key: k, cols: 3 }))
+      });
+    }
 
     const boxes = [];
     const nodePos = new Map();
@@ -2248,12 +2271,15 @@
       `<span class="pill">Analyzed Mathematical Interfaces: <b>${DATA.analyzed_interfaces.length}</b></span>`
     ].join("");
 
+    const defaultTop = TOP_DIR_MAP.has("Development")
+      ? "Development"
+      : (TOP_DIR_MAP.has("New") ? "New" : (DATA.top_dirs[0] ? DATA.top_dirs[0].dir_key : ""));
     if (state.mode === "top" && !TOP_DIR_MAP.has(state.selectedDir)) {
-      state.selectedDir = TOP_DIR_MAP.has("Development") ? "Development" : (DATA.top_dirs[0] ? DATA.top_dirs[0].dir_key : "");
+      state.selectedDir = defaultTop;
     } else if (state.mode === "d2" && !D2_DIR_MAP.has(state.selectedDir)) {
       state.selectedDir = DATA.depth2_dirs[0] ? DATA.depth2_dirs[0].dir_key : "";
     } else if (!TOP_DIR_MAP.has(state.selectedDir) && !D2_DIR_MAP.has(state.selectedDir)) {
-      state.selectedDir = TOP_DIR_MAP.has("Development") ? "Development" : (DATA.top_dirs[0] ? DATA.top_dirs[0].dir_key : "");
+      state.selectedDir = defaultTop;
     }
 
     if (!state.selectedFile || !ANALYZED_MAP.has(state.selectedFile)) {

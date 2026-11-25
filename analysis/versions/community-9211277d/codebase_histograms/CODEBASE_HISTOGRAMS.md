@@ -1,0 +1,203 @@
+# Codebase Structural Histograms & Lean 4 Comprehension Heuristics (`community-9211277d`)
+
+This report quantitatively tests standard Lean 4 comprehension heuristics against the empirical structure of the **803** reachable modules and **23,879** declarations in `src/`:
+
+- **Interactive Histogram Explorer:** [histograms.html](histograms.html) (offline SVG explorer with domain filtering across all discovered top-level directories)
+- **Repeatable Generator:** [build_histograms.py](build_histograms.py)
+- **Structured Dataset:** [histograms_data.json](histograms_data.json)
+- **Module & Import Indexer:** [build_index.py](../build_index.py)
+
+---
+
+## 1. Standard Lean 4 Heuristics vs. Empirical Reality in This Codebase
+
+Standard advice for reading Mathlib-style Lean 4 codebases assumes heavy `@[simp]` tagging, `/-! ... -/` module docstrings, `/-- ... -/` docstrings, and `private lemma` / `_aux` conventions. Across this proof codebase, some heuristics hold strongly while others invert completely:
+
+| Heuristic | Empirical Finding in `src/` | Practical Reading Implication |
+|---|---|---|
+| **Read module `/-!` docstrings and bottom-of-file declarations first** | **801** files contain `/-!` module docstrings and **23,737** declarations carry `/--` docstrings (`1,010` line comments). Across **798** multi-declaration files, the **final declaration** is a public `theorem` **21.80%** of the time (**174** files), vs. **4.26%** for the first declaration (**34** files). | Docstrings remain sparse outside focal files, while bottom-of-file reading holds strongly because definitions and helpers precede public payoff theorems. |
+| **Filter out `@[simp]` / `@[ext]` / `@[norm_cast]` glue and 1-line proofs** | Only **1,170** declarations (**4.90%**) carry any `@[…]` tag (`815` `@[simp]`, `11` `@[ext]`, `151` `@[fun_prop]`). Instead, **201** file-scoped `attribute […]` directives manage local typeclasses (`83` `local instance`), and **582** proofs (**3.19%** of theorems/lemmas) are 1-line tactics or `first \\| exact …` forwarding wrappers (**1**). | Filtering out forwarding wrappers (`first \\| exact …`), 1-line mechanical tactics (`489`), and `attribute [local instance]` boilerplate removes true glue better than scanning `@[…]` tags. |
+| **Watch where stronger typeclasses enter** | Out of **18,007** signature binder occurrences, **31.28%** are baseline `Core Algebra` (`Fintype` `2,557`, `DecidableEq` `1,842`, `Field` `1,736`). Filtering out baseline classes surfaces domain-specific hypotheses: `CMType` (`670`), `ThePrime` (`444`), `WeilData` (`349`), `NumberField` (`342`), `HasPrimitiveRoot5040` (`221`), `S.IsAdmissible` (`185`), `IsCMField` (`182`). | Excluding baseline algebraic/finiteness/topological classes isolates which mathematical theory layer a module operates in. |
+| **Look for cross-namespace equivalence bridges** | Signature-only longest-match scanning detects **1,698** equivalence-bearing declarations (`1,072` logical `↔` plus **626** bundled mathematical equivalences such as `≃` `365`, `≃+*` `107`, `≃ₗ` `53`, `≃*` `27`, `≃ₜ` `20`). Meanwhile, **367** modules (**45.70%**) import from 2+ distinct `depth-2` sub-theories. | Bundled equivalence symbols (`≃ₗ`, `≃+*`, `≃ₐ`, `≅`, `≃ₜ`, `≃L`) and multi-subtheory import modules directly pinpoint abstraction boundaries. |
+| **Check non-`@[simp]` reference fan-in** | Out of **803** modules, **551** (**68.62%**) have zero `@[simp]` declarations (`252` contain `@[simp]`). Exactly **382** modules (**47.57%**) have `in_degree = 1`, while only **0** non-`@[simp]` modules (**0.00%**) reach `in_degree >= 26` and **0** reach `in_degree >= 500`. | Module import fan-in cleanly separates single-consumer proof steps from shared specification hubs (`Base`, `HolomorphicIntegrals`, `Eigenvalues`). |
+| **Scan proof bodies for conceptual moves, not line count** | Across **14,372** tactic proofs, direct rewriting (`rw`/`rwa` in **0.00%**, `exact` in **44.34%**) and `have` (**65.47%**) dominate, while `simp`/`simpa`/`simp_all`/`dsimp` appears in **0.00%**. Genuine structural moves are selective: `induction` (**4.43%**, `637`), `classical` (**4.49%**), `choose` (**4.40%**), `by_contra`/`contrapose` (**2.66%**). | Checking for `induction`, `by_contra`, `choose`, `classical`, `calc`, and multi-`obtain`/`have` blocks distinguishes conceptual steps from long `rw`/`ring` bookkeeping. |
+| **Check `theorem` vs. `lemma` and `private` / `_aux`** | `theorem` accounts for **6.47%** of declarations (`1,544`) vs. **69.87%** for `lemma` (`16,684`). Only **0.78%** of `theorem`s are `private` (`12`), vs. **4.23%** of `lemma`s (`706`), and `1` declarations have `aux`-suffixed names. | `private` visibility is a much sharper helper signal than `lemma` or `_aux` naming (`private` drops from `2.23%` in Q1 and `3.52%` in Q5 to `0.00%` on final declarations). |
+
+---
+
+## 2. Automation Attributes & Proof Glue
+
+Out of **18,228** `theorem` and `lemma` declarations (**14,372** tactic proofs and **3,856** term-mode proofs), mutually exclusive proof-shape classification breaks down as follows:
+
+| Proof Shape Bucket | Count | Share of Theorems & Lemmas |
+|---|---:|---:|
+| Wrapper (first \| exact …) | 1 | 0.01% |
+| 1-line mechanical (simp/rfl/rw/exact/…) | 489 | 2.68% |
+| 1-line solver (ring/omega/linarith/…) | 66 | 0.36% |
+| 1-line other tactic | 26 | 0.14% |
+| Term-mode (no by) | 3,856 | 21.15% |
+| Short tactic (2–5 lines) | 3,458 | 18.97% |
+| Medium tactic (6–20 lines) | 7,163 | 39.30% |
+| Long tactic (21–50 lines) | 2,745 | 15.06% |
+| Deep tactic (51+ lines) | 424 | 2.33% |
+
+### Declaration Attributes vs. File-Scoped `attribute […]` Directives
+
+Declaration-level `@[…]` attributes appear on **1,170** declarations (**4.90%** of `23,879`, totaling **1,183** tag occurrences), whereas file-scoped `attribute […]` directives appear **201** times—overwhelmingly activating local typeclass instances rather than rewriting rules:
+
+| Top `@[…]` Declaration Tags | Count | Top File `attribute […]` Directives | Count |
+|---|---:|---|---:|
+| `@[simp]` | 815 | `attribute [local instance]` | 83 |
+| `@[fun_prop]` | 151 | `attribute [instance]` | 32 |
+| `@[simps]` | 82 | `attribute [local simp]` | 12 |
+| `@[to_additive]` | 35 | `attribute [irreducible]` | 10 |
+| `@[grind]` | 27 | `attribute [-simp]` | 9 |
+| `@[irreducible]` | 16 | `attribute [fun_prop]` | 9 |
+| `@[ext]` | 11 | `attribute [simp]` | 7 |
+| `@[instance_reducible]` | 8 | `attribute [local fun_prop]` | 5 |
+
+The most frequent `attribute [local instance]` targets include `Fintype.ofFinite` (`64`), `Prop.linearOrder` (`3`), `algebraMvPolynomial` (`3`), `FormallyEtale.of_isSeparable` (`2`), `MonoidHomClass.toMulHomClass` (`2`), `Quotient.field` (`2`), `RingHomClass.toAddMonoidHomClass` (`2`). Top compiler tuning options: `set_option backward.isDefEq.respectTransparency` (`33`), `set_option synthInstance.maxHeartbeats` (`5`), `set_option synthInstance.maxSize` (`4`), `set_option warning.simp.varHead` (`1`).
+
+---
+
+## 3. Typeclass Usage & Mathematical Hypotheses
+
+Restricting `[…]` extraction strictly to declaration signatures and `variable` headers yields **18,007** typeclass binder occurrences across six mathematical tiers:
+
+| Mathematical Tier | Binder Occurrences | Share |
+|---|---:|---:|
+| Core Algebra (`Field`, `CommRing`, `Algebra`, `Module`, `AddCommGroup`, …) | 5,633 | 31.28% |
+| Number & Local Fields (`NumberField`, `IsCMField`, `ValuativeRel`, …) | 940 | 5.22% |
+| Commutative & Algebraic Geometry (`GrpObj`, `IsLocalRing`, `IsCommMonObj`, …) | 301 | 1.67% |
+| Analysis, Topology & Measure (`TopologicalSpace`, `NormedAddCommGroup`, …) | 1,193 | 6.63% |
+| Finiteness & Type-Level (`Fintype`, `Fact`, `DecidableEq`, …) | 5,527 | 30.69% |
+| Other Domain-Specific (Project- and theory-specific predicates) | 4,413 | 24.51% |
+
+Filtering out the **21** baseline classes exposes the specialized mathematical hypotheses driving each top-level domain:
+
+- **Overall top stronger typeclasses:** `CMType` (`670`), `ThePrime` (`444`), `WeilData` (`349`), `NumberField` (`342`), `HasPrimitiveRoot5040` (`221`), `S.IsAdmissible` (`185`), `IsCMField` (`182`), `EmbeddedNumberField` (`161`), `MeasurableSpace` (`147`), `PadicPlace` (`147`), `StarRing` (`145`), `PadicIso` (`136`).
+- **Domain stratification:** `Lib` (`495` modules: `CMType` (`417`), `NumberField` (`310`), `ThePrime` (`251`), `WeilData` (`193`)); `New` (`306` modules: `CMType` (`253`), `ThePrime` (`193`), `S.IsAdmissible` (`185`), `WeilData` (`156`)).
+
+---
+
+## 4. Proof Strategies: Conceptual Moves vs. Automated Solvers
+
+Scanning tactic bodies across all **14,372** tactic-mode proofs separates ubiquitous rewriting mechanics from targeted automated solvers and conceptual proof moves:
+
+| Group | Tactic / Move | Tactic Proofs Using | Share of Tactic Proofs | Total Invocations |
+|---|---|---:|---:|---:|
+| Direct plumbing | rw / rwa | 7,858 | 54.68% | 14,287 |
+| Direct plumbing | exact | 6,373 | 44.34% | 9,473 |
+| Direct plumbing | refine | 5,110 | 35.56% | 7,236 |
+| Direct plumbing | rfl | 3,609 | 25.11% | 6,021 |
+| Direct plumbing | ext / funext | 2,483 | 17.28% | 3,335 |
+| Conceptual | have (intermediate claim/object) | 9,410 | 65.47% | 33,033 |
+| Conceptual | obtain / rcases / cases | 5,727 | 39.85% | 11,217 |
+| Conceptual | let / set (local binding) | 5,506 | 38.31% | 11,848 |
+| Conceptual | calc (calculational chain) | 2,023 | 14.08% | 2,334 |
+| Conceptual | classical | 645 | 4.49% | 646 |
+| Conceptual | induction | 637 | 4.43% | 724 |
+| Conceptual | choose (choice extraction) | 632 | 4.40% | 813 |
+| Conceptual | by_cases (case split) | 602 | 4.19% | 729 |
+| Conceptual | by_contra / contrapose / exfalso | 382 | 2.66% | 422 |
+| Conceptual | suffices | 333 | 2.32% | 358 |
+| Solver | simp / simpa / simp_all / dsimp | 10,862 | 75.58% | 27,133 |
+| Solver | abel / group / module | 1,673 | 11.64% | 2,076 |
+| Solver | ring / noncomm_ring | 1,494 | 10.40% | 1,878 |
+| Solver | fun_prop / continuity / measurability | 907 | 6.31% | 1,580 |
+| Solver | positivity | 624 | 4.34% | 972 |
+| Solver | linarith / nlinarith | 591 | 4.11% | 1,087 |
+| Solver | omega | 404 | 2.81% | 781 |
+| Solver | gcongr | 396 | 2.76% | 506 |
+| Solver | linear_combination | 302 | 2.10% | 381 |
+
+---
+
+## 5. Cross-Namespace & Equivalence "Bridge" Signatures
+
+Longest-match tokenization over declaration signatures identifies **1,698** declarations containing explicit equivalence/isomorphism constructors:
+
+| Constructor | Declarations | Total Occurrences |
+|---|---:|---:|
+| Logical iff (↔) | 1,072 | 1,102 |
+| Type equivalence (≃) | 365 | 413 |
+| Ring equiv (≃+*) | 107 | 109 |
+| Linear equiv (≃ₗ) | 53 | 53 |
+| Multiplicative equiv (≃*) | 27 | 29 |
+| Homeomorphism (≃ₜ) | 20 | 20 |
+| Continuous linear equiv (≃L) | 18 | 19 |
+| Categorical iso (≅) | 16 | 16 |
+| Additive equiv (≃+) | 11 | 11 |
+| Algebra equiv (≃ₐ) | 6 | 6 |
+| Linear isometric equiv (≃ₗᵢ) | 2 | 2 |
+| Measurable equiv (≃ᵐ) | 1 | 2 |
+
+Cross-module synthesis is also visible in import breadth and `open` headers: **367** modules (**45.70%**) import from 2+ distinct `depth-2` sub-theories, **104** modules (**12.95%**) import from 2+ distinct top-level domains, and **709** modules (**88.29%**) open **5+** distinct root namespaces simultaneously (led by `Matrix` in `459` files, `Finset` in `394` files, `Fintype` in `298` files, `NumberField` in `255` files).
+
+---
+
+## 6. Non-`@[simp]` Reference Fan-In & Reuse
+
+Joining file-level `@[simp]` detection with the SQLite import graph (`graph.sqlite`) shows a steep heavy-tailed reuse distribution:
+
+| Module `in_degree` | Non-`@[simp]` Modules | `@[simp]` Modules | Total Modules | Share |
+|---|---:|---:|---:|---:|
+| `0` | 1 | 0 | 1 | 0.12% |
+| `1` | 322 | 60 | 382 | 47.57% |
+| `2` | 121 | 67 | 188 | 23.41% |
+| `3-5` | 94 | 102 | 196 | 24.41% |
+| `6-10` | 12 | 21 | 33 | 4.11% |
+| `11-25` | 1 | 2 | 3 | 0.37% |
+| `26-100` | 0 | 0 | 0 | 0.00% |
+| `101-500` | 0 | 0 | 0 | 0.00% |
+| `500+` | 0 | 0 | 0 | 0.00% |
+
+The top non-`@[simp]` hub modules are foundational definition contracts and shared theory interfaces, led by `Base` (`in_degree = 20`), `HolomorphicIntegrals` (`in_degree = 9`), `Eigenvalues` (`in_degree = 9`), `Rows` (`in_degree = 9`), `TestCategory` (`in_degree = 8`), `EntireLFunction` (`in_degree = 7`), `MultivariatePolynomials` (`in_degree = 7`).
+
+---
+
+## 7. Declaration Taxonomy & Top-to-Bottom File Order
+
+Across all **23,879** declarations:
+
+| Kind | Public | Private | Protected | Total | Share |
+|---|---:|---:|---:|---:|---:|
+| `lemma` | 15,967 | 706 | 11 | 16,684 | 69.87% |
+| `def` | 3,250 | 75 | 4 | 3,329 | 13.94% |
+| `theorem` | 1,532 | 12 | 0 | 1,544 | 6.47% |
+| `abbrev` | 1,021 | 19 | 5 | 1,045 | 4.38% |
+| `instance` | 753 | 0 | 0 | 753 | 3.15% |
+| `structure` | 390 | 8 | 0 | 398 | 1.67% |
+| `class` | 117 | 0 | 0 | 117 | 0.49% |
+| `inductive` | 9 | 0 | 0 | 9 | 0.04% |
+
+Within the **796** files containing 3+ declarations (`Q1`–`Q5`) and the **798** files containing 2+ declarations (`First Decl` vs. `Last Decl`), top-down build order is strongly polarized:
+
+- **Definitions front-loaded:** `def` / `abbrev` makes up **29.79%** of `Q1` (`1,521`) vs. **8.61%** in `Q5` (`384`), dropping to **3.01%** on the final declaration.
+- **Public theorems back-loaded:** Public `theorem` rises from **4.94%** in `Q1` (`252`) to **10.48%** in `Q5` (`467`), reaching **21.80%** (`174`) on the final declaration.
+- **Private helpers excluded from payoff slot:** `private theorem`/`private lemma` comprises **2.23%** in `Q1`, falls to **3.52%** in `Q5`, and drops to **0.00%** (`0` files) on the final declaration.
+- **File granularity:** **5** modules (**0.62%**) hold 1 declaration, **2** (**0.25%**) hold 2, **20** (**2.49%**) hold 3–5, and **776** (**96.64%**) hold 6+.
+
+### Domain Breakdown
+
+| Domain | Modules | Declarations |
+|---|---:|---:|
+| `Lib` | 495 | 14,672 |
+| `New` | 306 | 9,198 |
+| `(root)` | 2 | 9 |
+
+---
+
+## 8. Repeatable Extraction Methodology & Caveats
+
+1. **Deterministic Pipeline (`build_histograms.py`):** Loads the sorted reachable module and edge tables from `graph.sqlite`, discovers all top-level domains dynamically sorted by `(-module_count, top_dir)`, and scans all `.lean` files in deterministic sorted chunks using multiprocessing.
+2. **Signature-Only vs. Proof-Body Separation:** Typeclasses (`[…]`) and equivalence constructors (`≃ₗᵢ|≃+*|≃ₗ|…|↔`) are extracted strictly from declaration headers (before `:=` or trailing `where`) and `variable` lines so tactic arguments such as `rw [Finset.sum_comm]` never contaminate typeclass counts, and longest-match alternation prevents `≃+*` or `≃ₗᵢ` from double-counting as `≃`.
+3. **Syntactic Scope Caveat:** Because the scanner parses Lean source text rather than elaborated `.olean` environments, implicit typeclass synthesis, tactic-generated sub-calls inside `simp`/`aesop`, and macro expansions are not unrolled. All counts are exact syntactic counts over `src/` (totaling `23,879` declarations vs. `23,235` in `meta.json`—a `+2.77%` difference attributable to anonymous `instance` declarations and `set_option ... in` headers).
+4. **Regeneration:** To rebuild after a codebase change:
+
+```bash
+python3 analysis/build_all.py --version community-9211277d --steps index,histograms
+# Or standalone:
+python3 analysis/codebase_histograms/build_histograms.py --db-path analysis/versions/community-9211277d/data/graph.sqlite --out-dir analysis/versions/community-9211277d/codebase_histograms --version-label community-9211277d
+node analysis/render_reports.js
+```

@@ -8,7 +8,8 @@ This repository exists to help humans understand the mathematical structure of t
 
 Every page of the [Analysis Portal](analysis/index.html) includes a **Lean repo version** switcher (defaulting to the latest community version and remembering your selection across pages):
 
-- **Community simplified (default — `community-307cef33`):** [`leanprover-community/riemann-hypothesis`](https://github.com/leanprover-community/riemann-hypothesis) at commit `307cef33f046955ee79dba47e0d828d06496d75f`, fetched into `lean_versions/community-307cef33/` (gitignored; downloaded automatically by the orchestrator if absent).
+- **Community readable edition (default — `community-9211277d`):** [`leanprover-community/riemann-hypothesis`](https://github.com/leanprover-community/riemann-hypothesis) at commit `9211277d096b7abc3f9c30184bdb2e32d98dcffb` (2026-11-25, condensed `src/Lib/` + `src/New/` edition), fetched into `lean_versions/community-9211277d/` (gitignored; downloaded automatically by the orchestrator if absent).
+- **Community simplified (`community-307cef33`):** [`leanprover-community/riemann-hypothesis`](https://github.com/leanprover-community/riemann-hypothesis) at commit `307cef33f046955ee79dba47e0d828d06496d75f` (2026-11-24), fetched into `lean_versions/community-307cef33/` (gitignored; downloaded automatically by the orchestrator if absent).
 - **Original submission (`original-2026-11-20`):** The original extracted source tree in `lean/` (and Git LFS archive `lean.tar.gz`).
 
 ## Main Contributions

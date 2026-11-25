@@ -23,6 +23,8 @@ OUT_DIR = SCRIPT_DIR
 
 TOP_ORDER = [
     "(root)",
+    "New",
+    "Lib",
     "Supplements",
     "Development",
     "CompanionTheory",
@@ -36,6 +38,8 @@ TOP_ORDER = [
 
 TOP_COLORS = {
     "(root)": {"fill": "#1e293b", "border": "#94a3b8", "dot": "#334155", "font": "#f8fafc"},
+    "New": {"fill": "#1e3a8a", "border": "#60a5fa", "dot": "#1d4ed8", "font": "#f8fafc"},
+    "Lib": {"fill": "#064e3b", "border": "#34d399", "dot": "#047857", "font": "#f8fafc"},
     "Supplements": {"fill": "#312e81", "border": "#818cf8", "dot": "#3730a3", "font": "#f8fafc"},
     "Development": {"fill": "#1e3a8a", "border": "#60a5fa", "dot": "#1d4ed8", "font": "#f8fafc"},
     "CompanionTheory": {"fill": "#064e3b", "border": "#34d399", "dot": "#047857", "font": "#f8fafc"},
@@ -714,8 +718,8 @@ def write_top_level_dot(data: dict[str, Any], out_path: Path) -> None:
 
     rank_groups = [
         ["(root)"],
-        ["Supplements"],
-        ["Development"],
+        ["Supplements", "New"],
+        ["Development", "Lib"],
         ["CompanionTheory", "PositivityTheory"],
         ["Formalism", "GroundTheory", "ReciprocityTheory"],
         ["Lemmata", "BuildAid"],
@@ -730,7 +734,9 @@ def write_top_level_dot(data: dict[str, Any], out_path: Path) -> None:
     rank_idx = {
         "(root)": 0,
         "Supplements": 1,
+        "New": 1,
         "Development": 2,
+        "Lib": 2,
         "CompanionTheory": 3,
         "PositivityTheory": 3,
         "Formalism": 4,
@@ -794,11 +800,15 @@ def write_depth2_major_dot(data: dict[str, Any], out_path: Path) -> None:
     proj = data["_major_projection"]
     nodes: dict[str, dict[str, Any]] = proj["nodes"]
     edges: dict[tuple[str, str], int] = proj["edges"]
+    total_files = data["meta"].get("reachable_files", 0)
+    edge_thresh = 150 if total_files > 5000 else 12
+    strong_w = 1000 if total_files > 5000 else 40
+    lbl_thresh = 300 if total_files > 5000 else 15
 
-    # Keep edges with weight >= 150, entry chain edges, and strongest incoming/outgoing per node
+    # Keep edges with weight >= edge_thresh, entry chain edges, and strongest incoming/outgoing per node
     keep_edges: set[tuple[str, str]] = set()
     for (s, d), w in edges.items():
-        if w >= 150 or s in ("(root)", "Supplements/Kernels") or d in ("(root)", "Supplements/Kernels"):
+        if w >= edge_thresh or s in ("(root)", "Supplements/Kernels") or d in ("(root)", "Supplements/Kernels"):
             keep_edges.add((s, d))
 
     for n in nodes:
@@ -809,13 +819,19 @@ def write_depth2_major_dot(data: dict[str, Any], out_path: Path) -> None:
         if outs:
             keep_edges.add(max(outs, key=lambda x: x[1])[0])
 
+    active_tops = data.get("top_order") or TOP_ORDER
+    if "New" in active_tops and "Lib" in active_tops:
+        color_legend = "Colors: Blue=New | Emerald=Lib | Slate=Root"
+    else:
+        color_legend = "Colors: Blue=Development | Emerald=Companion | Magenta=Positivity | Orange=Formalism | Teal=Reciprocity | Gold=Ground | Purple=Lemmata | Slate=Root/BuildAid"
+
     lines: list[str] = [
         "digraph Depth2MajorArchitecture {",
         "  graph [",
         (
             f'    label="Riemann Proof — Major Depth-2 Sub-Theory Architecture\\n'
             f'Edge A -> B means A depends on B\\n'
-            f'Colors: Blue=Development | Emerald=Companion | Magenta=Positivity | Orange=Formalism | Teal=Reciprocity | Gold=Ground | Purple=Lemmata | Slate=Root/BuildAid"'
+            f'{color_legend}"'
         ),
         "    labelloc=t",
         "    fontsize=15",
@@ -833,7 +849,6 @@ def write_depth2_major_dot(data: dict[str, Any], out_path: Path) -> None:
         "",
     ]
 
-    active_tops = data.get("top_order") or TOP_ORDER
     for key in sorted(
         nodes.keys(),
         key=lambda k: (
@@ -868,12 +883,12 @@ def write_depth2_major_dot(data: dict[str, Any], out_path: Path) -> None:
             style = "dashed"
             fontcolor = "#fbbf24"
             constraint = "false"
-        elif w >= 1000:
+        elif w >= strong_w:
             color = "#38bdf8"
             style = "solid"
             fontcolor = "#bae6fd"
             constraint = "true"
-        elif w >= 150:
+        elif w >= edge_thresh:
             color = "#94a3b8"
             style = "solid"
             fontcolor = "#cbd5e1"
@@ -884,7 +899,7 @@ def write_depth2_major_dot(data: dict[str, Any], out_path: Path) -> None:
             fontcolor = "#94a3b8"
             constraint = "true"
 
-        lbl = f" {format_num(w)} " if (w >= 300 or s in ("(root)", "Supplements/Kernels") or d == "BuildAid" or w < 150) else ""
+        lbl = f" {format_num(w)} " if (w >= lbl_thresh or s in ("(root)", "Supplements/Kernels") or d == "BuildAid" or w < edge_thresh) else ""
         lines.append(
             f'  {sanitize_id(s)} -> {sanitize_id(d)} [label="{lbl}", penwidth={pw:.2f}, '
             f'color="{color}", style={style}, fontcolor="{fontcolor}", constraint={constraint}];'
@@ -924,6 +939,8 @@ def write_readme_md(
 
     roles = {
         "(root)": f"Top-level theorem statements and entry point ({mlink('Main.lean')}, {mlink('Statements.lean')})",
+        "New": "Novel proof architecture (`Main.lean`, `Reduction/`, `Derivatives/`, `UpperBound/`, `Spanning/`, `Determinant/`, `OneLift/`, `Congruences/`, `Appendix/`)",
+        "Lib": "Self-contained background theories classed as known in the literature (imports zero modules from `New/`)",
         "Supplements": "Theorem-assembly kernel (`Supplements/Kernels/*`) bridging `Main.lean` into the main proof tracks",
         "Development": "Primary proof synthesis engine: abelian varieties, automorphic arithmetic, automorphic spectrum, Weil bound, étale cohomology, discrete groups, and resolution of singularities",
         "CompanionTheory": "Spectral geometry, real reductive groups, Harish-Chandra modules, and automorphic companion results",
@@ -976,17 +993,27 @@ def write_readme_md(
         )
     a("")
     a("### Key Structural Observations")
-    if "Supplements" in active_tops:
+    if "New" in active_tops and "Lib" in active_tops:
+        a(
+            f"1. **The Entry Chain:** {mlink('Main.lean')} imports {mlink('Statements.lean')} and `New/Main.lean`, which reduces RH and GRH via functional-equation reflection (`New.zeros_on_line`, `New.zeta_zeros_on_line`) to `New/Reduction/OneSidedBound.lean` (`New.grh`) and `New/Reduction/MainInequality.lean` (`star_inequality`)."
+        )
+        a(
+            "2. **Clean `New` vs. `Lib` Boundary:** `New/` contains the proof argument across 8 topical folders (`Reduction`, `Derivatives`, `UpperBound`, `Spanning`, `Determinant`, `OneLift`, `Congruences`, `Appendix`), while `Lib/` contains self-contained background theory and imports **zero** modules from `New/` (so Depth 1 has 0 nontrivial SCCs)."
+        )
+    elif "Supplements" in active_tops:
         a(
             f"1. **The Entry Chain:** {mlink('Main.lean')} depends on {mlink('Statements.lean')} and `Supplements/Kernels/MainTheoremsAll.lean`. From there, `Supplements/Kernels` draws on the main proof synthesis in `Development/AutomorphicArithmetic` and the functional-equation reflection theorem in `Formalism/GammaFactorNonvanishing`."
+        )
+        a(
+            "2. **Synthesis vs. Foundation Split:** `Development` serves as the central consumer and synthesis engine, drawing heavily on the specification contracts and foundational theorems in `Formalism`, `ReciprocityTheory`, and `GroundTheory`, while co-evolving with `CompanionTheory` and `PositivityTheory`."
         )
     else:
         a(
             f"1. **The Entry Chain:** {mlink('Main.lean')} imports {mlink('Statements.lean')} and `Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean` (alongside `ClaimStrip.lean`), feeding directly into the main character-box proof synthesis and its functional-equation reflection dependencies."
         )
-    a(
-        "2. **Synthesis vs. Foundation Split:** `Development` serves as the central consumer and synthesis engine, drawing heavily on the specification contracts and foundational theorems in `Formalism`, `ReciprocityTheory`, and `GroundTheory`, while co-evolving with `CompanionTheory` and `PositivityTheory`."
-    )
+        a(
+            "2. **Synthesis vs. Foundation Split:** `Development` serves as the central consumer and synthesis engine, drawing heavily on the specification contracts and foundational theorems in `Formalism`, `ReciprocityTheory`, and `GroundTheory`, while co-evolving with `CompanionTheory` and `PositivityTheory`."
+        )
     a("")
     a("---")
     a("")
@@ -1014,13 +1041,18 @@ def write_readme_md(
     )
     a("")
     a("### Why Directory Cycles Coexist with a Module-Level DAG")
-    a(
-        "Directories organize the proof by **mathematical topic** rather than strict topological build height. Low-height specification or definition modules inside a high-level directory are referenced by higher-height proof modules in a foundational directory, while high-height synthesis modules in the first directory depend on the foundational directory:"
-    )
-    a("")
-    a(
-        "- **Specification-to-Realization Back-Flows:** `Development` depends heavily on `Formalism` and `ReciprocityTheory`, while a small number of modules in `Formalism` reference low-height parameter/character helpers inside `Development`."
-    )
+    if "New" in active_tops and "Lib" in active_tops:
+        a(
+            "Directories inside `New/` and `Lib/` organize modules by **mathematical topic** rather than strict build height (`GUIDE.md`: folders are not layers). While `Lib/` has zero imports from `New/`, topical sub-theories inside `New/` (and inside `Lib/`) exchange definitions and lemmas in both directions at different file heights."
+        )
+    else:
+        a(
+            "Directories organize the proof by **mathematical topic** rather than strict topological build height. Low-height specification or definition modules inside a high-level directory are referenced by higher-height proof modules in a foundational directory, while high-height synthesis modules in the first directory depend on the foundational directory:"
+        )
+        a("")
+        a(
+            "- **Specification-to-Realization Back-Flows:** `Development` depends heavily on `Formalism` and `ReciprocityTheory`, while a small number of modules in `Formalism` reference low-height parameter/character helpers inside `Development`."
+        )
     l2_edge_pairs = {(e["src"], e["dst"]) for e in l2_edges}
     if ("Development/WeilBound", "Development/AutomorphicSpectrum") in l2_edge_pairs and (
         "Development/AutomorphicSpectrum",
@@ -1757,15 +1789,18 @@ def write_explorer_html(data: dict[str, Any], out_path: Path) -> None:
     if (nCount === 0) return;
 
     // Bucket nodes into clean layers
-    // Height mode: group by quantized max_height descending (top = 202, bottom = 0)
+    // Height mode: group by quantized max_height descending (top = maxH, bottom = 0)
     // Dist mode: group by min_dist ascending (top = 0, bottom = max)
+    const maxH = Math.max(1, ...nodes.map((x) => x.max_height || 0));
+    const hStep = Math.max(2, Math.round(maxH / 14));
+    const apexCut = maxH - Math.max(2, Math.round(maxH * 0.035));
     const buckets = new Map();
     for (const nd of nodes) {
       let layerKey;
       if (state.layoutMode === "height") {
-        if (nd.max_height >= 195) layerKey = -nd.max_height; // keep Main/Supplements/Dev separated cleanly
+        if (nd.max_height >= apexCut) layerKey = -nd.max_height; // keep Main and apex layers separated cleanly
         else if (nd.max_height === 0) layerKey = 1000;
-        else layerKey = -Math.round(nd.max_height / 14) * 14;
+        else layerKey = -Math.round(nd.max_height / hStep) * hStep;
       } else {
         layerKey = nd.min_dist;
       }
@@ -2800,7 +2835,9 @@ def write_explorer_html(data: dict[str, Any], out_path: Path) -> None:
       if (!nodesById[id]) state.treeOpenIds.delete(id);
     }
     if (!state.selectedId || !nodesById[state.selectedId]) {
-      state.selectedId = nodesById["L1:Development"] ? "L1:Development" : (rootIds[0] || null);
+      state.selectedId = nodesById["L1:Development"]
+        ? "L1:Development"
+        : (nodesById["L1:New"] ? "L1:New" : (rootIds[0] || null));
     }
 
     document.getElementById("btn-l1").textContent = `Level 1 (${rootIds.length})`;

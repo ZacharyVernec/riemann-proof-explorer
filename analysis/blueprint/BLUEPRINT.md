@@ -1,6 +1,6 @@
-# Formalized Proof Blueprint: Riemann Hypothesis & Generalized Riemann Hypothesis (`community-307cef33`)
+# Formalized Proof Blueprint: Riemann Hypothesis & Generalized Riemann Hypothesis (`community-9211277d`)
 
-This blueprint distills the Lean proof DAG (**59,836 reachable modules**, **16,014,995 lines**, **367,774 internal dependency edges**) into **38 mathematical milestones** across **5 architectural stages** (Stages 0–4) connected by **109 dependency links** (interactive DAG in [blueprint.html](blueprint.html)).
+This blueprint distills the Lean proof DAG (**803 reachable modules**, **477,124 lines**, **1,733 internal dependency edges**) into **51 mathematical milestones** across **5 architectural stages** (Stages 0–4) connected by **68 dependency links** (interactive DAG in [blueprint.html](blueprint.html)).
 
 > **Direction Convention:** Stage 0 sits at the apex (`Main.lean`); arrows `A → B` mean milestone `A` depends directly on prerequisite `B`.
 
@@ -8,16 +8,16 @@ This blueprint distills the Lean proof DAG (**59,836 reachable modules**, **16,0
 
 ## Executive Overview: The Proof Strategy in Plain English
 
-At the highest level, the proof establishes **both** the classical **Riemann Hypothesis (RH)** and the **Generalized Riemann Hypothesis (GRH)** for all Dirichlet $L$-functions by reducing critical-line zero localization ($\operatorname{Re}(s) = \tfrac{1}{2}$) to a single universal statement: **no Dirichlet $L$-function $L(\chi, s)$ vanishes anywhere in the open right half-plane $\operatorname{Re}(s) > \tfrac{1}{2}$** (away from the pole of $\zeta(s)$ at $s = 1$).
+At the highest level, the proof establishes **both** the classical **Riemann Hypothesis (RH)** and the **Generalized Riemann Hypothesis (GRH)** for all Dirichlet $L$-functions by reducing critical-line zero localization ($\operatorname{Re}(s) = \tfrac{1}{2}$) to a single universal statement: **no Dirichlet $L$-function $L(\chi, s)$ vanishes anywhere in the open right half-plane $\operatorname{Re}(s) > \tfrac{1}{2}$** (away from the simple pole of $\zeta(s)$ at $s = 1$).
 
-Once this right half-plane nonvanishing holds, the functional equations of $\zeta(s)$ and primitive Dirichlet $L$-functions (plus Euler-factor nonvanishing for $\operatorname{Re}(s) > 0$) mirror every zero with $\operatorname{Re}(s) < \tfrac{1}{2}$ onto a zero with $\operatorname{Re}(1 - s) > \tfrac{1}{2}$, forcing all nontrivial zeros onto $\operatorname{Re}(s) = \tfrac{1}{2}$.
+Once this right half-plane nonvanishing (`New.grh`) holds, `New/Main.lean` uses Gamma-factor nonvanishing for $\operatorname{Re}(s) > 0$ and the functional equations across $s \mapsto 1 - s$ to mirror every zero with $\operatorname{Re}(s) < \tfrac{1}{2}$ into $\operatorname{Re}(1 - s) > \tfrac{1}{2}$, forcing all critical-strip zeros onto $\operatorname{Re}(s) = \tfrac{1}{2}$.
 
-To prove $L(\chi, s) \neq 0$ for $\operatorname{Re}(s) > \tfrac{1}{2}$, the formalization executes a **windowed Landau–Chebyshev–Galois strategy**:
-1. **Windowed Chebyshev-to-Zero-Free Principle (Analytic Engine):** By a finite-level variant of Landau's nonnegativity theorem on cyclic character groups $\Lambda_\psi = \langle \psi \rangle$, if the weighted Chebyshev-type prime-power error sum $G_{\Lambda_\psi}(x) \le x^{\frac{1}{2} + O(\varepsilon)}$ holds throughout sufficiently wide logarithmic windows $[Y, Y^\lambda]$ ($\lambda > 1$) as $x \to \infty$ (for arbitrarily small $\varepsilon > 0$), then $L(\psi, s)$ cannot vanish in $\operatorname{Re}(s) > \tfrac{1}{2}$.
-2. **Galois-Theoretic Family Designs & Selmer/Shafarevich-Tate Growth Control:** To build families of auxiliary primes and cyclic character twists that achieve these windowed Chebyshev cancellations without hitting a bottleneck from exceptional zeros or bad ramification, the proof couples explicit prime-pair sieve/design bounds with **polynomial-in-log-conductor / subexponential upper bounds on Shafarevich-Tate / Bloch-Kato Selmer group lengths** (`VWin`) across cyclotomic/abelian number fields.
-3. **Modularity Lifting, $U(3)$ Selmer Counting & Kato's Euler System:** Those Selmer growth bounds (`VWin`, and its explicit specialization to $\mathbb{Q}(\sqrt{-3})$) are proved via automorphy lifting, patching arguments, $U(3)$ Galois-cohomology counting over auxiliary imaginary quadratic fields $K^*(p)$, Poitou-Tate nine-term duality, weight-1 Hilbert Eisenstein series, and Kato's Euler system (`ZetaUr`).
-4. **Local-Global Compatibility & Theta-Correspondence Lifts:** The modularity and Selmer machinery requires strong local-global compatibility (`Row0b`) between $\ell$-adic Galois representations and polarized regular algebraic cuspidal automorphic representations of $\mathrm{GL}_n$, together with an explicit Local Langlands correspondence preserving tame/depth-zero types (`recTExists`). The formalization establishes `Row0b` via a **weight-one geometric realization** (crystalline towers, finite-étale Kodaira-Spencer models, and the holomorphic Lefschetz fixed-point formula) combined with **global unitary theta-kernel Parseval lifts** (`TLiftK`), paired with Siegel-Weil formulas, Harish-Chandra infinitesimal characters, and Flath factorization.
-5. **Arakelov Geometry & Moriwaki Bigness (`CovolX`):** Controlling the rank, height, and lattice covolume constants of the arithmetic parameter families requires global Arakelov intersection lower bounds (`CovolX`, `VolumeTheoremX`), proved via PEL-type Shimura toroidal compactifications, Mumford semiabelian uniformisations, functorial resolution of singularities in characteristic zero, twisted étale cohomology finiteness, Bost-Zhang Hermitian lattice slope bounds, and Moriwaki's arithmetic bigness and Hilbert-Samuel volume theorems.
+To prove `New.grh` in the `src/New/` + `src/Lib/` readable architecture, the formalization executes a **height/covolume comparison of twisted lattices of unitary modular forms**:
+1. **One-Sided Prime Remainder Criterion (`New/Reduction`):** For a modulus $q_0$ divisible by $18480$ and a prime $d \equiv q_0/2 - 1 \pmod{q_0}$ chosen via Pólya–Vinogradov zero-density bounds (`Lib/Analytic/QuadraticTwist`) so quadratic twists avoid any putative zero, Landau's one-sided criterion (`Criterion.lean`) turns a one-sided bound $R_{q_0}(y) \le y^{-1/2 + \varepsilon}$ on the prime remainder $R_{q_0}(y) = \sum_{n \le y} \Lambda(n)(1 - \chi_K(n))(1/n - 1/y) - \log y / \varphi(q_0) - c_{q_0}$ into zero-freeness on $\operatorname{Re}(s) > \tfrac{1}{2}$.
+2. **Main Inequality & Cancellation (`star_inequality`):** At large scales $x, x_1, b$ (`eventually_exists_data`) over a CM field $E = \mathbb{Q}(\sqrt{-d})(\zeta_{q_1})$ with Behrend-sparse $b$-places, `MainInequality.lean` cancels `D.mainAmount` between an upper bound on the covolume and index of normalized Poincaré lifts (**Theorems A & B** in `ShortAndEnough.lean`) and a lower bound (**Theorem C**, `integral_forms_long` in `New/Determinant/Twist/LongForms.lean`), leaving $m \cdot \mathrm{rem} \le f a \log^5 b$, which PNT at $x_1$ (`x₁ ≥ x^{10⁶}`) turns into $R_{q_0}(y) \le y^{-1/2+\varepsilon}$.
+3. **Upper Bound via Derivatives, Seesaw & Second Moment (`New/Derivatives`, `New/UpperBound`, `New/Spanning`):** `SeesawIdentity.lean` unfolds `lowerChain` on Poincaré maps into a composite definite lift, whose $p$-adic divisibility (`LocalDivisibility.lean`, `ElementaryDivisorTheorem.lean`) and archimedean norm (`ArchimedeanSize.lean`, `Sharpness/BoundAttained.lean`) match the prime sums, while `SpanningTheorem.lean` proves via second-moment unfolding and Bessel estimates that few `chosenGL` translates span almost all target forms.
+4. **Lower Bound via Determinant Chains, One-Lift Comparisons & Congruences (`New/Determinant`, `New/OneLift`, `New/Congruences`):** The twisted-lattice product formula (`TwistedLattice.lean`), the exchange identity (`TheoremForPartners.lean`), and auxiliary spanning forms reduce `integral_forms_long` to bounding single-lift determinant heights (`LiftVolumeHeight.lean`) and constructing regular families of $m$-fold anticyclotomic twists (`FitTwistsExist.lean`) via Ribet's first-order method (`DenominatorBound.lean`), Selmer twisting (`TwistingTheorem.lean`), and Kisin-module crystalline lifting (`CupOrthogonalityBounds.lean`).
+5. **Self-Contained Background Theories (`src/Lib/`):** All supporting theories—Galois representations of definite unitary eigenforms (`Lib/GaloisRep`), PEL Shimura towers and Eichler–Shimura (`Lib/Shimura`), étale/Hodge Woods Hole (`Lib/Cohomology`), $p$-adic comparison and Kisin frames (`Lib/PadicComparison`, `Lib/PadicHodge`), class field theory and Greenberg–Wiles counting (`Lib/ClassField`), odd-part $\text{Ш}$ bounds (`Lib/Cyclotomic`), Siegel–Weil and Rallis formulas (`Lib/SiegelWeil`), Weil models (`Lib/Weil`), discrete series (`Lib/DiscreteSeries`), and Chowla–Selberg (`Lib/CM`)—are proved in `src/Lib/` with zero imports from `src/New/`.
 
 ---
 
@@ -27,444 +27,557 @@ Standalone target statements and top-level proved theorems for the Riemann Hypot
 
 ### Main Theorems (RH, Half-Plane & GRH) (`main_export`)
 
-- **Statement:** Unconditionally establishes the Riemann Hypothesis for ζ(s), nonvanishing of every Dirichlet L-function L(χ, s) on the open half-plane Re(s) > 1/2 (away from the pole at s = 1), and the Generalized Riemann Hypothesis for both arbitrary and primitive Dirichlet characters.
+- **Statement:** Unconditionally establishes the Riemann Hypothesis for ζ(s), nonvanishing of every Dirichlet L-function L(χ, s) on the open half-plane Re(s) > 1/2 (away from s = 1 when χ = 1), and the Generalized Riemann Hypothesis for both arbitrary and primitive Dirichlet characters.
 - **Assumptions:** None — all five headline theorems are completely unconditional.
-- **Proof strategy:** Directly matches the proved theorems produced by the Stage 1 analytic reductions to the standalone target statements, introducing no new assumptions.
-- **Lean anchor:** `riemannHypothesis` in [Main.lean#L46](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Main.lean#L46) · Dominates **59,836** modules
-- **Depends on:** `Standalone Target Theorem Statements`, `Small-Class-Number Selmer Length Growth Bound over Q(sqrt(-3))`, `Imprimitive Character Strip Reduction`, `Master Proof Synthesis (UpperTheory.FinalTheorems.everyCharacter)`, `Character-Box Window Assembly (plugWin & plugAll)`
-- **Notes:** Root module (dist=0, height=202). Exports riemannHypothesis (L4), riemannZeta_eq_zero_re (L6), LFunction_ne_zero_of_half_lt_re (L8), LFunction_eq_zero_re (L10), and LFunction_eq_zero_re_of_isPrimitive (L12).
+- **Proof strategy:** Directly instantiates the standalone target statements using `New.grh` and the Stage 1 functional-equation reflection lemmas `New.zeros_on_line` and `New.zeta_zeros_on_line`.
+- **Lean anchor:** `riemannHypothesis` in [Main.lean#L5](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Main.lean#L5) · Dominates **803** modules
+- **Depends on:** `Standalone Target Theorem Statements`, `Functional-Equation Reflection (`s ↔ 1 − s`)`, `One-Sided Prime Remainder Bound & Half-Plane GRH (`New.grh`)`
+- **Notes:** Root module (dist=0, height=53). Exports all 5 headline theorems via New.Main and New.Reduction.OneSidedBound.
 
 ### Standalone Target Theorem Statements (`statements_spec`)
 
-- **Statement:** Formulates the four target propositions — critical-line zeros of ζ(s), half-plane nonvanishing of L(χ, s) on Re(s) > 1/2, and GRH for arbitrary and primitive characters — using only standard complex-analytic definitions.
-- **Assumptions:** None — this milestone states definitions only and proves or assumes no theorems.
-- **Proof strategy:** Contains no proof; isolates the exact mathematical claims from the proof machinery so a reader can verify what is being proved independently of how it is proved.
-- **Lean anchor:** `RiemannZetaZerosOnLine` in [Statements.lean#L7](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Statements.lean#L7)
+- **Statement:** Formulates the four target propositions — critical-line zeros of ζ(s), half-plane nonvanishing of L(χ, s) on Re(s) > 1/2, and GRH for arbitrary and primitive characters — importing only Mathlib.
+- **Assumptions:** None — pure definitions stating the mathematical claims without any project-internal machinery.
+- **Proof strategy:** Contains no proof; isolates the exact statements from the proof machinery and global settings (`Lib/Speed.lean`).
+- **Lean anchor:** `RiemannZetaZerosOnLine` in [Statements.lean#L3](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Statements.lean#L3)
 - **Depends on:** None (foundation)
-- **Notes:** pure specification leaf depending only on Mathlib (dist=1, height=0).
+- **Notes:** Pure specification leaf importing only Mathlib (does not import Lib/Speed.lean).
 
 ---
 
-## Stage 1: Functional-Equation & Character Reductions (2 milestones)
+## Stage 1: Functional-Equation & One-Sided Bound Reductions (2 milestones)
 
-Analytic bridges reducing critical-line zero localization for ζ(s) and arbitrary/primitive Dirichlet L-functions to half-plane nonvanishing Re(s) > 1/2 via Euler factors, Gamma factors, and functional equations.
+Analytic bridges reducing critical-line zero localization for ζ(s) and arbitrary/primitive Dirichlet L-functions to half-plane nonvanishing Re(s) > 1/2 (`New.grh`), proved from the one-sided prime remainder bound `R_{q₀}(y) ≤ y^{-1/2+ε}`.
 
-### Imprimitive Character Strip Reduction (`claim_strip`)
+### Functional-Equation Reflection (`s ↔ 1 − s`) (`new_main_reflection`)
 
-- **Statement:** Shows that right half-plane nonvanishing for all Dirichlet L-functions implies GRH for every character χ modulo N (including imprimitive ones) as well as the classical Riemann Hypothesis for ζ(s).
-- **Assumptions:** Assumes L(χ, s) ≠ 0 for all N ≥ 1, all χ mod N, and all Re(s) > 1/2 (away from s = 1 when χ = 1), plus the classical fact that ζ(s) ≠ 0 for Re(s) ≥ 1.
-- **Proof strategy:** Factors L(χ, s) = L(ψ, s) ∏_{p | N} (1 − ψ(p)p^{−s}) via the inducing primitive character ψ; since |ψ(p)p^{−s}| < 1 for Re(s) > 0, no Euler factor vanishes, reducing to a zero of L(ψ, s) which reflects across s ↦ 1 − s into Re > 1/2.
-- **Lean anchor:** `strip` in [Development/AutomorphicArithmetic/CharacterBoxes/ClaimStrip.lean#L86](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/CharacterBoxes/ClaimStrip.lean#L86)
-- **Depends on:** `Half-Plane, Strip & Zeta Definitions`
-- **Notes:** Also proves Claim.zeta (L75) and Claim.zeta_iff (L102).
+- **Statement:** Deduces `DirichletLZerosOnLine` and `RiemannZetaZerosOnLine` from `DirichletLNonvanishingRightOfHalf`.
+- **Assumptions:** Takes `h : DirichletLNonvanishingRightOfHalf` as a hypothesis.
+- **Proof strategy:** Uses nonvanishing of the Gamma factor `χ.gammaFactor s` (and `Gammaℝ s`) on `Re(s) > 0` to reflect any zero with `Re(s) < 1/2` across `s ↦ 1 − s` into `Re(1 − s) > 1/2`, contradicting `h`.
+- **Lean anchor:** `New.zeros_on_line` in [New/Main.lean#L28](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Main.lean#L28) · Dominates **802** modules
+- **Depends on:** `Standalone Target Theorem Statements`, `One-Sided Prime Remainder Bound & Half-Plane GRH (`New.grh`)`
+- **Notes:** Entry module inside New/ (dist=1, height=52, dominates 802 modules).
 
-### Half-Plane, Strip & Zeta Definitions (`half_plane_def`)
+### One-Sided Prime Remainder Bound & Half-Plane GRH (`New.grh`) (`one_sided_bound`)
 
-- **Statement:** Defines the three core analytic propositions linked by Stage 1: right half-plane nonvanishing for all Dirichlet L-functions, critical-strip localization (GRH) for all characters, and the Riemann Hypothesis for ζ(s).
-- **Assumptions:** None — pure definitions using standard complex analysis and Dirichlet L-functions.
-- **Proof strategy:** Contains no proof; establishes the clean interface separating the deep Stage 2–4 proof of nonvanishing on Re(s) > 1/2 from the elementary Stage 1 reflection arguments.
-- **Lean anchor:** `Claim.HalfPlane` in [Development/AutomorphicArithmetic/CharacterBoxes/HalfPlane.lean#L9](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/CharacterBoxes/HalfPlane.lean#L9)
-- **Depends on:** None (foundation)
-- **Notes:** Mathlib leaf file defining Claim.HalfPlane, Claim.Strip, and Claim.Zeta.
-
----
-
-## Stage 2: Main Bridge Theorems & Dominators (10 milestones)
-
-High-impact assembly bottlenecks merging local-global Galois representations, modularity/Selmer windows, theta-correspondence lifts, and Arakelov covolume bounds.
-
-### Master Proof Synthesis (UpperTheory.FinalTheorems.everyCharacter) (`main_conclusion`)
-
-Unconditionally proves half-plane nonvanishing for every Dirichlet L-function by feeding the proved strong local-global Galois compatibility theorem and Local Langlands reciprocity existence into both the modularity-Selmer window theorem (VWin) and the theta-correspondence main theorem.
-
-- **Mathematical form:** `UpperTheory.FinalTheorems.everyCharacter : ∀ N ≥ 1, ∀ χ mod N, ∀ s ∈ ℂ, Re(s) > 1/2 ∧ (χ ≠ 1 ∨ s ≠ 1) ⇒ L(χ, s) ≠ 0`
-- **Lean anchor:** `UpperTheory.FinalTheorems.everyCharacter` in [Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean#L994](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean#L994) · Dominates **59,831** modules
-- **Depends on:** `Theta-Correspondence, Covolume & Literature Package Synthesis`, `Modularity Window Bridge (VwinOfRow)`, `Local Langlands Correspondence for GL_n with Tame Inertia Types`, `Strong Local-Global Galois Compatibility from Theta Parseval`, `Character-Box Window Assembly (plugWin & plugAll)`, `Covolume Lower Bound from Slimness & Height Theorems`
-- **Notes:** apex inside Development (dist=4, height=198). Discharges OpenLiteratureStatements via ⟨row_src, rec_t_exists, row_src⟩ and OpenImageCondition via ⟨row_src⟩.
-
-### Character-Box Window Assembly (plugWin & plugAll) (`every_character_def`)
-
-Combines the Green prime-character condition, the Selmer growth window bound VWin (for threshold exponent 401), and the family-design theorem TopShape to establish nonvanishing of all primitive and imprimitive Dirichlet L-functions in Re(s) > 1/2.
-
-- **Mathematical form:** `Green ∧ VWin ∧ Nonempty(Hyps LinkN DRS) ⇒ ZeroFreeAll ⇒ EveryCharacter`
-- **Lean anchor:** `UpperTheory.EveryCharacter` in [Development/AutomorphicArithmetic/CharacterBoxes/EveryCharacter.lean#L8](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/CharacterBoxes/EveryCharacter.lean#L8)
-- **Depends on:** `Windowed Chebyshev Inequality from Design Choices (topDesWin)`, `Windowed Landau Nonvanishing Criterion (zeroFreeOn_of_tiedWin_cyc)`
-- **Notes:** bridge connecting ShapeOf, ShapeWin, SupplyChi, and Imprimitive to ZeroFreeAll.
-
-### Theta-Correspondence, Covolume & Literature Package Synthesis (`every_character_of_lit_vwin`)
-
-Assembles over 70 proved theorems across harmonic analysis, unitary Siegel-Weil, Galois cohomology, and Arakelov geometry, feeding Moriwaki bigness and resolution into TopCovolSlim2Use and combining with definite-side theta lifts and VWin to prove EveryCharacter.
-
-- **Mathematical form:** `OpenLiteratureStatements ∧ VWin ⇒ EveryCharacter (instantiating CovolX via topCovolSlim2_use_alt_alt and definite-side theta lifts)`
-- **Lean anchor:** `UpperTheory.LiteratureTheorems.every_character_of_literature_of_vWin` in [Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/EveryCharacterOfLiteratureOfVWin.lean#L1500](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/EveryCharacterOfLiteratureOfVWin.lean#L1500) · Dominates **31,637** modules
-- **Depends on:** `Arakelov Self-Intersection & Covolume Bridge (CovolX)`, `Moriwaki Arithmetic Bigness & Hilbert-Samuel Volume Chain`, `Functorial Resolution of Singularities in Characteristic Zero`, `Poitou-Tate Nine-Term Exact Sequence & Sha Duality`, `Whittaker Multiplicity One on GL_n(A_K)`, `Capelli Infinitesimal Character of U(p, q) Discrete Series`, `Unitary U(3) Selmer Growth Bound (CorGK → CountI)`, `Character-Box Window Assembly (plugWin & plugAll)`, `Covolume Lower Bound from Slimness & Height Theorems`, `PEL Shimura Toroidal Compactification & Boundary Uniformisation`, `24-Law Contract for Polarized Abelian Schemes`, `Local Bloch-Kato Orthogonality & Tate Duality Core`, `Master Arithmetic-Automorphic Coordination Package (D7)`
-- **Notes:** synthesis hub (dist=5, height=171, out_degree=201). All but 3 fields of OpenLiteratureStatements are unconditionally proved theorems imported from PositivityTheory/CompanionTheory/GroundTheory/Development; the 3 fields are discharged in MainConclusion.
-
-### Strong Local-Global Galois Compatibility from Theta Parseval (`row_src`)
-
-Establishes strong local-global compatibility (Row0b recT) for l-adic Galois representations attached to polarized regular algebraic cuspidal automorphic representations by feeding the theta-kernel Parseval lift (TLiftK) and weight-one geometric realization (GeoOne) into the Galois representation construction.
-
-- **Mathematical form:** `UpperTheory.GalStar.Row0b recT (l-adic Frobenius-Satake matching away from l and potentially semistable Weil-Deligne compatibility above l)`
-- **Lean anchor:** `galoisLocalGlobalStrong_recParameter` in [Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean#L973](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean#L973)
-- **Depends on:** `Weight-One Geometric Realization (Crystalline Towers & Kodaira-Spencer)`, `Holomorphic Lefschetz Fixed-Point Formula for Finite Etale Correspondences`, `Theta-Kernel Parseval Lift & Nonvanishing (tLift_holds_k)`, `Local Langlands Correspondence for GL_n with Tame Inertia Types`, `Rapid Decay & L² Moments of Compactly Supported Cusp-Form Twists`, `Capelli Infinitesimal Character of U(p, q) Discrete Series`, `Whittaker Multiplicity One on GL_n(A_K)`
-- **Notes:** Rank 3 overall dominator (dist=3, height=197) via GaloisRepresentationsOfThetaLift and WeightOneGeometricRealization. [Relocated from RowSrc.lean to Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean] [Shares module MainConclusion.lean]
-
-### Modularity Window Bridge (VwinOfRow) (`vwin_of_row`)
-
-Converts the strong local-global Galois compatibility theorem Row0b together with isobaric base-change identities into the universal Selmer-growth window bound VWin needed by the analytic character-box machinery.
-
-- **Mathematical form:** `UpperTheory.GalStar.Row0b (IsRecT) ⇒ UpperTheory.Top.VWin`
-- **Lean anchor:** `UpperTheory.One.vwin_of_row` in [Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/ThresholdArguments/DenseThresholdCases/VwinOfRow.lean#L1644](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/ThresholdArguments/DenseThresholdCases/VwinOfRow.lean#L1644) · Dominates **4,455** modules
-- **Depends on:** `Automorphic, Galois & CM Inputs Assembly (TopMainZj)`
-- **Notes:** bridge calling automorphic_window_of_inputs with OpenImageCondition.mk h and baseChangeN.
-
-### Automorphic, Galois & CM Inputs Assembly (TopMainZj) (`top_main_zj`)
-
-Packages local GL_n representation theory (LitLocAlt), global automorphy (LiteratureAutomorphyHypothesis), Galois cohomology, and CM abelian variety theorems into LiteratureRankNHypothesis to prove the window bound VWin.
-
-- **Mathematical form:** `OpenImageCondition ∧ BaseChangeIsobaricN ∧ RowT ⇒ LiteratureRankNHypothesis ⇒ VWin`
-- **Lean anchor:** `UpperTheory.One.Join.automorphic_window_of_inputs` in [Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/ThresholdArguments/DenseThresholdCases/VwinOfRow.lean#L1627](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/ThresholdArguments/DenseThresholdCases/VwinOfRow.lean#L1627)
-- **Depends on:** `Descent-Vanishing Patching Reduction for VWin`, `Poitou-Tate Nine-Term Exact Sequence & Sha Duality`, `Moriwaki Arithmetic Bigness & Hilbert-Samuel Volume Chain`, `Functorial Resolution of Singularities in Characteristic Zero`, `Good Root-Tower Existence & Arakelov Volume Theorem`, `PEL Shimura Toroidal Compactification & Boundary Uniformisation`, `24-Law Contract for Polarized Abelian Schemes`, `Local Bloch-Kato Orthogonality & Tate Duality Core`, `Master Arithmetic-Automorphic Coordination Package (D7)`
-- **Notes:** Rank 8 dominator (dist=3, height=170). Discharges every field of LiteratureRankNHypothesis except the RowT argument supplied by RowSrc. [Relocated from TopMainZj.lean to Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/ThresholdArguments/DenseThresholdCases/VwinOfRow.lean] [Shares module VwinOfRow.lean]
-
-### Descent-Vanishing Patching Reduction for VWin (`window_bound_lit`)
-
-Derives the Selmer window bound VWin from LiteratureRankNHypothesis by executing automorphy lifting, descent-vanishing patching (HypothesesH'), Kato's unramified zeta bounds, and unitary U(3) Selmer counting.
-
-- **Mathematical form:** `LiteratureRankNHypothesis ⇒ HypothesesH' ⇒ CountI ∧ CountII ∧ CountIII ∧ CountV ⇒ VWin`
-- **Lean anchor:** `v_window_of_automorphy_csd_ss_mono_odd` in [Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/ThresholdArguments/DenseThresholdCases/VwinOfRow.lean#L1553](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/ThresholdArguments/DenseThresholdCases/VwinOfRow.lean#L1553)
-- **Depends on:** `Unitary U(3) Selmer Growth Bound (CorGK → CountI)`, `Kato Euler System & Smoothed Zeta-Class Hodge-Tate Law`, `Weight-One Hilbert Eisenstein Series Construction`, `Local Langlands Correspondence for GL_n with Tame Inertia Types`, `Whittaker Multiplicity One on GL_n(A_K)`, `Rapid Decay & L² Moments of Compactly Supported Cusp-Form Twists`, `Capelli Infinitesimal Character of U(p, q) Discrete Series`
-- **Notes:** Rank 9 dominator (dist=4, height=148) linking PublishedHypothesesFromPatching and HVCore. [Relocated from WindowBoundOfLiteratureLevel.lean to Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/ThresholdArguments/DenseThresholdCases/VwinOfRow.lean] [Shares module VwinOfRow.lean]
-
-### Arakelov Self-Intersection & Covolume Bridge (CovolX) (`top_covol_slim2_use`)
-
-Synthesizes resolution of singularities, Moriwaki bigness, Fargues' exact sequence, Zarhin's trick, Nef Riemann-Roch, Scholze-Weinstein, and Fubini-Study Chow heights to establish the global Arakelov covolume bound CovolX.
-
-- **Mathematical form:** `Resolution ∧ MoriwakiBig ∧ FarguesExact ∧ Zarhin ∧ NefRR ∧ ScholzeWeinstein ⇒ GlobalTheory.CovTop.CovolX`
-- **Lean anchor:** `topCovolSlim2_use_alt_alt` in [Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/TopCovolSlim2Use.lean#L957](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/TopCovolSlim2Use.lean#L957) · Dominates **3,679** modules
-- **Depends on:** `Good Root-Tower Existence & Arakelov Volume Theorem`, `Arakelov Hermitian Vector Bundles & Bost-Zhang Slope Inequalities`, `PEL Shimura Toroidal Compactification & Boundary Uniformisation`, `24-Law Contract for Polarized Abelian Schemes`
-- **Notes:** Rank 10 dominator (dist=7, height=141) connecting TopCovolSlim2 and DeepStR. [Relocated from TopCovolSlim2Use.lean to Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/TopCovolSlim2Use.lean]
-
-### Covolume Lower Bound from Slimness & Height Theorems (`covolume_of_slim`)
-
-Deduces the Arakelov lattice covolume bound CovolX from the Slimness condition and height-pairing hypotheses HypothesesXH by producing the Ch2Const parameter and passing through Moret-Bailly second jets.
-
-- **Mathematical form:** `Slim ∧ HypothesesXH ⇒ CovolX (via exists_ch2Const_of_prints and covolume_of_height)`
-- **Lean anchor:** `covolX_of_lift_bounds_and_coreLe` in [Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/TopCovolG.lean#L904](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/TopCovolG.lean#L904) · Dominates **744** modules
-- **Depends on:** `PEL Shimura Toroidal Compactification & Boundary Uniformisation`, `Uniqueness of Mumford Semiabelian Uniformisation`, `24-Law Contract for Polarized Abelian Schemes`, `Local Bloch-Kato Orthogonality & Tate Duality Core`, `Master Arithmetic-Automorphic Coordination Package (D7)`
-- **Notes:** Rank 11 dominator (dist=6, height=157) wrapping CovolumeOfHeightPrintsStatement and CovolumeOfHeightHyp . [Relocated from CovolumeOfSlimAndHyp.lean to Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/TopCovolG.lean]
-
-### Small-Class-Number Selmer Length Growth Bound over Q(sqrt(-3)) (`small_class_cor_gk`)
-
-Instantiates LiteratureRankNHypothesis unconditionally and applies the unitary U(3) Selmer patching theorem to Q(sqrt(-3)) (class number 1), yielding an explicit polynomial bound C*(e+1)^A on weighted sums of Shafarevich-Tate lengths.
-
-- **Mathematical form:** `∃ C A ∈ ℕ, ∀ e ≥ 1 even, ∑_{l ∈ Ls} log(l) · length(Sha_U(χ_cyc^{-e})) / e_O ≤ C · (e + 1)^A`
-- **Lean anchor:** `UpperTheory.V.U3.corGK` in [Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/ThresholdArguments/DenseThresholdCases/LinkedUnlE.lean#L1196](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/ThresholdArguments/DenseThresholdCases/LinkedUnlE.lean#L1196) · Dominates **85** modules
-- **Depends on:** `Automorphic, Galois & CM Inputs Assembly (TopMainZj)`, `Strong Local-Global Galois Compatibility from Theta Parseval`, `Unitary U(3) Selmer Growth Bound (CorGK → CountI)`
-- **Notes:** Top-level Selmer realization (dist=2, height=198) proved alongside bound (L27). [Relocated from CorGKOf.lean to Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/ThresholdArguments/DenseThresholdCases/LinkedUnlE.lean]
+- **Statement:** Proves `eventually_primeRemainder_le_rpow` (`R_{q₀}(y) ≤ y^{-1/2+ε}` for large `y`) and deduces `New.grh : DirichletLNonvanishingRightOfHalf`.
+- **Assumptions:** Unconditional — instantiates `Parameters` for `q₀ = 18480 * q` and an auxiliary prime `d ≡ q₀/2 - 1 (mod q₀)` chosen so quadratic twists avoid any putative zero `ρ`.
+- **Proof strategy:** Divides `star_inequality` (`m · rem ≤ f a log⁵ b`) by `m a #Φ_b`, controls the `x₁`-cut-off terms by PNT (`x⁻²`), interpolates from integers to real `y`, and invokes Landau's one-sided criterion.
+- **Lean anchor:** `grh` in [New/Reduction/OneSidedBound.lean#L239](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Reduction/OneSidedBound.lean#L239) · Dominates **801** modules
+- **Depends on:** `The Main Inequality (`star_inequality`)`, `Existence of Admissible Data at Large Scales`, `One-Sided Landau Criterion for Zero-Free Half-Plane`, `Prime Number Theorem Bound for `R_q` at Cut-Off `x₁``
+- **Notes:** Dominates 801 of 803 modules (dist=2, height=51). Ends with theorem grh.
 
 ---
 
-## Stage 3: Major Theory Pillars (12 milestones)
+## Stage 2: Main Inequality & Primary Proof Bridges (6 milestones)
 
-Core mathematical engines: windowed Chebyshev/Landau zero-free regions, weight-one geometric realization and Lefschetz traces, theta-kernel Parseval lifts, Local Langlands with tame types, U(3) Selmer growth, Kato's Euler system, Moriwaki bigness, and Harish-Chandra/Flath representation theory.
+The core cancellation inequality (`star_inequality`) balancing Theorems A & B (`short_and_enough`) against Theorem C (`integral_forms_long`), together with regular families of m-fold twists, second-moment spanning, and existence of admissible data.
 
-### Windowed Chebyshev Inequality from Design Choices (topDesWin) (`top_des_win`)
+### The Main Inequality (`star_inequality`) (`main_inequality`)
 
-Transforms admissible finite-family designs (DesignExists) and closed parameter bounds (LinkN, LinkDIVt, LinkG, LinkS, LinkIRR, LinkGLOBAL) into a connected family satisfying the tied Chebyshev inequality on scale windows.
+Proves `D.m * D.totalRemainder ≤ D.f * D.a * D.logB ^ 5` by bounding `(V + 2δ) / dim` from above via Theorems A & B (`short_and_enough`) and from below via Theorem C (`integral_forms_long`), cancelling `D.mainAmount`.
 
-- **Mathematical form:** `DesignExists(WithTw(WithSm 𝒞')) ∧ LinkN ∧ LinkDIVt ∧ LinkG ∧ LinkS ∧ LinkIRR ∧ LinkGLOBAL ⇒ FamilyClassConnected ℰ`
-- **Lean anchor:** `topDesWin` in [Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/TopShape.lean#L177](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/TopShape.lean#L177) · Dominates **225** modules
-- **Depends on:** `Local Bloch-Kato Orthogonality & Tate Duality Core`, `Master Arithmetic-Automorphic Coordination Package (D7)`
-- **Notes:** Feeds ShapeWin and EveryCharacter; operates over the FamP parameter family (ParConsts.lean). [Relocated from DesWin.lean to Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/TopShape.lean]
+- **Mathematical form:** `mainAmount ≤ (V + 2δ)/dim ≤ mainAmount − (n/dim) m·rem + err ⇒ m·rem ≤ f a log⁵ b`
+- **Lean anchor:** `star_inequality` in [New/Reduction/MainInequality.lean#L87](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Reduction/MainInequality.lean#L87) · Dominates **606** modules
+- **Depends on:** `Theorems A & B: Short Forms & Enough Translates`, `Theorem C: Integral Forms Are Long (`integral_forms_long`)`
+- **Notes:** Central bottleneck of the entire proof (dist=3, height=50, dominates 606 modules).
 
-### Windowed Landau Nonvanishing Criterion (zeroFreeOn_of_tiedWin_cyc) (`top_win_landau`)
+### Theorems A & B: Short Forms & Enough Translates (`short_and_enough`)
 
-Proves that if for every primitive character ψ the smoothed prime-power sum Gm(x) on its cyclic subgroup level satisfies Gm(x) <= x^{1/2 + O(eps)} along unbounded windows [Y, Y^λ] (λ > 1), then L(ψ, s) ≠ 0 for all Re(s) > 1/2.
+Proves Theorem A (`span_short_integralRamified_eq_top` and `indexLe_normalizedPoincare`: short lifts and index bound `≤ #t · dim src · 2 f a log³ b`) and Theorem B (`enough_forms`: few `chosenGL` translates span `(1 - 4/b²) dim` of target forms).
 
-- **Mathematical form:** `(∀ ψ, ChebyshevInequalityAtWindowScale λ (Level.cyc ψ)) ∧ (∀ ψ, Λ_ψ.Gm(x) ≤ x^{1/2 + C·ε}) ⇒ ∀ ψ, Re(s) > 1/2 ⇒ L(ψ, s) ≠ 0`
-- **Lean anchor:** `zeroFreeOn_of_tiedWin_cyc` in [Formalism/SharpRestriction/RamificationFrobenius/TotientGaloisClasses/TopWin.lean#L103](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Formalism/SharpRestriction/RamificationFrobenius/TotientGaloisClasses/TopWin.lean#L103)
-- **Depends on:** `Master Arithmetic-Automorphic Coordination Package (D7)`
-- **Notes:** Wraps Landau.zero_free_of_Chebyshev_growth (Landau.lean L538) and ExplicitFormulaErrorOfHostConditions; coupled with CoreGm (CoreGm.lean L12).
+- **Mathematical form:** `Theorem A (size & index of Θ ∘ 𝔭) ∧ Theorem B (spanning ≥ (1 - 4/b²) d_T)`
+- **Lean anchor:** `enough_forms` in [New/Reduction/ShortAndEnough.lean#L448](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Reduction/ShortAndEnough.lean#L448) · Dominates **36** modules
+- **Depends on:** `Iterated Seesaw Identity (`seesaw_identity`)`, `Prime-by-Prime Divisibility of the Composite Lift`, `Archimedean Size of the Composite Lift`, `Second-Moment Spanning Theorem (`isSpread_goodPoincare`)`
+- **Notes:** Upper half of the main inequality (dist=4, height=47, dominates 36 modules).
 
-### Weight-One Geometric Realization (Crystalline Towers & Kodaira-Spencer) (`geom_real_weight_one`)
+### Theorem C: Integral Forms Are Long (`integral_forms_long`) (`long_forms_thm_c`)
 
-Synthesizes crystalline comparison towers, p-adic Witt lattices, finite-etale Kodaira-Spencer models (ksGood_holds), and Hodge-Tate jumps from the holomorphic Lefschetz trace formula to construct the weight-one geometric realization GeoOne.
+Proves the lower bound `D.m * D.k * D.directionAmount ≤ (V + 2δ)/d + f a log⁴ b + 2 b` for any `n ≥ (1 - 4/b²) d` target forms using `TwistedLattice.covolume_add_index_nonneg`, auxiliary forms, and regular families of `m`-fold twists.
 
-- **Mathematical form:** `HolomorphicLefschetzFormula ∧ CrysStep ∧ JumpStep ∧ KSGood ⇒ GeoOne`
-- **Lean anchor:** `geometric_realization_of_weight_one` in [Development/AutomorphicArithmetic/Foundations/GaloisRepresentations/IntegralStructures/GeometricFlagBases/GeometricRealizationOfWeightOne.lean#L1247](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/Foundations/GaloisRepresentations/IntegralStructures/GeometricFlagBases/GeometricRealizationOfWeightOne.lean#L1247) · Dominates **3,153** modules
-- **Depends on:** `Finiteness of Twisted Etale Cohomology Over Fields`, `24-Law Contract for Polarized Abelian Schemes`, `Arakelov Hermitian Vector Bundles & Bost-Zhang Slope Inequalities`, `Local Bloch-Kato Orthogonality & Tate Duality Core`, `Master Arithmetic-Automorphic Coordination Package (D7)`
-- **Notes:** Rank 6 dominator (dist=6, height=194), immediate child of WeightOneGeometricRealization .
+- **Mathematical form:** `CovolumeLe(V) ∧ IndexLe(δ) ⇒ mainAmount ≤ (V + 2δ)/d + f a log⁴ b + 2 b`
+- **Lean anchor:** `integral_forms_long` in [New/Determinant/Twist/LongForms.lean#L214](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Determinant/Twist/LongForms.lean#L214) · Dominates **228** modules
+- **Depends on:** `Existence of Regular Families of `m`-Fold Twists`, `Spanning Auxiliary Forms on the Two-Grid Last Path`, `Single-Lift Determinant Height Bound (`Z_j(1)/Z_j(ξ^j)`)`, `Twisted Lattice Product Formula (`covolume_add_index_nonneg`)`
+- **Notes:** Lower-bound apex bottleneck (dist=4, height=49, dominates 228 modules).
 
-### Holomorphic Lefschetz Fixed-Point Formula for Finite Etale Correspondences (`lefschetz_correspondence`)
+### Existence of Regular Families of `m`-Fold Twists (`fit_twists_exist`)
 
-Proves the holomorphic Lefschetz fixed-point formula for finite etale correspondences (c1, c2 : Y → Z) on smooth projective schemes over C, equating the alternating trace on Hodge cohomology H^b(Z, Ω^a) to fixed-point tangent-matrix residues.
+Proves `New.exists_isRegularFamily`: every admissible datum admits a family `θ : PrimePadicIso → D.MFoldTwist` with small Hecke `L`-value ratios (`HasSmallRatios`) and clearing denominator bounds (`HasDenominatorsLe`) at all primes `ℓ`.
 
-- **Mathematical form:** `∑_{b=0}^d (-1)^b Tr(Tr_{c₁} ∘ c₂^* | H^b(Z, Ω^a)) = ∑_{y ∈ Fix(c₁, c₂)} [X^a] det(I + X·A_y) / det(I - A_y)`
-- **Lean anchor:** `UpperTheory.Cb.lefschetz_fixedPoint_finite_etale_correspondence` in [Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean#L826](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean#L826)
-- **Depends on:** `24-Law Contract for Polarized Abelian Schemes`, `PEL Shimura Toroidal Compactification & Boundary Uniformisation`, `Uniqueness of Mumford Semiabelian Uniformisation`
-- **Notes:** complete proof decomposing Z into integral clopen components and reducing via Hodge restriction isomorphisms. [Relocated from LefschetzFixedPointFiniteEtaleCorrespondence.lean to Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean] [Shares module MainConclusion.lean]
+- **Mathematical form:** `∀ D : Data P, ∃ θ, D.IsRegularFamily θ`
+- **Lean anchor:** `New.exists_isRegularFamily` in [New/Congruences/FitTwistsExist.lean#L517](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Congruences/FitTwistsExist.lean#L517) · Dominates **74** modules
+- **Depends on:** `First-Order Ribet Method & Clearing Denominator Bound`, `Anticyclotomic Twisting Theorem for Selmer Groups`, `Attached Galois Representations in Every Positive Rank`
+- **Notes:** Connects congruences, Ribet's method, and Selmer bounds into Theorem C (dist=5, height=48, dominates 74 modules).
 
-### Theta-Kernel Parseval Lift & Nonvanishing (tLift_holds_k) (`t_lift_k`)
+### Second-Moment Spanning Theorem (`isSpread_goodPoincare`) (`spanning_theorem`)
 
-Constructs nonvanishing global unitary theta lifts U → U' from U(n) to large definite/skew unitary spaces U(d) using the regularized Siegel-Weil formula, doubling method, Rallis inner product, and Schwartz-Bruhat test vectors.
+Proves that translates of `D.goodPoincare` spread uniformly across `D.targetForms` by showing the second-moment Petersson operator norm is close to an isometry.
 
-- **Mathematical form:** `∀ U ⊂ 𝒜_cusp(U(n)) of regular weight λ, ∀ d ≥ d₀, ∃ U' ⊂ 𝒜(U(d)), IsLift(χ_X, χ_W, U, U')`
-- **Lean anchor:** `tLift_holds_k` in [Development/AutomorphicArithmetic/Foundations/GaloisRepresentations/ThetaParseval/ThetaKernels/TPGHolds.lean#L1577](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/Foundations/GaloisRepresentations/ThetaParseval/ThetaKernels/TPGHolds.lean#L1577) · Dominates **37** modules
-- **Depends on:** `PEL Shimura Toroidal Compactification & Boundary Uniformisation`, `Uniqueness of Mumford Semiabelian Uniformisation`, `24-Law Contract for Polarized Abelian Schemes`, `Local Bloch-Kato Orthogonality & Tate Duality Core`, `Master Arithmetic-Automorphic Coordination Package (D7)`
-- **Notes:** Assembles tools_holds_k (Siegel-Weil standard, Eisenstein continuation, doubling, unimodularity) to discharge UpperTheory.TP.TLiftK in TLiftK.lean.
+- **Mathematical form:** `isSpread_goodPoincare : Filling.IsSpread (D.goodPoincare) (D.targetDim)`
+- **Lean anchor:** `isSpread_goodPoincare` in [New/Spanning/SecondMoment/SpanningTheorem.lean#L339](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Spanning/SecondMoment/SpanningTheorem.lean#L339) · Dominates **58** modules
+- **Depends on:** `Second-Moment Unfolding & Near-Isometry (`Moments`)`, `Simple Trace Formula Comparison Across Real Signatures`
+- **Notes:** Top bottleneck of New/Spanning (dist=5, height=42, dominates 58 modules).
 
-### Local Langlands Correspondence for GL_n with Tame Inertia Types (`rec_t_exists`)
+### Existence of Admissible Data at Large Scales (`eventually_exists_data`)
 
-Constructs a local reciprocity correspondence rc mapping irreducible smooth representations of GL_n(E_w) to Weil-Deligne representations, extending the supercuspidal correspondence via Bernstein-Zelevinsky segments and verifying dimension, character twists, central characters, duals, injectivity, and depth-zero tame type laws.
+Constructs admissible data `D : Data P` for all sufficiently large `x`, choosing `x₁ = ⌊exp(x^{ε/6})⌋`, `log b ∈ [x^ε, x^ε + 1]`, Behrend-sparse `b`-places, CM field `E = K(ζ_{q₁})`, and primes `p₀, p₁, N`.
 
-- **Mathematical form:** `∀ E_w non-archimedean, ∃ rc : Irr(GL_n(E_w)) → WD(W_{E_w}), LawsT(rc) (bijection, segments, twists, central chars, depth-0 types)`
-- **Lean anchor:** `UpperTheory.Zero.LLC.recTExists` in [Development/AutomorphicArithmetic/Foundations/LocalLanglands/LocalCentralUnits/RecTExists.lean#L1398](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/Foundations/LocalLanglands/LocalCentralUnits/RecTExists.lean#L1398) · Dominates **10** modules
-- **Depends on:** `Capelli Infinitesimal Character of U(p, q) Discrete Series`, `24-Law Contract for Polarized Abelian Schemes`, `Local Bloch-Kato Orthogonality & Tate Duality Core`, `Master Arithmetic-Automorphic Coordination Package (D7)`
-- **Notes:** Combines local Artin map (artEx), supercuspidal correspondence (cuspEx), Zelevinsky extension (exists_isLExt), and depth-zero cuspidality (DzLCusp).
-
-### Unitary U(3) Selmer Growth Bound (CorGK → CountI) (`u3_count_i`)
-
-Converts the global U(3) Selmer growth inequality CorGK over auxiliary imaginary quadratic fields K*(p) into the prime-averaged Selmer length bound CountI across cyclic character orbits.
-
-- **Mathematical form:** `U3.CorGK ⇒ ∀ χ, ∃ A r₁ r₂, ∑_{l ∈ Ls} log(l) · ∑_{ψ ∈ X(c_l, e)} V_n(ψ) ≤ (N·t)^A`
-- **Lean anchor:** `UpperTheory.V.U3.countI` in [Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/ThresholdArguments/DenseThresholdCases/LinkedUnlE.lean#L1411](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/ThresholdArguments/DenseThresholdCases/LinkedUnlE.lean#L1411)
-- **Depends on:** `Local Bloch-Kato Orthogonality & Tate Duality Core`, `Master Arithmetic-Automorphic Coordination Package (D7)`, `Split Tori & Semiabelian Torsion Primitives (Critical Spine Base)`
-- **Notes:** Key Selmer counting step using subgroup orbit decomposition (orbSum) and cyclicity of (Z/NZ)^× / K' inside UnitaryThreeGroups. [Relocated from CountI.lean to Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/ThresholdArguments/DenseThresholdCases/LinkedUnlE.lean] [Shares module LinkedUnlE.lean]
-
-### Kato Euler System & Smoothed Zeta-Class Hodge-Tate Law (`zeta_ur`)
-
-Establishes the unramified zeta-element divisibility criterion ZetaUr by combining Kato's Euler-system integrality with the smoothed zeta-class Hodge-Tate law and admissible Hecke projection nonvanishing.
-
-- **Mathematical form:** `KatoEulerSystemIntegrality ∧ SmoothedZetaClassHodgeTateLaw ⇒ GlobalTheory.Ord2.ZetaUr`
-- **Lean anchor:** `zetaUr` in [Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/KatoQuadraticCharacters/UnramifiedZeta/ZetaUr.lean#L1738](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/KatoQuadraticCharacters/UnramifiedZeta/ZetaUr.lean#L1738) · Dominates **558** modules
-- **Depends on:** `24-Law Contract for Polarized Abelian Schemes`, `Local Bloch-Kato Orthogonality & Tate Duality Core`, `Master Arithmetic-Automorphic Coordination Package (D7)`
-- **Notes:** Rank 24 dominator (dist=6, height=121) feeding KatoTwo in WindowBoundOfLiteratureLevel.
-
-### Good Root-Tower Existence & Arakelov Volume Theorem (`good_tower_volume`)
-
-Proves both the existence of good root towers of Shimura models and the Arakelov volume lower bound VolumeTheoremX by combining Arakelov intersection systems, Moriwaki Hilbert-Samuel/bigness, Fargues Hodge-Tate, Zarhin, Bost-Zhang slope vectors, and complex theta uniformisation.
-
-- **Mathematical form:** `ArithIntersectionSystem ∧ MoriwakiHS ∧ MoriwakiBig ∧ FarguesHodgeTate ∧ Zarhin ⇒ GoodTowerExistsX ∧ VolumeTheoremX`
-- **Lean anchor:** `good_tower_volume_theorem_bis` in [Development/WeilBound/CoreStatements/AutomorphicKernels/MoriwakiBigness/HilbertSamuelApplications/GoodTowerVolumeTheoremBis.lean#L1350](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/WeilBound/CoreStatements/AutomorphicKernels/MoriwakiBigness/HilbertSamuelApplications/GoodTowerVolumeTheoremBis.lean#L1350) · Dominates **1,409** modules
-- **Depends on:** `Arakelov Hermitian Vector Bundles & Bost-Zhang Slope Inequalities`, `PEL Shimura Toroidal Compactification & Boundary Uniformisation`, `Uniqueness of Mumford Semiabelian Uniformisation`, `24-Law Contract for Polarized Abelian Schemes`
-- **Notes:** Rank 19 dominator (dist=11, height=129) wrapping FinalTheoremOfInputsRight and GoodTowerVolumeTheorem . [Relocated from GoodTowerVolumeTheoremAlt.lean to Development/WeilBound/CoreStatements/AutomorphicKernels/MoriwakiBigness/HilbertSamuelApplications/GoodTowerVolumeTheoremBis.lean]
-
-### Moriwaki Arithmetic Bigness & Hilbert-Samuel Volume Chain (`moriwaki_big`)
-
-Proves Moriwaki's arithmetic bigness criterion unconditionally from resolution of singularities, the Poincare-Lelong formula for Arakelov intersection systems, and dense bounded-height curves via an arithmetic Hilbert-Samuel devissage chain.
-
-- **Mathematical form:** `MoriwakiBigStatement ∧ HSUse (arithmetic volume bigness for nef/semipositive adelic line bundles)`
-- **Lean anchor:** `moriwakiBig_outright` in [Development/WeilBound/CoreStatements/AutomorphicKernels/MoriwakiBigness/MoriwakiBigTheorem/Outright.lean#L1707](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/WeilBound/CoreStatements/AutomorphicKernels/MoriwakiBigness/MoriwakiBigTheorem/Outright.lean#L1707) · Dominates **294** modules
-- **Depends on:** `Arakelov Hermitian Vector Bundles & Bost-Zhang Slope Inequalities`, `PEL Shimura Toroidal Compactification & Boundary Uniformisation`, `24-Law Contract for Polarized Abelian Schemes`
-- **Notes:** Instantiates MoriwakiBigStatement and HSUse outright (dist=7, height=100) via HSChain.lean.
-
-### Weight-One Hilbert Eisenstein Series Construction (`hilbert_eis_weight_one`)
-
-Constructs holomorphic Hilbert modular Eisenstein series of parallel weight one over totally real fields, proving Poisson summation, moderate growth, smoothness, K-finiteness, level conditions, and explicit Fourier expansions.
-
-- **Mathematical form:** `UpperTheory.V.Published.HilbertEisOne (existence & Fourier expansions of weight-1 Hilbert Eisenstein series)`
-- **Lean anchor:** `UpperTheory.V.Published.hilbert_eisenstein_weight_one_holds` in [PositivityTheory/AutomorphicForms/PublishedInputs/HilbertEisenstein/HilbertEisensteinWeightOneHolds.lean#L1657](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/PositivityTheory/AutomorphicForms/PublishedInputs/HilbertEisenstein/HilbertEisensteinWeightOneHolds.lean#L1657)
-- **Depends on:** `PEL Shimura Toroidal Compactification & Boundary Uniformisation`, `24-Law Contract for Polarized Abelian Schemes`, `Local Bloch-Kato Orthogonality & Tate Duality Core`, `Master Arithmetic-Automorphic Coordination Package (D7)`
-- **Notes:** Key PositivityTheory realization (dist=7, height=110) used in automorphy-lifting/congruence arguments.
-
-### Capelli Infinitesimal Character of U(p, q) Discrete Series (`discrete_series_inf_char`)
-
-Proves via Casselman-Osborne Lie algebra cohomology, Koszul resolutions, and Verma covers that the quantum determinant in U(gl_n) acts on smooth vectors of any discrete series representation of U(p, q) as the scalar Harish-Chandra polynomial.
-
-- **Mathematical form:** `∀ π ∈ DiscreteSeries(U(p, q)) of parameter λ, ∀ v ∈ π^∞, qdet(E + (n-1)/2 + Y) · v = capP(λ, Y) · v`
-- **Lean anchor:** `discrete_series_infinitesimal_character` in [CompanionTheory/HarishChandraModules/LowKTypeMultiplicity/DiscreteSeriesCharacters/DiscreteSeriesInfinitesimalCharacter.lean#L1794](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/CompanionTheory/HarishChandraModules/LowKTypeMultiplicity/DiscreteSeriesCharacters/DiscreteSeriesInfinitesimalCharacter.lean#L1794)
-- **Depends on:** `Master Arithmetic-Automorphic Coordination Package (D7)`
-- **Notes:** CompanionTheory assembly proving PI.DSInfCharCap.DSInfCharCap .
+- **Mathematical form:** `0 < ε < 1/100 ⇒ ∀ᶠ x, ∃ D : Data P, D.x = x ∧ ...`
+- **Lean anchor:** `eventually_exists_data` in [New/Reduction/Data/Existence.lean#L898](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Reduction/Data/Existence.lean#L898)
+- **Depends on:** `Sharpness of the Theta-Derivative Valuation Bound`, `Chowla–Selberg Formula for CM Curves`
+- **Notes:** Provides concrete scales and Behrend-sparse place sets feeding OneSidedBound.
 
 ---
 
-## Stage 4: Foundational Machinery (12 milestones)
+## Stage 3: Major `New/` Proof Pillars (22 milestones)
 
-Underlying arithmetic-geometric, cohomological, and analytic infrastructure: PEL Shimura toroidal compactification and Mumford semiabelian uniformisation, resolution of singularities, twisted etale cohomology finiteness, Poitou-Tate duality, Whittaker multiplicity one, Arakelov slope bounds, and Formalism specification contracts.
+The eight proof engines of `src/New/`: Landau zero-free criterion and PNT cut-off, twisted-lattice product formula, theta derivatives & sharpness, composite-lift seesaw & divisibility, elementary divisors, second-moment unfolding & Bessel frames, determinant exchange & auxiliary forms, single-lift comparisons, and congruence/Selmer/Kisin bounds.
 
-### PEL Shimura Toroidal Compactification & Boundary Uniformisation (`uniformisation_conclusion`)
+### One-Sided Landau Criterion for Zero-Free Half-Plane (`criterion_zero_free`)
 
-Defines the global PEL-type unitary Shimura toroidal compactification specification PartI: existence of integral toroidal models with split boundary fibers, Mumford semiabelian uniformisation N3, torsion/Weil-pairing isomorphisms, and formal power-series arc lifts N4.
+Proves that if `primeRemainder d q₀ y ≤ y^{-1/2+ε}` for all large `y` (for every `ε > 0`), then no character induced by `q₀` (or twisted by `χ_K`) has a zero of `L(χ, s)` in `Re(s) > 1/2`.
 
-- **Mathematical form:** `PartI : ∀ (E CM) (H) (D), ∃ integral toroidal models Y with SplitFibres, Model.N2, Model.N3 (PELUnif), Model.N4 (formal arcs Spec O'[[X]] → Y)`
-- **Lean anchor:** `PartI` in [ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/BirationalGeometry/ToroidalCompactification/UniformisationConclusion.lean#L228](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/BirationalGeometry/ToroidalCompactification/UniformisationConclusion.lean#L228)
-- **Depends on:** `Split Tori & Semiabelian Torsion Primitives (Critical Spine Base)`
-- **Notes:** #1 most-imported interface file in the entire repository .
-
-### Uniqueness of Mumford Semiabelian Uniformisation (`unif_uniq_st`)
-
-Formulates UnifUniqSt (wrapped in Laws6): any two Mumford degeneration uniformisations of the same polarized semiabelian scheme compatible with rigidified line bundles are canonically isomorphic, preserving O_E-actions, theta sections, and thick-level coordinates.
-
-- **Mathematical form:** `UnifUniqSt : (U, U' uniformisations of G over (R, I) with w_L) ⇒ ∃! isomorphism D ≅ D' compatible with O_E and theta frames`
-- **Lean anchor:** `UnifUniqSt` in [ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/ExtensionDescent/UnifUniqSt.lean#L21](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/ExtensionDescent/UnifUniqSt.lean#L21)
-- **Depends on:** `PEL Shimura Toroidal Compactification & Boundary Uniformisation`, `24-Law Contract for Polarized Abelian Schemes`
-- **Notes:** #2 most-imported external interface file .
-
-### 24-Law Contract for Polarized Abelian Schemes (`global_sections_laws`)
-
-Packages 24 foundational theorems for polarized abelian schemes over arbitrary Noetherian bases: Riemann-Roch section rank n^g, base change, ampleness (n >= 4), Theorem of the Cube and Square, rigidity, Weil pairing nondegeneracy, Mumford theta-group irreducibility, Serre's M-torsion rigidity (M >= 3), and finite-flat quotients.
-
-- **Mathematical form:** `Laws : dim H⁰(A, L^n) = n^g ∧ Ample(n≥4) ∧ Cube ∧ Square ∧ Rigidity ∧ WeilNondeg ∧ ThetaIrred ∧ Serre(M≥3) ∧ Quotient`
-- **Lean anchor:** `Laws` in [ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/ExtensionDescent/GlobalSectionsRankAlgClosed.lean#L194](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/ExtensionDescent/GlobalSectionsRankAlgClosed.lean#L194)
-- **Depends on:** `Split Tori & Semiabelian Torsion Primitives (Critical Spine Base)`
-- **Notes:** contract . Its realization connects to TheoremOfCubeAbelianSchemeOverArbitraryBase (h=97 on the 202-edge critical spine).
-
-### Split Tori & Semiabelian Torsion Primitives (Critical Spine Base) (`split_torus_aff`)
-
-Constructs split algebraic tori Spec(R[X]) as Hopf-algebra group schemes over arbitrary base schemes S, together with character groups, multiplication-by-N maps, and N-torsion subgroup schemes.
-
-- **Mathematical form:** `splitTorus(S, X) = Spec(O_S[X]), G_m(S), mulN : G → G, torsion(G, N) = ker([N] : G → G)`
-- **Lean anchor:** `splitTorusAff` in [ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/SemiabelianSchemes/SplitTori/SplitTorusAff.lean#L25](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/SemiabelianSchemes/SplitTori/SplitTorusAff.lean#L25)
+- **Mathematical form:** `(∀ ε > 0, eventually R_{q₀}(y) ≤ y^{-1/2+ε}) ⇒ L(χ, s) ≠ 0 (Re s > 1/2)`
+- **Lean anchor:** `New.LFunction_ne_zero_of_primeRemainder_le` in [New/Reduction/Zeros/Criterion.lean#L37](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Reduction/Zeros/Criterion.lean#L37) · Dominates **5** modules
 - **Depends on:** None (foundation)
-- **Notes:** Terminal height-0 leaf of the longest 202-edge (203-module) critical spine in the entire DAG.
+- **Notes:** Finite-level Landau nonnegativity bridge (dist=3, height=9).
 
-### Finiteness of Twisted Etale Cohomology Over Fields (`etale_finiteness`)
+### Prime Number Theorem Bound for `R_q` at Cut-Off `x₁` (`pnt_remainder`)
 
-Proves finiteness of twisted etale cohomology H^n(X, Z/qZ(i)) for proper schemes X over arbitrary fields k (with q invertible in k) by double induction on cohomological degree n and Krull dimension, slicing into families of smooth curves via alterations, Kummer theory, and ghost-killing.
+Applies the zero-free region and Tauberian theorem in `Lib/Analytic/PrimeNumberTheorem` to prove `|R_q(y)| ≤ 1 / (log y)^B` for any `B`.
 
-- **Mathematical form:** `∀ k field, q ∈ k^×, X/k proper, ∀ n i ∈ ℤ, Finite(H^n_et(X, Z/qZ(i)))`
-- **Lean anchor:** `H0TwistOverClosedField` in [Development/EtaleCohomology/EtaleSheaves/H0TwistOverClosedField.lean#L71](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/EtaleCohomology/EtaleSheaves/H0TwistOverClosedField.lean#L71)
+- **Mathematical form:** `∀ B : ℕ, eventually |primeRemainder d q y| ≤ (log y)^{-B}`
+- **Lean anchor:** `eventually_abs_primeRemainder_le` in [New/Reduction/Zeros/PrimeNumberTheorem.lean#L217](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Reduction/Zeros/PrimeNumberTheorem.lean#L217) · Dominates **2** modules
 - **Depends on:** None (foundation)
-- **Notes:** Core inductive engine (goal_of) for Development/EtaleCohomology .
+- **Notes:** Controls the `x₁` remainder terms in OneSidedBound.
 
-### Functorial Resolution of Singularities in Characteristic Zero (`resolution_char_zero`)
+### Twisted Lattice Product Formula (`covolume_add_index_nonneg`) (`twisted_lattice_product`)
 
-Establishes functorial embedded resolution of singularities and ideal principalization over characteristic-zero schemes via iterated blowups along smooth centers, producing strict normal crossings exceptional divisors compatible with smooth morphisms and field extensions.
+Proves the global product-formula inequality `0 ≤ V + 2δ + 2c` for a twisted lattice: Gram determinant covolume plus twice the `ℓ`-adic clearing-matrix index plus twist height is non-negative.
 
-- **Mathematical form:** `FunctorialResolutionCharZero ⇒ ResolutionCharZero (smooth blowup resolution with SNC exceptional divisor)`
-- **Lean anchor:** `resolutionCharZero` in [Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/EveryCharacterOfLiteratureOfVWin.lean#L789](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/EveryCharacterOfLiteratureOfVWin.lean#L789)
-- **Depends on:** `PEL Shimura Toroidal Compactification & Boundary Uniformisation`, `24-Law Contract for Polarized Abelian Schemes`
-- **Notes:** Bridges Development/ResolutionOfSingularities into Arakelov height and Moriwaki bigness pipelines. [Relocated from ResolutionCharZero.lean to Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/EveryCharacterOfLiteratureOfVWin.lean] [Shares module EveryCharacterOfLiteratureOfVWin.lean]
-
-### Poitou-Tate Nine-Term Exact Sequence & Sha Duality (`poitou_tate_gs`)
-
-Proves Poitou-Tate global-local duality for finite Z/NZ Galois modules over G_{K,S} (for N odd or K totally complex): finiteness and perfect pairing of Tate-Shafarevich groups Sha^1 and Sha^2, compact-support duality, and exactness of the full nine-term Poitou-Tate sequence.
-
-- **Mathematical form:** `Finite(Sha¹(G_{K,S}, M)) ∧ Finite(Sha²(G_{K,S}, M*(1))) ∧ Exact(0 → H⁰ → ∏' H⁰ → H²* → ... → ∏' H² → 0)`
-- **Lean anchor:** `poitouTate_nineTerm_gs` in [GroundTheory/ProfiniteCohomology/PoitouTate/PoitouTateNineTermGs.lean#L1499](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/GroundTheory/ProfiniteCohomology/PoitouTate/PoitouTateNineTermGs.lean#L1499)
+- **Mathematical form:** `CovolumeLe V ∧ IndexLe δ ∧ HeightLe c (det ratios) ⇒ 0 ≤ V + 2δ + 2c`
+- **Lean anchor:** `covolume_add_index_nonneg` in [New/Reduction/Lattices/TwistedLattice.lean#L477](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Reduction/Lattices/TwistedLattice.lean#L477)
 - **Depends on:** None (foundation)
-- **Notes:** Complete proof in GroundTheory/ProfiniteCohomology of poitouTate_duality_gs, poitouTate_sha_gs, and poitouTate_nineTerm_gs.
+- **Notes:** Abstract Bost/Laurent-style product formula driving Theorem C.
 
-### Whittaker Multiplicity One on GL_n(A_K) (`multiplicity_one`)
+### Iterated Seesaw Identity (`seesaw_identity`) (`seesaw_identity`)
 
-Proves the Piatetski-Shapiro / Shalika Fourier-Whittaker theorem for smooth cuspidal automorphic forms on GL_n(A_K): by upward induction on unipotent row expansions, if all Whittaker coefficients of a cusp form vanish, then the form itself is identically zero.
+Unfolds the composite chain `D.lowerChain` applied to the Poincaré map on ramified source forms into a finite linear combination `D.compositeLift` of definite chains `X₀ → … → X_m` restricted to `Y_m`.
 
-- **Mathematical form:** `∀ ϕ ∈ 𝒜_cusp(GL_n(K)\GL_n(A_K)), (∀ g, W_ϕ(g) = 0) ⇒ ϕ = 0`
-- **Lean anchor:** `eq_zero_of_whittaker_eq_zero` in [GroundTheory/AutomorphicForms/MultiplicityOne/Injective.lean#L82](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/GroundTheory/AutomorphicForms/MultiplicityOne/Injective.lean#L82)
+- **Mathematical form:** `∃ c_ss ≠ 0, ∃ datum, lowerChain ∘ poincareAt = c_ss • compositeLift datum`
+- **Lean anchor:** `seesaw_identity` in [New/UpperBound/Seesaw/SeesawIdentity.lean#L624](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/UpperBound/Seesaw/SeesawIdentity.lean#L624) · Dominates **17** modules
+- **Depends on:** `Adelic Weil Representation & Mixed-Model Slice Unfolding`, `Rallis Inner Product Formula for Sharp Data`
+- **Notes:** Top bottleneck of New/UpperBound/Seesaw (dist=5, height=44, dominates 17 modules).
+
+### Prime-by-Prime Divisibility of the Composite Lift (`local_divisibility`)
+
+Establishes the `p`-adic gauge divisibility (`gaugeLe`) of `D.compositeLift` at every prime `p`: using level-`N` valuations, non-split valuations, and scaled Hecke operators (`MarkOperator`) with bounded colength.
+
+- **Mathematical form:** `∃ span/colength control, gaugeLe (compositeLift) ≤ exp(-gain + error)`
+- **Lean anchor:** `exists_err_gaugeLe_compositeLift` in [New/UpperBound/Divisibility/LocalDivisibility.lean#L494](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/UpperBound/Divisibility/LocalDivisibility.lean#L494) · Dominates **17** modules
+- **Depends on:** `Elementary Divisors of Edge Hecke Operators`, `Divisibility of Theta Jets Along Products of Minors`
+- **Notes:** Top bottleneck of New/UpperBound/Divisibility (dist=5, height=44, dominates 17 modules).
+
+### Archimedean Size of the Composite Lift (`archimedean_size`)
+
+Bounds the Weyl norm squared of `D.compositeLift` at every complex conjugate using jet-conjugate bounds on the integral vacuum and projects onto `targetForms` via `goodProjTranslate`.
+
+- **Mathematical form:** `weylNormSq (compositeLift) ≤ exp(mainAmount + error) ∧ normSqAt_goodProjTranslate_le`
+- **Lean anchor:** `weylNormSq_compositeLift_le` in [New/UpperBound/Size/ArchimedeanSize.lean#L436](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/UpperBound/Size/ArchimedeanSize.lean#L436)
+- **Depends on:** `Sharpness of the Theta-Derivative Valuation Bound`
+- **Notes:** Connects theta derivative sharpness to Theorem A and Theorem C auxiliary forms.
+
+### Elementary Divisors of Edge Hecke Operators (`elementary_divisors`)
+
+Bounds the colength of the image of scaled Hecke operators on integral source forms via Stepanov's root lemma, Frobenius defect counts, Pieri cones, and Schur-algebra averaging.
+
+- **Mathematical form:** `elementary_divisors : colength bound on edge Hecke pairing map`
+- **Lean anchor:** `elementary_divisors` in [New/UpperBound/ElementaryDivisors/ElementaryDivisorTheorem.lean#L1166](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/UpperBound/ElementaryDivisors/ElementaryDivisorTheorem.lean#L1166) · Dominates **10** modules
+- **Depends on:** `Integral `GL(n+1) → GL(n)` Branching Maps`
+- **Notes:** Culmination of the 10-file New/UpperBound/ElementaryDivisors folder.
+
+### Sharpness of the Theta-Derivative Valuation Bound (`derivatives_sharpness`)
+
+Proves that the `p`-adic valuation bound achieved by derivatives of CM theta functions along normal-form couplings is tight up to `b`-place near-pair losses, calibrating `P.vacuumBoundConst`.
+
+- **Mathematical form:** `p^{-localPrimeSumTotal} ≤ ‖coeff(indicatorDatum)‖`
+- **Lean anchor:** `exists_rpow_neg_localPrimeSumTotal_le_norm_coeff` in [New/Derivatives/Sharpness/BoundAttained.lean#L381](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Derivatives/Sharpness/BoundAttained.lean#L381) · Dominates **5** modules
+- **Depends on:** `Divisibility of Theta Jets Along Products of Minors`, `Chowla–Selberg Formula for CM Curves`
+- **Notes:** Culmination of New/Derivatives (Sharpness).
+
+### Divisibility of Theta Jets Along Products of Minors (`derivatives_divisibility`)
+
+Proves that high-order derivatives (`schurJet`) of theta series in normal form along coupled directions accumulate `p`-adic divisibility proportional to prime-power counts.
+
+- **Mathematical form:** `‖schurJet(normalForm)‖_p ≤ ‖jet_minorProd‖_p ≤ p^{-charge}`
+- **Lean anchor:** `norm_jet_minorProd_le_of_hasNormalForm` in [New/Derivatives/Divisibility/Count.lean#L707](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Derivatives/Divisibility/Count.lean#L707)
 - **Depends on:** None (foundation)
-- **Notes:** proof in GroundTheory/AutomorphicForms .
+- **Notes:** Core p-adic divisibility engine of New/Derivatives.
 
-### Arakelov Hermitian Vector Bundles & Bost-Zhang Slope Inequalities (`kernels_lattice`)
+### Second-Moment Unfolding & Near-Isometry (`Moments`) (`second_moment_unfolding`)
 
-Defines Hermitian lattices (metrized projective O_K-modules with conjugate-compatible positive-definite inner products at infinite places), Arakelov sub/quotient degrees and slopes, and formalizes the Bost-Zhang small-height vector existence bound.
+Unfolds the second moment of Petersson Poincaré operators `P* s P` into near/remaining terms and the main term, proving that `piTensorElem` is a near-isometry on good forms.
 
-- **Mathematical form:** `∀ (F : HermLattice K i), ∀ ε > 0, ∃ K'/K finite, ∃ v ∈ F ⊗ K' \ {0}, lineDegree(v) ≥ μ(F) - (1/2)log(i) - ε`
-- **Lean anchor:** `HermLattice` in [GroundTheory/HeightsAndTheta/Heights/KernelsLattice.lean#L32](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/GroundTheory/HeightsAndTheta/Heights/KernelsLattice.lean#L32)
+- **Mathematical form:** `‖1 − piTensorElem_comp‖_HS^2 ≤ ε ⇒ isNearIsometry`
+- **Lean anchor:** `HasAmplitudeBlocks.isNearIsometry_piTensorElem_comp` in [New/Spanning/Unfolding/Moments.lean#L1230](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Spanning/Unfolding/Moments.lean#L1230) · Dominates **34** modules
+- **Depends on:** `Bound on Remaining Orbit Terms in Second Moment`, `Main-Term Kloosterman Sieve Energy Estimate`, `Discrete-Series Period Lower Bounds by Laplace's Method`
+- **Notes:** Unfolding synthesis dominating 34 modules in New/Spanning.
+
+### Bound on Remaining Orbit Terms in Second Moment (`remaining_terms_sum`)
+
+Bounds the off-diagonal / remaining orbit terms in the second-moment unfolding using Siegel's lemma, lattice discriminants, bordered determinants, and Schur's test.
+
+- **Mathematical form:** `secondMoment_remainingTerms_le`
+- **Lean anchor:** `secondMoment_remainingTerms_le` in [New/Spanning/RemainingTerms/Sum.lean#L682](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Spanning/RemainingTerms/Sum.lean#L682) · Dominates **8** modules
 - **Depends on:** None (foundation)
-- **Notes:** core interface in GroundTheory/HeightsAndTheta .
+- **Notes:** Culmination of the 23-file RemainingTerms track.
 
-### Rapid Decay & L² Moments of Compactly Supported Cusp-Form Twists (`pi_vec_ex`)
+### Main-Term Kloosterman Sieve Energy Estimate (`main_term_energy`)
 
-Proves that multiplying a smooth cusp form invariant under the split center by any compactly supported continuous cutoff of log|det| yields an L² function on H_n with finite moments against all powers of the Siegel height weight.
+Bounds the main-term energy over open-cell reductions fixing prescribed vectors via one-sided Poisson summation, Kloosterman orbital integrals, and two-frame local densities.
 
-- **Mathematical form:** `∀ ψ cusp form, ∀ u ∈ C_c(ℝ), ψ(x) · u(ldet x) ∈ L²(H_n, ν) ∧ ∫ wt(x)^{2M} |ψ(x)u(ldet x)|² dν < ∞`
-- **Lean anchor:** `piVecEx_holds` in [Development/DiscreteGroups/PiInvariants/CompactSupportTwists/PiVecExHolds.lean#L59](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/DiscreteGroups/PiInvariants/CompactSupportTwists/PiVecExHolds.lean#L59)
-- **Depends on:** `PEL Shimura Toroidal Compactification & Boundary Uniformisation`, `24-Law Contract for Polarized Abelian Schemes`
-- **Notes:** proof in Development/DiscreteGroups , top interface file of DiscreteGroups.
-
-### Local Bloch-Kato Orthogonality & Tate Duality Core (`loc_coh_bk`)
-
-Specifies continuous p-adic Galois representations GRep, de Rham criteria (dim D_dR = [K:Q_p] dim V), and rational/integral Bloch-Kato exact orthogonality of finite-part cocycles H¹_f under the local Tate cup-product pairing.
-
-- **Mathematical form:** `IsDR(ρ) ⇒ (H¹_f(G_K, V) ⊥ H¹_f(G_K, V*(1))) ∧ (H¹_f(T_A) ⊥ H¹_f(T_{A'})) under local cup product`
-- **Lean anchor:** `bkACore` in [Formalism/SharpRestriction/LevelLetterCocycles/LocCoh.lean#L195](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Formalism/SharpRestriction/LevelLetterCocycles/LocCoh.lean#L195)
+- **Mathematical form:** `linkSecondMoment_isOpenElement_le`
+- **Lean anchor:** `linkSecondMoment_isOpenElement_le` in [New/Spanning/MainTerm/EnergyEstimate.lean#L631](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Spanning/MainTerm/EnergyEstimate.lean#L631) · Dominates **21** modules
 - **Depends on:** None (foundation)
-- **Notes:** Highest cross-top-directory boundary bridge .
+- **Notes:** Combines New/Spanning/MainTerm and the 22-file New/Spanning/Frames folder.
 
-### Master Arithmetic-Automorphic Coordination Package (D7) (`rho_det_d7`)
+### Discrete-Series Period Lower Bounds by Laplace's Method (`discrete_series_periods`)
 
-Defines self-dual Hermitian lattices, inert-prime indices, and the central 200+ field structure D7 coordinating CM host fields, Shimura spaces, column chains, relative Hermitian determinants, Fontaine period rings, Galois types, and theta jets.
+Proves quantitative lower bounds for real Bessel/discrete-series matrix-coefficient integrals near compact subgroups via second-order Taylor expansions and Laplace's method.
 
-- **Mathematical form:** `structure D7 : (Ranks, Host, Hermitian Spaces, Member Column Chains, DivData, Fontaine Period Rings, Galois Types)`
-- **Lean anchor:** `D7` in [Formalism/LocalRingCardinality/RhoDetPrimeEqMuTildeMulChiPow.lean#L108](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Formalism/LocalRingCardinality/RhoDetPrimeEqMuTildeMulChiPow.lean#L108)
-- **Depends on:** None (foundation)
-- **Notes:** Central Formalism data contract .
+- **Mathematical form:** `IsLaplaceDatum.laplace_method`
+- **Lean anchor:** `IsLaplaceDatum.laplace_method` in [New/Appendix/DiscreteSeries/Periods.lean#L493](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Appendix/DiscreteSeries/Periods.lean#L493) · Dominates **5** modules
+- **Depends on:** `Real Discrete Series & Local Theta Correspondence`
+- **Notes:** Appendix module supporting real Bessel lower bounds.
+
+### Spanning Auxiliary Forms on the Two-Grid Last Path (`auxiliary_spanning_forms`)
+
+Constructs spanning auxiliary target forms via monotone paths and square turns across the two-grid theta diagram, bounding their denominators and archimedean sizes.
+
+- **Mathematical form:** `∃ scalar, span {y | IsAuxiliaryForm γ y} = ⊤`
+- **Lean anchor:** `exists_span_short_lifts_eq_top` in [New/Determinant/AuxiliaryForms/SpanningForms.lean#L773](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Determinant/AuxiliaryForms/SpanningForms.lean#L773) · Dominates **7** modules
+- **Depends on:** `Factorization of the Chain Gram Determinant `Z(ξ)``, `Exchange Identity for Matched Theta Integrals`
+- **Notes:** Culmination of the 11-file New/Determinant/AuxiliaryForms track.
+
+### Factorization of the Chain Gram Determinant `Z(ξ)` (`norm_of_chain`)
+
+Factorizes `D.chainDeterminant 1 / D.chainDeterminant ϑ` as the product of the single-lift determinant ratios `Z_j(1) / Z_j(ϑ^j)` times explicit powers of Hecke `L`-value quotient ratios.
+
+- **Mathematical form:** `Z(1) / Z(ϑ) = scalar(ϑ)^{-d_T} · ∏_{j=1}^m (Z_j(1) / Z_j(ϑ))`
+- **Lean anchor:** `exists_chainDeterminant_pos_and_div_chainDeterminant_one_eq` in [New/Determinant/Chain/NormOfChain.lean#L419](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Determinant/Chain/NormOfChain.lean#L419)
+- **Depends on:** `Exchange Identity for Matched Theta Integrals`, `Rallis Inner Product Formula for Sharp Data`
+- **Notes:** Reduces chain Gram determinants to single-lift determinants.
+
+### Exchange Identity for Matched Theta Integrals (`exchange_identity`)
+
+Proves that theta integrals over complementary-rank unitary groups `U(V)` and `U(V')` agree for matched ramified data up to a nonzero scalar `c` whose squared norm is a product of partial Hecke `L`-values.
+
+- **Mathematical form:** `∃ c ≠ 0, ‖c‖² = const · ∏ L_S(...) ∧ θ_V = c · θ_{V'}`
+- **Lean anchor:** `exchange_identity` in [New/Determinant/Exchange/TheoremForPartners.lean#L1051](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Determinant/Exchange/TheoremForPartners.lean#L1051) · Dominates **8** modules
+- **Depends on:** `Convergent Unitary Siegel–Weil Formula`, `Adelic Weil Representation & Mixed-Model Slice Unfolding`
+- **Notes:** Core Siegel–Weil-type exchange theorem powering Chain and OneSquare.
+
+### Single-Lift Determinant Height Bound (`Z_j(1)/Z_j(ξ^j)`) (`lift_volume_height`)
+
+Combines the comparison operator `P_V`, gluing maps, false-lift period vanishing, and twisted Hecke-value heights to bound the height of `Z_j(1)/Z_j(ξ^j)` in terms of `directionAmount` and `denominatorBudget`.
+
+- **Mathematical form:** `HeightLe (d · k · (logB · denominatorBudget − directionAmount)) (Z_j(1)/Z_j(ξ^j))`
+- **Lean anchor:** `heightLe_liftDeterminant_ratio` in [New/OneLift/LiftVolumeHeight.lean#L729](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/OneLift/LiftVolumeHeight.lean#L729) · Dominates **15** modules
+- **Depends on:** `Heights of Twisted-to-Untwisted Hecke L-Values`, `Rallis Inner Product Formula for Sharp Data`
+- **Notes:** Top bottleneck of New/OneLift (dist=5, height=47).
+
+### Heights of Twisted-to-Untwisted Hecke L-Values (`twisted_value_heights`)
+
+Expresses products of critical Hecke `L`-value ratios via rank-one theta lifts from `U(1)` and bounds their global heights across all `p`-adic and archimedean embeddings.
+
+- **Mathematical form:** `heightLe_inv_heckeValueProd_div`
+- **Lean anchor:** `heightLe_inv_heckeValueProd_div` in [New/OneLift/HeckeValues/TwistedValueHeights.lean#L1066](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/OneLift/HeckeValues/TwistedValueHeights.lean#L1066) · Dominates **7** modules
+- **Depends on:** `Rallis Inner Product Formula for Sharp Data`
+- **Notes:** Culmination of New/OneLift/HeckeValues.
+
+### First-Order Ribet Method & Clearing Denominator Bound (`denominator_bound_ribet`)
+
+Uses Amitsur's formula, Fitting ideals, Taylor–Wiles auxiliary primes, and Ribet's congruence element to bound the `ℓ`-adic clearing determinant (`DenominatorLe`) against Selmer lengths and local crystalline defects.
+
+- **Mathematical form:** `denominatorLe_clearingBound`
+- **Lean anchor:** `denominatorLe_clearingBound` in [New/Congruences/FirstOrder/DenominatorBound.lean#L1321](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Congruences/FirstOrder/DenominatorBound.lean#L1321) · Dominates **24** modules
+- **Depends on:** `Spherical Chain Lemma for Unitary Representations of `GL_N``, `Attached Galois Representations in Every Positive Rank`, `Local Crystalline Defect Bound Above `ℓ``
+- **Notes:** Critical-path hub (height=47, 1,333 lines, dominates 24 modules).
+
+### Anticyclotomic Twisting Theorem for Selmer Groups (`selmer_twisting`)
+
+Constructs `m`-fold anticyclotomic twists `ϑ` whose tied Bloch–Kato Selmer groups satisfy logarithmic length bounds controlled by Stickelberger/Katz `L`-value systems and Taylor–Wiles descent.
+
+- **Mathematical form:** `exists_mFoldTwist_hasDivisibleSelmerLengthLe`
+- **Lean anchor:** `exists_mFoldTwist_hasDivisibleSelmerLengthLe` in [New/Congruences/Selmer/TwistingTheorem.lean#L370](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Congruences/Selmer/TwistingTheorem.lean#L370) · Dominates **20** modules
+- **Depends on:** `Uniform Bound on Odd-Part Ш Over Cyclotomic Fields`, `Greenberg–Wiles Cocycle Counting Without Local Duality`, `Global Artin Reciprocity & Sign Law`, `Local-Global Compatibility for Hecke Character Avatars`, `Local Crystalline Defect Bound Above `ℓ``
+- **Notes:** Culmination of the 16-file New/Congruences/Selmer folder (dominates 20 modules).
+
+### Local Crystalline Defect Bound Above `ℓ` (`crystalline_defect`)
+
+Bounds the length lost at places dividing `ℓ` between crystalline classes and congruent dual lattices for main-summand Galois representations with tame types and sparse `b`-places.
+
+- **Mathematical form:** `New.Selmer.summand_defect_le_at_place`
+- **Lean anchor:** `New.Selmer.summand_defect_le_at_place` in [New/Congruences/LocalLoss/CrystallineDefect.lean#L647](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Congruences/LocalLoss/CrystallineDefect.lean#L647)
+- **Depends on:** `Crystalline Extension Lifting & Kummer Chart Orthogonality`, `Breuil–Kisin Module Frame Theorem`
+- **Notes:** Bridges Kisin lifting bounds into Ribet and Selmer estimates.
+
+### Crystalline Extension Lifting & Kummer Chart Orthogonality (`kisin_cup_orthogonality`)
+
+Bounds cup-product orthogonality exponents on paired sides of tame Kummer charts for Breuil–Kisin modules in large weight, controlling local crystalline extension losses above `ℓ`.
+
+- **Mathematical form:** `hasCupExponent_of_isTameType`
+- **Lean anchor:** `hasCupExponent_of_isTameType` in [New/Congruences/Lifting/CupOrthogonalityBounds.lean#L532](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Congruences/Lifting/CupOrthogonalityBounds.lean#L532) · Dominates **15** modules
+- **Depends on:** `Breuil–Kisin Module Frame Theorem`
+- **Notes:** Culmination of the 11-file New/Congruences/Lifting folder (dominates 15 modules).
 
 ---
 
-## How Literature & Hypothesis Bundles Are Discharged
+## Stage 4: Foundational `Lib/` Background Machinery (19 milestones)
 
-To understand what is unconditionally proved versus parameterized in intermediate modules:
+Self-contained peer-reviewed background theories in `src/Lib/` (importing nothing from `src/New/`): Galois representations in all ranks, class field theory & Greenberg–Wiles counting, odd-part Ш bounds, Shimura moduli & Eichler–Shimura, p-adic comparison & Kisin frame theorems, Siegel–Weil & Rallis formulas, Weil models, discrete series, and Chowla–Selberg.
 
-- Despite directory and structure names such as `PublishedTheorems`, `PublishedInputs`, `LiteratureTheorems`, `OpenLiteratureStatements`, `OpenImageCondition`, and `LiteratureRankNHypothesis`, **direct inspection of the source confirms that these are NOT unproved axioms or uninstantiated assumptions in the final theorems:**
-  - In [Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean#LMainConclusion.lean](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean#LMainConclusion.lean), `UpperTheory.FinalTheorems.everyCharacter` takes **zero external hypothesis arguments** and invokes `everyCharacter_of_row UpperTheory.Gal.Int.galoisLocalGlobalStrong_recParameter`.
-  - Inside `everyCharacter_of_row` ([Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean#LMainConclusion.lean](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean#LMainConclusion.lean)), [Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/EveryCharacterOfLiteratureOfVWin.lean#LOpenLiteratureStatements](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/EveryCharacterOfLiteratureOfVWin.lean#LOpenLiteratureStatements) (which bundles `caraianiLocalGlobalDual`, `localLanglandsExists`, `galoisRepOfPolarizedPairLit`) is **unconditionally discharged** using `UpperTheory.Zero.LLC.recTExists` and the proved strong local-global compatibility theorem.
-  - Likewise, `OpenImageCondition` (`galoisRepOfPolarizedPairLit`) is **unconditionally discharged** in [Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/ThresholdArguments/DenseThresholdCases/VwinOfRow.lean#LVwinOfRow.lean](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/ThresholdArguments/DenseThresholdCases/VwinOfRow.lean#LVwinOfRow.lean) via `OpenImageCondition.mk h`.
-  - All other results packaged inside the synthesis modules (including Moriwaki bigness, characteristic-zero resolution, Poitou-Tate duality, global Artin reciprocity, Bernstein-Zelevinsky finiteness, Jacquet-Shalika rigidity, Casselman-Wallach, Clozel purity, unitary Siegel-Weil, and Grothendieck deformation) are **proved theorems** in `PositivityTheory`, `CompanionTheory`, `Development`, and `GroundTheory`.
-  - Similarly, `Formalism` structures (`D7`, `LocCoh`, `FamP`) and `ReciprocityTheory` specifications (`PartI`, `UnifUniqSt`, `Laws`) serve as abstract mathematical interface contracts (`Prop` definitions / `structure`s) whose concrete obligations are fulfilled by proved theorems along the proof chain.
+### Attached Galois Representations in Every Positive Rank (`lib_galois_all_ranks`)
+
+Constructs attached `ℓ`-adic Galois representations `Isotypic.attached_galRep` (and `sphericalCompat_std`) for algebraic eigenforms on definite unitary groups of arbitrary rank `n ≥ 1`, via lifts to rank `2n + 1` and cancellation.
+
+- **Mathematical form:** `New.GaloisRep.sphericalCompat_std ∧ Isotypic.attached_galRep`
+- **Lean anchor:** `Isotypic.attached_galRep` in [Lib/GaloisRep/Main/AllRanks.lean#L792](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/GaloisRep/Main/AllRanks.lean#L792) · Dominates **93** modules
+- **Depends on:** `Local-Global Compatibility for Hecke Character Avatars`, `Shimura Eigenquotients & Galois Representations`, `Limits of Crystalline Representations via Trace Limits`, `Simple Trace Formula Comparison Across Real Signatures`
+- **Notes:** Top Lib/ dominator (rank 6 overall, dominates 93 modules).
+
+### Local-Global Compatibility for Hecke Character Avatars (`lib_local_global_avatar`)
+
+Establishes base change and local-global compatibility for `ℓ`-adic avatars of algebraic Hecke characters over stably unramified CM fields (`HasPrimitiveRoot5040`).
+
+- **Mathematical form:** `New.GaloisRep.avatarCompatAt_of_hasPrimitiveRoot5040`
+- **Lean anchor:** `New.GaloisRep.avatarCompatAt_of_hasPrimitiveRoot5040` in [Lib/ClassField/Avatar/LocalGlobalCompatibility.lean#L191](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/ClassField/Avatar/LocalGlobalCompatibility.lean#L191) · Dominates **91** modules
+- **Depends on:** `Global Artin Reciprocity & Sign Law`
+- **Notes:** Rank 7 dominator overall (dominates 91 modules).
+
+### Global Artin Reciprocity & Sign Law (`lib_artin_reciprocity`)
+
+Proves global Artin reciprocity on finite ideles (`artin_reciprocity`) and the complex-conjugation sign law for profinite characters over totally complex number fields.
+
+- **Mathematical form:** `artin_reciprocity ∧ abelianLift_artinMap_principalIdele_eq_one_iff`
+- **Lean anchor:** `artin_reciprocity` in [Lib/ClassField/Global/ArtinReciprocity.lean#L453](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/ClassField/Global/ArtinReciprocity.lean#L453)
+- **Depends on:** None (foundation)
+- **Notes:** Replaces classical global class field theory on finite ideles.
+
+### Greenberg–Wiles Cocycle Counting Without Local Duality (`lib_greenberg_wiles`)
+
+Counts trivialised Galois cocycles at split auxiliary places via `S`-units and power-residue reciprocity, providing the finite-module Selmer upper bound used in descent.
+
+- **Mathematical form:** `New.IsLargeLevel.SplitPlaces.hasFewCocycles_of_central`
+- **Lean anchor:** `New.IsLargeLevel.SplitPlaces.hasFewCocycles_of_central` in [Lib/ClassField/GreenbergWiles/CocycleCounts.lean#L707](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/ClassField/GreenbergWiles/CocycleCounts.lean#L707)
+- **Depends on:** None (foundation)
+- **Notes:** Replaces Greenberg–Wiles formula in Selmer counting.
+
+### Uniform Bound on Odd-Part Ш Over Cyclotomic Fields (`lib_odd_sha`)
+
+Proves an explicit uniform integer bound (`New.exists_length_shaOdd_le`) on the length of odd-part unramified Galois cocycle modules of a CM field at every prime `ℓ` via Stickelberger and Kolyvagin classes.
+
+- **Mathematical form:** `New.exists_length_shaOdd_le`
+- **Lean anchor:** `New.exists_length_shaOdd_le` in [Lib/Cyclotomic/OddSha.lean#L645](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/Cyclotomic/OddSha.lean#L645) · Dominates **4** modules
+- **Depends on:** None (foundation)
+- **Notes:** Culmination of Lib/Cyclotomic.
+
+### Integral Kuga–Sato / PEL Shimura Models & Congruence Relation (`lib_shimura_tower`)
+
+Constructs integral projective models of `GU(1, n−1)` PEL Shimura towers (`New.Variety.exists_model`) via Appell–Humbert complex uniformisation and theta-null embeddings, with Eichler–Shimura congruence.
+
+- **Mathematical form:** `New.Variety.exists_model`
+- **Lean anchor:** `New.Variety.exists_model` in [Lib/Shimura/IntegralModel/TowerExistence.lean#L388](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/Shimura/IntegralModel/TowerExistence.lean#L388)
+- **Depends on:** None (foundation)
+- **Notes:** Culmination of Lib/Shimura/Uniformisation, ThetaModuli, and IntegralModel.
+
+### Shimura Eigenquotients & Galois Representations (`lib_shimura_eigenspace`)
+
+Cuts `ℓ`-adic Galois representations out of étale cohomology of `GU(1, n−1)` Shimura towers (`exists_galois_rep`) killed by the Eichler–Shimura Hecke polynomial.
+
+- **Mathematical form:** `New.Variety.Model.exists_galois_rep`
+- **Lean anchor:** `New.Variety.Model.exists_galois_rep` in [Lib/Shimura/Eigenspace.lean#L689](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/Shimura/Eigenspace.lean#L689) · Dominates **46** modules
+- **Depends on:** `Integral Kuga–Sato / PEL Shimura Models & Congruence Relation`, `p-adic Crystalline & Hodge–Tate Comparison Theorems`, `Woods Hole Fixed-Point Formula in Hodge Cohomology`
+- **Notes:** Dominates 46 modules in Lib/Shimura, Lib/Cohomology, and Lib/PadicComparison.
+
+### p-adic Crystalline & Hodge–Tate Comparison Theorems (`lib_padic_comparison`)
+
+Proves crystallinity of `p`-adic étale cohomology for charted proper smooth schemes and Frobenius congruence relations (`ellAdicCohom.isCrystalline_and_linearFrob_rel`), via primitive comparison and almost `v`-descent.
+
+- **Mathematical form:** `ellAdicCohom.isCrystalline_and_linearFrob_rel`
+- **Lean anchor:** `ellAdicCohom.isCrystalline_and_linearFrob_rel` in [Lib/PadicComparison/CrystallineFrobenius.lean#L713](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/PadicComparison/CrystallineFrobenius.lean#L713) · Dominates **8** modules
+- **Depends on:** `Woods Hole Fixed-Point Formula in Hodge Cohomology`
+- **Notes:** Culmination of Lib/PadicComparison.
+
+### Woods Hole Fixed-Point Formula in Hodge Cohomology (`lib_woods_hole`)
+
+Proves the Woods Hole / Atiyah–Bott fixed-point vanishing theorem (`woods_hole`) for Hodge classes of correspondences on charted varieties.
+
+- **Mathematical form:** `New.Variety.ellAdicCohom.woods_hole`
+- **Lean anchor:** `New.Variety.ellAdicCohom.woods_hole` in [Lib/Cohomology/WoodsHole.lean#L214](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/Cohomology/WoodsHole.lean#L214) · Dominates **10** modules
+- **Depends on:** None (foundation)
+- **Notes:** Culmination of Lib/Cohomology.
+
+### Breuil–Kisin Module Frame Theorem (`lib_kisin_frame`)
+
+Constructs Kummer charts, period matrices, and Kisin modules for integral crystalline lattices (`mem_kisinModule_iff_crysForms`), proving stability under normalising Galois elements.
+
+- **Mathematical form:** `mem_kisinModule_iff_crysForms`
+- **Lean anchor:** `mem_kisinModule_iff_crysForms` in [Lib/PadicHodge/Kisin/FrameTheorem.lean#L942](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/PadicHodge/Kisin/FrameTheorem.lean#L942) · Dominates **4** modules
+- **Depends on:** None (foundation)
+- **Notes:** Culmination of Lib/PadicHodge/Kisin.
+
+### Limits of Crystalline Representations via Trace Limits (`lib_trace_limit`)
+
+Proves that `ℓ`-adic limits of crystalline representations with bounded Hodge–Tate weights remain crystalline with bounded denominators (`local_clauses_of_trace_limit`).
+
+- **Mathematical form:** `local_clauses_of_trace_limit`
+- **Lean anchor:** `local_clauses_of_trace_limit` in [Lib/PadicHodge/Limit/TraceLimit.lean#L894](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/PadicHodge/Limit/TraceLimit.lean#L894)
+- **Depends on:** `Breuil–Kisin Module Frame Theorem`
+- **Notes:** Culmination of Lib/PadicHodge/Limit.
+
+### Convergent Unitary Siegel–Weil Formula (`lib_siegel_weil`)
+
+Proves the unitary Siegel–Weil formula in Weil's convergent range over CM fields (`siegel_weil`), equating theta integrals to Eisenstein series via Siegel sets and Lagrangian zero terms.
+
+- **Mathematical form:** `New.SiegelWeil.siegel_weil`
+- **Lean anchor:** `New.SiegelWeil.siegel_weil` in [Lib/SiegelWeil/Formula/WeilRange.lean#L757](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/SiegelWeil/Formula/WeilRange.lean#L757)
+- **Depends on:** None (foundation)
+- **Notes:** Core Siegel–Weil theorem in Lib/SiegelWeil.
+
+### Rallis Inner Product Formula for Sharp Data (`lib_rallis_sharp`)
+
+Proves the doubling Rallis inner product formula for sharp ramified data (`vacuumSum_eq_L_div_eulerProd`), relating theta-lift norms to critical Hecke `L`-values.
+
+- **Mathematical form:** `vacuumSum_eq_L_div_eulerProd`
+- **Lean anchor:** `vacuumSum_eq_L_div_eulerProd` in [Lib/SiegelWeil/RallisInner/SharpData.lean#L946](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/SiegelWeil/RallisInner/SharpData.lean#L946) · Dominates **5** modules
+- **Depends on:** None (foundation)
+- **Notes:** Feeds both New/OneLift and New/Determinant.
+
+### Adelic Weil Representation & Mixed-Model Slice Unfolding (`lib_weil_mixed_model`)
+
+Constructs the adelic Weil representation of unitary dual pairs and proves mixed-model zero-term and slice unfolding formulas (`IsAdapted.slice_omega_eq_integral`).
+
+- **Mathematical form:** `IsAdapted.slice_omega_eq_integral`
+- **Lean anchor:** `IsAdapted.slice_omega_eq_integral` in [Lib/Weil/MixedModel/ZeroTerm.lean#L785](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/Weil/MixedModel/ZeroTerm.lean#L785)
+- **Depends on:** None (foundation)
+- **Notes:** Central hub of Lib/Weil.
+
+### Real Discrete Series & Local Theta Correspondence (`lib_discrete_series_theta`)
+
+Establishes Flensted-Jensen discrete series coefficients `c_λ` on `U(p,q)`, Haar/Bruhat floor disintegrations, and Howe local theta correspondence via joint Fock harmonics.
+
+- **Mathematical form:** `exists_bump_integratedRep_eq`
+- **Lean anchor:** `exists_bump_integratedRep_eq` in [Lib/DiscreteSeries/Theta/LocalCorrespondence.lean#L734](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/DiscreteSeries/Theta/LocalCorrespondence.lean#L734)
+- **Depends on:** None (foundation)
+- **Notes:** Culmination of Lib/DiscreteSeries.
+
+### Simple Trace Formula Comparison Across Real Signatures (`lib_trace_comparison`)
+
+Compares simple trace formulas on unitary groups differing only at real places (`trace_comparison`), transferring Hecke multiplicities between definite spaces and `W_j`.
+
+- **Mathematical form:** `trace_comparison`
+- **Lean anchor:** `trace_comparison` in [Lib/Adelic/TraceFormula/TraceComparison.lean#L665](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/Adelic/TraceFormula/TraceComparison.lean#L665)
+- **Depends on:** None (foundation)
+- **Notes:** Culmination of Lib/Adelic/TraceFormula.
+
+### Chowla–Selberg Formula for CM Curves (`lib_chowla_selberg`)
+
+Proves the Chowla–Selberg formula (`CMLattice.chowla_selberg`) relating periods of CM elliptic curves over `ℚ(√−d)` to `L'/L(1, χ_K)` and `γ`.
+
+- **Mathematical form:** `CMLattice.chowla_selberg`
+- **Lean anchor:** `CMLattice.chowla_selberg` in [Lib/CM/ChowlaSelberg.lean#L696](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/CM/ChowlaSelberg.lean#L696)
+- **Depends on:** None (foundation)
+- **Notes:** Supplies `chowlaSelbergConst d` in `New/Reduction/Data/AdmissibleData`.
+
+### Spherical Chain Lemma for Unitary Representations of `GL_N` (`lib_spherical_chain`)
+
+Proves `New.Patching.chain_lemma`: Satake parameters of unitary unramified `GL_N` representations arrange into chains, yielding integral operators at Taylor–Wiles auxiliary places.
+
+- **Mathematical form:** `New.Patching.chain_lemma`
+- **Lean anchor:** `New.Patching.chain_lemma` in [Lib/LocalGL/SphericalChainLemma.lean#L445](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/LocalGL/SphericalChainLemma.lean#L445)
+- **Depends on:** None (foundation)
+- **Notes:** Supplies auxiliary-place operators for Ribet's method.
+
+### Integral `GL(n+1) → GL(n)` Branching Maps (`lib_gln_branching`)
+
+Constructs integral unitarily equivariant branching maps between polynomial Schur/Weyl representations of `GL(n+1)` and `GL(n)` (`exists_branching_matrix`) with explicit norm bounds.
+
+- **Mathematical form:** `_root_.New.exists_branching_matrix`
+- **Lean anchor:** `_root_.New.exists_branching_matrix` in [Lib/GLn/Branching/IntegralMap.lean#L472](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/GLn/Branching/IntegralMap.lean#L472)
+- **Depends on:** None (foundation)
+- **Notes:** Core representation-theoretic input from Lib/GLn.
 
 ---
 
-## Complete Milestone Index (38 Nodes)
+## How Background Results & Axioms Are Organized
+
+To verify that the five headline theorems in `Main.lean` are completely unconditional:
+
+- **Clean separation of statements from `Lib/Speed.lean`:** [Statements.lean#LStatements.lean](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Statements.lean#LStatements.lean) imports only `Mathlib`, ensuring the target statements use standard definitions and are unaffected by the `simp`/instance-priority settings in `Lib/Speed.lean`.
+- **No unproved hypothesis bundles or custom axioms:** Every theorem in `New/` and `Lib/` is proved directly in Lean 4 using only Lean's standard axioms (`propext`, `Quot.sound`, `Classical.choice`), with zero imports from `New/` inside `Lib/`.
+- **Tailored literature formulations in `Lib/`:** As documented in `GUIDE.md` and `INDEX.md`, `Lib/` proves self-contained forms of classical background results (e.g., Galois representations matching Hecke polynomials on `mostFrobenii`, local killing polynomials without full Weil–Deligne representations, and Greenberg–Wiles cocycle inequalities without dual Selmer pairings).
+
+---
+
+## Complete Milestone Index (51 Nodes)
 
 <details>
-<summary>Expand full table of all 38 verified blueprint milestones</summary>
+<summary>Expand full table of all 51 verified blueprint milestones</summary>
 
 | Stage | ID | Title | Lean Symbol | Source Link |
 |---:|---|---|---|---|
-| 0 | `main_export` | Main Theorems (RH, Half-Plane & GRH) | `riemannHypothesis` | [Main.lean#L46](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Main.lean#L46) |
-| 0 | `statements_spec` | Standalone Target Theorem Statements | `RiemannZetaZerosOnLine` | [Statements.lean#L7](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Statements.lean#L7) |
-| 1 | `claim_strip` | Imprimitive Character Strip Reduction | `strip` | [Development/AutomorphicArithmetic/CharacterBoxes/ClaimStrip.lean#L86](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/CharacterBoxes/ClaimStrip.lean#L86) |
-| 1 | `half_plane_def` | Half-Plane, Strip & Zeta Definitions | `Claim.HalfPlane` | [Development/AutomorphicArithmetic/CharacterBoxes/HalfPlane.lean#L9](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/CharacterBoxes/HalfPlane.lean#L9) |
-| 2 | `main_conclusion` | Master Proof Synthesis (UpperTheory.FinalTheorems.everyCharacter) | `UpperTheory.FinalTheorems.everyCharacter` | [Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean#L994](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean#L994) |
-| 2 | `every_character_def` | Character-Box Window Assembly (plugWin & plugAll) | `UpperTheory.EveryCharacter` | [Development/AutomorphicArithmetic/CharacterBoxes/EveryCharacter.lean#L8](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/CharacterBoxes/EveryCharacter.lean#L8) |
-| 2 | `every_character_of_lit_vwin` | Theta-Correspondence, Covolume & Literature Package Synthesis | `UpperTheory.LiteratureTheorems.every_character_of_literature_of_vWin` | [Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/EveryCharacterOfLiteratureOfVWin.lean#L1500](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/EveryCharacterOfLiteratureOfVWin.lean#L1500) |
-| 2 | `row_src` | Strong Local-Global Galois Compatibility from Theta Parseval | `galoisLocalGlobalStrong_recParameter` | [Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean#L973](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean#L973) |
-| 2 | `vwin_of_row` | Modularity Window Bridge (VwinOfRow) | `UpperTheory.One.vwin_of_row` | [Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/ThresholdArguments/DenseThresholdCases/VwinOfRow.lean#L1644](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/ThresholdArguments/DenseThresholdCases/VwinOfRow.lean#L1644) |
-| 2 | `top_main_zj` | Automorphic, Galois & CM Inputs Assembly (TopMainZj) | `UpperTheory.One.Join.automorphic_window_of_inputs` | [Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/ThresholdArguments/DenseThresholdCases/VwinOfRow.lean#L1627](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/ThresholdArguments/DenseThresholdCases/VwinOfRow.lean#L1627) |
-| 2 | `window_bound_lit` | Descent-Vanishing Patching Reduction for VWin | `v_window_of_automorphy_csd_ss_mono_odd` | [Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/ThresholdArguments/DenseThresholdCases/VwinOfRow.lean#L1553](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/ThresholdArguments/DenseThresholdCases/VwinOfRow.lean#L1553) |
-| 2 | `top_covol_slim2_use` | Arakelov Self-Intersection & Covolume Bridge (CovolX) | `topCovolSlim2_use_alt_alt` | [Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/TopCovolSlim2Use.lean#L957](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/TopCovolSlim2Use.lean#L957) |
-| 2 | `covolume_of_slim` | Covolume Lower Bound from Slimness & Height Theorems | `covolX_of_lift_bounds_and_coreLe` | [Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/TopCovolG.lean#L904](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/TopCovolG.lean#L904) |
-| 2 | `small_class_cor_gk` | Small-Class-Number Selmer Length Growth Bound over Q(sqrt(-3)) | `UpperTheory.V.U3.corGK` | [Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/ThresholdArguments/DenseThresholdCases/LinkedUnlE.lean#L1196](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/ThresholdArguments/DenseThresholdCases/LinkedUnlE.lean#L1196) |
-| 3 | `top_des_win` | Windowed Chebyshev Inequality from Design Choices (topDesWin) | `topDesWin` | [Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/TopShape.lean#L177](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/TopShape.lean#L177) |
-| 3 | `top_win_landau` | Windowed Landau Nonvanishing Criterion (zeroFreeOn_of_tiedWin_cyc) | `zeroFreeOn_of_tiedWin_cyc` | [Formalism/SharpRestriction/RamificationFrobenius/TotientGaloisClasses/TopWin.lean#L103](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Formalism/SharpRestriction/RamificationFrobenius/TotientGaloisClasses/TopWin.lean#L103) |
-| 3 | `geom_real_weight_one` | Weight-One Geometric Realization (Crystalline Towers & Kodaira-Spencer) | `geometric_realization_of_weight_one` | [Development/AutomorphicArithmetic/Foundations/GaloisRepresentations/IntegralStructures/GeometricFlagBases/GeometricRealizationOfWeightOne.lean#L1247](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/Foundations/GaloisRepresentations/IntegralStructures/GeometricFlagBases/GeometricRealizationOfWeightOne.lean#L1247) |
-| 3 | `lefschetz_correspondence` | Holomorphic Lefschetz Fixed-Point Formula for Finite Etale Correspondences | `UpperTheory.Cb.lefschetz_fixedPoint_finite_etale_correspondence` | [Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean#L826](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean#L826) |
-| 3 | `t_lift_k` | Theta-Kernel Parseval Lift & Nonvanishing (tLift_holds_k) | `tLift_holds_k` | [Development/AutomorphicArithmetic/Foundations/GaloisRepresentations/ThetaParseval/ThetaKernels/TPGHolds.lean#L1577](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/Foundations/GaloisRepresentations/ThetaParseval/ThetaKernels/TPGHolds.lean#L1577) |
-| 3 | `rec_t_exists` | Local Langlands Correspondence for GL_n with Tame Inertia Types | `UpperTheory.Zero.LLC.recTExists` | [Development/AutomorphicArithmetic/Foundations/LocalLanglands/LocalCentralUnits/RecTExists.lean#L1398](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/Foundations/LocalLanglands/LocalCentralUnits/RecTExists.lean#L1398) |
-| 3 | `u3_count_i` | Unitary U(3) Selmer Growth Bound (CorGK → CountI) | `UpperTheory.V.U3.countI` | [Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/ThresholdArguments/DenseThresholdCases/LinkedUnlE.lean#L1411](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/ThresholdArguments/DenseThresholdCases/LinkedUnlE.lean#L1411) |
-| 3 | `zeta_ur` | Kato Euler System & Smoothed Zeta-Class Hodge-Tate Law | `zetaUr` | [Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/KatoQuadraticCharacters/UnramifiedZeta/ZetaUr.lean#L1738](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/KatoQuadraticCharacters/UnramifiedZeta/ZetaUr.lean#L1738) |
-| 3 | `good_tower_volume` | Good Root-Tower Existence & Arakelov Volume Theorem | `good_tower_volume_theorem_bis` | [Development/WeilBound/CoreStatements/AutomorphicKernels/MoriwakiBigness/HilbertSamuelApplications/GoodTowerVolumeTheoremBis.lean#L1350](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/WeilBound/CoreStatements/AutomorphicKernels/MoriwakiBigness/HilbertSamuelApplications/GoodTowerVolumeTheoremBis.lean#L1350) |
-| 3 | `moriwaki_big` | Moriwaki Arithmetic Bigness & Hilbert-Samuel Volume Chain | `moriwakiBig_outright` | [Development/WeilBound/CoreStatements/AutomorphicKernels/MoriwakiBigness/MoriwakiBigTheorem/Outright.lean#L1707](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/WeilBound/CoreStatements/AutomorphicKernels/MoriwakiBigness/MoriwakiBigTheorem/Outright.lean#L1707) |
-| 3 | `hilbert_eis_weight_one` | Weight-One Hilbert Eisenstein Series Construction | `UpperTheory.V.Published.hilbert_eisenstein_weight_one_holds` | [PositivityTheory/AutomorphicForms/PublishedInputs/HilbertEisenstein/HilbertEisensteinWeightOneHolds.lean#L1657](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/PositivityTheory/AutomorphicForms/PublishedInputs/HilbertEisenstein/HilbertEisensteinWeightOneHolds.lean#L1657) |
-| 3 | `discrete_series_inf_char` | Capelli Infinitesimal Character of U(p, q) Discrete Series | `discrete_series_infinitesimal_character` | [CompanionTheory/HarishChandraModules/LowKTypeMultiplicity/DiscreteSeriesCharacters/DiscreteSeriesInfinitesimalCharacter.lean#L1794](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/CompanionTheory/HarishChandraModules/LowKTypeMultiplicity/DiscreteSeriesCharacters/DiscreteSeriesInfinitesimalCharacter.lean#L1794) |
-| 4 | `uniformisation_conclusion` | PEL Shimura Toroidal Compactification & Boundary Uniformisation | `PartI` | [ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/BirationalGeometry/ToroidalCompactification/UniformisationConclusion.lean#L228](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/BirationalGeometry/ToroidalCompactification/UniformisationConclusion.lean#L228) |
-| 4 | `unif_uniq_st` | Uniqueness of Mumford Semiabelian Uniformisation | `UnifUniqSt` | [ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/ExtensionDescent/UnifUniqSt.lean#L21](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/ExtensionDescent/UnifUniqSt.lean#L21) |
-| 4 | `global_sections_laws` | 24-Law Contract for Polarized Abelian Schemes | `Laws` | [ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/ExtensionDescent/GlobalSectionsRankAlgClosed.lean#L194](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/ExtensionDescent/GlobalSectionsRankAlgClosed.lean#L194) |
-| 4 | `split_torus_aff` | Split Tori & Semiabelian Torsion Primitives (Critical Spine Base) | `splitTorusAff` | [ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/SemiabelianSchemes/SplitTori/SplitTorusAff.lean#L25](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/SemiabelianSchemes/SplitTori/SplitTorusAff.lean#L25) |
-| 4 | `etale_finiteness` | Finiteness of Twisted Etale Cohomology Over Fields | `H0TwistOverClosedField` | [Development/EtaleCohomology/EtaleSheaves/H0TwistOverClosedField.lean#L71](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/EtaleCohomology/EtaleSheaves/H0TwistOverClosedField.lean#L71) |
-| 4 | `resolution_char_zero` | Functorial Resolution of Singularities in Characteristic Zero | `resolutionCharZero` | [Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/EveryCharacterOfLiteratureOfVWin.lean#L789](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/EveryCharacterOfLiteratureOfVWin.lean#L789) |
-| 4 | `poitou_tate_gs` | Poitou-Tate Nine-Term Exact Sequence & Sha Duality | `poitouTate_nineTerm_gs` | [GroundTheory/ProfiniteCohomology/PoitouTate/PoitouTateNineTermGs.lean#L1499](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/GroundTheory/ProfiniteCohomology/PoitouTate/PoitouTateNineTermGs.lean#L1499) |
-| 4 | `multiplicity_one` | Whittaker Multiplicity One on GL_n(A_K) | `eq_zero_of_whittaker_eq_zero` | [GroundTheory/AutomorphicForms/MultiplicityOne/Injective.lean#L82](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/GroundTheory/AutomorphicForms/MultiplicityOne/Injective.lean#L82) |
-| 4 | `kernels_lattice` | Arakelov Hermitian Vector Bundles & Bost-Zhang Slope Inequalities | `HermLattice` | [GroundTheory/HeightsAndTheta/Heights/KernelsLattice.lean#L32](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/GroundTheory/HeightsAndTheta/Heights/KernelsLattice.lean#L32) |
-| 4 | `pi_vec_ex` | Rapid Decay & L² Moments of Compactly Supported Cusp-Form Twists | `piVecEx_holds` | [Development/DiscreteGroups/PiInvariants/CompactSupportTwists/PiVecExHolds.lean#L59](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/DiscreteGroups/PiInvariants/CompactSupportTwists/PiVecExHolds.lean#L59) |
-| 4 | `loc_coh_bk` | Local Bloch-Kato Orthogonality & Tate Duality Core | `bkACore` | [Formalism/SharpRestriction/LevelLetterCocycles/LocCoh.lean#L195](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Formalism/SharpRestriction/LevelLetterCocycles/LocCoh.lean#L195) |
-| 4 | `rho_det_d7` | Master Arithmetic-Automorphic Coordination Package (D7) | `D7` | [Formalism/LocalRingCardinality/RhoDetPrimeEqMuTildeMulChiPow.lean#L108](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Formalism/LocalRingCardinality/RhoDetPrimeEqMuTildeMulChiPow.lean#L108) |
+| 0 | `main_export` | Main Theorems (RH, Half-Plane & GRH) | `riemannHypothesis` | [Main.lean#L5](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Main.lean#L5) |
+| 0 | `statements_spec` | Standalone Target Theorem Statements | `RiemannZetaZerosOnLine` | [Statements.lean#L3](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Statements.lean#L3) |
+| 1 | `new_main_reflection` | Functional-Equation Reflection (`s ↔ 1 − s`) | `New.zeros_on_line` | [New/Main.lean#L28](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Main.lean#L28) |
+| 1 | `one_sided_bound` | One-Sided Prime Remainder Bound & Half-Plane GRH (`New.grh`) | `grh` | [New/Reduction/OneSidedBound.lean#L239](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Reduction/OneSidedBound.lean#L239) |
+| 2 | `main_inequality` | The Main Inequality (`star_inequality`) | `star_inequality` | [New/Reduction/MainInequality.lean#L87](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Reduction/MainInequality.lean#L87) |
+| 2 | `short_and_enough` | Theorems A & B: Short Forms & Enough Translates | `enough_forms` | [New/Reduction/ShortAndEnough.lean#L448](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Reduction/ShortAndEnough.lean#L448) |
+| 2 | `long_forms_thm_c` | Theorem C: Integral Forms Are Long (`integral_forms_long`) | `integral_forms_long` | [New/Determinant/Twist/LongForms.lean#L214](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Determinant/Twist/LongForms.lean#L214) |
+| 2 | `fit_twists_exist` | Existence of Regular Families of `m`-Fold Twists | `New.exists_isRegularFamily` | [New/Congruences/FitTwistsExist.lean#L517](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Congruences/FitTwistsExist.lean#L517) |
+| 2 | `spanning_theorem` | Second-Moment Spanning Theorem (`isSpread_goodPoincare`) | `isSpread_goodPoincare` | [New/Spanning/SecondMoment/SpanningTheorem.lean#L339](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Spanning/SecondMoment/SpanningTheorem.lean#L339) |
+| 2 | `eventually_exists_data` | Existence of Admissible Data at Large Scales | `eventually_exists_data` | [New/Reduction/Data/Existence.lean#L898](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Reduction/Data/Existence.lean#L898) |
+| 3 | `criterion_zero_free` | One-Sided Landau Criterion for Zero-Free Half-Plane | `New.LFunction_ne_zero_of_primeRemainder_le` | [New/Reduction/Zeros/Criterion.lean#L37](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Reduction/Zeros/Criterion.lean#L37) |
+| 3 | `pnt_remainder` | Prime Number Theorem Bound for `R_q` at Cut-Off `x₁` | `eventually_abs_primeRemainder_le` | [New/Reduction/Zeros/PrimeNumberTheorem.lean#L217](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Reduction/Zeros/PrimeNumberTheorem.lean#L217) |
+| 3 | `twisted_lattice_product` | Twisted Lattice Product Formula (`covolume_add_index_nonneg`) | `covolume_add_index_nonneg` | [New/Reduction/Lattices/TwistedLattice.lean#L477](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Reduction/Lattices/TwistedLattice.lean#L477) |
+| 3 | `seesaw_identity` | Iterated Seesaw Identity (`seesaw_identity`) | `seesaw_identity` | [New/UpperBound/Seesaw/SeesawIdentity.lean#L624](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/UpperBound/Seesaw/SeesawIdentity.lean#L624) |
+| 3 | `local_divisibility` | Prime-by-Prime Divisibility of the Composite Lift | `exists_err_gaugeLe_compositeLift` | [New/UpperBound/Divisibility/LocalDivisibility.lean#L494](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/UpperBound/Divisibility/LocalDivisibility.lean#L494) |
+| 3 | `archimedean_size` | Archimedean Size of the Composite Lift | `weylNormSq_compositeLift_le` | [New/UpperBound/Size/ArchimedeanSize.lean#L436](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/UpperBound/Size/ArchimedeanSize.lean#L436) |
+| 3 | `elementary_divisors` | Elementary Divisors of Edge Hecke Operators | `elementary_divisors` | [New/UpperBound/ElementaryDivisors/ElementaryDivisorTheorem.lean#L1166](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/UpperBound/ElementaryDivisors/ElementaryDivisorTheorem.lean#L1166) |
+| 3 | `derivatives_sharpness` | Sharpness of the Theta-Derivative Valuation Bound | `exists_rpow_neg_localPrimeSumTotal_le_norm_coeff` | [New/Derivatives/Sharpness/BoundAttained.lean#L381](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Derivatives/Sharpness/BoundAttained.lean#L381) |
+| 3 | `derivatives_divisibility` | Divisibility of Theta Jets Along Products of Minors | `norm_jet_minorProd_le_of_hasNormalForm` | [New/Derivatives/Divisibility/Count.lean#L707](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Derivatives/Divisibility/Count.lean#L707) |
+| 3 | `second_moment_unfolding` | Second-Moment Unfolding & Near-Isometry (`Moments`) | `HasAmplitudeBlocks.isNearIsometry_piTensorElem_comp` | [New/Spanning/Unfolding/Moments.lean#L1230](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Spanning/Unfolding/Moments.lean#L1230) |
+| 3 | `remaining_terms_sum` | Bound on Remaining Orbit Terms in Second Moment | `secondMoment_remainingTerms_le` | [New/Spanning/RemainingTerms/Sum.lean#L682](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Spanning/RemainingTerms/Sum.lean#L682) |
+| 3 | `main_term_energy` | Main-Term Kloosterman Sieve Energy Estimate | `linkSecondMoment_isOpenElement_le` | [New/Spanning/MainTerm/EnergyEstimate.lean#L631](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Spanning/MainTerm/EnergyEstimate.lean#L631) |
+| 3 | `discrete_series_periods` | Discrete-Series Period Lower Bounds by Laplace's Method | `IsLaplaceDatum.laplace_method` | [New/Appendix/DiscreteSeries/Periods.lean#L493](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Appendix/DiscreteSeries/Periods.lean#L493) |
+| 3 | `auxiliary_spanning_forms` | Spanning Auxiliary Forms on the Two-Grid Last Path | `exists_span_short_lifts_eq_top` | [New/Determinant/AuxiliaryForms/SpanningForms.lean#L773](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Determinant/AuxiliaryForms/SpanningForms.lean#L773) |
+| 3 | `norm_of_chain` | Factorization of the Chain Gram Determinant `Z(ξ)` | `exists_chainDeterminant_pos_and_div_chainDeterminant_one_eq` | [New/Determinant/Chain/NormOfChain.lean#L419](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Determinant/Chain/NormOfChain.lean#L419) |
+| 3 | `exchange_identity` | Exchange Identity for Matched Theta Integrals | `exchange_identity` | [New/Determinant/Exchange/TheoremForPartners.lean#L1051](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Determinant/Exchange/TheoremForPartners.lean#L1051) |
+| 3 | `lift_volume_height` | Single-Lift Determinant Height Bound (`Z_j(1)/Z_j(ξ^j)`) | `heightLe_liftDeterminant_ratio` | [New/OneLift/LiftVolumeHeight.lean#L729](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/OneLift/LiftVolumeHeight.lean#L729) |
+| 3 | `twisted_value_heights` | Heights of Twisted-to-Untwisted Hecke L-Values | `heightLe_inv_heckeValueProd_div` | [New/OneLift/HeckeValues/TwistedValueHeights.lean#L1066](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/OneLift/HeckeValues/TwistedValueHeights.lean#L1066) |
+| 3 | `denominator_bound_ribet` | First-Order Ribet Method & Clearing Denominator Bound | `denominatorLe_clearingBound` | [New/Congruences/FirstOrder/DenominatorBound.lean#L1321](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Congruences/FirstOrder/DenominatorBound.lean#L1321) |
+| 3 | `selmer_twisting` | Anticyclotomic Twisting Theorem for Selmer Groups | `exists_mFoldTwist_hasDivisibleSelmerLengthLe` | [New/Congruences/Selmer/TwistingTheorem.lean#L370](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Congruences/Selmer/TwistingTheorem.lean#L370) |
+| 3 | `crystalline_defect` | Local Crystalline Defect Bound Above `ℓ` | `New.Selmer.summand_defect_le_at_place` | [New/Congruences/LocalLoss/CrystallineDefect.lean#L647](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Congruences/LocalLoss/CrystallineDefect.lean#L647) |
+| 3 | `kisin_cup_orthogonality` | Crystalline Extension Lifting & Kummer Chart Orthogonality | `hasCupExponent_of_isTameType` | [New/Congruences/Lifting/CupOrthogonalityBounds.lean#L532](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Congruences/Lifting/CupOrthogonalityBounds.lean#L532) |
+| 4 | `lib_galois_all_ranks` | Attached Galois Representations in Every Positive Rank | `Isotypic.attached_galRep` | [Lib/GaloisRep/Main/AllRanks.lean#L792](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/GaloisRep/Main/AllRanks.lean#L792) |
+| 4 | `lib_local_global_avatar` | Local-Global Compatibility for Hecke Character Avatars | `New.GaloisRep.avatarCompatAt_of_hasPrimitiveRoot5040` | [Lib/ClassField/Avatar/LocalGlobalCompatibility.lean#L191](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/ClassField/Avatar/LocalGlobalCompatibility.lean#L191) |
+| 4 | `lib_artin_reciprocity` | Global Artin Reciprocity & Sign Law | `artin_reciprocity` | [Lib/ClassField/Global/ArtinReciprocity.lean#L453](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/ClassField/Global/ArtinReciprocity.lean#L453) |
+| 4 | `lib_greenberg_wiles` | Greenberg–Wiles Cocycle Counting Without Local Duality | `New.IsLargeLevel.SplitPlaces.hasFewCocycles_of_central` | [Lib/ClassField/GreenbergWiles/CocycleCounts.lean#L707](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/ClassField/GreenbergWiles/CocycleCounts.lean#L707) |
+| 4 | `lib_odd_sha` | Uniform Bound on Odd-Part Ш Over Cyclotomic Fields | `New.exists_length_shaOdd_le` | [Lib/Cyclotomic/OddSha.lean#L645](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/Cyclotomic/OddSha.lean#L645) |
+| 4 | `lib_shimura_tower` | Integral Kuga–Sato / PEL Shimura Models & Congruence Relation | `New.Variety.exists_model` | [Lib/Shimura/IntegralModel/TowerExistence.lean#L388](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/Shimura/IntegralModel/TowerExistence.lean#L388) |
+| 4 | `lib_shimura_eigenspace` | Shimura Eigenquotients & Galois Representations | `New.Variety.Model.exists_galois_rep` | [Lib/Shimura/Eigenspace.lean#L689](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/Shimura/Eigenspace.lean#L689) |
+| 4 | `lib_padic_comparison` | p-adic Crystalline & Hodge–Tate Comparison Theorems | `ellAdicCohom.isCrystalline_and_linearFrob_rel` | [Lib/PadicComparison/CrystallineFrobenius.lean#L713](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/PadicComparison/CrystallineFrobenius.lean#L713) |
+| 4 | `lib_woods_hole` | Woods Hole Fixed-Point Formula in Hodge Cohomology | `New.Variety.ellAdicCohom.woods_hole` | [Lib/Cohomology/WoodsHole.lean#L214](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/Cohomology/WoodsHole.lean#L214) |
+| 4 | `lib_kisin_frame` | Breuil–Kisin Module Frame Theorem | `mem_kisinModule_iff_crysForms` | [Lib/PadicHodge/Kisin/FrameTheorem.lean#L942](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/PadicHodge/Kisin/FrameTheorem.lean#L942) |
+| 4 | `lib_trace_limit` | Limits of Crystalline Representations via Trace Limits | `local_clauses_of_trace_limit` | [Lib/PadicHodge/Limit/TraceLimit.lean#L894](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/PadicHodge/Limit/TraceLimit.lean#L894) |
+| 4 | `lib_siegel_weil` | Convergent Unitary Siegel–Weil Formula | `New.SiegelWeil.siegel_weil` | [Lib/SiegelWeil/Formula/WeilRange.lean#L757](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/SiegelWeil/Formula/WeilRange.lean#L757) |
+| 4 | `lib_rallis_sharp` | Rallis Inner Product Formula for Sharp Data | `vacuumSum_eq_L_div_eulerProd` | [Lib/SiegelWeil/RallisInner/SharpData.lean#L946](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/SiegelWeil/RallisInner/SharpData.lean#L946) |
+| 4 | `lib_weil_mixed_model` | Adelic Weil Representation & Mixed-Model Slice Unfolding | `IsAdapted.slice_omega_eq_integral` | [Lib/Weil/MixedModel/ZeroTerm.lean#L785](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/Weil/MixedModel/ZeroTerm.lean#L785) |
+| 4 | `lib_discrete_series_theta` | Real Discrete Series & Local Theta Correspondence | `exists_bump_integratedRep_eq` | [Lib/DiscreteSeries/Theta/LocalCorrespondence.lean#L734](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/DiscreteSeries/Theta/LocalCorrespondence.lean#L734) |
+| 4 | `lib_trace_comparison` | Simple Trace Formula Comparison Across Real Signatures | `trace_comparison` | [Lib/Adelic/TraceFormula/TraceComparison.lean#L665](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/Adelic/TraceFormula/TraceComparison.lean#L665) |
+| 4 | `lib_chowla_selberg` | Chowla–Selberg Formula for CM Curves | `CMLattice.chowla_selberg` | [Lib/CM/ChowlaSelberg.lean#L696](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/CM/ChowlaSelberg.lean#L696) |
+| 4 | `lib_spherical_chain` | Spherical Chain Lemma for Unitary Representations of `GL_N` | `New.Patching.chain_lemma` | [Lib/LocalGL/SphericalChainLemma.lean#L445](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/LocalGL/SphericalChainLemma.lean#L445) |
+| 4 | `lib_gln_branching` | Integral `GL(n+1) → GL(n)` Branching Maps | `_root_.New.exists_branching_matrix` | [Lib/GLn/Branching/IntegralMap.lean#L472](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/GLn/Branching/IntegralMap.lean#L472) |
 
 </details>
-
----
-
-## Baseline Milestones Merged or Removed in This Version
-
-The following **7** baseline milestones were merged, inlined, or eliminated in `src/` (prerequisite edges were transitively rewired across kept milestones):
-
-- **Stage 0** (`main_theorems_all`): Top-Level Theorem & Selmer Combination
-- **Stage 1** (`main_theorems_critical`): Critical-Line & ℚ(√−3) Arithmetic
-- **Stage 1** (`main_theorems_bridge`): RH & GRH from Half-Plane Nonvanishing
-- **Stage 1** (`crit_line`): Functional-Equation Reflection (Primitive)
-- **Stage 1** (`rh_of_right`): Zeta Reflection via Functional Equation
-- **Stage 2** (`rh_of_every_char`): 208-Input Operator & Covolume Assembly (RiemannHypothesisOfEveryCharacter)
-- **Stage 3** (`final_b_flath`): Unitary Admissibility & Flath Tensor Product Factorization
 

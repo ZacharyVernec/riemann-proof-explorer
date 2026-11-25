@@ -1,0 +1,91 @@
+digraph Depth2MajorArchitecture {
+  graph [
+    label="Riemann Proof — Major Depth-2 Sub-Theory Architecture\nEdge A -> B means A depends on B\nColors: Blue=New | Emerald=Lib | Slate=Root"
+    labelloc=t
+    fontsize=15
+    fontname="Helvetica"
+    rankdir=TB
+    splines=true
+    nodesep=0.38
+    ranksep=0.80
+    bgcolor="#0f172a"
+    fontcolor="#f8fafc"
+    pad=0.40
+  ];
+  node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=10, penwidth=1.8, margin="0.14,0.08"];
+  edge [fontname="Helvetica", fontsize=8];
+
+  _root_ [label="(root)\nH=53", fillcolor="#334155", color="#94a3b8", fontcolor="#ffffff"];
+  New [label="New\nH=52", fillcolor="#1d4ed8", color="#60a5fa", fontcolor="#ffffff"];
+  New_Reduction [label="New/Reduction\nH=51", fillcolor="#1d4ed8", color="#60a5fa", fontcolor="#ffffff"];
+  New_Determinant [label="New/Determinant\nH=49", fillcolor="#1d4ed8", color="#60a5fa", fontcolor="#ffffff"];
+  New_Congruences [label="New/Congruences\nH=48", fillcolor="#1d4ed8", color="#60a5fa", fontcolor="#ffffff"];
+  New_OneLift [label="New/OneLift\nH=47", fillcolor="#1d4ed8", color="#60a5fa", fontcolor="#ffffff"];
+  New_UpperBound [label="New/UpperBound\nH=44", fillcolor="#1d4ed8", color="#60a5fa", fontcolor="#ffffff"];
+  New_Spanning [label="New/Spanning\nH=42", fillcolor="#1d4ed8", color="#60a5fa", fontcolor="#ffffff"];
+  New_Derivatives [label="New/Derivatives\nH=40", fillcolor="#1d4ed8", color="#60a5fa", fontcolor="#ffffff"];
+  Lib_GaloisRep [label="Lib/GaloisRep\nH=36", fillcolor="#047857", color="#34d399", fontcolor="#ffffff"];
+  Lib_SiegelWeil [label="Lib/SiegelWeil\nH=33", fillcolor="#047857", color="#34d399", fontcolor="#ffffff"];
+  Lib_Weil [label="Lib/Weil\nH=31", fillcolor="#047857", color="#34d399", fontcolor="#ffffff"];
+  Lib_ClassField [label="Lib/ClassField\nH=31", fillcolor="#047857", color="#34d399", fontcolor="#ffffff"];
+  Lib_DiscreteSeries [label="Lib/DiscreteSeries\nH=30", fillcolor="#047857", color="#34d399", fontcolor="#ffffff"];
+  Lib_Adelic [label="Lib/Adelic\nH=29", fillcolor="#047857", color="#34d399", fontcolor="#ffffff"];
+  Lib_General [label="Lib/General\nH=28", fillcolor="#047857", color="#34d399", fontcolor="#ffffff"];
+  Lib_Shimura [label="Lib/Shimura\nH=26", fillcolor="#047857", color="#34d399", fontcolor="#ffffff"];
+  Lib_GLn [label="Lib/GLn\nH=26", fillcolor="#047857", color="#34d399", fontcolor="#ffffff"];
+  New_Appendix [label="New/Appendix\nH=25", fillcolor="#1d4ed8", color="#60a5fa", fontcolor="#ffffff"];
+  Lib_PadicComparison [label="Lib/PadicComparison\nH=24", fillcolor="#047857", color="#34d399", fontcolor="#ffffff"];
+  Lib_Cohomology [label="Lib/Cohomology\nH=22", fillcolor="#047857", color="#34d399", fontcolor="#ffffff"];
+  Lib_PadicHodge [label="Lib/PadicHodge\nH=22", fillcolor="#047857", color="#34d399", fontcolor="#ffffff"];
+  Lib_Cyclotomic [label="Lib/Cyclotomic\nH=22", fillcolor="#047857", color="#34d399", fontcolor="#ffffff"];
+  Lib_CM [label="Lib/CM\nH=20", fillcolor="#047857", color="#34d399", fontcolor="#ffffff"];
+  Lib_LocalGL [label="Lib/LocalGL\nH=20", fillcolor="#047857", color="#34d399", fontcolor="#ffffff"];
+  Lib_Analytic [label="Lib/Analytic\nH=10", fillcolor="#047857", color="#34d399", fontcolor="#ffffff"];
+  Lib [label="Lib\nH=1", fillcolor="#047857", color="#34d399", fontcolor="#ffffff"];
+
+  Lib_Shimura -> Lib_General [label=" 30 ", penwidth=2.35, color="#94a3b8", style=solid, fontcolor="#cbd5e1", constraint=true];
+  Lib_Adelic -> Lib_General [label=" 20 ", penwidth=2.17, color="#94a3b8", style=solid, fontcolor="#cbd5e1", constraint=true];
+  Lib_Weil -> Lib_Adelic [label=" 18 ", penwidth=2.12, color="#94a3b8", style=solid, fontcolor="#cbd5e1", constraint=true];
+  New_UpperBound -> Lib_Weil [label=" 18 ", penwidth=2.12, color="#94a3b8", style=solid, fontcolor="#cbd5e1", constraint=true];
+  Lib_DiscreteSeries -> Lib_General [label=" 17 ", penwidth=2.09, color="#94a3b8", style=solid, fontcolor="#cbd5e1", constraint=true];
+  New_Spanning -> Lib_DiscreteSeries [label=" 17 ", penwidth=2.09, color="#94a3b8", style=solid, fontcolor="#cbd5e1", constraint=true];
+  Lib_Weil -> Lib_General [label=" 15 ", penwidth=2.03, color="#94a3b8", style=solid, fontcolor="#cbd5e1", constraint=true];
+  Lib_SiegelWeil -> Lib_Weil [label="", penwidth=2.00, color="#94a3b8", style=solid, fontcolor="#cbd5e1", constraint=true];
+  New_Congruences -> Lib_General [label="", penwidth=2.00, color="#94a3b8", style=solid, fontcolor="#cbd5e1", constraint=true];
+  Lib_General -> Lib_Adelic [label="", penwidth=1.97, color="#f59e0b", style=dashed, fontcolor="#fbbf24", constraint=false];
+  Lib_ClassField -> Lib_General [label="", penwidth=1.93, color="#94a3b8", style=solid, fontcolor="#cbd5e1", constraint=true];
+  Lib_Cohomology -> Lib_General [label="", penwidth=1.93, color="#94a3b8", style=solid, fontcolor="#cbd5e1", constraint=true];
+  Lib_General -> Lib [label="", penwidth=1.93, color="#94a3b8", style=solid, fontcolor="#cbd5e1", constraint=true];
+  Lib_Cohomology -> Lib_PadicComparison [label=" 11 ", penwidth=1.89, color="#64748b", style=dotted, fontcolor="#94a3b8", constraint=true];
+  New_Determinant -> New_OneLift [label=" 11 ", penwidth=1.89, color="#64748b", style=dotted, fontcolor="#94a3b8", constraint=true];
+  New_Congruences -> Lib_GaloisRep [label=" 10 ", penwidth=1.85, color="#64748b", style=dotted, fontcolor="#94a3b8", constraint=true];
+  Lib_GaloisRep -> Lib_General [label=" 9 ", penwidth=1.80, color="#64748b", style=dotted, fontcolor="#94a3b8", constraint=true];
+  Lib_PadicComparison -> Lib_Cohomology [label=" 9 ", penwidth=1.80, color="#f59e0b", style=dashed, fontcolor="#fbbf24", constraint=false];
+  New_OneLift -> New_UpperBound [label=" 9 ", penwidth=1.80, color="#64748b", style=dotted, fontcolor="#94a3b8", constraint=true];
+  Lib_GaloisRep -> Lib_ClassField [label=" 8 ", penwidth=1.75, color="#64748b", style=dotted, fontcolor="#94a3b8", constraint=true];
+  Lib_GaloisRep -> Lib_Shimura [label=" 8 ", penwidth=1.75, color="#64748b", style=dotted, fontcolor="#94a3b8", constraint=true];
+  Lib_CM -> Lib_General [label=" 7 ", penwidth=1.69, color="#64748b", style=dotted, fontcolor="#94a3b8", constraint=true];
+  Lib_LocalGL -> Lib_General [label=" 7 ", penwidth=1.69, color="#64748b", style=dotted, fontcolor="#94a3b8", constraint=true];
+  Lib_PadicHodge -> Lib_General [label=" 7 ", penwidth=1.69, color="#64748b", style=dotted, fontcolor="#94a3b8", constraint=true];
+  New_OneLift -> New_Determinant [label=" 7 ", penwidth=1.69, color="#f59e0b", style=dashed, fontcolor="#fbbf24", constraint=false];
+  Lib_ClassField -> Lib_PadicHodge [label=" 6 ", penwidth=1.62, color="#64748b", style=dotted, fontcolor="#94a3b8", constraint=true];
+  New_Determinant -> Lib_SiegelWeil [label=" 6 ", penwidth=1.62, color="#64748b", style=dotted, fontcolor="#94a3b8", constraint=true];
+  New_Reduction -> Lib_Analytic [label=" 6 ", penwidth=1.62, color="#64748b", style=dotted, fontcolor="#94a3b8", constraint=true];
+  New_UpperBound -> New_Reduction [label=" 6 ", penwidth=1.62, color="#64748b", style=dotted, fontcolor="#94a3b8", constraint=true];
+  Lib_GaloisRep -> Lib_LocalGL [label=" 5 ", penwidth=1.53, color="#64748b", style=dotted, fontcolor="#94a3b8", constraint=true];
+  New_Derivatives -> Lib_General [label=" 5 ", penwidth=1.53, color="#64748b", style=dotted, fontcolor="#94a3b8", constraint=true];
+  New_UpperBound -> Lib_GLn [label=" 5 ", penwidth=1.53, color="#64748b", style=dotted, fontcolor="#94a3b8", constraint=true];
+  Lib_GLn -> Lib_General [label=" 4 ", penwidth=1.43, color="#64748b", style=dotted, fontcolor="#94a3b8", constraint=true];
+  Lib_General -> Lib_CM [label=" 4 ", penwidth=1.43, color="#f59e0b", style=dashed, fontcolor="#fbbf24", constraint=false];
+  New_Appendix -> Lib_General [label=" 4 ", penwidth=1.43, color="#64748b", style=dotted, fontcolor="#94a3b8", constraint=true];
+  New_UpperBound -> New_Derivatives [label=" 4 ", penwidth=1.43, color="#64748b", style=dotted, fontcolor="#94a3b8", constraint=true];
+  Lib_Cyclotomic -> Lib_ClassField [label=" 3 ", penwidth=1.30, color="#64748b", style=dotted, fontcolor="#94a3b8", constraint=true];
+  New_UpperBound -> New_Spanning [label=" 3 ", penwidth=1.30, color="#f59e0b", style=dashed, fontcolor="#fbbf24", constraint=false];
+  New_Congruences -> Lib_Cyclotomic [label=" 2 ", penwidth=1.12, color="#64748b", style=dotted, fontcolor="#94a3b8", constraint=true];
+  New_Determinant -> New_Appendix [label=" 2 ", penwidth=1.12, color="#64748b", style=dotted, fontcolor="#94a3b8", constraint=true];
+  _root_ -> New [label=" 1 ", penwidth=2.20, color="#a5b4fc", style=bold, fontcolor="#c7d2fe", constraint=true];
+  Lib_Analytic -> Lib_General [label=" 1 ", penwidth=0.90, color="#64748b", style=dotted, fontcolor="#94a3b8", constraint=true];
+  New -> New_Reduction [label=" 1 ", penwidth=0.90, color="#64748b", style=dotted, fontcolor="#94a3b8", constraint=true];
+  New_Determinant -> New_Congruences [label=" 1 ", penwidth=0.90, color="#64748b", style=dotted, fontcolor="#94a3b8", constraint=true];
+  New_Reduction -> _root_ [label=" 1 ", penwidth=0.90, color="#64748b", style=dotted, fontcolor="#94a3b8", constraint=true];
+}

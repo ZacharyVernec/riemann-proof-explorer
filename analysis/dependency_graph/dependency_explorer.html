@@ -676,15 +676,18 @@
     if (nCount === 0) return;
 
     // Bucket nodes into clean layers
-    // Height mode: group by quantized max_height descending (top = 202, bottom = 0)
+    // Height mode: group by quantized max_height descending (top = maxH, bottom = 0)
     // Dist mode: group by min_dist ascending (top = 0, bottom = max)
+    const maxH = Math.max(1, ...nodes.map((x) => x.max_height || 0));
+    const hStep = Math.max(2, Math.round(maxH / 14));
+    const apexCut = maxH - Math.max(2, Math.round(maxH * 0.035));
     const buckets = new Map();
     for (const nd of nodes) {
       let layerKey;
       if (state.layoutMode === "height") {
-        if (nd.max_height >= 195) layerKey = -nd.max_height; // keep Main/Supplements/Dev separated cleanly
+        if (nd.max_height >= apexCut) layerKey = -nd.max_height; // keep Main and apex layers separated cleanly
         else if (nd.max_height === 0) layerKey = 1000;
-        else layerKey = -Math.round(nd.max_height / 14) * 14;
+        else layerKey = -Math.round(nd.max_height / hStep) * hStep;
       } else {
         layerKey = nd.min_dist;
       }
@@ -1719,7 +1722,9 @@
       if (!nodesById[id]) state.treeOpenIds.delete(id);
     }
     if (!state.selectedId || !nodesById[state.selectedId]) {
-      state.selectedId = nodesById["L1:Development"] ? "L1:Development" : (rootIds[0] || null);
+      state.selectedId = nodesById["L1:Development"]
+        ? "L1:Development"
+        : (nodesById["L1:New"] ? "L1:New" : (rootIds[0] || null));
     }
 
     document.getElementById("btn-l1").textContent = `Level 1 (${rootIds.length})`;

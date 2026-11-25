@@ -1,0 +1,978 @@
+{
+  "node_count": 803,
+  "edge_count": 1733,
+  "num_layers": 54,
+  "layer_dy": 4.0,
+  "min_intra_layer_gap": 1.0,
+  "bounds": {
+    "xmin": -16.02676010131836,
+    "xmax": 16.02676010131836,
+    "ymin": 0.0,
+    "ymax": 212.0
+  },
+  "aspect_ratio": 0.151,
+  "layout_metrics": {
+    "is_dag": true,
+    "y_iters_requested": 25,
+    "y_iters_run": 7,
+    "x_sweeps_run": 16,
+    "init_avg_y_span": 4.241,
+    "final_avg_y_span": 3.825,
+    "span_eq_1_edges": 807,
+    "span_le_5_edges": 1363,
+    "init_avg_x_span": 4.462,
+    "final_avg_x_span": 2.564,
+    "layer_widths": {
+      "min": 1,
+      "median": 16,
+      "p95": 28,
+      "max": 30
+    }
+  },
+  "domains": [
+    {
+      "name": "Lib",
+      "color": "#2563eb",
+      "modules": 495,
+      "min_layer": 15,
+      "median_layer": 36,
+      "max_layer": 53,
+      "mean_x": -2.74
+    },
+    {
+      "name": "New",
+      "color": "#ea580c",
+      "modules": 306,
+      "min_layer": 1,
+      "median_layer": 21,
+      "max_layer": 49,
+      "mean_x": 2.2
+    },
+    {
+      "name": "(root)",
+      "color": "#ca8a04",
+      "modules": 2,
+      "min_layer": 0,
+      "median_layer": 3,
+      "max_layer": 3,
+      "mean_x": -0.94
+    }
+  ],
+  "roots": [
+    {
+      "module": "Main",
+      "rel_path": "Main.lean",
+      "layer": 0,
+      "in_degree": 0,
+      "out_degree": 1
+    }
+  ],
+  "top_in_degree_hubs": [
+    {
+      "module": "Lib.Base",
+      "rel_path": "Lib/Base.lean",
+      "top_dir": "Lib",
+      "layer": 52,
+      "in_degree": 20,
+      "out_degree": 1
+    },
+    {
+      "module": "Lib.General.NumberTheory.PadicLimitsValuation",
+      "rel_path": "Lib/General/NumberTheory/PadicLimitsValuation.lean",
+      "top_dir": "Lib",
+      "layer": 36,
+      "in_degree": 11,
+      "out_degree": 3
+    },
+    {
+      "module": "Lib.Shimura.Uniformisation.HolomorphicFamilies",
+      "rel_path": "Lib/Shimura/Uniformisation/HolomorphicFamilies.lean",
+      "top_dir": "Lib",
+      "layer": 42,
+      "in_degree": 11,
+      "out_degree": 5
+    },
+    {
+      "module": "Lib.Cohomology.Etale.Basic",
+      "rel_path": "Lib/Cohomology/Etale/Basic.lean",
+      "top_dir": "Lib",
+      "layer": 50,
+      "in_degree": 10,
+      "out_degree": 1
+    },
+    {
+      "module": "Lib.General.Groups.CongruenceSubgroups",
+      "rel_path": "Lib/General/Groups/CongruenceSubgroups.lean",
+      "top_dir": "Lib",
+      "layer": 51,
+      "in_degree": 10,
+      "out_degree": 1
+    },
+    {
+      "module": "Lib.General.Analysis.HolomorphicIntegrals",
+      "rel_path": "Lib/General/Analysis/HolomorphicIntegrals.lean",
+      "top_dir": "Lib",
+      "layer": 49,
+      "in_degree": 9,
+      "out_degree": 4
+    },
+    {
+      "module": "Lib.General.LinearAlgebra.BlockEmbeddings",
+      "rel_path": "Lib/General/LinearAlgebra/BlockEmbeddings.lean",
+      "top_dir": "Lib",
+      "layer": 30,
+      "in_degree": 9,
+      "out_degree": 2
+    },
+    {
+      "module": "Lib.General.LinearAlgebra.Eigenvalues",
+      "rel_path": "Lib/General/LinearAlgebra/Eigenvalues.lean",
+      "top_dir": "Lib",
+      "layer": 41,
+      "in_degree": 9,
+      "out_degree": 1
+    },
+    {
+      "module": "New.UpperBound.Objects.Rows",
+      "rel_path": "New/UpperBound/Objects/Rows.lean",
+      "top_dir": "New",
+      "layer": 16,
+      "in_degree": 9,
+      "out_degree": 4
+    },
+    {
+      "module": "Lib.Adelic.Unitary.Defs",
+      "rel_path": "Lib/Adelic/Unitary/Defs.lean",
+      "top_dir": "Lib",
+      "layer": 48,
+      "in_degree": 8,
+      "out_degree": 3
+    },
+    {
+      "module": "Lib.Adelic.Witt.WittTheorem",
+      "rel_path": "Lib/Adelic/Witt/WittTheorem.lean",
+      "top_dir": "Lib",
+      "layer": 43,
+      "in_degree": 8,
+      "out_degree": 2
+    },
+    {
+      "module": "Lib.PadicComparison.Descent.TestCategory",
+      "rel_path": "Lib/PadicComparison/Descent/TestCategory.lean",
+      "top_dir": "Lib",
+      "layer": 46,
+      "in_degree": 8,
+      "out_degree": 2
+    },
+    {
+      "module": "Lib.Shimura.HeckeTower.HeckeData",
+      "rel_path": "Lib/Shimura/HeckeTower/HeckeData.lean",
+      "top_dir": "Lib",
+      "layer": 39,
+      "in_degree": 8,
+      "out_degree": 3
+    },
+    {
+      "module": "Lib.Weil.Unramified.HeckeGL",
+      "rel_path": "Lib/Weil/Unramified/HeckeGL.lean",
+      "top_dir": "Lib",
+      "layer": 40,
+      "in_degree": 8,
+      "out_degree": 2
+    },
+    {
+      "module": "Lib.Adelic.Adeles.LocalFactors",
+      "rel_path": "Lib/Adelic/Adeles/LocalFactors.lean",
+      "top_dir": "Lib",
+      "layer": 38,
+      "in_degree": 7,
+      "out_degree": 3
+    }
+  ],
+  "collapsed": {
+    "node_count": 324,
+    "active_node_count": 308,
+    "supernode_count": 16,
+    "collapsed_module_count": 495,
+    "collapsed_pct": 61.64,
+    "frontier_module_count": 151,
+    "interior_module_count": 344,
+    "edge_count": 709,
+    "active_edge_count": 526,
+    "super_edge_count": 183,
+    "raw_super_edge_count": 208,
+    "max_edge_weight": 3,
+    "weighted_edges_ge_2": 21,
+    "weight_histogram": {
+      "1": 688,
+      "2": 17,
+      "3": 4
+    },
+    "num_layers": 30,
+    "layer_dy": 4.0,
+    "min_intra_layer_gap": 1.0,
+    "bounds": {
+      "xmin": -14.0,
+      "xmax": 14.0,
+      "ymin": 0.0,
+      "ymax": 116.0
+    },
+    "aspect_ratio": 0.241,
+    "dead_edges_pruned": 0,
+    "layout_metrics": {
+      "is_dag": true,
+      "y_iters_requested": 25,
+      "y_iters_run": 5,
+      "x_sweeps_run": 16,
+      "init_avg_y_span": 4.072,
+      "final_avg_y_span": 3.911,
+      "span_eq_1_edges": 330,
+      "span_le_5_edges": 570,
+      "init_avg_x_span": 3.543,
+      "final_avg_x_span": 2.374,
+      "layer_widths": {
+        "min": 1,
+        "median": 11,
+        "p95": 24,
+        "max": 29
+      }
+    },
+    "domain_breakdown": [
+      {
+        "name": "Lib",
+        "total_modules": 495,
+        "active_modules": 0,
+        "collapsed_modules": 495,
+        "collapsed_pct": 100.0
+      },
+      {
+        "name": "New",
+        "total_modules": 306,
+        "active_modules": 306,
+        "collapsed_modules": 0,
+        "collapsed_pct": 0.0
+      },
+      {
+        "name": "(root)",
+        "total_modules": 2,
+        "active_modules": 2,
+        "collapsed_modules": 0,
+        "collapsed_pct": 0.0
+      }
+    ],
+    "top_supernodes": [
+      {
+        "title": "Lib: Galois Representations",
+        "inventory_key": "lib_010",
+        "owned_modules": 119,
+        "cone_modules": 240,
+        "frontier_modules": 7,
+        "in_edges": 8,
+        "raw_in_edges": 10,
+        "dominant_domain": "Lib",
+        "layer": 28
+      },
+      {
+        "title": "Lib: Weil Representation & Theta Lifts",
+        "inventory_key": "lib_017",
+        "owned_modules": 67,
+        "cone_modules": 135,
+        "frontier_modules": 30,
+        "in_edges": 30,
+        "raw_in_edges": 34,
+        "dominant_domain": "Lib",
+        "layer": 29
+      },
+      {
+        "title": "Lib: General Algebra, Analysis & Geometry",
+        "inventory_key": "lib_011",
+        "owned_modules": 57,
+        "cone_modules": 143,
+        "frontier_modules": 31,
+        "in_edges": 44,
+        "raw_in_edges": 49,
+        "dominant_domain": "Lib",
+        "layer": 29
+      },
+      {
+        "title": "Lib: Class Field Theory & Cohomology",
+        "inventory_key": "lib_005",
+        "owned_modules": 53,
+        "cone_modules": 132,
+        "frontier_modules": 14,
+        "in_edges": 15,
+        "raw_in_edges": 20,
+        "dominant_domain": "Lib",
+        "layer": 29
+      },
+      {
+        "title": "Lib: Adelic Groups & Trace Formula",
+        "inventory_key": "lib_002",
+        "owned_modules": 51,
+        "cone_modules": 113,
+        "frontier_modules": 14,
+        "in_edges": 16,
+        "raw_in_edges": 17,
+        "dominant_domain": "Lib",
+        "layer": 29
+      },
+      {
+        "title": "Lib: Discrete Series of U(p,q)",
+        "inventory_key": "lib_008",
+        "owned_modules": 37,
+        "cone_modules": 81,
+        "frontier_modules": 17,
+        "in_edges": 21,
+        "raw_in_edges": 26,
+        "dominant_domain": "Lib",
+        "layer": 29
+      },
+      {
+        "title": "Lib: Siegel\u2013Weil & Rallis Formulas",
+        "inventory_key": "lib_016",
+        "owned_modules": 28,
+        "cone_modules": 106,
+        "frontier_modules": 11,
+        "in_edges": 12,
+        "raw_in_edges": 13,
+        "dominant_domain": "Lib",
+        "layer": 29
+      },
+      {
+        "title": "Lib: Shimura & Abelian Varieties",
+        "inventory_key": "lib_015",
+        "owned_modules": 19,
+        "cone_modules": 33,
+        "frontier_modules": 2,
+        "in_edges": 5,
+        "raw_in_edges": 5,
+        "dominant_domain": "Lib",
+        "layer": 28
+      },
+      {
+        "title": "Lib: Complex Multiplication",
+        "inventory_key": "lib_004",
+        "owned_modules": 14,
+        "cone_modules": 34,
+        "frontier_modules": 6,
+        "in_edges": 6,
+        "raw_in_edges": 6,
+        "dominant_domain": "Lib",
+        "layer": 29
+      },
+      {
+        "title": "Lib: p-adic Hodge & Kisin Modules",
+        "inventory_key": "lib_014",
+        "owned_modules": 13,
+        "cone_modules": 40,
+        "frontier_modules": 2,
+        "in_edges": 2,
+        "raw_in_edges": 2,
+        "dominant_domain": "Lib",
+        "layer": 29
+      },
+      {
+        "title": "Lib: Local & Finite GL_n",
+        "inventory_key": "lib_012",
+        "owned_modules": 12,
+        "cone_modules": 26,
+        "frontier_modules": 4,
+        "in_edges": 6,
+        "raw_in_edges": 6,
+        "dominant_domain": "Lib",
+        "layer": 28
+      },
+      {
+        "title": "Lib: Analytic Number Theory & PNT",
+        "inventory_key": "lib_003",
+        "owned_modules": 10,
+        "cone_modules": 10,
+        "frontier_modules": 6,
+        "in_edges": 5,
+        "raw_in_edges": 7,
+        "dominant_domain": "Lib",
+        "layer": 29
+      },
+      {
+        "title": "Lib: GL_n Schur & Branching",
+        "inventory_key": "lib_009",
+        "owned_modules": 8,
+        "cone_modules": 30,
+        "frontier_modules": 4,
+        "in_edges": 7,
+        "raw_in_edges": 7,
+        "dominant_domain": "Lib",
+        "layer": 29
+      },
+      {
+        "title": "Lib: Cyclotomic Fields & Odd \u0428",
+        "inventory_key": "lib_007",
+        "owned_modules": 4,
+        "cone_modules": 50,
+        "frontier_modules": 1,
+        "in_edges": 2,
+        "raw_in_edges": 2,
+        "dominant_domain": "Lib",
+        "layer": 26
+      },
+      {
+        "title": "Lib: Base & Settings",
+        "inventory_key": "lib_001",
+        "owned_modules": 2,
+        "cone_modules": 2,
+        "frontier_modules": 1,
+        "in_edges": 2,
+        "raw_in_edges": 2,
+        "dominant_domain": "Lib",
+        "layer": 29
+      },
+      {
+        "title": "Lib: \u00c9tale & Hodge Cohomology",
+        "inventory_key": "lib_006",
+        "owned_modules": 1,
+        "cone_modules": 2,
+        "frontier_modules": 1,
+        "in_edges": 2,
+        "raw_in_edges": 2,
+        "dominant_domain": "Lib",
+        "layer": 29
+      }
+    ]
+  },
+  "full_hasse": {
+    "edge_count": 1733,
+    "redundant_edge_count": 0,
+    "bitmask_bytes": 217
+  },
+  "existing_hasse": {
+    "edge_count": 616,
+    "redundant_edge_count": 93,
+    "bitmask_bytes": 89
+  },
+  "simplified": {
+    "full_simp": {
+      "node_count": 666,
+      "edge_count": 1594,
+      "num_layers": 50,
+      "layer_dy": 4.0,
+      "min_intra_layer_gap": 1.0,
+      "bounds": {
+        "xmin": -14.477779388427734,
+        "xmax": 14.477779388427734,
+        "ymin": 0.0,
+        "ymax": 196.0
+      },
+      "aspect_ratio": 0.148,
+      "leaves_removed": 2,
+      "chains_removed": 135,
+      "weighted_node_count": 2,
+      "max_node_weight": 2,
+      "weighted_edge_count": 122,
+      "chain_edge_count": 122,
+      "max_edge_weight": 4,
+      "max_edge_mult": 2,
+      "max_edge_chain": 3,
+      "total_node_weight": 668,
+      "total_edge_chain_weight": 135,
+      "layout_metrics": {
+        "is_dag": true,
+        "y_iters_requested": 25,
+        "y_iters_run": 4,
+        "x_sweeps_run": 16,
+        "init_avg_y_span": 4.326,
+        "final_avg_y_span": 3.979,
+        "span_eq_1_edges": 750,
+        "span_le_5_edges": 1243,
+        "init_avg_x_span": 4.284,
+        "final_avg_x_span": 2.649,
+        "layer_widths": {
+          "min": 1,
+          "median": 13,
+          "p95": 25,
+          "max": 28
+        }
+      },
+      "top_weighted_nodes": [
+        {
+          "rel_path": "New/Reduction/OneSidedBound.lean",
+          "weight": 2,
+          "absorbed_leaves": 1,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Statements.lean"
+        },
+        {
+          "rel_path": "Lib/Base.lean",
+          "weight": 2,
+          "absorbed_leaves": 1,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Lib/Speed.lean"
+        }
+      ],
+      "top_weighted_edges": [
+        {
+          "src": "New/UpperBound/Seesaw/GoodDatum.lean",
+          "dst": "New/UpperBound/Seesaw/EdgePairEvaluation.lean",
+          "weight": 4,
+          "mult": 1,
+          "chain": 3
+        },
+        {
+          "src": "New/Derivatives/Sharpness/Cases.lean",
+          "dst": "New/Derivatives/FormalGroup/ThetaProducts.lean",
+          "weight": 4,
+          "mult": 1,
+          "chain": 3
+        },
+        {
+          "src": "Lib/SiegelWeil/OneVector/StandardQuadrics.lean",
+          "dst": "Lib/SiegelWeil/OneVector/FinitePlaceDensity.lean",
+          "weight": 4,
+          "mult": 1,
+          "chain": 3
+        },
+        {
+          "src": "New/Spanning/Bessel/FillingData.lean",
+          "dst": "New/Spanning/Bessel/LargeFunction.lean",
+          "weight": 4,
+          "mult": 2,
+          "chain": 2
+        },
+        {
+          "src": "New/Determinant/Exchange/LargeTriple.lean",
+          "dst": "New/Determinant/Exchange/MatchingPartners.lean",
+          "weight": 4,
+          "mult": 2,
+          "chain": 2
+        },
+        {
+          "src": "New/Congruences/Lifting/CupOrthogonalityBounds.lean",
+          "dst": "New/Congruences/Lifting/SafeMoves.lean",
+          "weight": 3,
+          "mult": 1,
+          "chain": 2
+        },
+        {
+          "src": "Lib/Shimura/Eigenspace.lean",
+          "dst": "Lib/Cohomology/PointClass/ProjectiveNonvanishing.lean",
+          "weight": 3,
+          "mult": 1,
+          "chain": 2
+        },
+        {
+          "src": "Lib/GLn/Branching/IntegralMap.lean",
+          "dst": "Lib/GLn/SchurModule/GramMatrix.lean",
+          "weight": 3,
+          "mult": 1,
+          "chain": 2
+        },
+        {
+          "src": "Lib/DiscreteSeries/Haar/TotalMass.lean",
+          "dst": "Lib/DiscreteSeries/Haar/CayleyChart.lean",
+          "weight": 3,
+          "mult": 1,
+          "chain": 2
+        },
+        {
+          "src": "Lib/Analytic/QuadraticTwist.lean",
+          "dst": "Lib/Analytic/ZeroSymmetry.lean",
+          "weight": 3,
+          "mult": 1,
+          "chain": 2
+        }
+      ]
+    },
+    "full_hasse_simp": {
+      "node_count": 666,
+      "edge_count": 1594,
+      "num_layers": 50,
+      "layer_dy": 4.0,
+      "min_intra_layer_gap": 1.0,
+      "bounds": {
+        "xmin": -14.477779388427734,
+        "xmax": 14.477779388427734,
+        "ymin": 0.0,
+        "ymax": 196.0
+      },
+      "aspect_ratio": 0.148,
+      "leaves_removed": 2,
+      "chains_removed": 135,
+      "weighted_node_count": 2,
+      "max_node_weight": 2,
+      "weighted_edge_count": 122,
+      "chain_edge_count": 122,
+      "max_edge_weight": 4,
+      "max_edge_mult": 2,
+      "max_edge_chain": 3,
+      "total_node_weight": 668,
+      "total_edge_chain_weight": 135,
+      "layout_metrics": {
+        "is_dag": true,
+        "y_iters_requested": 25,
+        "y_iters_run": 4,
+        "x_sweeps_run": 16,
+        "init_avg_y_span": 4.326,
+        "final_avg_y_span": 3.979,
+        "span_eq_1_edges": 750,
+        "span_le_5_edges": 1243,
+        "init_avg_x_span": 4.284,
+        "final_avg_x_span": 2.649,
+        "layer_widths": {
+          "min": 1,
+          "median": 13,
+          "p95": 25,
+          "max": 28
+        }
+      },
+      "top_weighted_nodes": [
+        {
+          "rel_path": "New/Reduction/OneSidedBound.lean",
+          "weight": 2,
+          "absorbed_leaves": 1,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Statements.lean"
+        },
+        {
+          "rel_path": "Lib/Base.lean",
+          "weight": 2,
+          "absorbed_leaves": 1,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Lib/Speed.lean"
+        }
+      ],
+      "top_weighted_edges": [
+        {
+          "src": "New/UpperBound/Seesaw/GoodDatum.lean",
+          "dst": "New/UpperBound/Seesaw/EdgePairEvaluation.lean",
+          "weight": 4,
+          "mult": 1,
+          "chain": 3
+        },
+        {
+          "src": "New/Derivatives/Sharpness/Cases.lean",
+          "dst": "New/Derivatives/FormalGroup/ThetaProducts.lean",
+          "weight": 4,
+          "mult": 1,
+          "chain": 3
+        },
+        {
+          "src": "Lib/SiegelWeil/OneVector/StandardQuadrics.lean",
+          "dst": "Lib/SiegelWeil/OneVector/FinitePlaceDensity.lean",
+          "weight": 4,
+          "mult": 1,
+          "chain": 3
+        },
+        {
+          "src": "New/Spanning/Bessel/FillingData.lean",
+          "dst": "New/Spanning/Bessel/LargeFunction.lean",
+          "weight": 4,
+          "mult": 2,
+          "chain": 2
+        },
+        {
+          "src": "New/Determinant/Exchange/LargeTriple.lean",
+          "dst": "New/Determinant/Exchange/MatchingPartners.lean",
+          "weight": 4,
+          "mult": 2,
+          "chain": 2
+        },
+        {
+          "src": "New/Congruences/Lifting/CupOrthogonalityBounds.lean",
+          "dst": "New/Congruences/Lifting/SafeMoves.lean",
+          "weight": 3,
+          "mult": 1,
+          "chain": 2
+        },
+        {
+          "src": "Lib/Shimura/Eigenspace.lean",
+          "dst": "Lib/Cohomology/PointClass/ProjectiveNonvanishing.lean",
+          "weight": 3,
+          "mult": 1,
+          "chain": 2
+        },
+        {
+          "src": "Lib/GLn/Branching/IntegralMap.lean",
+          "dst": "Lib/GLn/SchurModule/GramMatrix.lean",
+          "weight": 3,
+          "mult": 1,
+          "chain": 2
+        },
+        {
+          "src": "Lib/DiscreteSeries/Haar/TotalMass.lean",
+          "dst": "Lib/DiscreteSeries/Haar/CayleyChart.lean",
+          "weight": 3,
+          "mult": 1,
+          "chain": 2
+        },
+        {
+          "src": "Lib/Analytic/QuadraticTwist.lean",
+          "dst": "Lib/Analytic/ZeroSymmetry.lean",
+          "weight": 3,
+          "mult": 1,
+          "chain": 2
+        }
+      ]
+    },
+    "existing_simp": {
+      "node_count": 266,
+      "edge_count": 648,
+      "num_layers": 29,
+      "layer_dy": 4.0,
+      "min_intra_layer_gap": 1.0,
+      "bounds": {
+        "xmin": -11.5,
+        "xmax": 11.5,
+        "ymin": 0.0,
+        "ymax": 112.0
+      },
+      "aspect_ratio": 0.205,
+      "leaves_removed": 1,
+      "chains_removed": 57,
+      "weighted_node_count": 1,
+      "max_node_weight": 2,
+      "weighted_edge_count": 69,
+      "chain_edge_count": 50,
+      "max_edge_weight": 4,
+      "max_edge_mult": 3,
+      "max_edge_chain": 3,
+      "total_node_weight": 746,
+      "total_edge_chain_weight": 57,
+      "layout_metrics": {
+        "is_dag": true,
+        "y_iters_requested": 25,
+        "y_iters_run": 3,
+        "x_sweeps_run": 16,
+        "init_avg_y_span": 4.215,
+        "final_avg_y_span": 4.131,
+        "span_eq_1_edges": 294,
+        "span_le_5_edges": 512,
+        "init_avg_x_span": 3.244,
+        "final_avg_x_span": 2.131,
+        "layer_widths": {
+          "min": 1,
+          "median": 9,
+          "p95": 23,
+          "max": 24
+        }
+      },
+      "top_weighted_nodes": [
+        {
+          "rel_path": "New/Reduction/OneSidedBound.lean",
+          "weight": 2,
+          "absorbed_leaves": 1,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Statements.lean"
+        }
+      ],
+      "top_weighted_edges": [
+        {
+          "src": "New/UpperBound/Seesaw/GoodDatum.lean",
+          "dst": "New/UpperBound/Seesaw/EdgePairEvaluation.lean",
+          "weight": 4,
+          "mult": 1,
+          "chain": 3
+        },
+        {
+          "src": "New/Derivatives/Sharpness/Cases.lean",
+          "dst": "New/Derivatives/FormalGroup/ThetaProducts.lean",
+          "weight": 4,
+          "mult": 1,
+          "chain": 3
+        },
+        {
+          "src": "New/Spanning/Bessel/FillingData.lean",
+          "dst": "New/Spanning/Bessel/LargeFunction.lean",
+          "weight": 4,
+          "mult": 2,
+          "chain": 2
+        },
+        {
+          "src": "New/Determinant/Exchange/LargeTriple.lean",
+          "dst": "New/Determinant/Exchange/MatchingPartners.lean",
+          "weight": 4,
+          "mult": 2,
+          "chain": 2
+        },
+        {
+          "src": "New/Derivatives/FormalGroup/ThetaProducts.lean",
+          "dst": "[Literature] Lib: General Algebra, Analysis & Geometry",
+          "weight": 4,
+          "mult": 3,
+          "chain": 1
+        },
+        {
+          "src": "New/Congruences/Lifting/CupOrthogonalityBounds.lean",
+          "dst": "New/Congruences/Lifting/SafeMoves.lean",
+          "weight": 3,
+          "mult": 1,
+          "chain": 2
+        },
+        {
+          "src": "New/UpperBound/Seesaw/Cut.lean",
+          "dst": "[Literature] Lib: Weil Representation & Theta Lifts",
+          "weight": 3,
+          "mult": 2,
+          "chain": 1
+        },
+        {
+          "src": "New/Spanning/Bessel/Basic.lean",
+          "dst": "[Literature] Lib: General Algebra, Analysis & Geometry",
+          "weight": 3,
+          "mult": 2,
+          "chain": 1
+        },
+        {
+          "src": "New/UpperBound/Seesaw/EdgePairEvaluation.lean",
+          "dst": "[Literature] Lib: Weil Representation & Theta Lifts",
+          "weight": 3,
+          "mult": 3,
+          "chain": 0
+        },
+        {
+          "src": "New/Spanning/Frames/RealPlaceGauge.lean",
+          "dst": "[Literature] Lib: Discrete Series of U(p,q)",
+          "weight": 3,
+          "mult": 3,
+          "chain": 0
+        }
+      ]
+    },
+    "existing_hasse_simp": {
+      "node_count": 244,
+      "edge_count": 532,
+      "num_layers": 26,
+      "layer_dy": 4.0,
+      "min_intra_layer_gap": 1.0,
+      "bounds": {
+        "xmin": -10.5,
+        "xmax": 10.5,
+        "ymin": 0.0,
+        "ymax": 100.0
+      },
+      "aspect_ratio": 0.21,
+      "leaves_removed": 1,
+      "chains_removed": 79,
+      "weighted_node_count": 1,
+      "max_node_weight": 2,
+      "weighted_edge_count": 66,
+      "chain_edge_count": 63,
+      "max_edge_weight": 5,
+      "max_edge_mult": 3,
+      "max_edge_chain": 3,
+      "total_node_weight": 724,
+      "total_edge_chain_weight": 79,
+      "layout_metrics": {
+        "is_dag": true,
+        "y_iters_requested": 25,
+        "y_iters_run": 6,
+        "x_sweeps_run": 16,
+        "init_avg_y_span": 3.167,
+        "final_avg_y_span": 3.024,
+        "span_eq_1_edges": 271,
+        "span_le_5_edges": 460,
+        "init_avg_x_span": 2.873,
+        "final_avg_x_span": 1.952,
+        "layer_widths": {
+          "min": 1,
+          "median": 10,
+          "p95": 20,
+          "max": 22
+        }
+      },
+      "top_weighted_nodes": [
+        {
+          "rel_path": "New/Reduction/OneSidedBound.lean",
+          "weight": 2,
+          "absorbed_leaves": 1,
+          "absorbed_chains": 0,
+          "rep_rel_path": "Statements.lean"
+        }
+      ],
+      "top_weighted_edges": [
+        {
+          "src": "New/Spanning/Frames/Correlations.lean",
+          "dst": "[Literature] Lib: Discrete Series of U(p,q)",
+          "weight": 5,
+          "mult": 2,
+          "chain": 3
+        },
+        {
+          "src": "New/UpperBound/Seesaw/GoodDatum.lean",
+          "dst": "New/UpperBound/Seesaw/EdgePairEvaluation.lean",
+          "weight": 4,
+          "mult": 1,
+          "chain": 3
+        },
+        {
+          "src": "New/Derivatives/Sharpness/Cases.lean",
+          "dst": "New/Derivatives/FormalGroup/ThetaProducts.lean",
+          "weight": 4,
+          "mult": 1,
+          "chain": 3
+        },
+        {
+          "src": "New/Spanning/Bessel/OpenCellBound.lean",
+          "dst": "New/Spanning/Bessel/Basic.lean",
+          "weight": 4,
+          "mult": 1,
+          "chain": 3
+        },
+        {
+          "src": "New/Reduction/OneSidedBound.lean",
+          "dst": "New/Reduction/Zeros/PrimeError.lean",
+          "weight": 4,
+          "mult": 2,
+          "chain": 2
+        },
+        {
+          "src": "New/Spanning/Bessel/FillingData.lean",
+          "dst": "New/Spanning/Bessel/LargeFunction.lean",
+          "weight": 4,
+          "mult": 2,
+          "chain": 2
+        },
+        {
+          "src": "New/Determinant/Exchange/LargeTriple.lean",
+          "dst": "New/Determinant/Exchange/MatchingPartners.lean",
+          "weight": 4,
+          "mult": 2,
+          "chain": 2
+        },
+        {
+          "src": "New/Derivatives/FormalGroup/ThetaProducts.lean",
+          "dst": "[Literature] Lib: General Algebra, Analysis & Geometry",
+          "weight": 4,
+          "mult": 3,
+          "chain": 1
+        },
+        {
+          "src": "New/UpperBound/Seesaw/UnfoldingStages.lean",
+          "dst": "New/UpperBound/Seesaw/AdmissibleCombinations.lean",
+          "weight": 3,
+          "mult": 1,
+          "chain": 2
+        },
+        {
+          "src": "New/Spanning/Unfolding/AmplitudeSums.lean",
+          "dst": "New/Spanning/Unfolding/ReducedPoints.lean",
+          "weight": 3,
+          "mult": 1,
+          "chain": 2
+        }
+      ]
+    }
+  },
+  "payload": {
+    "format_version": 3,
+    "raw_binary_bytes": 61696,
+    "gzip_bytes": 28397,
+    "js_file_bytes": 37897,
+    "edge_varint_bytes": 3376,
+    "c_super_edges_bytes": 825,
+    "full_hasse_mask_bytes": 217,
+    "existing_hasse_mask_bytes": 89,
+    "simplified_edge_varint_bytes": 9222,
+    "name_blob_bytes": 11365,
+    "dir_blob_bytes": 3212
+  },
+  "elapsed_seconds": 0.25
+}

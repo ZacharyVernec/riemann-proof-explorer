@@ -764,6 +764,55 @@ def parse_module_published_proofs(
     return hits
 
 
+LIB_SUPERNODE_TITLES = {
+    "Lib": "Lib: Base & Settings",
+    "Lib/Adelic": "Lib: Adelic Groups & Trace Formula",
+    "Lib/Analytic": "Lib: Analytic Number Theory & PNT",
+    "Lib/CM": "Lib: Complex Multiplication",
+    "Lib/ClassField": "Lib: Class Field Theory & Cohomology",
+    "Lib/Cohomology": "Lib: Étale & Hodge Cohomology",
+    "Lib/Cyclotomic": "Lib: Cyclotomic Fields & Odd Ш",
+    "Lib/DiscreteSeries": "Lib: Discrete Series of U(p,q)",
+    "Lib/GLn": "Lib: GL_n Schur & Branching",
+    "Lib/GaloisRep": "Lib: Galois Representations",
+    "Lib/General": "Lib: General Algebra, Analysis & Geometry",
+    "Lib/LocalGL": "Lib: Local & Finite GL_n",
+    "Lib/PadicComparison": "Lib: p-adic Comparison Theorems",
+    "Lib/PadicHodge": "Lib: p-adic Hodge & Kisin Modules",
+    "Lib/Shimura": "Lib: Shimura & Abelian Varieties",
+    "Lib/SiegelWeil": "Lib: Siegel–Weil & Rallis Formulas",
+    "Lib/Weil": "Lib: Weil Representation & Theta Lifts",
+}
+
+
+def build_lib_boundary_cut(
+    db_path: Path,
+    rel_path: list[str],
+    top_dir: list[str],
+) -> tuple[dict[int, list[str]], dict[str, tuple[str, str, int]]]:
+    """Collapse src/Lib/ by depth-2 subsystem for readable-edition (New + Lib) layouts."""
+    conn = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
+    d2_by_rel = {
+        rp: d2
+        for rp, d2 in conn.execute("SELECT rel_path, depth2_dir FROM modules WHERE reachable_from_main = 1")
+    }
+    conn.close()
+
+    d2_keys = sorted({d2_by_rel.get(rel_path[i], "Lib") for i, td in enumerate(top_dir) if td == "Lib"})
+    sym_to_lit: dict[str, tuple[str, str, int]] = {}
+    prover_syms: dict[int, list[str]] = {}
+    for order_idx, d2 in enumerate(d2_keys, 1):
+        sym_key = f"__lib__{d2}"
+        title = LIB_SUPERNODE_TITLES.get(d2, f"Lib: {d2.split('/', 1)[-1]}")
+        sym_to_lit[sym_key] = (f"lib_{order_idx:03d}", title, order_idx)
+
+    for i, td in enumerate(top_dir):
+        if td == "Lib":
+            d2 = d2_by_rel.get(rel_path[i], "Lib")
+            prover_syms[i] = [f"__lib__{d2}"]
+    return prover_syms, sym_to_lit
+
+
 def detect_published_proof_roots(
     rel_path: list[str],
     sym_to_lit: dict[str, tuple[str, str, int]],
@@ -1882,16 +1931,25 @@ def render_full_dag_md(
     a("")
     a("The **\"Collapse existing theory\"** toggle in [full_dag.html](full_dag.html) (keyboard shortcut `C`) lets readers hide subtrees of the Lean codebase proving already-established peer-reviewed mathematics while preserving every novel theorem, shared interface specification, and statement contract.")
     a("")
-    a("Following the identification methodology in [PUBLISHED_THEOREMS_INVENTORY.md](../published_theorems/PUBLISHED_THEOREMS_INVENTORY.md#methodology-identifying-collapsible-existing-theory-proof-subtrees), `build_full_dag.py`:")
-    a("")
-    a("1. Parses audited peer-reviewed `Prop` identifiers and bold canonical literature titles from Sections 1–11 of the active inventory (excluding Section 12 project-specific statements and internal scaffolding).")
-    a("2. Enforces the SQLite defining-module ancestor guard and scans final conclusion heads of `theorem`/`lemma` declarations while excluding `*/Definitions/*`, assumed hypothesis-bundle projections/dispatchers (`OpenImageCondition`, `OpenLiteratureStatements`, etc.), novel headline modules, and multi-topic re-export barrels.")
-    if col["dead_edges_pruned"] > 0:
-        a(
-            f"3. Performs reachability from `Main` without crossing outgoing edges of detected proof roots while pruning **{col['dead_edges_pruned']}** provably dead bridge imports whose targets lie strictly below the baseline published-theorem frontier."
-        )
+    dom_names = {d["name"] for d in summary.get("domains", [])}
+    is_lib_new = "Lib" in dom_names and "New" in dom_names
+    if is_lib_new:
+        a("Following the identification methodology in [PUBLISHED_THEOREMS_INVENTORY.md](../published_theorems/PUBLISHED_THEOREMS_INVENTORY.md#methodology-identifying-collapsible-existing-theory-proof-subtrees), `build_full_dag.py`:")
+        a("")
+        a("1. Detects the clean `New/` vs. `Lib/` separation in `src/`, where `Lib/` holds background mathematical theories classed as known in the literature and imports zero modules from `New/`.")
+        a("2. Places the frontier cut at the `New/ → Lib/` boundary, keeping `Main.lean`, `Statements.lean`, and every `New/*` module active while grouping all `Lib/` modules by `Lib/<Subsystem>` into Literature Supernodes.")
+        a("3. Performs reachability from `Main` without crossing outgoing edges of the `Lib/` frontier so each subsystem's internal dependency cone contracts cleanly behind its diamond supernode.")
     else:
-        a("3. Performs reachability from `Main` without crossing outgoing edges of detected proof roots so proof-only interiors are isolated without disconnecting active mathematical interfaces.")
+        a("Following the identification methodology in [PUBLISHED_THEOREMS_INVENTORY.md](../published_theorems/PUBLISHED_THEOREMS_INVENTORY.md#methodology-identifying-collapsible-existing-theory-proof-subtrees), `build_full_dag.py`:")
+        a("")
+        a("1. Parses audited peer-reviewed `Prop` identifiers and bold canonical literature titles from Sections 1–11 of the active inventory (excluding Section 12 project-specific statements and internal scaffolding).")
+        a("2. Enforces the SQLite defining-module ancestor guard and scans final conclusion heads of `theorem`/`lemma` declarations while excluding `*/Definitions/*`, assumed hypothesis-bundle projections/dispatchers (`OpenImageCondition`, `OpenLiteratureStatements`, etc.), novel headline modules, and multi-topic re-export barrels.")
+        if col["dead_edges_pruned"] > 0:
+            a(
+                f"3. Performs reachability from `Main` without crossing outgoing edges of detected proof roots while pruning **{col['dead_edges_pruned']}** provably dead bridge imports whose targets lie strictly below the baseline published-theorem frontier."
+            )
+        else:
+            a("3. Performs reachability from `Main` without crossing outgoing edges of detected proof roots so proof-only interiors are isolated without disconnecting active mathematical interfaces.")
     a("")
     a(
         f"Modules unreachable from `Main` past the proof-frontier cut form the **proof-only interior** $C$ (`{col['interior_module_count']:,}` modules), while reached proof-root modules form the **frontier** $F$ (`{col['frontier_module_count']:,}` modules). Grouping frontier roots into **{col['supernode_count']} Literature Supernodes** $S_T$ rendered as **diamond axiom sinks** ($\\text{{out\\_degree}} = 0$) and assigning every $v \\in C$ via deterministic multi-source BFS yields a complete disjoint partition:"
@@ -2211,10 +2269,15 @@ def main() -> None:
 
     # Stage B: Existing-theory identification & collapsed DAG layout
     t_col = time.time()
-    sym_to_lit, sym_path_hints, excluded_syms = parse_published_inventory(args.inventory_path)
-    sym_allowed = resolve_symbol_allowed_ancestors(args.db_path, sym_to_lit, sym_path_hints, rel_path, adj_in)
-    prover_syms = detect_published_proof_roots(rel_path, sym_to_lit, sym_allowed, excluded_syms)
-    dead_edges = find_dead_bridge_imports(args.db_path, mod_name, rel_path, adj_out)
+    top_set = set(top_dir)
+    if "Lib" in top_set and "New" in top_set:
+        prover_syms, sym_to_lit = build_lib_boundary_cut(args.db_path, rel_path, top_dir)
+        dead_edges = set()
+    else:
+        sym_to_lit, sym_path_hints, excluded_syms = parse_published_inventory(args.inventory_path)
+        sym_allowed = resolve_symbol_allowed_ancestors(args.db_path, sym_to_lit, sym_path_hints, rel_path, adj_in)
+        prover_syms = detect_published_proof_roots(rel_path, sym_to_lit, sym_allowed, excluded_syms)
+        dead_edges = find_dead_bridge_imports(args.db_path, mod_name, rel_path, adj_out)
     col_res = build_collapsed_dag(
         mod_name,
         rel_path,

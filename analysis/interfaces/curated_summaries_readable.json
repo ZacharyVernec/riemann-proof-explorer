@@ -1,0 +1,230 @@
+{
+  "Main.lean": {
+    "role": "Apex Entrypoint",
+    "plain_english_summary": "The top-level proof driver of the formalization. Imports Statements.lean and New/Main.lean, and exports the five unconditional headline theorems: Mathlib's RiemannHypothesis, explicit zero-line localization for riemannZeta, half-plane nonvanishing for all Dirichlet L-functions on Re(s) > 1/2 (away from s = 1 for the trivial character), and GRH for arbitrary and primitive Dirichlet characters.",
+    "key_exports": [
+      {"kind": "theorem", "name": "riemannHypothesis", "line_no": 5, "summary": "Proves Mathlib's canonical RiemannHypothesis statement via New.zeta_zeros_on_line New.grh."},
+      {"kind": "theorem", "name": "riemannZeta_eq_zero_re", "line_no": 8, "summary": "Proves every nontrivial zero s != 1 of riemannZeta has Re(s) = 1/2."},
+      {"kind": "theorem", "name": "LFunction_ne_zero_of_half_lt_re", "line_no": 13, "summary": "Proves L(chi, s) != 0 whenever Re(s) > 1/2 (except chi = 1, s = 1) directly via New.grh."},
+      {"kind": "theorem", "name": "LFunction_eq_zero_re", "line_no": 17, "summary": "Proves every zero of any Dirichlet L-function in 0 < Re(s) < 1 has Re(s) = 1/2 via New.zeros_on_line New.grh."},
+      {"kind": "theorem", "name": "LFunction_eq_zero_re_of_isPrimitive", "line_no": 21, "summary": "Specializes LFunction_eq_zero_re to primitive Dirichlet characters."}
+    ]
+  },
+  "Statements.lean": {
+    "role": "Apex Specification",
+    "plain_english_summary": "Defines the four standalone target propositions imported by Main.lean over Mathlib alone (without Lib/Speed.lean or New/): explicit critical-line statements for riemannZeta and arbitrary/primitive Dirichlet L-functions, plus half-plane nonvanishing for Re(s) > 1/2.",
+    "key_exports": [
+      {"kind": "def", "name": "RiemannZetaZerosOnLine", "line_no": 3, "summary": "Proposition that every zero of riemannZeta outside {-2, -4, ...} and {1} satisfies Re(s) = 1/2."},
+      {"kind": "def", "name": "DirichletLNonvanishingRightOfHalf", "line_no": 6, "summary": "Proposition that L(chi, s) != 0 for all N >= 1, characters chi, and Re(s) > 1/2 (with chi != 1 or s != 1)."},
+      {"kind": "def", "name": "DirichletLZerosOnLine", "line_no": 10, "summary": "Proposition that all zeros of L(chi, s) with 0 < Re(s) < 1 satisfy Re(s) = 1/2."},
+      {"kind": "def", "name": "PrimitiveDirichletLZerosOnLine", "line_no": 14, "summary": "Critical-line zero localization restricted to primitive Dirichlet characters."}
+    ]
+  },
+  "New/Main.lean": {
+    "role": "Analytic Reflection Bridge",
+    "plain_english_summary": "Final analytic step reducing critical-line zero localization for Dirichlet L-functions and riemannZeta to half-plane nonvanishing DirichletLNonvanishingRightOfHalf (New.grh) via nonvanishing of Gamma factors on Re(s) > 0 and functional-equation symmetry s <-> 1 - s.",
+    "key_exports": [
+      {"kind": "lemma", "name": "New.zeros_on_line", "line_no": 28, "summary": "Deduces DirichletLZerosOnLine from DirichletLNonvanishingRightOfHalf via gammaFactor_eq_zero_or_LFunction_one_sub_eq_zero."},
+      {"kind": "lemma", "name": "New.zeta_zeros_on_line", "line_no": 47, "summary": "Deduces RiemannZetaZerosOnLine from DirichletLNonvanishingRightOfHalf via completedRiemannZeta_one_sub."}
+    ]
+  },
+  "New/Reduction/OneSidedBound.lean": {
+    "role": "Half-Plane GRH Apex",
+    "plain_english_summary": "Combines the main inequality (star_inequality) at scale x with the Prime Number Theorem remainder bound at the larger cutoff x1 to prove the one-sided bound R_{q0}(y) <= y^{-1/2 + eps}, and discharges New.grh by choosing a prime d avoiding putative zeros of quadratic twists.",
+    "key_exports": [
+      {"kind": "lemma", "name": "Data.primeRemainder_le", "line_no": 33, "summary": "Converts star_inequality into an upper bound on R_{q0}(x) plus PNT remainder errors at x1."},
+      {"kind": "theorem", "name": "eventually_primeRemainder_le_rpow", "line_no": 200, "summary": "Establishes R_{q0}(y) <= y^{-1/2 + eps} for all sufficiently large real y."},
+      {"kind": "theorem", "name": "grh", "line_no": 239, "summary": "Unconditionally proves DirichletLNonvanishingRightOfHalf."}
+    ]
+  },
+  "New/Reduction/MainInequality.lean": {
+    "role": "Main Cancellation Bottleneck",
+    "plain_english_summary": "Executes the central cancellation between upper and lower bounds: combines Theorems A and B (ShortAndEnough) with Theorem C (integral_forms_long) to cancel D.mainAmount and prove D.m * D.totalRemainder <= D.f * D.a * D.logB^5.",
+    "key_exports": [
+      {"kind": "theorem", "name": "star_inequality", "line_no": 87, "summary": "Proves D.m * D.totalRemainder <= D.f * D.a * D.logB^5 for any admissible Data P."}
+    ]
+  },
+  "New/Reduction/ShortAndEnough.lean": {
+    "role": "Theorems A & B Interface",
+    "plain_english_summary": "Assembles the upper-bound side of the main inequality: Theorem A proves that normalized Poincare translates produce short integral target lifts with small lattice index, and Theorem B proves that O(dim * log b / dim_src) translates span at least (1 - 4/b^2) of the target space.",
+    "key_exports": [
+      {"kind": "theorem", "name": "indexLe_normalizedPoincare", "line_no": 373, "summary": "Theorem A(b): bounds the logarithmic index of normalized Poincare images in D.targetLattice."},
+      {"kind": "theorem", "name": "enough_forms", "line_no": 448, "summary": "Theorem B: selects a small set of chosenGL translates spanning almost all of D.targetForms."}
+    ]
+  },
+  "New/Reduction/Data/AdmissibleData.lean": {
+    "role": "Core Parameter & Data Contract",
+    "plain_english_summary": "Defines Parameters (q0, d, K = Q(sqrt(-d)), E = K(zeta_{q1}), Behrend-sparse IsSparse place sets) and the central Data P structure bundling scales x, x1, b, lift count m, rank r, a-places, b-places, weights, and level primes p0, p1, N.",
+    "key_exports": [
+      {"kind": "def", "name": "New.Parameters.constantBound", "line_no": 50, "summary": "Packs all constants depending only on q0 and d (including chowlaSelbergConst d and vacuumBoundConst)."},
+      {"kind": "def", "name": "New.Parameters.IsSparse", "line_no": 58, "summary": "Behrend-style 3-term-free sparsity condition on infinite b-places modulo q1."},
+      {"kind": "structure", "name": "New.Data", "line_no": 77, "summary": "Master parameter bundle passed across Reduction, Derivatives, UpperBound, Spanning, Determinant, OneLift, and Congruences."}
+    ]
+  },
+  "New/Reduction/Lattices/TwistedLattice.lean": {
+    "role": "Twisted Lattice Product Formula",
+    "plain_english_summary": "Formalizes TwistedLattice (maps from a finite-dimensional space to inner product spaces indexed by twists) together with IndexLe and CovolumeLe, proving the global product-formula inequality covolume_add_index_nonneg.",
+    "key_exports": [
+      {"kind": "theorem", "name": "covolume_add_index_nonneg", "line_no": 477, "summary": "Proves 0 <= V + 2*delta + 2*c when covolume <= V, index <= delta, and twist determinant ratios have height <= c."}
+    ]
+  },
+  "New/Determinant/Twist/LongForms.lean": {
+    "role": "Theorem C Bottleneck",
+    "plain_english_summary": "Proves Theorem C (integral_forms_long): any family of n >= (1 - 4/b^2) targetDim target forms has covolume plus twice its index bounded below by targetDim * (mainAmount - f a log^4 b - 2 b), using regular twist families and auxiliary forms.",
+    "key_exports": [
+      {"kind": "structure", "name": "IsAuxiliaryForm", "line_no": 43, "summary": "Target forms whose m-fold twisted lifts remain integral away from N(Q) with controlled archimedean norm."},
+      {"kind": "theorem", "name": "exists_hasSmallRatios_heightLe_liftDeterminant_div", "line_no": 139, "summary": "Supplies a regular twist family bounding single-lift Gram determinant heights Z_j(1)/Z_j(xi^j)."},
+      {"kind": "theorem", "name": "integral_forms_long", "line_no": 214, "summary": "Theorem C lower bound on covolume + 2 * index for nearly spanning target families."}
+    ]
+  },
+  "New/Determinant/Twist/FitTwists.lean": {
+    "role": "Regular Twist Family Contract",
+    "plain_english_summary": "Defines the exact contract decoupling New/Congruences from New/Determinant: HasDenominatorsLe, HasSmallRatios, and IsRegularFamily for families of m-fold anticyclotomic twists indexed by PrimePadicIso.",
+    "key_exports": [
+      {"kind": "structure", "name": "HasDenominatorsLe", "line_no": 180, "summary": "Bounds l-adic projection denominators of lifts along W_j -> V_j and rank-one character lifts."},
+      {"kind": "structure", "name": "HasSmallRatios", "line_no": 218, "summary": "Ensures modulus coprimality to l and height <= x1 for inverse ratios of Hecke L-values."},
+      {"kind": "structure", "name": "IsRegularFamily", "line_no": 229, "summary": "Combines HasSmallRatios and HasDenominatorsLe for every prime l and embedding iota."}
+    ]
+  },
+  "New/UpperBound/Objects/Rows.lean": {
+    "role": "Target Spaces & Descent Pairs Interface",
+    "plain_english_summary": "Constructs the tower of hermitian spaces Y_j and W_j, the good-form projection D.e0 and D.targetForms, the target Harish-Chandra parameter, and the descent pairs (W_j, V_j) connecting UpperBound, Spanning, Determinant, and OneLift.",
+    "key_exports": [
+      {"kind": "def", "name": "New.Shape.besselIndexEquiv", "line_no": 44, "summary": "Canonical index bijection between Bessel coordinates and hyperbolic-plane strings."},
+      {"kind": "lemma", "name": "paramsCorrespond_descentPair", "line_no": 810, "summary": "Verifies Harish-Chandra parameter correspondence across each descent pair (W_j, V_j)."},
+      {"kind": "lemma", "name": "fitsParams_descentPair", "line_no": 841, "summary": "Discharges FitsParams for the descent pairs used in OneLift and Congruences."}
+    ]
+  },
+  "New/UpperBound/Objects/Columns.lean": {
+    "role": "Source Chains & Composite Lift Interface",
+    "plain_english_summary": "Defines the chain of definite hermitian spaces X_0 -> ... -> X_m, restriction to Y_m, glued Schrödinger data at level N, IsChainDatum / IsWeakChainDatum, and D.compositeLift.",
+    "key_exports": [
+      {"kind": "def", "name": "restrictToYOfEq", "line_no": 974, "summary": "Restricts algebraic modular forms from X_m to the codimension-one block Y_m."},
+      {"kind": "def", "name": "compositeLift", "line_no": 992, "summary": "Evaluates a chain datum into a composite theta lift on target-level spaces."},
+      {"kind": "structure", "name": "IsWeakChainDatum", "line_no": 1001, "summary": "Integrality and support contract for chain data produced by the seesaw identity."}
+    ]
+  },
+  "New/UpperBound/Size/ShortColumns.lean": {
+    "role": "Short Source Forms Contract",
+    "plain_english_summary": "Defines prime-by-prime divisibility gauges and short ramified source forms, proving that short integral source forms span D.ramifiedSourceForms.",
+    "key_exports": [
+      {"kind": "lemma", "name": "span_isShort_ramifiedSourceForms_eq_top", "line_no": 1002, "summary": "Proves that short forms span all ramified source forms on X_0."}
+    ]
+  },
+  "New/Spanning/SecondMoment/SpanningTheorem.lean": {
+    "role": "Second-Moment Spanning Interface",
+    "plain_english_summary": "Converts the second-moment Hilbert-Schmidt near-isometry bound into the Filling.IsSpread property for D.goodPoincare over D.targetForms.",
+    "key_exports": [
+      {"kind": "theorem", "name": "sum_hilbertSchmidtNorm_scaledPoincare_sq_le", "line_no": 270, "summary": "Bounds the average Hilbert-Schmidt discrepancy over the finite group chosenGL."},
+      {"kind": "theorem", "name": "isSpread_goodPoincare", "line_no": 339, "summary": "Establishes the spreading property consumed by ShortAndEnough (Theorem B)."}
+    ]
+  },
+  "New/OneLift/LiftVolumeHeight.lean": {
+    "role": "Single-Lift Determinant Height Interface",
+    "plain_english_summary": "Combines comparison operators, false-lift period vanishing, and rank-one theta-lift Hecke value heights to prove heightLe_liftDeterminant_ratio for Z_j(1)/Z_j(xi^j).",
+    "key_exports": [
+      {"kind": "lemma", "name": "heightLe_liftDeterminant_ratio", "line_no": 729, "summary": "Bounds the height of single-lift Gram determinant ratios Z_j(1)/Z_j(theta^j) for regular twists."}
+    ]
+  },
+  "New/Congruences/FitTwistsExist.lean": {
+    "role": "Regular Twists Construction Bridge",
+    "plain_english_summary": "Unites Ribet's first-order denominator bound (DenominatorBound) with the Selmer twisting theorem (TwistingTheorem) and Lib.GaloisRep to construct regular families of m-fold twists (exists_isRegularFamily).",
+    "key_exports": [
+      {"kind": "lemma", "name": "New.Selmer.exists_mFoldTwist_hasDenominatorsLe", "line_no": 475, "summary": "Produces m-fold twists satisfying the l-adic clearing denominator bound."},
+      {"kind": "lemma", "name": "New.exists_isRegularFamily", "line_no": 517, "summary": "Discharges IsRegularFamily for every admissible datum D."}
+    ]
+  },
+  "New/Congruences/GaloisRepresentations/SelmerHypotheses.lean": {
+    "role": "Selmer Setting & Conjugate Self-Dual Interface",
+    "plain_english_summary": "Defines IsLiftSetting and bad-place / l-adic avatar hypotheses linking modular forms with good labels to conjugate self-dual Galois representations in New/Congruences.",
+    "key_exports": [
+      {"kind": "lemma", "name": "IsLiftSetting.isChosen_chosenPlace", "line_no": 679, "summary": "Exposes the chosen places and label idempotent projectors for lift settings."},
+      {"kind": "lemma", "name": "frequently_isSplit_notMem_places", "line_no": 727, "summary": "Supplies infinitely many split places outside bad sets for Taylor-Wiles and Ribet arguments."}
+    ]
+  },
+  "Lib/Base.lean": {
+    "role": "Core Hermitian Matrix Helper",
+    "plain_english_summary": "Root library file imported across Lib/ and New/ (except Lib/Speed.lean), propagating speed settings and providing the Hermitian dot-product adjoint lemma star_mulVec_dotProduct.",
+    "key_exports": [
+      {"kind": "lemma", "name": "star_mulVec_dotProduct", "line_no": 14, "summary": "Identifies star (B *ᵥ x) ⬝ᵥ y = star x ⬝ᵥ Bᴴ *ᵥ y over any StarRing."}
+    ]
+  },
+  "Lib/GaloisRep/Main/AllRanks.lean": {
+    "role": "Galois Representations Interface",
+    "plain_english_summary": "Constructs attached l-adic Galois representations (matching Hecke polynomials on mostFrobenii, unramified/crystalline with Hodge-Tate jumps) for algebraic eigenforms on definite unitary groups of any positive rank.",
+    "key_exports": [
+      {"kind": "lemma", "name": "Isotypic.attached_galRep_of_exists", "line_no": 774, "summary": "Attaches a Galois representation to any nonzero isotypic eigenform space."},
+      {"kind": "lemma", "name": "Isotypic.attached_galRep", "line_no": 792, "summary": "Unconditional attached Galois representation interface for definite unitary eigenforms."}
+    ]
+  },
+  "Lib/ClassField/Avatar/HeckeBaseChange.lean": {
+    "role": "Hecke Avatar & Base Change Interface",
+    "plain_english_summary": "Packages base change of U(1) and algebraic Hecke characters between CM fields, preserving L-functions, Hodge-Tate jumps, and killing polynomials on l-adic avatars.",
+    "key_exports": [
+      {"kind": "lemma", "name": "hasJumpsAt_scalarRep_cyclotomicCharIn_pow_mul", "line_no": 321, "summary": "Computes Hodge-Tate jumps of twisted scalar avatar representations."},
+      {"kind": "lemma", "name": "Variety.exists_twist_algHeckeChar", "line_no": 392, "summary": "Constructs algebraic Hecke twists realizing prescribed local character behavior."}
+    ]
+  },
+  "Lib/ClassField/Avatar/LocalGlobalCompatibility.lean": {
+    "role": "Avatar Local-Global Compatibility",
+    "plain_english_summary": "Proves local-global compatibility for l-adic avatars of algebraic Hecke characters at split places and over stably unramified CM fields (HasPrimitiveRoot5040).",
+    "key_exports": [
+      {"kind": "lemma", "name": "New.GaloisRep.avatar_baseChange", "line_no": 44, "summary": "Relates avatars under CM base change."},
+      {"kind": "lemma", "name": "New.GaloisRep.avatarCompatAt_of_hasPrimitiveRoot5040", "line_no": 191, "summary": "Establishes full local-global compatibility for rank-one avatars over stably unramified CM fields."}
+    ]
+  },
+  "Lib/Shimura/Uniformisation/HolomorphicFamilies.lean": {
+    "role": "Complex Shimura Uniformisation Interface",
+    "plain_english_summary": "High-fan-in interface defining holomorphic families of complex abelian-variety points, jets, uniformisations, and theta coordinates on ball charts.",
+    "key_exports": [
+      {"kind": "lemma", "name": "exists_theta_of_isSection", "line_no": 891, "summary": "Constructs theta-function representatives for sections along holomorphic families."},
+      {"kind": "lemma", "name": "riemannForm_eq_of_isFrame", "line_no": 947, "summary": "Identifies the Riemann form from adelic frame data."}
+    ]
+  },
+  "Lib/Shimura/Eigenspace.lean": {
+    "role": "Shimura Eigenquotient Galois Interface",
+    "plain_english_summary": "Extracts l-adic Galois representations from cohomology eigenquotients of GU(1, n-1) Shimura towers and establishes the Eichler-Shimura killing-polynomial relation.",
+    "key_exports": [
+      {"kind": "lemma", "name": "New.Variety.Model.isKilledBy_heckePoly_of_isEigenQuotient", "line_no": 615, "summary": "Shows the Hecke polynomial kills Frobenius on the eigenquotient cohomology."},
+      {"kind": "lemma", "name": "New.Variety.Model.exists_galois_rep", "line_no": 689, "summary": "Constructs the attached Galois representation from a Shimura tower eigenquotient."}
+    ]
+  },
+  "Lib/Weil/DualPair/WeilAction.lean": {
+    "role": "Dual-Pair Weil Action Interface",
+    "plain_english_summary": "Defines the Weil representation action of unitary dual pairs (U(S), U(T)) on Schwartz-Fock data, translations, real-place actions, and global theta lifts IsThetaLift.",
+    "key_exports": [
+      {"kind": "abbrev", "name": "twistedPairWeil", "line_no": 768, "summary": "Twisted dual-pair Weil action incorporating auxiliary Hecke characters."},
+      {"kind": "def", "name": "IsThetaLift", "line_no": 801, "summary": "Predicate specifying a global theta lift between unitary automorphic forms."}
+    ]
+  },
+  "Lib/Weil/DualPair/KernelLaws.lean": {
+    "role": "Theta Kernel Formal Laws Interface",
+    "plain_english_summary": "Exports formal equivariance, factorization, reindexing, and seesaw laws for unitary dual-pair theta kernels modulo ideals.",
+    "key_exports": [
+      {"kind": "lemma", "name": "modKernel_factor", "line_no": 480, "summary": "Factors modular theta kernels across orthogonal decompositions."},
+      {"kind": "lemma", "name": "Rows.modKernelStdSpace_block", "line_no": 539, "summary": "Block decomposition law for standard-space theta kernels."}
+    ]
+  },
+  "Lib/SiegelWeil/RallisInner/SharpData.lean": {
+    "role": "Rallis Inner Product Interface",
+    "plain_english_summary": "Proves the doubling Rallis inner product formula for sharp data and expresses unramified vacuum sums as critical Hecke L-values divided by Euler factors.",
+    "key_exports": [
+      {"kind": "theorem", "name": "vacuumSum_eq_L_div_eulerProd", "line_no": 946, "summary": "Evaluates unramified sharp-data theta sums as ratios of critical Hecke L-values."}
+    ]
+  },
+  "Lib/Adelic/Unitary/Defs.lean": {
+    "role": "Adelic Unitary Group & Hermitian Space Contract",
+    "plain_english_summary": "Core foundational definitions for hermitian spaces over CM fields, adelic unitary groups G(A), standard definite spaces, integral lattices, and level subgroups.",
+    "key_exports": [
+      {"kind": "lemma", "name": "Space.exists_ratPoint", "line_no": 1, "summary": "Core hermitian space and adelic unitary group definitions exported across Lib/Adelic, Lib/Weil, and New/."}
+    ]
+  },
+  "Lib/General/NumberTheory/PadicLimitsValuation.lean": {
+    "role": "p-adic Valuation & Algebraicity Interface",
+    "plain_english_summary": "High-fan-in utility interface relating p-adic valuations, normLength of finite modules, roots of unity as p-adic limits, and primitive roots.",
+    "key_exports": [
+      {"kind": "lemma", "name": "normLength_addVal", "line_no": 323, "summary": "Computes module length via additive p-adic valuation."},
+      {"kind": "lemma", "name": "eventually_exists_isPrimitiveRoot", "line_no": 353, "summary": "Constructs primitive roots of unity at sufficiently large primes."}
+    ]
+  }
+}

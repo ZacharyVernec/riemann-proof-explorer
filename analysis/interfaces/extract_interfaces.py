@@ -18,6 +18,7 @@ META_PATH = ROOT / "analysis" / "data" / "meta.json"
 LEAN_SRC = ROOT / "lean" / "src"
 OUT_DIR = SCRIPT_DIR
 CURATED_PATH = SCRIPT_DIR / "curated_summaries.json"
+READABLE_CURATED_PATH = SCRIPT_DIR / "curated_summaries_readable.json"
 JSON_OUT = OUT_DIR / "interfaces.json"
 REPORT_OUT = OUT_DIR / "INTERFACES_REPORT.md"
 HTML_OUT = SCRIPT_DIR / "interface_browser.html"
@@ -629,20 +630,31 @@ def render_report(
     a("")
     a("## 1. Architectural Overview of Mathematical Boundaries")
     a("")
-    sup_note = (
-        " Its final outputs funnel into `Supplements/Kernels/` (`MainTheoremsAll.lean`) and from there into `Main.lean`,"
-        if "Supplements" in active_tops
-        else " Its final outputs (`ClaimStrip.lean`, `MainConclusion.lean`) funnel directly into `Main.lean`,"
-    )
-    a(
-        f"- **`Development` as the Central Synthesis Engine:** `Development` develops the core proofs across abelian varieties, automorphic arithmetic, automorphic spectrum, the Weil bound, étale cohomology, discrete groups, and resolution of singularities.{sup_note} while also supplying local-global compatibility, representation-algebra, and literature-bundle contracts (`SumIoPr`, `Brauer`, `Langlands`, `LocIsotypic`, `RealTransport`) to `CompanionTheory` and `PositivityTheory`."
-    )
-    a(
-        "- **`Formalism` & `ReciprocityTheory` as Specification Contract Hubs:** `Formalism` and `ReciprocityTheory` export the foundational **mathematical specification packages (`Prop` predicates and `structure` contracts)**—such as `UniformisationConclusion`, `PELUnif`, `UnifUniqSt`, `HeckeKer`, `Laws`, `Laws2`, `LocCoh`, `D7`, and `LocalTateDualityK`—that decouple the upper analytic, Galois, and Arakelov engines from the underlying algebraic-geometric and harmonic-analytic constructions."
-    )
-    a(
-        "- **`GroundTheory`, `CompanionTheory` & `PositivityTheory` as Specialized Pillars:** `GroundTheory` supplies Arakelov Hermitian lattices (`KernelsLattice`), Whittaker multiplicity one (`Injective`), Poitou-Tate nine-term duality (`PoitouTateNineTermGs`), and idelic norm product formulas (`IdeleNorms`). `CompanionTheory` supplies adelic Siegel-Weil Euler-product measures (`IsEulerProd`), Harish-Chandra discrete series Capelli characters (`DiscreteSeriesInfinitesimalCharacter`), and discrete-series characters. `PositivityTheory` supplies $\\mathrm{GL}(3)\\times\\mathrm{GL}(2)$ and $\\mathrm{GL}(2)\\times\\mathrm{GL}(2)$ Rankin-Selberg zeta integrals and weight-one Hilbert Eisenstein series."
-    )
+    if "New" in active_tops and "Lib" in active_tops:
+        a(
+            "- **`(root)` Apex Entrypoints (`Main.lean`, `Statements.lean`):** Formulates the four target RH/GRH propositions over Mathlib alone (without `Lib/Speed.lean`) and exports the five unconditional theorems via `New/Main.lean` and `New/Reduction/OneSidedBound.lean`."
+        )
+        a(
+            "- **`New` as the Main Proof Architecture:** Organizes the proof into `Reduction`, `Derivatives`, `UpperBound`, `Spanning`, `Determinant`, `OneLift`, `Congruences`, and `Appendix`, decoupled cleanly across `Data`, `Rows`, `Columns`, `FitTwists`, and `SelmerHypotheses` contracts."
+        )
+        a(
+            "- **`Lib` as the Self-Contained Background Library:** Imports zero modules from `New/`, exporting verified mathematical interfaces for Galois representations (`AllRanks`), class field theory & Hecke avatars (`ArtinReciprocity`, `LocalGlobalCompatibility`), Shimura models (`Eigenspace`, `HolomorphicFamilies`), $p$-adic comparison & Kisin modules, Siegel–Weil & Rallis formulas (`SharpData`), and Weil representations (`WeilAction`, `KernelLaws`)."
+        )
+    else:
+        sup_note = (
+            " Its final outputs funnel into `Supplements/Kernels/` (`MainTheoremsAll.lean`) and from there into `Main.lean`,"
+            if "Supplements" in active_tops
+            else " Its final outputs (`ClaimStrip.lean`, `MainConclusion.lean`) funnel directly into `Main.lean`,"
+        )
+        a(
+            f"- **`Development` as the Central Synthesis Engine:** `Development` develops the core proofs across abelian varieties, automorphic arithmetic, automorphic spectrum, the Weil bound, étale cohomology, discrete groups, and resolution of singularities.{sup_note} while also supplying local-global compatibility, representation-algebra, and literature-bundle contracts (`SumIoPr`, `Brauer`, `Langlands`, `LocIsotypic`, `RealTransport`) to `CompanionTheory` and `PositivityTheory`."
+        )
+        a(
+            "- **`Formalism` & `ReciprocityTheory` as Specification Contract Hubs:** `Formalism` and `ReciprocityTheory` export the foundational **mathematical specification packages (`Prop` predicates and `structure` contracts)**—such as `UniformisationConclusion`, `PELUnif`, `UnifUniqSt`, `HeckeKer`, `Laws`, `Laws2`, `LocCoh`, `D7`, and `LocalTateDualityK`—that decouple the upper analytic, Galois, and Arakelov engines from the underlying algebraic-geometric and harmonic-analytic constructions."
+        )
+        a(
+            "- **`GroundTheory`, `CompanionTheory` & `PositivityTheory` as Specialized Pillars:** `GroundTheory` supplies Arakelov Hermitian lattices (`KernelsLattice`), Whittaker multiplicity one (`Injective`), Poitou-Tate nine-term duality (`PoitouTateNineTermGs`), and idelic norm product formulas (`IdeleNorms`). `CompanionTheory` supplies adelic Siegel-Weil Euler-product measures (`IsEulerProd`), Harish-Chandra discrete series Capelli characters (`DiscreteSeriesInfinitesimalCharacter`), and discrete-series characters. `PositivityTheory` supplies $\\mathrm{GL}(3)\\times\\mathrm{GL}(2)$ and $\\mathrm{GL}(2)\\times\\mathrm{GL}(2)$ Rankin-Selberg zeta integrals and weight-one Hilbert Eisenstein series."
+        )
     a("")
     a(f"## 2. Sub-Theory Public APIs in Plain Mathematical English ({len(analyzed)} Verified Interfaces)")
     a("")
@@ -651,6 +663,8 @@ def render_report(
 
     order_top = [
         "(root)",
+        "New",
+        "Lib",
         "Supplements",
         "Development",
         "Formalism",
@@ -1282,13 +1296,16 @@ def render_html(payload: dict) -> str:
   let THEORY_ORDER = [];
 
   const CANONICAL_THEORY_ORDER = [
-    "(root)", "Supplements",
+    "(root)", "New", "Lib",
+    "Supplements",
     "Development", "CompanionTheory", "PositivityTheory",
     "Formalism", "ReciprocityTheory",
     "GroundTheory", "Lemmata", "BuildAid"
   ];
   const THEORY_META = {
     "(root)":            { color: "#334155", bg: "#f1f5f9", border: "#94a3b8", tier: 0, label: "(root)" },
+    "New":               { color: "#1d4ed8", bg: "#eff6ff", border: "#60a5fa", tier: 1, label: "New" },
+    "Lib":               { color: "#047857", bg: "#ecfdf5", border: "#34d399", tier: 2, label: "Lib" },
     "Supplements":       { color: "#3730a3", bg: "#eef2ff", border: "#818cf8", tier: 0, label: "Supplements" },
     "Development":       { color: "#1d4ed8", bg: "#eff6ff", border: "#60a5fa", tier: 1, label: "Development" },
     "CompanionTheory":   { color: "#047857", bg: "#ecfdf5", border: "#34d399", tier: 1, label: "CompanionTheory" },
@@ -1612,26 +1629,46 @@ def render_html(payload: dict) -> str:
       );
     });
 
-    const tierConfigs = [
-      { label: "Tier 0: Apex & Entrypoints", items: [
-        { key: "(root)", cols: 2 },
-        { key: "Supplements", cols: 2 }
-      ]},
-      { label: "Tier 1: Core Synthesis & Automorphic/Positivity Pillars", items: [
-        { key: "Development", cols: 4 },
-        { key: "CompanionTheory", cols: 2 },
-        { key: "PositivityTheory", cols: 2 }
-      ]},
-      { label: "Tier 2: Specification & Contract Hubs", items: [
-        { key: "Formalism", cols: 5 },
-        { key: "ReciprocityTheory", cols: 3 }
-      ]},
-      { label: "Tier 3: Foundational & Support Machinery", items: [
-        { key: "GroundTheory", cols: 3 },
-        { key: "Lemmata", cols: 1 },
-        { key: "BuildAid", cols: 1 }
-      ]}
-    ];
+    const tierConfigs = TOP_DIR_MAP.has("New") && TOP_DIR_MAP.has("Lib")
+      ? [
+          { label: "Tier 0: Apex & Entrypoints", items: [
+            { key: "(root)", cols: 2 }
+          ]},
+          { label: "Tier 1: Main Proof Architecture (New)", items: [
+            { key: "New", cols: 5 }
+          ]},
+          { label: "Tier 2: Background Mathematical Library (Lib)", items: [
+            { key: "Lib", cols: 5 }
+          ]}
+        ]
+      : [
+          { label: "Tier 0: Apex & Entrypoints", items: [
+            { key: "(root)", cols: 2 },
+            { key: "Supplements", cols: 2 }
+          ]},
+          { label: "Tier 1: Core Synthesis & Automorphic/Positivity Pillars", items: [
+            { key: "Development", cols: 4 },
+            { key: "CompanionTheory", cols: 2 },
+            { key: "PositivityTheory", cols: 2 }
+          ]},
+          { label: "Tier 2: Specification & Contract Hubs", items: [
+            { key: "Formalism", cols: 5 },
+            { key: "ReciprocityTheory", cols: 3 }
+          ]},
+          { label: "Tier 3: Foundational & Support Machinery", items: [
+            { key: "GroundTheory", cols: 3 },
+            { key: "Lemmata", cols: 1 },
+            { key: "BuildAid", cols: 1 }
+          ]}
+        ];
+    const coveredKeys = new Set(tierConfigs.flatMap(t => t.items.map(i => i.key)));
+    const extraKeys = Array.from(byTop.keys()).filter(k => !coveredKeys.has(k) && ((byTop.get(k) || []).length > 0 || TOP_DIR_MAP.has(k)));
+    if (extraKeys.length) {
+      tierConfigs.push({
+        label: "Additional Top-Level Domains",
+        items: extraKeys.map(k => ({ key: k, cols: 3 }))
+      });
+    }
 
     const boxes = [];
     const nodePos = new Map();
@@ -2954,12 +2991,15 @@ def render_html(payload: dict) -> str:
       `<span class="pill">Analyzed Mathematical Interfaces: <b>${DATA.analyzed_interfaces.length}</b></span>`
     ].join("");
 
+    const defaultTop = TOP_DIR_MAP.has("Development")
+      ? "Development"
+      : (TOP_DIR_MAP.has("New") ? "New" : (DATA.top_dirs[0] ? DATA.top_dirs[0].dir_key : ""));
     if (state.mode === "top" && !TOP_DIR_MAP.has(state.selectedDir)) {
-      state.selectedDir = TOP_DIR_MAP.has("Development") ? "Development" : (DATA.top_dirs[0] ? DATA.top_dirs[0].dir_key : "");
+      state.selectedDir = defaultTop;
     } else if (state.mode === "d2" && !D2_DIR_MAP.has(state.selectedDir)) {
       state.selectedDir = DATA.depth2_dirs[0] ? DATA.depth2_dirs[0].dir_key : "";
     } else if (!TOP_DIR_MAP.has(state.selectedDir) && !D2_DIR_MAP.has(state.selectedDir)) {
-      state.selectedDir = TOP_DIR_MAP.has("Development") ? "Development" : (DATA.top_dirs[0] ? DATA.top_dirs[0].dir_key : "");
+      state.selectedDir = defaultTop;
     }
 
     if (!state.selectedFile || !ANALYZED_MAP.has(state.selectedFile)) {
@@ -3008,13 +3048,21 @@ def main() -> None:
     t0 = time.time()
     OUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    with open(CURATED_PATH, "r", encoding="utf-8") as f:
-        curated_raw: dict[str, dict] = json.load(f)
-
     with open(META_PATH, "r", encoding="utf-8") as f:
         meta_raw = json.load(f)
 
     conn = sqlite3.connect(f"file:{DB_PATH}?mode=ro", uri=True)
+    top_dirs_present = {
+        r[0]
+        for r in conn.execute("SELECT DISTINCT top_dir FROM modules WHERE reachable_from_main = 1").fetchall()
+    }
+    if CURATED_PATH == SCRIPT_DIR / "curated_summaries.json" and "New" in top_dirs_present and "Lib" in top_dirs_present and "Development" not in top_dirs_present:
+        if READABLE_CURATED_PATH.exists():
+            CURATED_PATH = READABLE_CURATED_PATH
+
+    with open(CURATED_PATH, "r", encoding="utf-8") as f:
+        curated_raw: dict[str, dict] = json.load(f)
+
     curated, skipped_curated = resolve_curated_entries(conn, curated_raw)
     analyzed_set = set(curated.keys())
 

@@ -7,6 +7,18 @@
   /*VERSIONS_MANIFEST_START*/
   const MANIFEST = [
     {
+      "id": "community-9211277d",
+      "label": "Community readable edition (9211277d · 2026-11-25)",
+      "short_label": "9211277d (2026-11-25)",
+      "date": "2026-11-25",
+      "repo_name": "leanprover-community/riemann-hypothesis",
+      "repo_url": "https://github.com/leanprover-community/riemann-hypothesis",
+      "commit": "9211277d096b7abc3f9c30184bdb2e32d98dcffb",
+      "source_blob_base": "https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/",
+      "source_tree_base": "https://github.com/leanprover-community/riemann-hypothesis/tree/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/",
+      "is_default": true
+    },
+    {
       "id": "community-307cef33",
       "label": "Community simplified (307cef33 · 2026-11-24)",
       "short_label": "307cef33 (2026-11-24)",
@@ -16,7 +28,7 @@
       "commit": "307cef33f046955ee79dba47e0d828d06496d75f",
       "source_blob_base": "https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/",
       "source_tree_base": "https://github.com/leanprover-community/riemann-hypothesis/tree/307cef33f046955ee79dba47e0d828d06496d75f/src/",
-      "is_default": true
+      "is_default": false
     },
     {
       "id": "original-2026-11-20",

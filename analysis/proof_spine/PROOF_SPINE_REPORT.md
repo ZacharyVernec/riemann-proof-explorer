@@ -1,6 +1,6 @@
-# Proof Spine, Bottlenecks & Critical Dependency Chain (community-307cef33)
+# Proof Spine, Bottlenecks & Critical Dependency Chain (community-9211277d)
 
-This report analyzes the logical dependency DAG of the proof—tracing its mandatory mathematical bottlenecks (dominator tree rooted at [Main.lean](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Main.lean)), its deepest critical dependency chain from the final RH/GRH theorems down to foundational leaves, and the key bridge modules connecting the major theories (interactive explorer in [spine_dashboard.html](spine_dashboard.html)).
+This report analyzes the logical dependency DAG of the proof—tracing its mandatory mathematical bottlenecks (dominator tree rooted at [Main.lean](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Main.lean)), its deepest critical dependency chain from the final RH/GRH theorems down to foundational leaves, and the key bridge modules connecting the major theories (interactive explorer in [spine_dashboard.html](spine_dashboard.html)).
 
 > **Edge Orientation Convention:** Throughout this report, a directed edge `(u, v)` means module `u` **depends on** `v` (`u` imports `v`). Hence `Main.lean` is the unique root/source at the apex of the proof, and foundational leaf modules sit at the base (`height = 0`).
 
@@ -10,16 +10,16 @@ This report analyzes the logical dependency DAG of the proof—tracing its manda
 
 | Metric | Value |
 |---|---:|
-| Total Lean modules in codebase | 59,884 |
-| Modules reachable from `Main.lean` | 59,836 |
-| Unreachable / standalone modules excluded | 48 |
-| Internal dependency edges (reachable DAG) | 367,774 |
+| Total Lean modules in codebase | 803 |
+| Modules reachable from `Main.lean` | 803 |
+| Unreachable / standalone modules excluded | 0 |
+| Internal dependency edges (reachable DAG) | 1,733 |
 | Strict DAG verified (`is_dag`) | Yes |
-| Shortest distance span from `Main.lean` | 0 – 15 |
-| Critical dependency chain length | 93 edges / 94 modules |
-| Critical max-length paths | 405 |
-| Foundational leaf modules (`out_degree = 0`) | 2,692 (384,013 lines) |
-| Log10 total `Main → Leaf` dependency paths | 16.586 |
+| Shortest distance span from `Main.lean` | 0 – 21 |
+| Critical dependency chain length | 53 edges / 54 modules |
+| Critical max-length paths | 4 |
+| Foundational leaf modules (`out_degree = 0`) | 2 (93 lines) |
+| Log10 total `Main → Leaf` dependency paths | 7.594 |
 
 ---
 
@@ -29,152 +29,100 @@ This report analyzes the logical dependency DAG of the proof—tracing its manda
 
 | Dist | Module | Dom Subtree | Out-Deg | Mathematical Role |
 |---:|---|---:|---:|---|
-| 0 | [Main](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Main.lean) | 59,836 | 3 | Final root export proving riemannHypothesis, riemannZeta_eq_zero_re, LFunction_ne_zero_of_half_lt_re, LFunction_eq_zero_re, and LFunction_eq_zero_re_of_isPrimitive. |
-| 1 | [Development.AutomorphicArithmetic.CharacterBoxes.MainConclusion](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean) | 59,831 | 28 | Proves UpperTheory.FinalTheorems.everyCharacter and riemannHypothesis from RowSrc + EveryCharacterOfLiteratureOfVWin + VwinOfRow. |
-| 1 | [Development.AutomorphicArithmetic.CharacterBoxes.ClaimStrip](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/CharacterBoxes/ClaimStrip.lean) | 1 | 1 |  |
-| 1 | [Statements](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Statements.lean) | 1 | 0 | `RiemannZetaZerosOnLine`, `DirichletLNonvanishingRightOfHalf`, `DirichletLZerosOnLine`, `PrimitiveDirichletLZerosOnLine` |
-| 2 | [Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.EveryCharacterOfLiteratureOfVWin](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/EveryCharacterOfLiteratureOfVWin.lean) | 31,637 | 233 | Synthesis binding OpenLiteratureStatements, published_results_arithmetic, and topCovolSlim2_use_alt_alt into EveryCharacter. |
-| 2 | [Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ThresholdArguments.DenseThresholdCases.VwinOfRow](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/ThresholdArguments/DenseThresholdCases/VwinOfRow.lean) | 4,455 | 168 | `OpenImageCondition`, `elliptic_main_theorem_cm_of_open`, `hecke_tate_functional_equation_of_open`, `hilbert_class_field_j_of_open` |
-| 2 | [Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.IntegralStructures.GeometricFlagBases.GeometricRealizationOfWeightOne](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/Foundations/GaloisRepresentations/IntegralStructures/GeometricFlagBases/GeometricRealizationOfWeightOne.lean) | 3,153 | 46 | Synthesizes crystalline towers, p-adic Witt lattices, finite-etale Kodaira-Spencer (ksGood_holds), and Hodge Lefschetz sums into GeoOne. |
-| 2 | [Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.IntegralStructures.Development](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/Foundations/GaloisRepresentations/IntegralStructures/Development.lean) | 381 | 69 | `cplMem_of`, `genMul_of`, `dGenMul_of`, `getD_eq` |
-| 2 | [Development.AutomorphicArithmetic.Foundations.EtaleClopenDescent.HolomorphicLefschetzFiniteEtaleIntegral](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/Foundations/EtaleClopenDescent/HolomorphicLefschetzFiniteEtaleIntegral.lean) | 140 | 33 |  |
-| 2 | [Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.TPGHolds](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/Foundations/GaloisRepresentations/ThetaParseval/ThetaKernels/TPGHolds.lean) | 37 | 94 |  |
-| 2 | [Development.AutomorphicArithmetic.Foundations.LocalLanglands.LocalCentralUnits.RecTExists](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/Foundations/LocalLanglands/LocalCentralUnits/RecTExists.lean) | 10 | 41 | `sumList_perm`, `charZero_adicCompletion`, `exists_isLExt`, `extDepth` |
-| 2 | [Development.AbelianVarietyTheory.Definitions.Divisors.IsGaloisCover](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AbelianVarietyTheory/Definitions/Divisors/IsGaloisCover.lean) | 1 | 3 |  |
-| 2 | [Development.AbelianVarietyTheory.Definitions.GaloisGeometry.CoeEqAlgebraMapZeroEquiv](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AbelianVarietyTheory/Definitions/GaloisGeometry/CoeEqAlgebraMapZeroEquiv.lean) | 1 | 2 |  |
-| 2 | [Development.AbelianVarietyTheory.Definitions.GaloisGeometry.OmegaPullOmegaTraceOfSecTraceOne](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AbelianVarietyTheory/Definitions/GaloisGeometry/OmegaPullOmegaTraceOfSecTraceOne.lean) | 1 | 3 |  |
-| 2 | [Development.AbelianVarietyTheory.Definitions.GaloisGeometry.SurjectiveOfLocallySurjective](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AbelianVarietyTheory/Definitions/GaloisGeometry/SurjectiveOfLocallySurjective.lean) | 1 | 3 |  |
-| 2 | [Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.CechModulesFunctorShortExactOfIsAffineOpen](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AbelianVarietyTheory/Proofs/CoherentCohomologyProofs/CechModulesFunctorShortExactOfIsAffineOpen.lean) | 1 | 5 |  |
-| 2 | [Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.ExistsAddEquivOfSurjectiveOfKerIff](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AbelianVarietyTheory/Proofs/CoherentCohomologyProofs/ExistsAddEquivOfSurjectiveOfKerIff.lean) | 1 | 0 | `exists_addEquiv_of_surjective_of_ker_iff` |
-| 2 | [Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsIntegralClopenDecompositionOfSmooth](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AbelianVarietyTheory/Proofs/SatakeParameters/ExistsIntegralClopenDecompositionOfSmooth.lean) | 1 | 5 |  |
-| 2 | [Development.AbelianVarietyTheory.Proofs.SatakeParameters.FormResFormPullFormPull](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AbelianVarietyTheory/Proofs/SatakeParameters/FormResFormPullFormPull.lean) | 1 | 2 |  |
-| 2 | [Development.AbelianVarietyTheory.Proofs.SatakeParameters.HodgePullHodgePull](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AbelianVarietyTheory/Proofs/SatakeParameters/HodgePullHodgePull.lean) | 1 | 1 |  |
-| 2 | [Development.AutomorphicArithmetic.CharacterBoxes.EveryCharacter](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/CharacterBoxes/EveryCharacter.lean) | 1 | 1 |  |
-| 2 | [Development.AutomorphicArithmetic.CharacterBoxes.HalfPlane](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/CharacterBoxes/HalfPlane.lean) | 1 | 2 |  |
-| 2 | [Development.AutomorphicArithmetic.CommutativeAlgebra.FiniteDimensionalHodgeCohomologyOfSmoothProj](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/CommutativeAlgebra/FiniteDimensionalHodgeCohomologyOfSmoothProj.lean) | 1 | 6 |  |
-| 2 | [Development.AutomorphicArithmetic.Foundations.EtaleClopenDescent.CompactSpaceOfProjectiveAndOfFinite](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/Foundations/EtaleClopenDescent/CompactSpaceOfProjectiveAndOfFinite.lean) | 1 | 4 |  |
-| 2 | [Development.AutomorphicArithmetic.Foundations.EtaleClopenDescent.ExistsUniqueComplexPointLiftClopenCover](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/Foundations/EtaleClopenDescent/ExistsUniqueComplexPointLiftClopenCover.lean) | 1 | 3 |  |
+| 0 | [Main](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Main.lean) | 803 | 1 | Final root export proving riemannHypothesis, riemannZeta_eq_zero_re, LFunction_ne_zero_of_half_lt_re, LFunction_eq_zero_re, and LFunction_eq_zero_re_of_isPrimitive. |
+| 1 | [New.Main](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Main.lean) | 802 | 1 | Bridges New.grh (DirichletLNonvanishingRightOfHalf) into New.zeros_on_line and New.zeta_zeros_on_line via the functional equation s <-> 1 - s. |
+| 2 | [New.Reduction.OneSidedBound](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Reduction/OneSidedBound.lean) | 801 | 5 | Derives the one-sided bound eventually_primeRemainder_le_rpow and proves New.grh by combining star_inequality with the PNT cut-off and zero-free criterion. |
+| 3 | [New.Reduction.MainInequality](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Reduction/MainInequality.lean) | 606 | 2 | Proves star_inequality (m * rem <= f * a * log^5 b) by cancelling the main amount between Theorems A & B (short/enough forms) and Theorem C (integral_forms_long). |
+| 3 | [New.Reduction.Zeros.Criterion](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Reduction/Zeros/Criterion.lean) | 5 | 3 |  |
+| 3 | [New.Reduction.Zeros.PrimeNumberTheorem](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Reduction/Zeros/PrimeNumberTheorem.lean) | 2 | 3 |  |
+| 3 | [New.Reduction.Data.Existence](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Reduction/Data/Existence.lean) | 1 | 2 |  |
+| 3 | [Statements](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Statements.lean) | 1 | 0 | `RiemannZetaZerosOnLine`, `DirichletLNonvanishingRightOfHalf`, `DirichletLZerosOnLine`, `PrimitiveDirichletLZerosOnLine` |
 
 ### 1.2 Top Foundational Leaves (`out_degree = 0`)
 
-There are **2,692** foundational leaf modules (`384,013` lines, `11,619` theorems, `8,808` definitions). Modules with zero external imports: `0`.
+There are **2** foundational leaf modules (`93` lines, `0` theorems, `5` definitions). Modules with zero external imports: `0`.
 
 | In-Deg | Lines | Top Directory | Module |
 |---:|---:|---|---|
-| 1,138 | 39 | `ReciprocityTheory` | [ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/BirationalGeometry/ToroidalCompactification/IsCompletedStrictHens.lean) |
-| 813 | 203 | `ReciprocityTheory` | [ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/SemiabelianSchemes/CubicalStructures/CubeSymmetricSwapFirst.lean) |
-| 546 | 134 | `Formalism` | [Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Formalism/LocalToGlobal/ProjectiveLattices/ErealAddIInf.lean) |
-| 484 | 61 | `Formalism` | [Formalism.SharpRestriction.CuspSpanNormBounds.Point](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Formalism/SharpRestriction/CuspSpanNormBounds/Point.lean) |
-| 450 | 227 | `ReciprocityTheory` | [ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/BirationalGeometry/ToroidalCompactification/CocycleRightZeroThd.lean) |
-| 420 | 209 | `ReciprocityTheory` | [ReciprocityTheory.GaloisValuations.GlobalA](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/ReciprocityTheory/GaloisValuations/GlobalA.lean) |
-| 401 | 393 | `Development` | [Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.ResMapBijective](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/AutomorphicVarieties/CommutativeAlgebra/ResMapBijective.lean) |
-| 388 | 84 | `Formalism` | [Formalism.ConjugateSelfDual.Statement](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Formalism/ConjugateSelfDual/Statement.lean) |
-| 306 | 192 | `Development` | [Development.AutomorphicArithmetic.IntegralCasts.IsOpenStabOfMemNhds](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/IntegralCasts/IsOpenStabOfMemNhds.lean) |
-| 282 | 241 | `Development` | [Development.AbelianVarietyTheory.Definitions.Foundations.SmoothPartStable](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AbelianVarietyTheory/Definitions/Foundations/SmoothPartStable.lean) |
-| 263 | 78 | `Formalism` | [Formalism.LocalToGlobal.IndefiniteReal.IndefiniteWeightData](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Formalism/LocalToGlobal/IndefiniteReal/IndefiniteWeightData.lean) |
-| 259 | 166 | `ReciprocityTheory` | [ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.Signature](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/ReciprocityTheory/ReductiveGroups/ArithmeticGeometry/FundamentalDomains/Signature.lean) |
-| 232 | 115 | `Development` | [Development.AbelianVarietyTheory.Definitions.Foundations.MatrixMeasurableSpace](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AbelianVarietyTheory/Definitions/Foundations/MatrixMeasurableSpace.lean) |
-| 188 | 362 | `Formalism` | [Formalism.UnipotentAdelicQuotients.SWXSDefs](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Formalism/UnipotentAdelicQuotients/SWXSDefs.lean) |
-| 187 | 285 | `Development` | [Development.AbelianVarietyTheory.Definitions.Foundations.IsIwasawaOfIsCompact](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AbelianVarietyTheory/Definitions/Foundations/IsIwasawaOfIsCompact.lean) |
+| 1 | 77 | `Lib` | [Lib.Speed](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/Speed.lean) |
+| 1 | 16 | `(root)` | [Statements](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Statements.lean) |
 
 ---
 
 ## 2. Stratigraphic Layering Across Top-Level Theories
 
-The mathematical domains stratify naturally into five functional layers from the apex down to the base:
+The readable-edition codebase stratifies cleanly into three top-level layers from the apex down to the base:
 
-1. **Apex & Analytic Reflection Layer (`(root)`, `Formalism/GammaFactorNonvanishing`):** Converts universal right half-plane nonvanishing (`EveryCharacter`) into RH and GRH via Euler-factor stripping (`ClaimStrip`) and functional-equation reflection (`CritLine`, `RhOfRight`).
-2. **Upper Automorphic & Positivity Synthesis (`PositivityTheory`, upper `Development`):** Constructs parallel weight-one Hilbert Eisenstein series, Rankin–Selberg zeta integrals, local–global Galois representations, modularity-lifting patching reductions, and windowed Chebyshev character boxes.
-3. **Core Geometric & Representation-Theoretic Engine (`Development/AbelianVarietyTheory`, `Development/AutomorphicSpectrum`, `Development/WeilBound`, `CompanionTheory`):** Develops polarized abelian schemes, de Rham and crystalline comparisons, Moriwaki arithmetic bigness, Harish-Chandra discrete series characters (`DSInfCharCap`), and Flath factorizations.
-4. **Specification & Harmonic-Analytic Infrastructure (`Formalism`):** Provides local-to-global theta-lift stage contracts (`LinksStage`), differential operator chart-independence, the master CM host package (`D7`), local Bloch–Kato orthogonality (`LocCoh`), and local Tate duality.
-5. **Algebraic-Geometric, Cohomological & Arakelov Bedrock (`ReciprocityTheory`, `GroundTheory`, `Lemmata`):** Supplies PEL Shimura toroidal compactifications (`UniformisationConclusion`), uniqueness of Mumford uniformisations (`UnifUniqSt`), polarized abelian scheme laws, Arakelov Bost–Zhang slope bounds (`KernelsLattice`), Whittaker multiplicity one, and Poitou–Tate duality.
+1. **Apex Entrypoints (`(root)`):** `Main.lean` and `Statements.lean` state and export the five unconditional RH and GRH theorems over Mathlib.
+2. **Novel Proof Architecture (`New`):** Organizes the argument into `New/Main.lean` (functional-equation reflection), `New/Reduction/` (`OneSidedBound`, `MainInequality`, `ShortAndEnough`, twisted lattices, admissible data), `New/Derivatives/`, `New/UpperBound/`, `New/Spanning/`, `New/Determinant/` (`LongForms` Theorem C), `New/OneLift/`, `New/Congruences/` (modularity congruences, Selmer twisting, crystalline Kisin lifting), and `New/Appendix/`.
+3. **Background Literature Library (`Lib`):** Self-contained background modules (importing nothing from `New/`) supplying adelic reduction and trace formulas, analytic PNT/Pólya–Vinogradov, class field theory, étale/Hodge cohomology, discrete series, Galois representations (`AllRanks`), $p$-adic comparison and Kisin modules, Shimura moduli, Siegel–Weil/Rallis formulas, and Weil representations.
 
 | Top Directory | Files | Lines | Leaves | Dist (min/med/max) | Height (med/max) |
 |---|---:|---:|---:|---|---|
-| `Development` | 41,263 | 11,657,315 | 1,425 | 1 / 6.0 / 15 | 25.0 / 92 |
-| `Formalism` | 9,901 | 2,765,150 | 543 | 3 / 8.0 / 14 | 14.0 / 56 |
-| `GroundTheory` | 5,217 | 868,235 | 378 | 2 / 5.0 / 13 | 5.0 / 41 |
-| `ReciprocityTheory` | 2,393 | 494,752 | 224 | 2 / 7.0 / 14 | 5.0 / 47 |
-| `CompanionTheory` | 685 | 178,444 | 26 | 3 / 6.0 / 13 | 13.0 / 69 |
-| `PositivityTheory` | 226 | 44,166 | 3 | 3 / 6.0 / 7 | 34.0 / 45 |
-| `Lemmata` | 149 | 6,857 | 92 | 4 / 8.0 / 12 | 0.0 / 10 |
-| `(root)` | 2 | 76 | 1 | 0 / 0.5 / 1 | 46.5 / 93 |
+| `Lib` | 495 | 285,088 | 1 | 4 / 10.0 / 21 | 15.0 / 36 |
+| `New` | 306 | 191,998 | 0 | 1 / 8.0 / 15 | 31.0 / 52 |
+| `(root)` | 2 | 38 | 1 | 0 / 1.5 / 3 | 26.5 / 53 |
 
 ### Major Cross-Theory Edge Flows
 
 | Dependent (`src`) | Dependency (`dst`) | Edges |
 |---|---|---:|
-| `Development` | `Development` | 235,089 |
-| `Formalism` | `Formalism` | 38,495 |
-| `Development` | `Formalism` | 32,714 |
-| `Development` | `ReciprocityTheory` | 22,116 |
-| `GroundTheory` | `GroundTheory` | 14,676 |
-| `ReciprocityTheory` | `ReciprocityTheory` | 7,228 |
-| `Development` | `GroundTheory` | 6,514 |
-| `CompanionTheory` | `CompanionTheory` | 2,129 |
-| `GroundTheory` | `ReciprocityTheory` | 1,774 |
-| `Development` | `CompanionTheory` | 1,423 |
-| `CompanionTheory` | `Formalism` | 1,143 |
-| `CompanionTheory` | `Development` | 1,034 |
-| `ReciprocityTheory` | `Formalism` | 614 |
-| `PositivityTheory` | `Development` | 597 |
-| `Formalism` | `ReciprocityTheory` | 474 |
+| `Lib` | `Lib` | 999 |
+| `New` | `New` | 524 |
+| `New` | `Lib` | 208 |
+| `(root)` | `New` | 1 |
+| `New` | `(root)` | 1 |
 
 ---
 
 ## 3. Dominator Bottleneck Spine (Cooper–Harvey–Kennedy)
 
-In the dependency DAG rooted at `Main.lean`, a module $d$ **dominates** a module $u$ if *every* dependency path from `Main.lean` to $u$ must pass through $d$ (105 skeleton nodes with dominated subtree size `≥ 101`). Top mandatory bottlenecks:
+In the dependency DAG rooted at `Main.lean`, a module $d$ **dominates** a module $u$ if *every* dependency path from `Main.lean` to $u$ must pass through $d$ (20 skeleton nodes with dominated subtree size `≥ 20`). Top mandatory bottlenecks:
 
 | Rank | Dom Subtree | Depth | Dist / H | Top Dir | Module |
 |---:|---:|---:|---:|---|---|
-| 1 | 59,836 (100.0%) | 0 | 0 / 93 | `(root)` | [Main](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Main.lean) |
-| 2 | 59,831 (99.992%) | 1 | 1 / 92 | `Development` | [Development.AutomorphicArithmetic.CharacterBoxes.MainConclusion](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/CharacterBoxes/MainConclusion.lean) |
-| 3 | 31,637 (52.873%) | 2 | 2 / 89 | `Development` | [Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.EveryCharacterOfLiteratureOfVWin](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/EveryCharacterOfLiteratureOfVWin.lean) |
-| 4 | 17,087 (28.556%) | 3 | 3 / 88 | `Development` | [Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.SiegelEisensteinSecondTermHypotheses](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/SiegelEisensteinSecondTermHypotheses.lean) |
-| 5 | 4,455 (7.445%) | 2 | 2 / 91 | `Development` | [Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ThresholdArguments.DenseThresholdCases.VwinOfRow](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/ThresholdArguments/DenseThresholdCases/VwinOfRow.lean) |
-| 6 | 3,679 (6.148%) | 3 | 3 / 79 | `Development` | [Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.TopCovolSlim2Use](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/TopCovolSlim2Use.lean) |
-| 7 | 3,598 (6.013%) | 4 | 4 / 87 | `Development` | [Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.HypothesesNonemptyOfUnramifiedExponents](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/HypothesesNonemptyOfUnramifiedExponents.lean) |
-| 8 | 3,153 (5.269%) | 2 | 2 / 81 | `Development` | [Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.IntegralStructures.GeometricFlagBases.GeometricRealizationOfWeightOne](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/Foundations/GaloisRepresentations/IntegralStructures/GeometricFlagBases/GeometricRealizationOfWeightOne.lean) |
-| 9 | 2,298 (3.84%) | 4 | 4 / 74 | `Development` | [Development.WeilBound.CoreStatements.AutomorphicKernels.MoriwakiBigness.HilbertSamuelApplications.AhSlimU](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/WeilBound/CoreStatements/AutomorphicKernels/MoriwakiBigness/HilbertSamuelApplications/AhSlimU.lean) |
-| 10 | 2,281 (3.812%) | 5 | 5 / 73 | `Development` | [Development.WeilBound.CoreStatements.AutomorphicKernels.MoriwakiBigness.HilbertSamuelApplications.DeepStROfUse](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/WeilBound/CoreStatements/AutomorphicKernels/MoriwakiBigness/HilbertSamuelApplications/DeepStROfUse.lean) |
-| 11 | 1,409 (2.355%) | 6 | 6 / 72 | `Development` | [Development.WeilBound.CoreStatements.AutomorphicKernels.MoriwakiBigness.HilbertSamuelApplications.GoodTowerVolumeTheoremBis](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/WeilBound/CoreStatements/AutomorphicKernels/MoriwakiBigness/HilbertSamuelApplications/GoodTowerVolumeTheoremBis.lean) |
-| 12 | 1,336 (2.233%) | 3 | 3 / 77 | `Development` | [Development.AbelianVarietyTheory.Proofs.DivisorProofs.ToroidalCompactificationFanLogKodairaSpencerIso](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AbelianVarietyTheory/Proofs/DivisorProofs/ToroidalCompactificationFanLogKodairaSpencerIso.lean) |
-| 13 | 1,174 (1.962%) | 4 | 4 / 76 | `Development` | [Development.AbelianVarietyTheory.Proofs.DivisorProofs.RigidBoundaryChartsForFanUnitaryDatumStatement](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AbelianVarietyTheory/Proofs/DivisorProofs/RigidBoundaryChartsForFanUnitaryDatumStatement.lean) |
-| 14 | 1,106 (1.848%) | 5 | 5 / 62 | `Development` | [Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.LinkROfIsLinked](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/LinkROfIsLinked.lean) |
-| 15 | 887 (1.482%) | 4 | 4 / 81 | `Development` | [Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.SurjectiveAndLowWeightOfUnramifiedExponents](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/SurjectiveAndLowWeightOfUnramifiedExponents.lean) |
-| 16 | 744 (1.243%) | 5 | 5 / 86 | `Development` | [Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.MemberBundlesLargeUnramifiedExponents](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/MemberBundlesLargeUnramifiedExponents.lean) |
-| 17 | 744 (1.243%) | 4 | 4 / 78 | `Development` | [Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.TopCovolG](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/TopCovolG.lean) |
-| 18 | 664 (1.11%) | 4 | 4 / 82 | `Development` | [Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.OpenOrbitOfUnramifiedExponents](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/OpenOrbitOfUnramifiedExponents.lean) |
-| 19 | 639 (1.068%) | 3 | 3 / 80 | `Development` | [Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ThresholdArguments.DenseThresholdCases.KatoTwoWOfPublishedH](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/ThresholdArguments/DenseThresholdCases/KatoTwoWOfPublishedH.lean) |
-| 20 | 606 (1.013%) | 5 | 5 / 85 | `Development` | [Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.LinkNFam](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/LinkNFam.lean) |
-| 21 | 601 (1.004%) | 4 | 4 / 50 | `Development` | [Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.KatoQuadraticCharacters.SphericalDecomposition.SphAtTw](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/KatoQuadraticCharacters/SphericalDecomposition/SphAtTw.lean) |
-| 22 | 597 (0.998%) | 5 | 5 / 65 | `Development` | [Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.MainTheoremPublishedInputsThird](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/MainTheoremPublishedInputsThird.lean) |
-| 23 | 558 (0.933%) | 5 | 5 / 49 | `Development` | [Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.KatoQuadraticCharacters.UnramifiedZeta.ZetaUr](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/AutomorphicVarieties/ModularityArgument/KatoQuadraticCharacters/UnramifiedZeta/ZetaUr.lean) |
-| 24 | 546 (0.912%) | 3 | 3 / 48 | `Development` | [Development.WeilBound.CoreStatements.TemperedRepresentationTheory.PoincareLelong.PoincareLelongInv](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/WeilBound/CoreStatements/TemperedRepresentationTheory/PoincareLelong/PoincareLelongInv.lean) |
-| 25 | 520 (0.869%) | 6 | 6 / 64 | `Development` | [Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.MainTheoremFromPublishedResultsAltAltAltAltAlt](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/MainTheoremFromPublishedResultsAltAltAltAltAlt.lean) |
-| 26 | 519 (0.867%) | 7 | 7 / 71 | `Development` | [Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.VolumeTheoremOfInputs](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicSpectrum/Proofs/DivisibilityProofs/VolumeTheoremOfInputs.lean) |
-| 27 | 505 (0.844%) | 7 | 7 / 63 | `Development` | [Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.FamAllQOfAllTrueStatement](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/FamAllQOfAllTrueStatement.lean) |
-| 28 | 486 (0.812%) | 3 | 4 / 75 | `Development` | [Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.KunnethLefschetz.EtSideGood](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/Foundations/GaloisRepresentations/KunnethLefschetz/EtSideGood.lean) |
-| 29 | 459 (0.767%) | 5 | 5 / 75 | `Development` | [Development.AbelianVarietyTheory.Proofs.DivisorProofs.RigidBoundaryChartsForFanOfUnitarySeparationStatement](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AbelianVarietyTheory/Proofs/DivisorProofs/RigidBoundaryChartsForFanOfUnitarySeparationStatement.lean) |
-| 30 | 430 (0.719%) | 6 | 6 / 85 | `Development` | [Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ExistsBaseLatticeOfPrime](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/ThirdPlaceSeries/ExistsBaseLatticeOfPrime.lean) |
+| 1 | 803 (100.0%) | 0 | 0 / 53 | `(root)` | [Main](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Main.lean) |
+| 2 | 802 (99.875%) | 1 | 1 / 52 | `New` | [New.Main](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Main.lean) |
+| 3 | 801 (99.751%) | 2 | 2 / 51 | `New` | [New.Reduction.OneSidedBound](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Reduction/OneSidedBound.lean) |
+| 4 | 606 (75.467%) | 3 | 3 / 50 | `New` | [New.Reduction.MainInequality](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Reduction/MainInequality.lean) |
+| 5 | 228 (28.394%) | 4 | 4 / 49 | `New` | [New.Determinant.Twist.LongForms](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Determinant/Twist/LongForms.lean) |
+| 6 | 93 (11.582%) | 5 | 9 / 34 | `Lib` | [Lib.GaloisRep.Main.AllRanks](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/GaloisRep/Main/AllRanks.lean) |
+| 7 | 91 (11.333%) | 6 | 10 / 31 | `Lib` | [Lib.ClassField.Avatar.LocalGlobalCompatibility](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/ClassField/Avatar/LocalGlobalCompatibility.lean) |
+| 8 | 90 (11.208%) | 7 | 11 / 30 | `Lib` | [Lib.GaloisRep.Main.OddRank](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/GaloisRep/Main/OddRank.lean) |
+| 9 | 89 (11.083%) | 8 | 12 / 29 | `Lib` | [Lib.GaloisRep.Main.SplitCase](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/GaloisRep/Main/SplitCase.lean) |
+| 10 | 86 (10.71%) | 9 | 13 / 27 | `Lib` | [Lib.GaloisRep.Main.SeedRepresentation](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/GaloisRep/Main/SeedRepresentation.lean) |
+| 11 | 74 (9.215%) | 5 | 5 / 48 | `New` | [New.Congruences.FitTwistsExist](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Congruences/FitTwistsExist.lean) |
+| 12 | 58 (7.223%) | 4 | 5 / 42 | `New` | [New.Spanning.SecondMoment.SpanningTheorem](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Spanning/SecondMoment/SpanningTheorem.lean) |
+| 13 | 46 (5.729%) | 10 | 14 / 25 | `Lib` | [Lib.Shimura.Eigenspace](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/Shimura/Eigenspace.lean) |
+| 14 | 36 (4.483%) | 4 | 4 / 47 | `New` | [New.Reduction.ShortAndEnough](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Reduction/ShortAndEnough.lean) |
+| 15 | 34 (4.234%) | 5 | 6 / 38 | `New` | [New.Spanning.Unfolding.Moments](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Spanning/Unfolding/Moments.lean) |
+| 16 | 31 (3.861%) | 6 | 7 / 37 | `New` | [New.Spanning.Unfolding.MomentBounds](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Spanning/Unfolding/MomentBounds.lean) |
+| 17 | 24 (2.989%) | 6 | 6 / 47 | `New` | [New.Congruences.FirstOrder.DenominatorBound](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Congruences/FirstOrder/DenominatorBound.lean) |
+| 18 | 21 (2.615%) | 7 | 8 / 35 | `New` | [New.Spanning.MainTerm.EnergyEstimate](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Spanning/MainTerm/EnergyEstimate.lean) |
+| 19 | 20 (2.491%) | 6 | 6 / 46 | `New` | [New.Congruences.Selmer.TwistingTheorem](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Congruences/Selmer/TwistingTheorem.lean) |
+| 20 | 20 (2.491%) | 8 | 9 / 33 | `New` | [New.Spanning.MainTerm.FiniteSieveSystem](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Spanning/MainTerm/FiniteSieveSystem.lean) |
+| 21 | 17 (2.117%) | 5 | 5 / 44 | `New` | [New.UpperBound.Divisibility.LocalDivisibility](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/UpperBound/Divisibility/LocalDivisibility.lean) |
+| 22 | 17 (2.117%) | 5 | 5 / 44 | `New` | [New.UpperBound.Seesaw.SeesawIdentity](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/UpperBound/Seesaw/SeesawIdentity.lean) |
+| 23 | 16 (1.993%) | 6 | 9 / 32 | `New` | [New.Congruences.LocalLoss.CrystallineCocycles](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Congruences/LocalLoss/CrystallineCocycles.lean) |
+| 24 | 15 (1.868%) | 7 | 10 / 30 | `New` | [New.Congruences.Lifting.CupOrthogonalityBounds](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Congruences/Lifting/CupOrthogonalityBounds.lean) |
+| 25 | 15 (1.868%) | 5 | 5 / 47 | `New` | [New.OneLift.LiftVolumeHeight](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/OneLift/LiftVolumeHeight.lean) |
+| 26 | 12 (1.494%) | 6 | 6 / 42 | `New` | [New.UpperBound.Divisibility.MarkOperator](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/UpperBound/Divisibility/MarkOperator.lean) |
+| 27 | 12 (1.494%) | 6 | 6 / 43 | `New` | [New.UpperBound.Seesaw.Cut](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/UpperBound/Seesaw/Cut.lean) |
+| 28 | 11 (1.37%) | 7 | 7 / 31 | `New` | [New.Congruences.Selmer.GeneralTheorem](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Congruences/Selmer/GeneralTheorem.lean) |
+| 29 | 11 (1.37%) | 7 | 7 / 41 | `New` | [New.UpperBound.Divisibility.HeckeEdges](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/UpperBound/Divisibility/HeckeEdges.lean) |
+| 30 | 10 (1.245%) | 11 | 15 / 22 | `Lib` | [Lib.Cohomology.WoodsHole](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/Cohomology/WoodsHole.lean) |
 
 ---
 
 ## 4. Critical Dependency Chain & Longest Intra-Directory Chains
 
-The longest dependency chain spans **93 edges (94 modules)** across **405** total max-length paths, with **56** single-node chokes and **38** branching heights.
+The longest dependency chain spans **53 edges (54 modules)** across **4** total max-length paths, with **52** single-node chokes and **2** branching heights.
 
 | Top Directory | Max Intra-Dir Edges | Start → End |
 |---|---:|---|
-| `Development` | 76 | `MainConclusion` → `SpanSingletonEqTopIffIsUnitOfIsBaseChange` |
-| `Formalism` | 56 | `LinkGConcreteNoKer` → `Complexify` |
-| `GroundTheory` | 41 | `NonemptyOfNatCastMemOfNeOne` → `ProfiniteInteger` |
-| `ReciprocityTheory` | 36 | `FormalDegreeConstantDiscrete` → `IsInfUnitary` |
-| `CompanionTheory` | 16 | `Imports` → `IsEulerProd` |
-| `PositivityTheory` | 6 | `HilbertEisensteinWeightOneHolds` → `SSmooth` |
-| `(root)` | 1 | `Main` → `Statements` |
-| `Lemmata` | 1 | `Denom` → `ExistsNatMulIsIntegral` |
+| `Lib` | 36 | `LabelCompatibility` → `Speed` |
+| `New` | 27 | `Main` → `FieldsAndPlaces` |
+| `(root)` | 0 | `Main` → `Main` |
 
 ---
 
@@ -184,19 +132,19 @@ Modules ranked by **Brandes weighted cross-directory betweenness** (`brandes_wei
 
 | Rank | Brandes Cross-Dir | Cross Fan (In×Out) | In / Out | Top Dir | Module |
 |---:|---:|---:|---:|---|---|
-| 1 | 2,775,151.9 | 0 | 311 / 16 | `Formalism` | [Formalism.LocalRingCardinality.RankBoundMonotoneInDimension](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Formalism/LocalRingCardinality/RankBoundMonotoneInDimension.lean) |
-| 2 | 1,426,332.1 | 0 | 8 / 23 | `Development` | [Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.CmHostRootComplexEqPmSqrt](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AbelianVarietyTheory/Definitions/AutomorphicMembership/CmHostRootComplexEqPmSqrt.lean) |
-| 3 | 1,256,633.4 | 0 | 10 / 7 | `Development` | [Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.MultiplicationLatticeSecond](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AbelianVarietyTheory/Definitions/AutomorphicMembership/MultiplicationLatticeSecond.lean) |
-| 4 | 1,188,099.9 | 0 | 23 / 2 | `Development` | [Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExistsIvDOfDefinite](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AbelianVarietyTheory/Definitions/AutomorphicMembership/ExistsIvDOfDefinite.lean) |
-| 5 | 1,130,271.9 | 0 | 125 / 43 | `Formalism` | [Formalism.SatakeDualWeyl.KpqSubgroupCompact](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Formalism/SatakeDualWeyl/KpqSubgroupCompact.lean) |
-| 6 | 1,073,549.1 | 0 | 986 / 8 | `Formalism` | [Formalism.LocalToGlobal.IndefiniteReal.LinksDefs](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Formalism/LocalToGlobal/IndefiniteReal/LinksDefs.lean) |
-| 7 | 1,004,430.0 | 0 | 9 / 13 | `Formalism` | [Formalism.LocalToGlobal.IndefiniteReal.TrISepWith](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Formalism/LocalToGlobal/IndefiniteReal/TrISepWith.lean) |
-| 8 | 968,557.4 | 0 | 149 / 16 | `Development` | [Development.AbelianVarietyTheory.Definitions.Divisors.TupleReadBaseTupleEqFamily](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AbelianVarietyTheory/Definitions/Divisors/TupleReadBaseTupleEqFamily.lean) |
-| 9 | 965,847.4 | 0 | 300 / 1 | `Development` | [Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.SumMulEqZeroOfSumToReal](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AbelianVarietyTheory/Definitions/AutomorphicMembership/SumMulEqZeroOfSumToReal.lean) |
-| 10 | 848,113.4 | 0 | 416 / 8 | `Formalism` | [Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Formalism/LocalRingCardinality/RhoDetPrimeEqMuTildeMulChiPow.lean) |
-| 11 | 826,299.2 | 0 | 2 / 2 | `Formalism` | [Formalism.LocalToGlobal.IndefiniteReal.CxToPkgFamIn](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Formalism/LocalToGlobal/IndefiniteReal/CxToPkgFamIn.lean) |
-| 12 | 821,279.0 | 0 | 17 / 7 | `Formalism` | [Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.SpectralTiesReal](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Formalism/LocalToGlobal/SiegelLatticeTheory/FlagStabilizerTensors/SpectralTiesReal.lean) |
-| 13 | 776,687.2 | 0 | 4 / 4 | `Formalism` | [Formalism.LocalToGlobal.IndefiniteReal.RealTB](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Formalism/LocalToGlobal/IndefiniteReal/RealTB.lean) |
-| 14 | 755,699.2 | 0 | 10 / 18 | `Formalism` | [Formalism.LocalToGlobal.Divisibility.DivisionHeightBoundStatement](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Formalism/LocalToGlobal/Divisibility/DivisionHeightBoundStatement.lean) |
-| 15 | 672,646.6 | 0 | 9 / 24 | `Development` | [Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsUnfFamily](https://github.com/leanprover-community/riemann-hypothesis/blob/307cef33f046955ee79dba47e0d828d06496d75f/src/Development/AbelianVarietyTheory/Proofs/UnitaryExistence/ExistsUnfFamily.lean) |
+| 1 | 5,898.2 | 0 | 9 / 4 | `New` | [New.UpperBound.Objects.Rows](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/UpperBound/Objects/Rows.lean) |
+| 2 | 4,821.1 | 0 | 3 / 7 | `New` | [New.UpperBound.Objects.Columns](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/UpperBound/Objects/Columns.lean) |
+| 3 | 4,345.6 | 0 | 4 / 4 | `Lib` | [Lib.ClassField.Avatar.HeckeBaseChange](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/ClassField/Avatar/HeckeBaseChange.lean) |
+| 4 | 3,991.9 | 0 | 11 / 3 | `Lib` | [Lib.General.NumberTheory.PadicLimitsValuation](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/General/NumberTheory/PadicLimitsValuation.lean) |
+| 5 | 3,919.3 | 0 | 2 / 5 | `New` | [New.Derivatives.Vacuum.TightFrames](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Derivatives/Vacuum/TightFrames.lean) |
+| 6 | 3,824.5 | 0 | 3 / 3 | `New` | [New.Derivatives.Vacuum.IntegralVacuum](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Derivatives/Vacuum/IntegralVacuum.lean) |
+| 7 | 3,672.4 | 0 | 6 / 6 | `Lib` | [Lib.Weil.DualPair.WeilAction](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/Weil/DualPair/WeilAction.lean) |
+| 8 | 3,441.3 | 0 | 5 / 5 | `New` | [New.Congruences.GaloisRepresentations.SelmerHypotheses](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Congruences/GaloisRepresentations/SelmerHypotheses.lean) |
+| 9 | 3,362.9 | 0 | 3 / 2 | `New` | [New.Reduction.Data.AdmissibleData](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/Reduction/Data/AdmissibleData.lean) |
+| 10 | 3,251.0 | 0 | 4 / 4 | `Lib` | [Lib.GaloisRep.Main.SelmerModules](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/GaloisRep/Main/SelmerModules.lean) |
+| 11 | 3,134.8 | 0 | 5 / 4 | `New` | [New.UpperBound.Seesaw.AdmissibleCombinations](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/UpperBound/Seesaw/AdmissibleCombinations.lean) |
+| 12 | 2,989.2 | 0 | 3 / 4 | `Lib` | [Lib.ClassField.HeckeCharacter.AlgebraicValues](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/ClassField/HeckeCharacter/AlgebraicValues.lean) |
+| 13 | 2,836.6 | 0 | 11 / 5 | `Lib` | [Lib.Shimura.Uniformisation.HolomorphicFamilies](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/Shimura/Uniformisation/HolomorphicFamilies.lean) |
+| 14 | 2,788.4 | 0 | 5 / 4 | `New` | [New.UpperBound.Size.ShortColumns](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/New/UpperBound/Size/ShortColumns.lean) |
+| 15 | 2,731.1 | 0 | 2 / 2 | `Lib` | [Lib.GaloisRep.Main.AllRanks](https://github.com/leanprover-community/riemann-hypothesis/blob/9211277d096b7abc3f9c30184bdb2e32d98dcffb/src/Lib/GaloisRep/Main/AllRanks.lean) |
 

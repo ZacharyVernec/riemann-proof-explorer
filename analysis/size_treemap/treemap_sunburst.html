@@ -741,6 +741,8 @@
   let allDirNodes = [];
 
   const THEORY_COLORS = {
+    "New": "#3b82f6",
+    "Lib": "#10b981",
     "Development": "#3b82f6",
     "Formalism": "#f59e0b",
     "GroundTheory": "#10b981",
@@ -1976,6 +1978,38 @@
     if (curVer) {
       document.getElementById("treemap-title").textContent =
         `Riemann Proof (${curVer.short_label || curVer.label}) — Size, Treemap & Sunburst Explorer`;
+    }
+
+    const qpWrap = document.querySelector(".quick-picks");
+    if (qpWrap) {
+      let picks = [];
+      if (nodeByPath.has("Development/AbelianVarietyTheory/Proofs/DivisorProofs")) {
+        picks = [
+          ["Development/AbelianVarietyTheory/Proofs/DivisorProofs", "DivisorProofs"],
+          ["Formalism/HermitianCurvature/HermitianCurvatureProofs", "HermitianCurvatureProofs"],
+          ["Development/AutomorphicArithmetic/IntegralCasts/CapelliIdentities", "CapelliIdentities"],
+          ["GroundTheory/HeightsAndTheta/Heights", "Heights"],
+          ["Lemmata", "Lemmata"]
+        ].filter(([p]) => nodeByPath.has(p));
+      } else {
+        const d2Cands = [];
+        (ROOT.children || []).forEach(top => {
+          if (top.name === "(root)") return;
+          (top.children || []).forEach(ch => {
+            if (!ch.isDirectBundle && ch.path) d2Cands.push(ch);
+          });
+        });
+        d2Cands.sort((a, b) => (b.lines || 0) - (a.lines || 0));
+        picks = d2Cands.slice(0, 5).map(ch => [ch.path, ch.path]);
+      }
+      qpWrap.innerHTML = `<span class="qp-label">Quick jump:</span>` + picks.map(([p, lbl]) =>
+        `<button type="button" class="qp-btn" data-jump="${esc(p)}">${esc(lbl)}</button>`
+      ).join("");
+      qpWrap.querySelectorAll(".qp-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          if (DATA && ROOT) zoomTo(btn.getAttribute("data-jump"), false);
+        });
+      });
     }
 
     if (state.zoomPath && !nodeByPath.has(state.zoomPath)) {

@@ -43,6 +43,22 @@ VERIFIED_NOTES = {
     "ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.SplitTori.SplitTorusAff": "Critical-path leaf (height 0): defines splitTorusAff, splitTorus, Gm, characters, and n-torsion schemes over Base Spec.",
     "Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.CohomologicalCsdTempered": "Anchor leaf module in ThirdPlaceSeries.",
     "Formalism.SharpRestriction.ParConsts": "Packs FamCore parameter constants (parConsts, NoGain, FamP) used across the analytic and geometric bridges.",
+    "New.Main": "Bridges New.grh (DirichletLNonvanishingRightOfHalf) into New.zeros_on_line and New.zeta_zeros_on_line via the functional equation s <-> 1 - s.",
+    "New.Reduction.OneSidedBound": "Derives the one-sided bound eventually_primeRemainder_le_rpow and proves New.grh by combining star_inequality with the PNT cut-off and zero-free criterion.",
+    "New.Reduction.MainInequality": "Proves star_inequality (m * rem <= f * a * log^5 b) by cancelling the main amount between Theorems A & B (short/enough forms) and Theorem C (integral_forms_long).",
+    "New.Determinant.Twist.LongForms": "Proves Theorem C (integral_forms_long): combines regular families of m-fold twists, auxiliary forms, and twisted-lattice covolume/index product formula.",
+    "New.Reduction.ShortAndEnough": "Proves Theorem A (span_short_integralRamified_eq_top, indexLe_normalizedPoincare) and Theorem B (enough_forms: few translates span almost all target forms).",
+    "New.Congruences.FitTwistsExist": "Proves New.exists_isRegularFamily: every admissible datum admits regular families of m-fold twists with bounded denominators and small Hecke L-value ratios.",
+    "New.Spanning.SecondMoment.SpanningTheorem": "Proves isSpread_goodPoincare: few translates of the Poincaré map spread across nearly the full dimension of target forms via second-moment bounds.",
+    "New.UpperBound.Seesaw.SeesawIdentity": "Proves seesaw_identity: equates lowerChain on Poincaré series to a finite combination of composite lifts along definite spaces.",
+    "New.UpperBound.Divisibility.LocalDivisibility": "Proves prime-by-prime divisibility (gaugeLe) of the composite lift via scaled Hecke operators and level-N valuations.",
+    "New.Congruences.FirstOrder.DenominatorBound": "Proves denominatorLe_clearingBound via Ribet's method to first order and auxiliary prime ties.",
+    "New.Congruences.Selmer.TwistingTheorem": "Proves exists_mFoldTwist_hasDivisibleSelmerLengthLe: anticyclotomic twists controlling Bloch-Kato/Selmer group lengths.",
+    "New.OneLift.LiftVolumeHeight": "Bounds the height of Z_j(1) / Z_j(xi^j) for a single theta lift W_j -> V_j.",
+    "Lib.GaloisRep.Main.AllRanks": "Constructs attached l-adic Galois representations for algebraic eigenforms on definite unitary groups of arbitrary positive rank.",
+    "Lib.ClassField.Avatar.LocalGlobalCompatibility": "Proves local-global compatibility for l-adic avatars of algebraic Hecke characters over CM fields.",
+    "Lib.Shimura.Eigenspace": "Cuts Galois representations out of cohomology of Kuga-Sato/PEL Shimura models and proves the Eichler-Shimura congruence relation.",
+    "Lib.Speed": "Global simp/instance-priority settings and New.IsVoid optimization leaf (height 0; adds zero axioms).",
 }
 
 
@@ -176,14 +192,21 @@ def render_spine_report_md(m: dict, source_blob_base: str = "", version_label: s
     lines.append("## 2. Stratigraphic Layering Across Top-Level Theories")
     lines.append("")
     present_tops = {p["top_dir"] for p in profiles}
-    apex_dirs = "`(root)`, `Supplements`, `Formalism/GammaFactorNonvanishing`" if "Supplements" in present_tops else "`(root)`, `Formalism/GammaFactorNonvanishing`"
-    lines.append("The mathematical domains stratify naturally into five functional layers from the apex down to the base:")
-    lines.append("")
-    lines.append(f"1. **Apex & Analytic Reflection Layer ({apex_dirs}):** Converts universal right half-plane nonvanishing (`EveryCharacter`) into RH and GRH via Euler-factor stripping (`ClaimStrip`) and functional-equation reflection (`CritLine`, `RhOfRight`).")
-    lines.append("2. **Upper Automorphic & Positivity Synthesis (`PositivityTheory`, upper `Development`):** Constructs parallel weight-one Hilbert Eisenstein series, Rankin–Selberg zeta integrals, local–global Galois representations, modularity-lifting patching reductions, and windowed Chebyshev character boxes.")
-    lines.append("3. **Core Geometric & Representation-Theoretic Engine (`Development/AbelianVarietyTheory`, `Development/AutomorphicSpectrum`, `Development/WeilBound`, `CompanionTheory`):** Develops polarized abelian schemes, de Rham and crystalline comparisons, Moriwaki arithmetic bigness, Harish-Chandra discrete series characters (`DSInfCharCap`), and Flath factorizations.")
-    lines.append("4. **Specification & Harmonic-Analytic Infrastructure (`Formalism`):** Provides local-to-global theta-lift stage contracts (`LinksStage`), differential operator chart-independence, the master CM host package (`D7`), local Bloch–Kato orthogonality (`LocCoh`), and local Tate duality.")
-    lines.append("5. **Algebraic-Geometric, Cohomological & Arakelov Bedrock (`ReciprocityTheory`, `GroundTheory`, `Lemmata`):** Supplies PEL Shimura toroidal compactifications (`UniformisationConclusion`), uniqueness of Mumford uniformisations (`UnifUniqSt`), polarized abelian scheme laws, Arakelov Bost–Zhang slope bounds (`KernelsLattice`), Whittaker multiplicity one, and Poitou–Tate duality.")
+    if "Lib" in present_tops and "New" in present_tops:
+        lines.append("The readable-edition codebase stratifies cleanly into three top-level layers from the apex down to the base:")
+        lines.append("")
+        lines.append("1. **Apex Entrypoints (`(root)`):** `Main.lean` and `Statements.lean` state and export the five unconditional RH and GRH theorems over Mathlib.")
+        lines.append("2. **Novel Proof Architecture (`New`):** Organizes the argument into `New/Main.lean` (functional-equation reflection), `New/Reduction/` (`OneSidedBound`, `MainInequality`, `ShortAndEnough`, twisted lattices, admissible data), `New/Derivatives/`, `New/UpperBound/`, `New/Spanning/`, `New/Determinant/` (`LongForms` Theorem C), `New/OneLift/`, `New/Congruences/` (modularity congruences, Selmer twisting, crystalline Kisin lifting), and `New/Appendix/`.")
+        lines.append("3. **Background Literature Library (`Lib`):** Self-contained background modules (importing nothing from `New/`) supplying adelic reduction and trace formulas, analytic PNT/Pólya–Vinogradov, class field theory, étale/Hodge cohomology, discrete series, Galois representations (`AllRanks`), $p$-adic comparison and Kisin modules, Shimura moduli, Siegel–Weil/Rallis formulas, and Weil representations.")
+    else:
+        apex_dirs = "`(root)`, `Supplements`, `Formalism/GammaFactorNonvanishing`" if "Supplements" in present_tops else "`(root)`, `Formalism/GammaFactorNonvanishing`"
+        lines.append("The mathematical domains stratify naturally into five functional layers from the apex down to the base:")
+        lines.append("")
+        lines.append(f"1. **Apex & Analytic Reflection Layer ({apex_dirs}):** Converts universal right half-plane nonvanishing (`EveryCharacter`) into RH and GRH via Euler-factor stripping (`ClaimStrip`) and functional-equation reflection (`CritLine`, `RhOfRight`).")
+        lines.append("2. **Upper Automorphic & Positivity Synthesis (`PositivityTheory`, upper `Development`):** Constructs parallel weight-one Hilbert Eisenstein series, Rankin–Selberg zeta integrals, local–global Galois representations, modularity-lifting patching reductions, and windowed Chebyshev character boxes.")
+        lines.append("3. **Core Geometric & Representation-Theoretic Engine (`Development/AbelianVarietyTheory`, `Development/AutomorphicSpectrum`, `Development/WeilBound`, `CompanionTheory`):** Develops polarized abelian schemes, de Rham and crystalline comparisons, Moriwaki arithmetic bigness, Harish-Chandra discrete series characters (`DSInfCharCap`), and Flath factorizations.")
+        lines.append("4. **Specification & Harmonic-Analytic Infrastructure (`Formalism`):** Provides local-to-global theta-lift stage contracts (`LinksStage`), differential operator chart-independence, the master CM host package (`D7`), local Bloch–Kato orthogonality (`LocCoh`), and local Tate duality.")
+        lines.append("5. **Algebraic-Geometric, Cohomological & Arakelov Bedrock (`ReciprocityTheory`, `GroundTheory`, `Lemmata`):** Supplies PEL Shimura toroidal compactifications (`UniformisationConclusion`), uniqueness of Mumford uniformisations (`UnifUniqSt`), polarized abelian scheme laws, Arakelov Bost–Zhang slope bounds (`KernelsLattice`), Whittaker multiplicity one, and Poitou–Tate duality.")
     lines.append("")
     lines.append("| Top Directory | Files | Lines | Leaves | Dist (min/med/max) | Height (med/max) |")
     lines.append("|---|---:|---:|---:|---|---|")
@@ -958,6 +981,8 @@ let DATA = null;
 
 const DIR_COLORS = {{
   "(root)": "#f43f5e",
+  "New": "#2563eb",
+  "Lib": "#059669",
   "Supplements": "#fb923c",
   "Development": "#38bdf8",
   "Formalism": "#a78bfa",

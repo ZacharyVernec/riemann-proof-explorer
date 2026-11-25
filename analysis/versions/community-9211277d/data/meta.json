@@ -1,0 +1,47 @@
+{
+  "src_dir": "/home/ubuntu/riemann_proof/lean_versions/community-9211277d/src",
+  "total_files": 803,
+  "reachable_files": 803,
+  "unreachable_files": 0,
+  "unreachable_modules": [],
+  "total_lines": 477124,
+  "reachable_lines": 477124,
+  "total_bytes": 30050271,
+  "total_internal_edges": 1733,
+  "reachable_internal_edges": 1733,
+  "max_dist_from_main": 21,
+  "max_height_from_leaves": 53,
+  "max_reachable_height_from_leaves": 53,
+  "is_dag": true,
+  "unresolved_imports": [],
+  "external_import_counts": {
+    "Mathlib.LinearAlgebra.Projectivization.Cardinality": 2,
+    "Mathlib": 2,
+    "Mathlib.Probability.Kernel.Composition.IntegralCompProd": 1,
+    "Mathlib.Probability.Kernel.Composition.MeasureCompProd": 1,
+    "Mathlib.Probability.Kernel.WithDensity": 1,
+    "Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Card": 1,
+    "Mathlib.LinearAlgebra.Projectivization.Basic": 1
+  },
+  "decl_counts": {
+    "lemma": 16684,
+    "def": 3329,
+    "theorem": 1543,
+    "abbrev": 1045,
+    "structure": 395,
+    "instance": 145,
+    "class": 85,
+    "inductive": 9
+  },
+  "reachable_decl_counts": {
+    "lemma": 16684,
+    "def": 3329,
+    "theorem": 1543,
+    "abbrev": 1045,
+    "structure": 395,
+    "instance": 145,
+    "class": 85,
+    "inductive": 9
+  },
+  "elapsed_seconds": 0.71
+}
